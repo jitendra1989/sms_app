@@ -1,0 +1,278 @@
+<h4 class="mg-h4"><label class="mg-label-text-transform-none" for="date_of_birth"><%=t('alumni_list')%></label></h4>
+
+ <div class="mg-scroll-employee-bar">
+
+<p style="display:false" id="search_by_order_numberID">
+    <label class="mg-label" style="width:76px"><%= t('search_by') %></label>
+    
+    <%= select_tag :search_by_alumni_fom, options_for_select([[t("select"), ""], ["Name", "Name"], ["Mobile Number", "mobile number"], [t("Email Id"), "email_id"]],:selected=>@data_selected) %>
+    </br>
+</p><p>
+    <label class="mg-label" style="width:76px"><%=  %><span class="required-field">&nbsp;</span></label>
+    <%= text_field_tag :search_by_value,@data_text,:class=>"mg-text-field fom-directory-search-field  alumni-fom-keyup-search-class" %>
+     
+</p>
+
+
+
+<table border="1" class="mg-table-nowrap mg-showdata-bg mg-show-tbl-width" cellspacing="1" cellpadding="1">
+ 
+<tr>
+<th><label class="mg-label"> <%= t('name')%></label> </th>
+<th> <label class="mg-label"> <%= t('email')%></label>
+<th> <label class="mg-label"> <%= t('mobile_number')%></label>
+<th> <label class="mg-label"> <%= t('programme')%></label>
+<th> <label class="mg-label"> <%= t('pass_out_year')%></label>
+<th> <label class="mg-label"> <%= t('specialization')%></label>
+<th> <label class="mg-label"> <%= t('current_location')%></label>
+<th> <label class="mg-label"> <%= t('current_profession')%></label>
+<th> <label class="mg-label"> <%= t('current_designation')%></label>
+<th> <label class="mg-label"> <%= t('current_organization')%></label>
+
+ <%if params[:temp_val].present?%>
+
+ <%else%>
+<%if params[:demo]=="passing out year"%>
+<%alumni_data=MgAlumniProgrammeAttended.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id],:time_table_year=>params[:passout]).pluck(:mg_alumni_id).uniq%>
+
+<%@information=MgAlumni.where(:id=>alumni_data,:is_deleted=>0,:mg_school_id=>session[:current_user_school_id])%>
+
+<%else%>
+<%alumni_data=MgAlumniProgrammeAttended.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id],:mg_wing_id=>params[:wing_id]).pluck(:mg_alumni_id).uniq%>
+
+<%@information=MgAlumni.where(:id=>alumni_data,:is_deleted=>0,:mg_school_id=>session[:current_user_school_id])%>
+<%end%>
+<%end%>
+</tr>
+<%puts @information.length%>
+<%if  @information.length>0%>
+<%@information.each do |info|%>
+<%if info.is_name_sharable==true or info.is_email_id_sharable==true or info.is_mobile_no_sharable==true%>
+<tr>
+<%if info.is_name_sharable==true%>
+    <td class="mg-td-width-half" valign="top">
+
+   
+  <%="#{info.try(:first_name)} #{info.try(:last_name)}"%>
+     
+    </td>
+<%else%>
+<td class="mg-td-width-half" valign="top">
+
+   
+  <%= "No Data"%>
+     
+    </td>
+<%end%>
+    
+    
+
+     <%if info.is_email_id_sharable==true%>
+    <td class="mg-td-width-half" valign="top">
+
+   
+  <%="#{info.try(:email_id)}"%>
+     
+    </td>
+<%else%>
+<td class="mg-td-width-half" valign="top">
+
+   
+  <%= "No Data"%>
+     
+    </td>
+<%end%>
+<%if info.is_mobile_no_sharable==true%>
+    <td class="mg-td-width-half" valign="top">
+
+   
+  <%="#{info.try(:mobile_number)}"%>
+     
+    </td>
+<%else%>
+<td class="mg-td-width-half" valign="top">
+
+   
+  <%= "No Data"%>
+     
+    </td>
+<%end%>
+
+<%if info.is_programme_searchable=="1"%>
+    <td class="mg-td-width-half" valign="top">
+    <%if params[:wing_id].present?%>
+    <%@data=MgAlumniProgrammeAttended.find_by(:mg_alumni_id=>info.id,:mg_wing_id=>params[:wing_id],:is_deleted=>0,:mg_school_id=>session[:current_user_school_id])%>
+    <%elsif  params[:passout].present?%>
+ <%@data=MgAlumniProgrammeAttended.find_by(:mg_alumni_id=>info.id,:time_table_year=>params[:passout],:is_deleted=>0,:mg_school_id=>session[:current_user_school_id])%>
+    <%end%>
+   <%wing_data=MgWing.find_by(:id=>@data.mg_wing_id)%>
+  <%="#{wing_data.try(:wing_name)}"%>
+     
+    </td>
+<%else%>
+<td class="mg-td-width-half" valign="top">
+
+   
+  <%= "No Data"%>
+     
+    </td>
+<%end%>
+
+
+
+<%if info.is_passing_out_searchable=="1"%>
+    <td class="mg-td-width-half" valign="top">
+
+   
+  <%="#{@data.try(:time_table_year)}"%>
+     
+    </td>
+<%else%>
+<td class="mg-td-width-half" valign="top">
+
+   
+  <%= "No Data"%>
+     
+    </td>
+<%end%>
+
+
+
+<%if info.is_specialization_searchable=="1"%>
+    <td class="mg-td-width-half" valign="top">
+
+   <%specialization=MgEmployeeSpecialization.find_by(:id=>@data.mg_employee_specialization_id)%>
+  <%="#{specialization.try(:name)}"%>
+     
+    </td>
+<%else%>
+<td class="mg-td-width-half" valign="top">
+
+  
+  <%= "No Data"%>
+     
+    </td>
+<%end%>
+
+
+<%if info.is_current_location_searchable=="1"%>
+    <td class="mg-td-width-half" valign="top">
+
+   
+  <%="#{info.try(:current_location)}"%>
+     
+    </td>
+<%else%>
+<td class="mg-td-width-half" valign="top">
+
+   
+  <%= "No Data"%>
+     
+    </td>
+<%end%>
+
+
+
+<%if info.is_current_profession_searchable=="1"%>
+    <td class="mg-td-width-half" valign="top">
+
+   
+  <%="#{info.try(:current_profession)}"%>
+     
+    </td>
+<%else%>
+<td class="mg-td-width-half" valign="top">
+
+   
+  <%= "No Data"%>
+     
+    </td>
+<%end%>
+
+
+
+<%if info.is_current_designation_searchable=="1"%>
+    <td class="mg-td-width-half" valign="top">
+
+   
+  <%="#{info.try(:designation)}"%>
+     
+    </td>
+<%else%>
+<td class="mg-td-width-half" valign="top">
+
+   
+  <%= "No Data"%>
+     
+    </td>
+<%end%>
+ 
+
+
+<%if info.is_current_organization_searchabler=="1"%>
+    <td class="mg-td-width-half" valign="top">
+
+   
+  <%="#{info.try(:current_organization)}"%>
+     
+    </td>
+<%else%>
+<td class="mg-td-width-half" valign="top">
+
+   
+  <%= "No Data"%>
+     
+    </td>
+<%end%>
+ </tr>
+
+<%end%>
+<%end%>
+ <%end%>
+
+</table>
+
+</div>
+<script>
+
+
+$(document).on("change","#search_by_alumni_fom",function(){
+
+       // $("#submitted_items_result_ID").empty();
+       // $("#search_by_value").val("");
+
+
+});
+
+$(".alumni-fom-keyup-search-class").keyup(function(){
+    text_count=$(this).val();
+   
+    if (text_count.length>4){
+    var search_by=$("#search_by_alumni_fom").val();
+    var temp_val=$("#search_by_value").val();
+    var demo=$("#search_by").val();
+    var wing_id=$("#alummi_search_programme").val();
+    var passout=$("#time_table_year_1").val();
+
+ if (temp_val!="")
+ {
+    var urlLink = "/alumni/search_alumni_data_forshow/";
+    $.ajax({ 
+               url: urlLink,
+               cache: false,
+               data:
+            {
+                 "temp_val":temp_val , "search_by":search_by,"demo":demo,"wing_id":wing_id,"passout":passout
+            },
+            success: function(html){
+             // 
+           //  alert("data"):
+                   $("#alumni_library_particular_book_search").empty();
+                   $("#alumni_library_particular_book_search").append(html);
+            }  
+    });
+ }
+}
+})
+
+</script>

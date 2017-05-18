@@ -1,0 +1,222 @@
+<table border="1" class="mg-showdata-bg mg-tbl-layout" cellspacing="1" cellpadding="1">
+   <tr>
+     <td class="mg-td-width-half" valign="top">
+   		<label class="mg-label"> <%= t('name')%></label>
+   	 </td>
+   	 <td class="mg-td-width-half" valign="top">
+  		<%if @inventory.mg_resource_category_id.present?%>
+     <% resource=MgResourceCategory.find_by(:id=>@inventory.mg_resource_category_id)%>
+     <%=resource.try(:name)%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+  	 </td>
+ </tr>
+ 
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('resource_type')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+      <%if @inventory.mg_resource_type_id.present?%>
+      <%category=MgResourceType.find_by(:id=>@inventory.mg_resource_type_id)%>
+     <%= category.try(:name) %>
+      <%else%>
+      <%="No Data"%>
+      <%end%>
+     </td>
+ </tr>
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('resource_number')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+      <%if @inventory.resource_number.present?%>
+     <%=@inventory.try(:resource_number)%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+     </td>
+ </tr>
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('name/title')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+      <%if @inventory.name.present?%>
+     <%=@inventory.try(:name)%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+     </td>
+ </tr>
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('author')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+      <%if @inventory.author.present?%>
+     <%=@inventory.try(:author)%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+     </td>
+ </tr>
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('volume/edition')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+      <%if @inventory.volume.present?%>
+     <%=@inventory.try(:volume)%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+     </td>
+ </tr>
+  <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('year')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+      <%if @inventory.year.present?%>
+     <%=@inventory.try(:year)%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+     </td>
+ </tr>
+
+
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('publication/company')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+      <%if @inventory.publication.present?%>
+     <%=@inventory.try(:publication)%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+     </td>
+ </tr>
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('isbn')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+      <%if @inventory.isbn.present?%>
+     <%=@inventory.try(:isbn)%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+     </td>
+ </tr>
+  <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('course')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+      <%if @inventory.mg_course_id.present?%>
+      <%course=MgCourse.find_by(:id=>@inventory.mg_course_id)%>
+     <%=course.try(:course_name)%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+     </td>
+ </tr>
+  <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('subjectes')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+      <%if @inventory.mg_subject_id.present?%>
+      <%subject=MgManageSubject.find_by(:id=>@inventory.mg_subject_id)%>
+      <%if subject.nil?%>
+      <%="General Reading"%>
+      <%else%>
+     <%=subject.try(:name)%>
+     <%end%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+     </td>
+ </tr>
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('stack_reference')%></label>
+     </td>
+
+     <td class="mg-td-width-half" valign="top">
+      <%if @inventory.stack_reference.present?%>
+      <%data=MgLibraryStackManagement.find_by(:id=>@inventory.stack_reference)%>
+     <%="#{data.room_no}/#{data.rack_no}/#{data.first_letter_of_title}"%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+     </td>
+ </tr>
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('cost')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+      <%if @inventory.cost.present?%>
+     <%=@inventory.try(:cost)%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+     </td>
+ </tr>
+  <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('non_issuable')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+      <%if @inventory.non_issuable.present?%>
+     <%=(@inventory.non_issuable) ? "Yes" : "No"%>
+     <%else%>
+     <%="No"%>
+     <%end%>
+     </td>
+ </tr>
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('is_damaged')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+      <%if @inventory.is_damaged.present?%>
+     <%=(@inventory.is_damaged) ? "Yes" : "No"%>
+     <%else%>
+     <%="No"%>
+     <%end%>
+     </td>
+ </tr>
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('is_lost')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+      <%if @inventory.is_lost.present?%>
+     <%=(@inventory.is_lost) ? "Yes" : "No"%>
+     <%else%>
+     <%="No"%>
+     <%end%>
+     </td>
+ </tr>
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('status')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+      <%if @inventory.status.present?%>
+     <%=@inventory.try(:status)%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+     </td>
+ </tr>
+
+</table>
+<br/>
+<%= link_to 'Cancel', library_inventory_path ,:style=>"font-size: 0.8em; color: #297ACC; text-decoration: none;" ,:class=>"mg-custom-form-btn"%>

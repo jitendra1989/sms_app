@@ -1,0 +1,80 @@
+<!-- Sec --> 
+
+<!-- Sec --> 
+<!-- breadcrumbs Work -->
+<% navigation_add 'Fees', fees_path %>
+<% navigation_add 'Fees Collection', fees_fee_collection_path %>
+<!-- breadcrumbs Work -->
+
+
+<%= render  partial: 'fee_left' %>
+<h4 class="mg-h4">Fee Collection </h4>
+<div id="page-yield">
+	<div class="box">
+		<%= form_for :fee_collection, url: fees_fee_collection_path,  method: :post  do |f| %>
+			<%= f.hidden_field :is_deleted, :value=> 0%>
+			<%= f.hidden_field :mg_school_id, :value=> session[:current_user_school_id]%>
+
+			<div class="fee-collection-content">
+          		<div class="fee-collection-inner">
+            		<table cellspacing="0" cellpadding="0" border="0" class="fee-collection-table-cls" style="border-collapse: separate; border-spacing: 0 5px;">
+              			<tbody>
+              				<tr>
+			                  	<td width="150px">
+			                    	<label for="course" class="mg-label"><%= t('select')%> <%= t('course') %></label>
+			                    </td>
+			                    <td width="150px">
+			                    	<%=f.collection_select(:course, MgCourse.where( is_deleted: 0, :mg_school_id => session[:current_user_school_id]), :id, :course_name, {:include_blank => t('Select') ,:class=>"mg-select-btn"} ) %>
+			                  	</td>
+		                  	</tr>
+
+		                  	<tr>
+			                  	<td>
+			                    	<label for="batch" class="mg-label"><%= t('select')%> <%= t('batch') %></label>
+			                    </td>
+			                    <td>
+			                    	<%= f.select :batch, [ ], {:include_blank => t('Select') ,:class=>"mg-select-btn"} %>
+			                  	</td>
+		                  	</tr>
+
+		                  	<!-- <tr>
+			                  	<td>
+			                    	<label for="fee_collection" class="mg-label mg-custom-labels"><%#= t('Select Fee Schedule') %></label>
+			                    </td>
+			                    <td>
+			                    	<%#= f.select :fee_collection, [ ], {:include_blank => t('Select') ,:class=>"mg-select-btn"} %>
+			                  	</td>
+		                  	</tr>
+
+		                  	<tr> -->
+		                  	 <td></td>
+		                  	 <td>
+			                  	<table cellspacing="0" cellpadding="0" border="0" id="feeCollectionStudentListID" class="mg-text-margin batch-tbl">
+			                  	</table>
+			                  </td>	
+		                  	</tr>
+
+              			</tbody>
+              		</table>
+              	</div>
+            </div>
+		<% end %>
+	</div>
+</div>
+
+<%= render  partial: 'application/common_left_close' %>
+
+<script type="text/javascript">
+     $(document).ready(function(){
+
+      // $("li").removeClass( "active" );
+      // $("a").removeClass( "activeMenu" );
+
+      // $("#feeCollectionLiID").addClass("active");
+      // $("#feeCollectionID").addClass("activeMenu");
+
+      focusCurrentTab("feeCollectionID","feeCollectionLiID");
+
+      focusFees();
+   });
+</script>

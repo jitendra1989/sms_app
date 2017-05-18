@@ -1,0 +1,160 @@
+<%= render  partial: 'transport_left' %>
+<h4 class="mg-h4"><%=t('select_vehicle')%></h4>
+<% navigation_add 'Transport', transports_path %>
+<% navigation_add 'Add Vehicle', list_vehicles_path %>
+<% navigation_add 'New', route_vehicle_selection_path %>
+
+
+<%= form_for :vehicles_routes ,  :url=>{:controller=>'transports',:action=>'route_vehicle_create',:id=>@data.id}, :html=>{:id=>'route_vehicle_form'} do |f| %>
+ <%= f.hidden_field :is_deleted ,:value=>0%>
+        <%= f.hidden_field :mg_school_id ,:value=>@school_id%>
+<table class="mg-tbl-margin mg-show-tbl-width">
+     <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="routeName"><%= t ('route_name') %><span class="required-field">&nbsp;*</span></label><br/>
+        <%= text_field_tag :route_name ,@data.route_name,:readonly=>true,:class=>"mg-text-field"%>
+      </td>
+    </tr>
+    <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label"  for="description"><%= t ('description') %></label><br/>
+        <%= text_area_tag :description ,@data.description,:readonly=>true,:class=>"mg-text-field"%>
+      </td>
+    </tr>
+    <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label"  for="vehicleNumber"><%= t ('select_vehicle') %><span class="required-field">&nbsp;*</span></label><br/>
+         <%=f.select :mg_vehicle_id ,options_for_select(@add_report_index),:prompt=>"Select"%><br>
+      </td>
+    </tr>
+    
+    <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label"  for="noofSeats"><%= t ('employee_category') %><span class="required-field">&nbsp;*</span></label><br/>
+       <%= f.collection_select(:mg_employee_category_id,MgEmployeeCategory.all, :id, :category_name,{:include_blank => t("select")},:onchange => "employeeCategoryvehicleSelect()",:id => "employeeCategoryvehicleSelectID")%>
+
+      </td>
+    </tr>
+    <tr>
+      
+      <td class="mg-td-width-one-third">
+        <label class="mg-label"  for="currentInsuranceDueDate"><%= t ('employee_profile') %><span class="required-field">&nbsp;*</span></label><br/>
+       <select id="employee_mg_employee_position_id" name="employee[mg_employee_position_id]" onchange="employeeSelect()">
+                     <option value="">Choose Category</option>
+                      
+                    </select> 
+      </td>
+    </tr>
+    <tr>
+      
+      <td class="mg-td-width-one-third">
+        <label class="mg-label"  for="currentInsuranceDueDate"><%= t ('select_driver') %><span class="required-field">&nbsp;*</span></label><br/>
+       <select id="employee_mg_employee_id" name="employee[mg_employee_id]">
+                     <option value="">Choose Employee</option>
+                  
+                    </select> 
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        <label class="mg-label" for="LastServiceDate"><%= t ('drop_start_time') %><span class="required-field">&nbsp;*</span></label><br/>
+     <%=time_select 'drop_start_time','game_time',{ampm: true} ,:class=>"mg-select-time-width"%><br>
+      </td>
+    </tr>
+    
+</table>
+    
+<p class="mg-p-mgtop">
+<%= submit_tag t("save"),:class=>"mg-small-form-btn"%>
+ <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+ </p>
+  </div>
+<%end%>
+<%=render partial: 'transport_left_close'%>
+
+<script>
+
+$(document).ready(function(){
+
+         
+          focusCurrentTab("transport_route_managementAssociateAID","transport_route_managementAssociateLiID");
+          });
+
+          
+function employeeCategoryvehicleSelect(){
+    var empCategoryID = $( "#employeeCategoryvehicleSelectID" ).val();
+
+   
+    
+
+    if(empCategoryID > 0) {
+  
+
+           //       alert(empCategoryID); 
+   // 'employees/employee_position_list/:id' 
+
+         var urlLink = "/employees/employee_position_list/"+empCategoryID;
+         $.ajax({
+         //    data : {'mg_employee_category_id':empCategoryID}, 
+             url: urlLink,
+             cache: false,
+             success: function(data){
+               // console.log();
+                if(data.length > 0){
+                    var apdStr = '<option value="select">Select</option>';
+                   // employeePositionSelectID
+                   for(key in data){
+                      apdStr += '<option value="'+data[key].id+'">'+data[key].position_name+'</option>'
+                    }
+                  // console.log(apdStr);
+                    $("#employee_mg_employee_position_id").empty().append(apdStr);
+
+                }
+
+             }
+                
+         });
+
+  }else{
+    var apdStr = '<option value="">Choose Category</option>';
+    $("#employee_mg_employee_position_id").empty().append(apdStr);
+    // alert("Please select category");
+  }
+
+    //employeeCategorySelectID
+}
+
+
+
+function employeeSelect(){
+    var empProfileID = $( "#employee_mg_employee_position_id" ).val();
+
+  console.log(empProfileID);
+  //alert(empProfileID)
+
+  var urlLink = "/transports/employee_list/";
+         $.ajax({
+         //    data : {'mg_employee_category_id':empCategoryID}, 
+             url: urlLink,
+             cache: false,
+             data: {emp_profile_id: empProfileID},
+             success: function(data){
+                console.log(data);
+                if(data.length > 0){
+                    var apdStr = '<option value="select">Select</option>';
+                   // employeePositionSelectID
+                   for(key in data){
+                      apdStr += '<option value="'+data[key].id+'">'+data[key].first_name+'</option>'
+                    }
+                  // console.log(apdStr);
+                    $("#employee_mg_employee_id").empty().append(apdStr);
+
+                }
+
+             }
+                
+         });
+
+}
+</script>

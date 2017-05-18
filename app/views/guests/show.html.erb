@@ -1,0 +1,68 @@
+<table border="1" class="mg-showdata-bg " cellspacing="1" cellpadding="1">
+
+
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('event_title')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+    
+     <%if @guests.mg_event_id.present?%>
+      <%= MgEvent.find(@guests.mg_event_id ).title%>
+      <%end%>
+     </td>
+ </tr>
+   <tr>
+     <td class="mg-td-width-half" valign="top">
+   		<label class="mg-label"> <%= t('guest_name')%></label>
+   	 </td>
+   	 <td class="mg-td-width-half" valign="top">
+  		<%= @guests.guest_name %>
+  	 </td>
+ </tr>
+
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+  		<label class="mg-label"><%=t('guest_details')%></label>
+  	 </td>
+  	 <td class="mg-td-width-half mg-desc-text-justify" valign="top">
+  		<%= @guests.guest_details %>
+  	 </td>
+ </tr>
+
+
+  <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"><%=t('mobile_no')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+      <%= @guests.mobile_no %>
+     </td>
+ </tr>
+
+   <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"><%=t('email_id')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+      <%= @guests.email_id %>
+
+     </td>
+ </tr>
+
+   <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"><%=t('status')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+      <%= @guests.status %>
+     </td>
+ </tr>
+
+  
+</table>
+ 
+
+ <p class="mg-p-mgtop">
+      <a  class="mg-small-form-btn cancel-form-dialog"><%=t("cancel")%></a>
+  </p>

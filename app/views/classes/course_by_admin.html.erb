@@ -1,0 +1,97 @@
+<!-- Sec --><div class="page-yield">
+
+  <div class="box">
+    <h4 class="mg-h4"><%= t('new_class') %></h4>
+    <%= form_for @courses, :html=>{:id=>'new_course_form'}, url: {action: "create"} do |f| %>
+
+       <label class="mg-label mg-custom-labels" for="course_name"><%= t('class_name') %></label>
+       <div class="input-container">
+            <%= f.text_field :course_name ,:class=>"mg-custom-labels"%>
+            </div>
+
+       <label class="mg-label mg-custom-labels" for="section_name"><%= t('section_name') %></label>
+            <div class="input-container">
+              <%= f.text_field :section_name ,:class=>"mg-custom-labels"%>
+          </div>
+
+
+          <label class="mg-label mg-custom-labels" for="code"><%= t('code') %></label>
+          <div class="input-container">
+              <%= f.text_field :code ,:class=>"mg-custom-labels"%>
+          </div>
+          <%= f.hidden_field :is_deleted, :value => 0 %> 
+          <%= f.hidden_field :mg_school_id, :value => session[:current_user_school_id] %> 
+
+          <!--Grading system will come here-->
+          
+          
+          <h4 class="mg-h4"><%= t('initial_section') %></h4>
+      
+          <%= fields_for :batch do |batch_form| %>
+           <%= batch_form.hidden_field :is_deleted, :value => 0 %> 
+           <%= batch_form.hidden_field :mg_school_id, :value => session[:current_user_school_id] %> 
+            <label class="mg-label mg-custom-labels" for="name"><%= t('name') %></label>
+                <div class="input-container">
+                    <%= batch_form.text_field :name ,:class=>"mg-custom-labels"%>
+                </div>
+
+            <label class="mg-label mg-custom-labels" for="Start date"><%= t('start_date') %></label>
+                <div class="input-container">
+
+                    <%= batch_form.text_field :start_date ,:class => 'Start_date mg-custom-labels' ,:id=>"Start_date"%>
+
+                </div> 
+
+             <label class="mg-label mg-custom-labels" for="End date"><%= t('end_date') %></label>
+                <div class="input-container">
+                    <%= batch_form.text_field :end_date ,:id => 'End_date' ,:class=>"mg-custom-labels"%>
+                </div>      
+          <% end %>
+      <br/>
+      <%= submit_tag t('save'), class: "submit" ,:class=>"mg-small-form-btn mg-custom-labels"%>
+       
+    <% end %>
+
+    <div class="extender"></div>
+
+  </div>
+</div>
+<br/>
+<br/>
+<script >
+ 
+
+   $(document).ready(function(){
+    
+
+ dateFormatStr =  getJsDateFormat();
+
+    
+    $( "#End_date" ).datepicker({ changeMonth: true,
+                changeYear: true, dateFormat: dateFormatStr });
+    $( "#Start_date" ).datepicker({ changeMonth: true,
+                changeYear: true, dateFormat: dateFormatStr });
+    $( ".batch_start_date" ).datepicker({ changeMonth: true,
+                changeYear: true, dateFormat: dateFormatStr });
+
+    $("#new_course_form").validate({
+      rules:{
+        "mg_course[course_name]":{required:true},
+     //   "mg_course[section_name]":{required:true},
+        "mg_course[code]":{required:true},
+        "batch[name]":{required:true},
+        "batch[start_date]":{required:true},
+        "batch[end_date]":{required:true},
+
+      }
+    });
+  });
+
+
+
+</script>
+
+
+
+
+ 

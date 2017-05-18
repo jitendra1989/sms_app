@@ -1,0 +1,53 @@
+<!-- com-->
+<section id="userBodyContentBox" style="margin: 0 auto;">
+    <table width=100% border="0" cellspacing="0" cellpadding="0"  style="margin-bottom: 0px;">
+        <tr>
+            <td valign="top" class="userBodyContentBox1">
+                <aside class="userMenuBoxLeft" style="width: 210px;">
+                    <ul class="menuListHome">
+                        <li class="myAccountMenu"><%= t('curriculum__management') %></li>
+                        <li class="active" id="syllabusLiID">
+                            <a class="menuItemsActivities activeMenu" href="/curriculum/class_show" id="viewcurriculum_managementsList">
+                                <div class="setMenu"><i class="fa fa-clipboard">&nbsp;&nbsp;</i><%= t('syllabus') %><!-- <i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i> -->
+                                </div>
+                            </a>
+                        </li>
+                        <li id="unitLiID">
+                            <a class="menuItemsActivities" href="/curriculum/unit_show" id="unitCurriculamManagementsId" >
+                                <div class="setMenu"><i class="fa fa-delicious">&nbsp;&nbsp;</i><%= t('unit') %><!-- <i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i> -->
+                                </div>
+                            </a>
+                        </li>
+                        <li id="topicLiID">
+                            <a class="menuItemsActivities" href="/curriculum/topic_show" id="topicCurriculamManagementsId" >
+                                <div class="setMenu"><i class="fa fa-columns">&nbsp;&nbsp;</i><%= t('topic') %><!-- <i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i> -->
+                                </div>
+                            </a>
+                        </li>
+                         <li id="BatchSyllabusLiID">
+                            <a class="menuItemsActivities" href="/curriculum/batchsubject_index" id="batchSyllabusCurriculamManagementsId" >
+                                <div class="setMenu"><i class="fa fa-chain">&nbsp;&nbsp;</i><%= t('batch_syllabus_association') %><!-- <i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i> -->
+                                </div>
+                            </a>
+                        </li>
+                        <li id="BatchSyllabusCurriculumLiID">
+                            <a class="menuItemsActivities" href="/curriculum/curriculum_index" id="batchSyllabusCurriculamId" >
+                                <div class="setMenu"><i class="fa fa-files-o">&nbsp;&nbsp;</i><%= t('curriculum') %><!-- <i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i> -->
+                                </div>
+                            </a>
+                        </li>
+                        <!-- <li id="EmployeeSubjectLiID">
+                            <a class="menuItemsActivities" href="/curriculum_managements/employee_subject_index" id="employeeSubjectCurriculamManagementsId" >
+                                <div class="setMenu"><i class="fa fa-plus-square-o">&nbsp;&nbsp;</i><#%= t('employee_subject_association') %> <i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i> 
+                                </div>
+                            </a>
+                        </li> -->
+
+
+                    </ul>    
+
+                </aside>
+            </td>
+            <td  valign="top" class="mg-table-td-main-2">
+                <div id="curriculamForm">
+                       

@@ -1,0 +1,112 @@
+<!-- Sec --> 
+<%#= render  partial: 'fee_left' %>
+<div id="page-yield">
+ 	<div class="box">
+ 		<%= form_for :generate_fine_form, url: fees_generate_fine_path,  method: :post , :html => {:id => 'createFineFormId'} do |f| %>
+ 			<%= f.hidden_field :is_percent, :value=> 0%>
+ 			<%= f.hidden_field :is_deleted, :value=> 0%>
+      <%= f.hidden_field :mg_school_id, :value=> session[:current_user_school_id]%>
+
+ 			<div class="generate_fine_form-content">
+          		<div class="generate_fine_form-inner">
+            		<table cellspacing="0" cellpadding="0" border="0" class="generate_fine_table-cls mg-table-spacing">
+              			<tbody>
+
+              				<tr class="fine-generate-tr-cls">
+			                  	<td valign="top" width="220px" class="fee-fine-td" >
+			                  		<label for="fine_name" class="mg-label"><%= t('Fine Name') %><span class="required-field"> *</span></label>
+			                  	</td>
+			                  	<td class="fee-fine-td">
+			                    	<%= f.text_field :fine_name  ,:class => 'fine-name-cls mg-text-field'%>
+			                  	</td>
+		                  	</tr>
+
+		                  	<tr>
+			                  	<td valign="top">
+			                  		<label for="fine_description" class="mg-label"><%= t('Description') %></label>
+			                  	</td>
+			                  	<td>
+			                    	<%= f.text_area :fine_description,:class => 'fine-name-cls mg-text-field'%>
+			                  	</td>
+		                  	</tr>
+
+              			</tbody>
+              		</table>
+              		<div id="finalDueFineDivId" >
+              		<hr/>
+                		<div class="due-fine-div" id="dueFineDivId">
+                			<%= render :partial => "fee_fine_due" ,:locals => {:dueFine => "dueFine"} %>
+                			<a href="#" class="remove-fine-due-cls mg-custom-form-btn" style="color: #297ACC; font-size:0.8em;"> Remove</a>
+                			<hr/>
+                		</div>
+              		</div>
+              		<a href="#" id="addDueFineId" class="mg-label-inner-form mg-custom-form-btn" style="color: #297ACC; font-size:0.8em;" >Add Fine</a> <br/><br/>
+                  <p>
+              		<%#= submit_tag 'Submit', id: "saveDueFeeID", class: "due-fine-btn mg-small-form-btn" %>
+                  <a onclick="$(this).closest('form').submit()" id="saveDueFeeID" class="due-fine-btn mg-small-form-btn"><%=t("save")%></a>
+ <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+ </p>
+
+              	</div>
+              </div>
+ 		<% end %>
+	</div>
+</div>
+
+<%#= render  partial: 'application/common_left_close' %>
+
+<script type="text/javascript">
+    $(document).ready(function(){
+
+        $("li").removeClass( "active" );
+        $("a").removeClass( "activeMenu" );
+
+        $("#createFineLiID").addClass("active");
+        $("#dueFineId").addClass("activeMenu");
+
+        //$.validator.addMethod("cRequired", $.validator.methods.required,
+         // "Customer name required");
+        //$.validator.addClassRules("required-field", { cRequired: true });
+
+      $("#createFineFormId").validate({
+
+        rules:
+        {
+           "generate_fine_form[fine_name]": {required: true},
+           "days_after_due_date[]": {required: true},
+           "amount[]": {required: true,number: true,min:1}
+        }  
+      });
+     //("add", 
+     //$("#createFineFormId").validate({ 
+        /*submitHandler: function (form) { 
+            alert('valid form submitted'); 
+            return false; 
+        }*/
+    //});
+     //$('#createFineFormId').validate();
+     
+        /*$('#createFineFormId').validate({
+              rules: {
+                    "generate_fine_form[fine_name]": 
+                    {
+                          required: function(elem) 
+                          {
+                                return $(elem).siblings('input').val() == '0';
+                          }
+                    }
+              }
+        })*/
+       
+    });
+
+
+   /* $("#saveDueFeeID").click(function(){
+       $(".required-field").each(function(){
+         //alert("");
+         $(this).rules("add",{
+           required: true
+         });  
+       });
+    });*/
+</script>

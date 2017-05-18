@@ -1,0 +1,286 @@
+<%=render partial: 'healthcare_left'%>
+<% navigation_add t('checkup_type'),:controller=>'healthcare',:action=>'index' %>
+<% if @action=='new'%>
+	<h4 class="mg-h4"><%=t('add_checkup_type')%></h4>
+	<% navigation_add t('new_checkup_type'),:controller=>'healthcare',:action=>'new' %>
+<%else %>
+	<h4 class="mg-h4"><%=t('edit_checkup_type')%></h4>
+	<% navigation_add t('edit_checkup_type'),:controller=>'healthcare',:action=>'edit' %>
+<%end%>
+
+
+<%= form_for :checkup_type, :url=>@action=='new' ? 'create' : '/healthcare/'+@checkup_type_data.try(:id).to_s, :method=> @action=='new' ? "post" : "patch" , :html => {:id => 'checkup_id'} do |f| %>
+
+
+
+<%= f.hidden_field :is_deleted, :value => 0 %>
+<%= f.hidden_field :mg_school_id, :value => session[:current_user_school_id] %>
+<%= f.hidden_field :created_by, :value => session[:user_id] %>
+<%= f.hidden_field :updated_by, :value => session[:user_id] %>
+
+<p>
+
+	<%= f.label :name, t('name') ,:class=>"mg-label"%><span class="required-field"> *</span><br>
+
+	<% if @action=='new'%>
+		<%= f.text_field :name  ,:class => 'mg-text-field'%><br>
+	<% else %>
+		<%= f.text_field :name  ,:class => 'mg-text-field', :value=>@checkup_type_data.name%><br>
+	<%end%>
+</p>
+
+<p>
+	<%= f.label :description, t("description") ,:class=>"mg-label"%><br>
+
+	<% if @action=='new'%>
+		<%= f.text_area :description, :class=> 'mg-text-field' %>
+	<% else %>
+		<%= f.text_area :description, :class=> 'mg-text-field', :value=> @checkup_type_data.description%><br>
+	<%end%>
+</p>
+ 
+<p>
+	<div id="finalcheckupId1" >
+  	<div class="checkup-particular-div1">
+			<% if @action=='edit'%>
+				<div >
+					<table class="batch-tbl">
+						<tr class="check-type-edit-hadder-cls">
+							<td class="mg-align-center" valign="top"><label class="mg-label" for="particulars"><%= t('particulars') %><span class="required-field"> *</span></label></td>
+              <td class="mg-align-center"><label class="mg-label" for="normal"><%= t('normal') %><span class="required-field"> </span></label></td>
+							<td class="mg-align-center"><label class="mg-label" for="particulars"><%= t('applicable') %><span class="required-field"> *</span></label></td>
+							<td class="mg-align-center"><label class="mg-label" for="particulars"><%= t('show_in_healthcard') %></label></td>
+							<td class="mg-align-center"><label class="mg-label" for="action"><%= t('action') %></label></td>
+						</tr>
+						<%count_tr=0%>
+						<%for i in 0...@particularTypeData.size%>
+							<tr class="check-type-edit-data-cls">
+								<td style="width:166px" valign="top"><%= text_field_tag "particulars[#{@particularTypeData[i].id}]",@particularTypeData[i].particulars,:class=>"mg-text-field required-field particulars_edit_txt_cls"%></td>
+
+                <td valign="top"><%= text_field_tag "normal[#{@particularTypeData[i].id}]",@particularTypeData[i].try(:normal),:class=>"mg-text-field required-field particulars_edit_normal_txt_cls"%></td>
+								
+                <td valign="top"><%= select_tag 'applicable[]',options_for_select(['Both','Employee','Student'],:selected=>@particularTypeData[i].applicable),
+			               							:class=>"applicable-particular-edit-cls mg-text-field required-field"%></td>
+								<td class="mg-align-center" valign="top"><%= check_box_tag "show_in_healthcard[#{count_tr}]",1, @particularTypeData[i].show_in_healthcard,:class=>"show-in-healthcard-particular-edit-cls  required-field"%></td>
+								<td valign="top"><a title="Remove" class="remove-particular-edit-cls mg-icon-btn"> <i class="fa fa-trash"></i></a></td>
+							</tr>
+							<%count_tr+=1%>
+            <% end %>
+					</table>
+  		    <a id="addParticularEditAID" class="mg-label-inner-form mg-custom-form-btn" style="color: #297ACC; font-size:0.8em; position: relative; top: 3px;" >Add Particular</a> <br/>
+    		</div>
+      <% else %>
+      	<table class="finalcheckupId batch-tbl">
+  			 	<tr > 
+  					<td class="mg-align-center">
+              <%= f.label :particulars, t('particulars') ,:class=>"mg-label mg-align-center"%><span class="required-field"> *</span>
+            </td>
+
+            <td class="mg-align-center">
+              <%= f.label :normal, t('normal') ,:class=>"mg-label"%><span class="required-field"> </span>
+            </td>
+
+  					<td class="mg-align-center">
+  						<%= f.label :applicable, t('applicable') ,:class=>"mg-label"%><span class="required-field"> *</span>
+  					</td>
+  					<td class="mg-align-center"> 
+               <label class="mg-label" for="particulars"><%= t('show_in_healthcard') %>   
+               </label>
+            </td>
+  					<td class="mg-align-center">
+              <label class="mg-label" for="particulars"><%= t('action') %>   
+               </label>
+  					</td>
+  				</tr>	
+  				<tr class="checkup-particular-div"> 
+  					<td style="width:166px" valign="top">
+              <%= text_field_tag "particulars[0]", nil,class: 'mg-text-field particulars_new_txt_cls'%><br>
+            </td> 
+            <td valign="top">
+              <%= text_field_tag "normal[0]", nil,class: 'mg-text-field particulars_normal_txt_cls'%><br>
+            </td> 
+  					<td valign="top">
+  						<%= select_tag "applicable[]",options_for_select(['Both','Employee','Student'])%>
+  					</td>
+  					<td class="mg-align-center" valign="top">	
+  						<%= check_box_tag 'show_in_healthcard[0]', 1 ,false,{:class=>"check-box-array show-in-healthcard-cls"} %>
+  					</td>
+  					<td valign="top">
+  						<a  title="Remove" class="remove-particular-cls mg-icon-btn" > <i class="fa fa-trash"></i></a>
+  					</td>
+  				</tr>	 
+  			</table>
+	    <% end %>
+    </div>
+	  <% if @action=='new'%>
+      <a id="addParticular" class="mg-label-inner-form mg-custom-form-btn" style="color: #297ACC; font-size:0.8em; position: relative; top: 3px;" >Add Particular</a> <br/>
+    <% end %> 
+  </div>     
+</p>
+   
+
+ <p class="mg-p-mgtop">
+    <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn save-btn-checkup" style="display:none"><%=t("save")%></a>
+
+    <a onclick="submission_criteria(); " class="input_field mg-small-form-btn "><%=t("save")%></a>
+
+    <%= link_to t('cancel'), {:action=>"index"}, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+</p> 
+
+<%end%>
+<%= render  partial: 'application/common_left_close' %>
+
+<script>
+  $( document ).ready(function() {
+
+    $('.check-box-array').prop('checked',false);
+
+    focusCurrentTab("checkupAID","checkupliId");
+
+    $("#checkup_id").validate({
+
+		rules: {
+			"checkup_type[name]": {required: true},
+			"particulars[]":{required: true},
+			}
+	});
+
+	$.validator.addClassRules("particulars_edit_txt_cls", {required: true});
+	$.validator.addClassRules("particulars_new_txt_cls", {required: true});
+
+	
+	      
+  });
+
+  function submission_criteria(){
+  	if ($("#checkup_id").valid())
+	  	{
+	  // 		$('.check-box-array').each(function(index, obj)
+	  // 		{
+	  //   		$( this).prop('checked',true);
+			// })
+	 		$(".save-btn-checkup").click();
+  		}	
+  	}
+
+  $(document).on("click", ".check-box-array", function(e){
+
+  	if ($(this).is(":checked"))
+  	{
+  		$(this).val("1");
+  	}
+  	else
+  	{
+  		$(this).val("0");
+  	}
+  	
+  });
+
+  $(document).on("click", "#addParticular", function(e){
+    var lastRepeatingGroup = $('.checkup-particular-div').last();
+    
+    var cloned = lastRepeatingGroup.clone();
+    cloned.find('input').val('');
+    // cloned.find('label').html('');
+    cloned.find('label').remove();
+
+
+    cloned.find('.check-box-array').val('0');
+    cloned.find('.show-in-healthcard-cls').prop('checked',false);
+    var str="show_in_healthcard_"+($('.checkup-particular-div').length+1);
+    var str1="show_in_healthcard["+($('.checkup-particular-div').length+1)+"]"
+    cloned.find(".show-in-healthcard-cls").prop('id',str );
+    cloned.find(".show-in-healthcard-cls").prop('name',str1 );
+    // 
+    cloned.find('.particulars_new_txt_cls').prop('id',"particulars_"+($('.checkup-particular-div').length).toString());
+    cloned.find('.particulars_new_txt_cls').prop('name',"particulars["+($('.checkup-particular-div').length).toString()+"]");
+
+    cloned.find('.particulars_normal_txt_cls').prop('id',"normal_"+($('.checkup-particular-div').length).toString());
+    cloned.find('.particulars_normal_txt_cls').prop('name',"normal["+($('.checkup-particular-div').length).toString()+"]");
+
+
+    cloned.insertAfter( lastRepeatingGroup );
+    reset_fun();
+    return false;
+  }); 
+
+  $(document).on("click", ".remove-particular-cls", function(e){
+   var total = $('.remove-particular-cls').length;
+   if(total!=1)
+   {
+        $(this).parent().parent().remove();
+    }
+    reset_fun();
+   });
+
+
+function reset_fun(){
+	var count=0;
+    $('.show-in-healthcard-cls').each(function(){
+    	$(this).attr('id',"show_in_healthcard_" + count.toString() );
+    	 $(this).attr('name','show_in_healthcard[' + count.toString() + ']' );
+    	count++;
+    });
+	var count1=0;
+
+    $('.particulars_new_txt_cls').each(function(){
+    	$(this).attr('id',"particulars_" + count1.toString() );
+    	 $(this).attr('name','particulars[' + count1.toString() + ']' );
+    	count1++;
+    });
+
+    
+}
+
+function edit_reset_fun(){
+	var count=0;
+    $('.show-in-healthcard-particular-edit-cls').each(function(){
+    	$(this).attr('id',"show_in_healthcard_" + count.toString() );
+    	 $(this).attr('name','show_in_healthcard[' + count.toString() + ']' );
+    	count++;
+    });
+}
+
+
+  
+$(document).on("click", "#addParticularEditAID", function(e){
+    var lastRepeatingGroup = $('.check-type-edit-data-cls').last();
+    
+    var cloned = lastRepeatingGroup.clone();
+    cloned.find('input').val('');
+    cloned.find('label').remove();
+    
+    
+    cloned.find('.show-in-healthcard-particular-edit-cls').prop('checked',false);
+    cloned.find('.show-in-healthcard-particular-edit-cls').val(1);
+    cloned.find('.applicable-particular-edit-cls').val("Both");
+
+    var str="show_in_healthcard_"+($('.check-type-edit-data-cls').length);
+    var str1="show_in_healthcard["+($('.check-type-edit-data-cls').length)+"]";
+
+    cloned.find(".show-in-healthcard-particular-edit-cls").prop('id',str );
+    cloned.find(".show-in-healthcard-particular-edit-cls").prop('name',str1 );
+
+    var obj=cloned.find('.particulars_edit_txt_cls').prop('id').split('_')[1];
+    cloned.find('.particulars_edit_txt_cls').prop('id', "particulars_"+(parseInt(obj)+1).toString());
+    cloned.find('.particulars_edit_txt_cls').prop('name', "particulars["+(parseInt(obj)+1).toString()+"]");
+
+    cloned.find('.particulars_edit_normal_txt_cls').prop('id', "normal_"+(parseInt(obj)+1).toString());
+    cloned.find('.particulars_edit_normal_txt_cls').prop('name', "normal["+(parseInt(obj)+1).toString()+"]");
+
+    console.log(cloned.find('.particulars_edit_txt_cls').val(''));
+    console.log(cloned.find('.particulars_edit_normal_txt_cls').val(''));
+    cloned.insertAfter( lastRepeatingGroup );
+    edit_reset_fun();
+    return false;
+  }); 
+
+$(document).on("click", ".remove-particular-edit-cls", function(e){
+   var total = $('.show-in-healthcard-particular-edit-cls').length;
+   if(total!=1){
+        $(this).parent().parent().remove();
+    }
+    edit_reset_fun();
+   });
+
+</script>

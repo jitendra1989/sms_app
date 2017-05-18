@@ -1,0 +1,187 @@
+<!-- Sec --> 
+<%=render partial: 'alumni_left' #has_attached_file :file
+%>
+<% navigation_add t('alumni_list'), alumni_alumni_registration_form_path %>
+<% navigation_add t('show_alumni_details'), :controller=>'alumni', :action=>'alumni_registration_form_show',:id=>params[:id] %>
+
+
+<h4 class="mg-detail-heading"><%= t("alumni_profile") %></h4>
+<section id="viewStudentID" style="margin: 0 auto;">
+<div>
+
+           
+            <div class="mg-back-btn-align">
+             <%= link_to t('back'), {:controller=>"alumni",:action=>"alumni_registration_form"}, {:class=>"mg-custom-form-btn cancel-form-dialog"} %>
+             </div>
+         
+
+                    <h4 class="mg-h4"><%= t('personaldetails') %></h4>
+                    <table class="mg-tbl-size-width">
+                    <tr>
+                        <td class="mg-td-width-half">
+                            <label class="mg-label mg-std-form-width"><%= t('firstname') %></label>
+                            <label><%= @alumni_data.first_name %></label>
+                        </td>
+
+
+
+                        <td class="mg-td-width-half">
+
+                            <label class="mg-label mg-std-form-width"><%= t('middlename') %></label>
+                            <%if @alumni_data.middle_name.nil? %>
+                            <label>--</label>
+                            <%else%>
+                            <label><%= @alumni_data.try(:middle_name) %></label>
+                            <%end%>
+                        </td>
+                        
+                    </tr>
+                    <tr>
+
+
+                        <td class="mg-td-width-half">
+                            <label class="mg-label mg-std-form-width"><%= t('lastname') %></label>
+                            <label><%= @alumni_data.last_name %></label>
+                        </td>
+
+                         <td class="mg-td-width-half">
+                            <label class="mg-label mg-std-form-width mg-rm-text-trans"><%= t('dateofbirth') %></label>
+                            
+                            <% @id=@alumni_data.mg_school_id %>
+                            <%if @alumni_data.date_of_birth.nil? %>
+                                <label>--</label>
+                            <%else%>
+                                 <label> <%= @alumni_data.date_of_birth.strftime(MgSchool.find_by_id(session[:current_user_school_id]).date_format) %></label>
+                            <%end%>
+                        </td>
+
+                        
+                    </tr>
+                    <tr>
+
+                        
+
+                        <td class="mg-td-width-half">
+                            <label class="mg-label mg-std-form-width"><%= t('gender') %></label>
+                            <label class="mg-capitalize-text"><%= @alumni_data.gender %></label>
+                        </td>
+                         <td class="mg-td-width-half">
+                            <label class="mg-label mg-std-form-width"><%= t('phone_no') %></label>
+                            <label><%= @alumni_data.try(:phone_number) %></label>
+                        </td>
+                    </tr>
+                    <tr>
+
+                      <td class="mg-td-width-half">
+                            <label class="mg-label mg-std-form-width" ><%= t('mobile_no') %></label>
+                            <label><%= @alumni_data.mobile_number %></label>
+                        </td>
+
+
+                      <td class="mg-td-width-half">
+                            <label class="mg-label mg-std-form-width"><%= t('email_id') %></label>
+                            <label><%= @alumni_data.email_id %></label>
+                        </td>
+                        
+                    </tr>
+                    <tr>
+
+                        <td class="mg-td-width-half">
+                            <label class="mg-label mg-std-form-width" ><%= t('current_location') %></label>
+                            <label><%= @alumni_data.current_location %></label>
+                        </td>
+
+                        <td class="mg-td-width-half">
+                            <label class="mg-label mg-std-form-width"><%= t('current_address') %></label>
+                            <label><%= @alumni_data.try(:current_address) %></label>
+                        </td>
+                        
+                    </tr>
+                    <tr>
+
+                        <td class="mg-td-width-half">
+                            <label class="mg-label mg-std-form-width" ><%= t('current_profession') %></label>
+                            <label><%= @alumni_data.current_profession %></label>
+                        </td>
+                          <td class="mg-td-width-half">
+                            <label class="mg-label mg-std-form-width" ><%= t('designation') %></label>
+                            <label><%= @alumni_data.try(:designation) %></label>
+                        </td>
+                    </tr>
+                    <tr>
+                         <td class="mg-td-width-half">
+                            <label class="mg-label mg-std-form-width" ><%= t('current_organization') %></label>
+                            <label><%= @alumni_data.try(:current_organization) %></label>
+                        </td>
+                        <td class="mg-td-width-half">
+                            <label class="mg-label mg-std-form-width" ><%= t('hobbies') %></label>
+                            <label><%= @alumni_data.try(:hobbies) %></label>
+                        </td>
+                         
+                    </tr>
+                     <tr>
+
+                        <td class="mg-td-width-half">
+                            <label class="mg-label mg-std-form-width" ><%= t('user_name') %></label>
+                            <label><%= @alumni_data.user_name %></label>
+                        </td>
+                        
+                    </tr>
+                    </table>
+
+<h4 class="mg-h4"><%= t('previous_programme_details') %></h4>
+                   <div class="mg-scroll-employee-bar mg-tbl-margin">   
+
+<table class="mg-show-tbl-width mg-table-nowrap batch-tbl mg-adjust-padding">  
+  <tr>
+  <th><%=t("programme")%></th>
+  <th><%=t("attended_year")%></th>
+  <!-- <th><%#=t("specialization")%></th> -->
+  <th><%=t("certificate")%></th>
+  </tr>
+<%alumni_data=MgAlumniProgrammeAttended.where(:mg_alumni_id=>@alumni_data.id)%>
+<%alumni_data.each do |data|%>
+<%wing_data=MgWing.find_by(:id=>data.mg_wing_id)%>
+<%#employee_data=MgEmployeeSpecialization.find_by(:id=>data.mg_employee_specialization_id)%>
+<tr>
+
+<td><%=wing_data.try(:wing_name)%></td>
+<td><%=data.try(:time_table_year)%></td>
+<!-- <td><%#=employee_data.try(:name)%></td> -->
+<td><%@document=MgDocumentManagement.find_by(:mg_alumni_programme_attended_id=>data.id)%>
+<%if @document.present? %>
+    <label class="mg-file-clr"><%= @document.file_file_name %></label>
+   <%= link_to_if @document.file.url, '<i class="fa fa-download"></i>'.html_safe, @document.file.url,:target=>"_blank" ,:class=>"mg-icon-btn mg-download-icon-font" ,:title=>"Download"%>
+   <%end%>
+</td>
+</tr>
+<%end%>
+</table>
+</div>
+</section>
+
+
+
+
+<%= render  partial: 'application/common_left_close' %>
+
+     
+<script>
+
+      $(document).ready(function () {
+          focusCurrentTab("alumni_registration_formIndexAID","alumni_registration_formIndexId");
+          focusStudentHeaderBox();
+
+      });
+
+
+</script>  
+                
+             
+
+ <!-- ==============================Employee Child================================ -->
+
+       
+
+
+

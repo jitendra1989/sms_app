@@ -1,0 +1,176 @@
+
+
+<%# navigation_add t('meeting_planner'), "/front_office_management/meeting_planner" %>
+<%# navigation_add t('new_meeting'), "/front_office_management/meeting_planner_new" %>
+
+
+<%#=render partial: 'front_office_management_left'%>
+
+<!-- <h4 class="mg-h4"><%#= t('new_meeting')%></h4> -->
+
+ <%= form_for :meeting_planner, :url=>{:action=>"meeting_planner_create"},:html => {
+                            :id => 'meeting_planner_new_id' } do |f| %>
+
+  <%= f.hidden_field :mg_school_id ,:value=>session[:current_user_school_id]%>
+  <%= f.hidden_field :created_by, :value => session[:user_id]%> 
+  <%= f.hidden_field :updated_by, :value => session[:user_id]%>
+  <%= f.hidden_field :is_deleted, :value => 0%> 
+
+  <p>
+    <%= f.label :meeting_with, t('meeting_with') ,:class=>"mg-label"%><span class="required-field"> *</span><br/>
+    <%= f.text_field :meeting_with,:class=>"mg-text-field" %>
+  </p>
+  <p>
+    <%= f.label :purpose, t('purpose') ,:class=>"mg-label"%><span class="required-field"> *</span><br/>
+    <%= f.text_area :purpose,:class=>"mg-text-field"   %>
+  </p>
+  <p>
+    <%= f.label :description, t('description') ,:class=>"mg-label"%><span class="required-field"> *</span><br/>
+    <%= f.text_area :description,:class=>"mg-text-field"   %>
+  </p>
+  
+  <p>
+    <%= f.label :date, t('date') ,:class=>"mg-label mg-label-text-transform-none"%><span class="required-field"> *</span><br/>
+    <%= f.text_field :date_of_meeting %>
+    <%#= f.text_field :date_of_meeting, :value=>@date, :readonly=>true %>
+  </p>
+  <p>
+    <%= f.label :start_time, t('start_time') ,:class=>"mg-label"%><span class="required-field"> *</span><br/>
+    
+    <%=time_select 'start_time','game_time',{ampm: true},:class=>"mg-select-time-width"%><br>
+  </p>
+  <p>
+    <%= f.label :end_time, t('end_time') ,:class=>"mg-label"%><span class="required-field"> *</span><br/>
+    <%=time_select 'end_time','game_time',{ampm: true},:class=>"mg-select-time-width"%><br>
+  </p>
+
+  <!-- Added by Bindhu Starts -->
+<!--      <p>
+      <%#= f.label :date, t('start_date') ,:class=>"mg-label mg-label-text-transform-none"%><span class="required-field"> *</span><br/>
+      <%#= f.text_field :start_date_of_meeting,:class=>"start-date mg-text-field"   %>
+    </p>
+
+     <p>
+      <%#= f.label :date, t('end_date') ,:class=>"mg-label mg-label-text-transform-none"%><span class="required-field"> *</span><br/>
+      <%#= f.text_field :end_date_of_meeting,:class=>"end-date mg-text-field "   %>
+    </p> -->
+  <!-- Added by Bindhu Ends -->
+
+   <p>
+    <%= f.label :status, t('status') ,:class=>"mg-label"%><span class="required-field"> *</span><br/>
+    <%if session[:user_type]=="princial"%>
+    <%= f.select :status,[["Pending","Pending"],["Accepted","Accepted"],["Rejected","Rejected"]],{},{:disabled=>"true"}%>
+    <%else%>
+    <%= f.select :status,[["Pending","Pending"],["Accepted","Accepted"],["Rejected","Rejected"]],{},{:disabled=>"true"}%>
+    <%end%>
+    
+  </p>
+   <p>
+    <%= f.label :remark, t('remark') ,:class=>"mg-label"%><span class="required-field"> *</span><br/>
+    <%= f.text_area :remark ,:class=>"mg-text-field"  %>
+  </p>
+   <p>
+    <%= f.label :principal_remark, t('principal_remark') ,:class=>"mg-label"%><span class="required-field"> *</span><br/>
+    <%= f.text_area :principal_remark ,:disabled=> "disabled" ,:class=>"mg-text-field"  %>
+  </p>
+  
+
+  <p class="mg-p-mgtop">
+    <!-- <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%#=t("save")%></a> -->
+   <!--  <a class="mg-small-form-btn cancel-form-dialog"><%#=t('cancel')%></a> -->
+
+  <%= submit_tag t("save"),:class=>"meeting-class mg-small-form-btn",:style=>"display:none"%>
+
+  <input type="button" value="Submit" id="submittransporteFormBtnId" class="add-meeting-submit-btn mg-small-form-btn">
+  
+  <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+
+  </p>
+<% end %>
+<%#= render  partial: 'application/common_left_close' %>
+
+<script>
+$(document).ready(function () {
+  //focusCurrentTab("meeting_plannerAID","meeting_plannerLiID");
+  // $('#meeting_planner_date_of_meeting').val("");
+  dateFormatStr =  getJsDateFormat();
+
+  $('#meeting_planner_date_of_meeting').datepicker({ changeMonth: true,
+                changeYear: true,yearRange: "-50:+50",dateFormat: dateFormatStr});
+
+  // var dateMeeting =  $.datepicker.formatDate(dateFormatStr,new Date($('#meeting_planner_date_of_meeting').val()));
+  // $('#meeting_planner_date_of_meeting').val(dateMeeting);
+   
+  $("#meeting_planner_new_id").validate({
+    rules: {
+    "meeting_planner[meeting_with]": {required: true},
+    "meeting_planner[purpose]":{required: true}, 
+    "meeting_planner[description]": {required: true},
+    // "meeting_planner[start_date_of_meeting]": {required: true},
+    // "meeting_planner[start_date_of_meeting]": {required: true},
+    "meeting_planner[date_of_meeting]": {required: true},
+    "meeting_planner[remark]": {required: true},
+    "meeting_planner[principal_remark]": {required: true},
+    "meeting_planner[status]": {required: true}
+    }
+  });
+});
+
+
+// function compare_date_time(){
+//   dateFormatStr =  getJsDateFormat();
+//   var start_date=$("#meeting_planner_start_date_of_meeting").val();
+//   var end_date=$("#meeting_planner_end_date_of_meeting").val();
+
+
+//   if(start_date!="" && end_date!=""){
+  
+//     var date_split=start_date.split('/');
+//     var start_d=date_split[0];
+//     var start_month=date_split[1];
+//     var start_year=date_split[2].split(' ')[0];
+//     var start_h=start_date.split(' ')[1].split(':')[0];
+//     var start_m=start_date.split(' ')[1].split(':')[1];
+//     var date_start=new Date(start_month +"/"+ start_d + "/" + start_year+ " " +start_h+ ":" +start_m);
+
+//     var end_date_split=end_date.split('/');
+//     var end_d=end_date_split[0];
+//     var end_month=end_date_split[1];
+//     var end_year=end_date_split[2].split(' ')[0];
+//     var end_h=end_date.split(' ')[1].split(':')[0];
+//     var end_m=end_date.split(' ')[1].split(':')[1];
+//     var date_end=new Date(end_month +"/"+ end_d + "/" + end_year+ " " +end_h+ ":" +end_m);
+
+//     if (Date.parse(date_end) <= Date.parse(date_start)) {
+//       alert("End Date should be greater than Start Date");
+//       $("#meeting_planner_end_date_of_meeting").val("");
+//     }
+//   }
+// }
+
+$(document).on("blur","#meeting_planner_end_date_of_meeting",function(){
+  compare_date_time();
+});
+
+$(document).on("blur","#meeting_planner_start_date_of_meeting",function(){
+  compare_date_time();
+});
+
+$(document).on("click",".add-meeting-submit-btn",function(){   
+    var start_time_hour=$("#start_time_game_time_4i").val();
+    var start_time_min=$("#start_time_game_time_5i").val();
+    var start_time=start_time_hour+":"+start_time_min+":00";
+    var end_time_hour=$("#end_time_game_time_4i").val();
+    var end_time_min=$("#end_time_game_time_5i").val();
+    var end_time=end_time_hour+":"+end_time_min+":00";
+    var school_id=$("#mg_school_id").val();
+    if(end_time < start_time){
+      alert("End Time should be greater than Start Time");
+    }
+    else{
+        $(".meeting-class").click(); 
+
+    }
+   
+  });
+</script>

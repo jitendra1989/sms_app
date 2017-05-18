@@ -1,0 +1,3 @@
+<%= fields_for :sibling do |f| %>
+<%=f.select :mg_batch_id,options_for_select(@batches),{:include_blank => t("select")},:class => "myclass"%>
+<%end%>

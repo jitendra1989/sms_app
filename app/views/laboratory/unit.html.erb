@@ -1,0 +1,176 @@
+<%= render  partial: 'laboratory/laboratry_left' %>
+<% navigation_add t('item_unit'), "/laboratory/unit/" %>
+
+<h4 class="mg-h4"><%= t('item_unit_list') %></h4>
+
+<button class="new-add-unit mg-btn-bottom-margin mg-custom-form-btn"><%= t('add_unit')%></button>
+<!-- <%#= button_to 'Add Lab Inventory', {:controller => "laboratory", :action => "unit_new" } ,:class=>"mg-custom-form-btn"%> -->
+<div class="mg_pagination">
+<%if @lab_unit.length>0%>
+<table  class="batch-tbl mg-tbl-margin">   <!-- border="2" --> 
+  <tr class="subject-table-header">
+    <!-- <th>Subject Id</th> -->
+    <th><%= t('unit_name') %></th>
+    <th style="width: 69px;"><%= t('actions') %></th>
+  </tr>
+ 
+  <% @lab_unit.each do |lab| %>
+    <tr>
+      <td><%= lab.unit_name %></td>
+      <td>
+     <!--  	<button title="Show" id="<%#=raw lab.id %>-showlabunitBTNID" class="show-lab-unit-btn mg-icon-btn"><i class="fa fa-eye"></i></button> -->
+
+        <button title="Edit" id="<%=raw lab.id %>-editlabunitBTNID" class="edit-lab-unit-btn mg-icon-btn"><i class="fa fa-pencil-square-o"></i></button>
+
+      <!-- <%#= link_to "<i class=\"fa fa-pencil-square-o\"></i>".html_safe, {:controller => "laboratory", :action => "unit_edit",:id =>lab.id} , :method=>'post' ,:title=>"Edit" ,:class=>"mg-icon-btn"%> -->
+        <button title="Delete" id="<%=raw lab.id %>-editlabinventoryBTNID" class="delete-lab-unit-btn mg-icon-btn"><i class="fa fa-trash"></i></button>
+
+      <!-- <%#= link_to "<i class=\"fa fa-trash\"></i>".html_safe, {:controller => "laboratory", :action => "unit_delete",:id =>lab.id }, :method=>'post' ,:title=>"Delete" ,:class=>"mg-icon-btn",data: { confirm: 'Are you sure to delete?' } %> -->
+
+      </td>
+
+    </tr>
+  <% end %>
+</table>
+<br/>
+ <div class="pagination-align" style="position: relative; bottom: 10px;">
+              <%= will_paginate @lab_unit, :container => false %>
+           </div>
+<%else%>
+<h5>No Unit is created </h5>
+<%end%>
+</div>
+<div id="showLabUnitDIVID"></div>
+<div id="addLabUnitDIVID"></div>
+<div id="editLabUnitDIVID"></div>
+
+
+
+<%= render  partial: 'application/common_left_close' %>
+
+<script>
+$( document ).ready(function() {
+            focusCurrentTab("viewLabItemUnitIndex","viewLabItemUnitLiID");
+          //focusStudentHeaderBox();
+});
+
+// $(document).on("click", ".delete-lab-unit-btn", function(e){
+//      e.preventDefault();
+     
+//                 var myID =$(this).attr('id');
+//             var Id=myID.split("-");
+
+
+                
+//                 var retVal = confirm("Are you sure to delete?");
+//                 if(retVal){
+//                   //  alert(retVal);
+//                      var urlLink = "/laboratory/unit_delete/"+Id[0];
+
+//                       $.ajax({
+//                         url: urlLink ,
+//                         cache: false,
+//                         success: function(html){
+//                             window.location.reload();
+                                       
+//                         }
+//                     });
+
+//                 }else{
+//                    // alert(retVal);     
+//                    return false;
+//                 }
+
+//         }); 
+
+
+
+
+$(document).on("click", ".edit-lab-unit-btn", function(e){
+        var myID =$(this).attr('id');
+        var Id=myID.split("-");
+        var urlLink = "/laboratory/unit_edit/"+Id[0];
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(html){
+                  $('#editLabUnitDIVID').dialog({
+                    modal: true,
+                    minHeight: '200px',
+                    width: '282px',
+                    title: "Edit Unit",
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+});
+
+$(document).on("click", ".show-lab-unit-btn", function(e){
+        var myID =$(this).attr('id');
+        var Id=myID.split("-");
+        var urlLink = "/laboratory/unit_show/"+Id[0];
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(html){
+                  $('#showLabUnitDIVID').dialog({
+                    modal: true,
+                    minHeight: 'auto',
+                    width: 'auto',
+                    title: "Show Unit",
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+});
+$(document).on("click", ".new-add-unit", function(e){
+        var urlLink = "/laboratory/unit_new";
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(html){
+                  $('#addLabUnitDIVID').dialog({
+                    modal: true,
+                    minHeight: '200px',
+                    width: '282px',
+                    title: "Add Unit",
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                });                
+            }
+        });
+});
+</script>
+<style>
+.table-max-width{
+  border-color: #363131;
+  border-style: solid;
+  border-width: 1px;
+  padding: 12px !important;
+  text-align: center;
+}
+
+.table-batch-tbl {
+   /* font-family: verdana,arial,sans-serif;*/
+    font-size:13px;
+    color:#363131;
+    border-width: 1px;
+    border-color:  #363131;
+    border-collapse: collapse;
+    padding: 12px ;
+    font-size: 0.8em;
+    width: 303px !important;
+    /* margin-left: 2px; */
+}
+</style>
+

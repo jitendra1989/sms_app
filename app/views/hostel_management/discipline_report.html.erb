@@ -1,0 +1,117 @@
+<% navigation_add t('discipline_report'), :controller=>'hostel_management', :action=>'discipline_report' %>
+
+
+<%= render  partial: 'hostel_management_left' %>
+
+<%= button_to 'Discipline Report', {:controller=>'hostel_management',:action=>'discipline_report_new'}, :class=> 'mg-custom-form-btn  mg-tbl-margin' %>
+<h4 class="mg-h4"><%= t('discipline_report')%></h4>
+
+<%if @discipline_report.present?%>
+<table class="batch-tbl mg-tbl-margin">   <!-- border="2" --> 
+<tr>
+	<th><%=t('hostel_name')%></th>
+	<th class="mg-label-text-transform-none"><%=t('date_of_report')%></th>
+	<th><%=t('reason')%></th>
+	<th><%=t('status')%></th>
+
+    <th><%=t('actions')%></th>
+
+</tr>
+  <% @discipline_report.each do |e| %>
+
+<tr>
+<%hostel_details=MgHostelDetails.find_by(:id=>e.mg_hostel_details_id)
+@date_format=MgSchool.find_by(:id=>session[:current_user_school_id]).date_format
+%>
+<td><%=hostel_details.name%></td>
+<td><%=e.date_of_report.strftime(@date_format)%></td>
+
+      <td><%=truncate(e.reason.to_s, :length => 25, :separator => ' ')  %></td>
+      <td><%=e.status%></td>
+
+<td>
+	    <button title="Show" id="<%=raw e.id %>-showjobUploadBTNID" class="showDisciplanaryReportBTNID mg-icon-btn" onclick="window.location='/hostel_management/disciplanary_report_show/<%=e.id%>'"><i class="fa fa-eye"></i></button>
+         <button title="Edit" id="<%=raw e.id %>-editjobUploadBTNID" class="edit-job-upload-fom-btn mg-icon-btn" onclick="window.location='/hostel_management/disciplanary_report_edit/<%=e.id%>'"><i class="fa fa-pencil-square-o"></i></button>
+
+  		  <button title="Delete" onclick="confirm('Are you sure to delete?') ? window.location='/hostel_management/discipline_report_destroy/<%=e.id%>' : ''" class="mg-icon-btn"><i class="fa fa-trash"></i></button>    
+
+</td>
+
+</tr>
+<%end%>
+
+
+</table>
+
+
+
+
+
+
+<%else%>
+  	<p>Please create some Records</p>
+
+
+<%end%>
+<div id="hostelDisciplanaryReport"></div>
+
+<%= render  partial: 'application/common_left_close' %>
+
+
+
+
+
+
+
+<script>
+$(document).ready(function () {
+
+        focusCurrentTab("disciplane_listAID","disciplane_listLiID");
+        
+    });
+// $(document).on("click", ".edit-room-type-btn", function(e){
+// 		$("#hostelFloorDIVID").html("");
+// 		var id=$(this).attr("id").split("-")[0];
+// 	        var urlLink = "/hostel_management/"+id+"/hostel_floor_edit";
+// 	        $.ajax({
+// 	            url: urlLink ,
+// 	            cache: false,
+// 	            success: function(html){
+// 	                  $('#hostelFloorDIVID').dialog({
+// 	                    modal: true,
+// 	                    minHeight: 'auto',
+//               			width: 'auto',
+// 	                    title: "Edit Floor",
+// 	                    open: function () {
+	                        
+// 	                        $(this).html(html);
+// 	                    }
+// 	                }); 
+	               
+// 	            }
+// 	        });
+// 	});
+
+	// $(document).on("click", ".showDisciplanaryReportBTNID", function(e){
+	// 	var id=$(this).attr("id").split("-")[0];
+	//         var urlLink = "/hostel_management/disciplanary_report_show";
+	//         $.ajax({
+	//             url: urlLink ,
+	//             cache: false,
+	//             data:{id:id},
+	//             success: function(html){
+	//                   $('#hostelDisciplanaryReport').dialog({
+	//                     modal: true,
+	//                     minHeight: 'auto',
+ //              			width: 'auto',
+	//                     title: "Disciplane Report",
+	//                     open: function () {
+	                        
+	//                         $(this).html(html);
+	//                     }
+	//                 }); 
+	               
+	//             }
+	//         });
+	// });
+</script>

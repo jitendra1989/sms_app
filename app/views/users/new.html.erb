@@ -1,0 +1,54 @@
+<!-- Sec --> 
+<h1>Create New User</h1>
+
+<div id="page-yield">
+
+  <div class="box">
+    
+    <%= form_for :user, url: users_path do |f| %>
+
+          <%= f.hidden_field :is_deleted, :value => 0 %>
+          <%= f.hidden_field :user_type, :value => 'admin' %>
+          <%= f.hidden_field :mg_school_id, :value => '5' %>
+
+        <label for="user_name"><%= t('user_name') %></label>
+          <div class="input-container">
+              <%= f.text_field :user_name %>
+            </div>
+
+          <label for="first_name"><%= t('first_name') %></label>
+            <div class="input-container">
+              <%= f.text_field :first_name %>
+          </div>
+
+          <label for="middle_name"><%= t('middle_name') %></label>
+            <div class="input-container">
+              <%= f.text_field :middle_name %>
+          </div>
+
+          <label for="last_name"><%= t('last_name') %></label>
+            <div class="input-container">
+              <%= f.text_field :last_name %>
+          </div>
+
+          <label for="email"><%= t('email') %></label>
+                      <div class="input-container">
+                        <%= f.email_field :email %>
+                    </div>
+      
+
+          <div class="label-field-pair">
+            <label for="password"><%= t('password') %> <span class="necessary-field">*</span></label>
+            <div class="text-input-bg"><%= f.password_field :password %></div>
+          </div>
+
+    
+    
+      <%= submit_tag t('save'), class: "submit" %>
+
+    <% end %>
+
+    
+
+  </div>
+</div>

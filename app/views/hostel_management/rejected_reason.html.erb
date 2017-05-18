@@ -1,0 +1,32 @@
+
+ <table border="1" class="mg-showdata-bg mg-tbl-layout" cellspacing="1" cellpadding="1">
+   <tr>
+     <td class="mg-td-width-half" valign="top">
+   		<label class="mg-label"> <%= t('rejected_by')%></label>
+   	 </td>
+   	 <td class="mg-td-width-half" valign="top">
+  		<%if @data.rejected_by.present?%>
+         <%=@data.try(:rejected_by)%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+  	 </td>
+ </tr>
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('reason')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+      <%if @data.reason.present?%>
+         <%=@data.try(:reason)%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+     </td>
+ </tr>
+</table>
+<br/>
+<a class="mg-small-form-btn cancel-form-dialog"><%=t("cancel")%></a>
+<%#= link_to 'Cancel', :back ,:style=>"font-size: 0.8em; color: #297ACC; text-decoration: none;" ,:class=>"mg-custom-form-btn"%>
+
+ 

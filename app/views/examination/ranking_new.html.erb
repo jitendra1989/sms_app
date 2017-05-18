@@ -1,0 +1,57 @@
+<!-- breadcrumbs Work -->
+<% navigation_add 'Examinations', examinations_path %>
+<% navigation_add 'Ranking', examination_ranking_new_path %>
+
+<!-- breadcrumbs Work -->
+
+
+
+<%= render  partial: 'examination_table_left' %>
+<h4 class="mg-h4">Manage Ranking Level</h4>
+<div class="mg-custom-labels">
+
+
+<%=hidden_field_tag :mg_course_id, @Id, :id=>"defaultCourseId"%>
+	<table>
+		<tr>
+			<td>
+				<%=select_tag :mg_course_id, options_for_select(@course,:selected=>@Id),:prompt=>"Select A Course",:onchange=>"myRankingFunction(this.value)" %><br>
+			</td>
+		</tr>
+	</table>
+</div>
+
+
+
+
+
+<div id="examinationrankingClassID">
+</div>
+
+<div id="editrankingClassID">
+</div>
+
+<div id="examinationrankingCommonID">
+
+</div>
+
+
+<%= render  partial: 'examination_table_close' %>
+
+<script>
+
+$(document).ready(function(){
+		
+	var Id=$("#defaultCourseId").val();
+	
+	if(Id ==""){
+		
+		myRankingFunction(Id);
+
+	}
+	if(Id!=""){
+		myRankingFunction(Id);
+	}
+});
+
+</script>

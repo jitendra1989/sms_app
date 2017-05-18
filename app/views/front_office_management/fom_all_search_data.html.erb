@@ -1,0 +1,306 @@
+
+ <%if @student_data.present? || @employee_data.present? || @guardian_data.present? || @address_book_data.present?%>
+ <div class="mg-scroll-employee-bar">
+<%if @student_data.present?%>
+ 
+<h4 class="customize-mg-h4">Student<%#=reqStr%></h4>
+
+  <table border="1" class="mg-showdata-bg" cellspacing="1" cellpadding="1" style="width: 109.4%;">
+  <tr>
+    <th>
+      <label class="mg-label mg-td-width-halfs" valign="top"> <%= t('Student Id')%></label>    
+    </th>
+    <th>
+      <label class="mg-label mg-td-width-halfs" valign="top"> <%= t('Student Name')%></label>
+    </th>
+    <th>
+      <label class="mg-label mg-td-width-halfs" valign="top"> <%= t('Semester')%></label>
+    </th>
+    <th style="width: 130px;">
+      <label class="mg-label mg-td-width-halfs" valign="top"> <%= t('Mobile Number')%></label>
+    </th>
+    <th style="width: 130px;">
+      <label class="mg-label mg-td-width-halfs" valign="top"> <%= t('Email Id')%></label>
+    </th>
+     <th style="width: 130px;">
+      <label class="mg-label mg-td-width-halfs" valign="top"> <%= t('show')%></label>
+    </th>
+    
+
+    </tr>
+
+    <%
+    @student_data.each do |search|
+    %>
+    <tr>
+      <td class="mg-td-width-half" valign="top"><%=search.try(:admission_number)%>
+      </td>
+      
+     <td class="mg-td-width-half mg-capitalize-text" valign="top"><%="#{search.try(:first_name)} #{search.try(:last_name)}"%> 
+      </td>
+     <%batch_data=MgBatch.find_by(:id=>search.mg_batch_id)%>
+     <%course_data=MgCourse.find_by(:id=>batch_data.mg_course_id)%>
+
+      <td class="mg-td-width-half" valign="top"><%=course_data.try(:course_name)%>-<%=batch_data.try(:name)%>
+      </td>
+      <%phone_data=MgPhone.find_by(:mg_user_id=>search.mg_user_id,:phone_type=>"mobile")%>
+      <td class="mg-td-width-half" valign="top"><%=phone_data.try(:phone_number)%>
+      </td>
+      <%email_data=MgEmail.find_by(:mg_user_id=>search.mg_user_id)%>
+      <td class="mg-td-width-half" valign="top"><%=email_data.try(:mg_email_id)%>
+      </td>
+      <!-- #=========================================================================== -->
+      <td>
+        <span>
+                 <%= link_to "<i class=\"fa fa-eye\"></i>".html_safe, {controller: "students", action: "show" ,id:search.id } , method: :get ,:title=>"Show" ,:class=>"mg-icon-btn"%>
+        </span>
+      </td>
+     <!-- #=========================================================================== -->
+
+      
+  </tr>
+    <%end%>
+  </table>
+  <%end%>
+<%if @employee_data.present?%>
+<h4 class="customize-mg-h4">Employee<%#=reqStr%></h4>
+ 
+  <table border="1" class="mg-showdata-bg" cellspacing="1" cellpadding="1">
+  <tr>
+    <th>
+      <label class="mg-label mg-td-width-halfs" valign="top"> <%= t('Employee Id')%></label>    
+    </th>
+    <th>
+      <label class="mg-label mg-td-width-halfs" valign="top"> <%= t('Employee Name')%></label>
+    </th>
+    <!-- <th>
+      <label class="mg-label mg-td-width-halfs" valign="top"> <%= t('Employee Type')%></label>
+    </th> -->
+    <th style="width: 130px;">
+      <label class="mg-label mg-td-width-halfs" valign="top"> <%= t('Employee Category')%></label>
+    </th>
+    <th style="width: 130px;">
+      <label class="mg-label mg-td-width-halfs" valign="top"> <%= t('Employee Position')%></label>
+    </th>
+    <th style="width: 130px;">
+      <label class="mg-label mg-td-width-halfs" valign="top"> <%= t('Phone NO')%></label>
+    </th>
+    <th style="width: 130px;">
+      <label class="mg-label mg-td-width-halfs" valign="top"> <%= t('Email Id')%></label>
+    </th>
+    <th style="width: 130px;">
+      <label class="mg-label mg-td-width-halfs" valign="top"> <%= t('show')%></label>
+    </th>
+
+    </tr>
+
+    <%
+    @employee_data.each do |search|
+    %>
+    <tr>
+      <td class="mg-td-width-half" valign="top"><%=search.try(:employee_number)%>
+      </td>
+     <td class="mg-td-width-half mg-capitalize-text" valign="top"><%="#{search.try(:first_name)} #{search.try(:last_name)}"%> 
+      </td>
+     <%employee_type=MgEmployeeType.find_by(:id=>search.mg_employee_type_id)%>
+     <%employee_category=MgEmployeeCategory.find_by(:id=>search.mg_employee_category_id)%>
+     <%employee_position=MgEmployeePosition.find_by(:id=>search.mg_employee_position_id)%>
+
+     <!--  <td class="mg-td-width-half" valign="top"><%#=employee_type.try(:employee_type)%>
+      </td> -->
+      <td class="mg-td-width-half" valign="top"><%=employee_category.try(:category_name)%>
+      </td>
+       <td class="mg-td-width-half" valign="top"><%=employee_position.try(:position_name)%>
+      </td>
+      <%phone_data=MgPhone.find_by(:mg_user_id=>search.mg_user_id,:phone_type=>"mobile")%>
+      <td class="mg-td-width-half" valign="top"><%=phone_data.try(:phone_number)%>
+      </td>
+      <%email_data=MgEmail.find_by(:mg_user_id=>search.mg_user_id)%>
+      <td class="mg-td-width-half" valign="top"><%=email_data.try(:mg_email_id)%>
+      </td>
+      <!-- #=========================================================================== -->
+      <td class="mg-align-center">
+        <span>
+                 <%= link_to "<i class=\"fa fa-eye\"></i>".html_safe, {controller: "employees", action: "show" ,id:search.id } , method: :get ,:title=>"Show" ,:class=>"mg-icon-btn"%>
+        </span>
+      </td>
+     <!-- #=========================================================================== -->
+
+
+      
+  </tr>
+    <%end%>
+  </table>
+  <%end%>
+  <%if @guardian_data.present?%>
+<h4 class="customize-mg-h4">Guardian<%#=reqStr%></h4>
+  
+  <table border="1" class="mg-showdata-bg" cellspacing="1" cellpadding="1" style="width: 109.4%;">
+  <tr>
+    
+    <th>
+      <label class="mg-label mg-td-width-halfs" valign="top"> <%= t('Guardian Name')%></label>
+    </th>
+    <th>
+      <label class="mg-label mg-td-width-halfs" valign="top"> <%= t('Student Name')%></label>
+    </th>
+    <th style="width: 130px;">
+      <label class="mg-label mg-td-width-halfs" valign="top"> <%= t('Relation')%></label>
+    </th>
+    
+    <th style="width: 130px;">
+      <label class="mg-label mg-td-width-halfs" valign="top"> <%= t('Phone NO')%></label>
+    </th>
+    <th style="width: 130px;">
+      <label class="mg-label mg-td-width-halfs" valign="top"> <%= t('Email Id')%></label>
+    </th>
+
+    <th style="width: 130px;">
+      <label class="mg-label mg-td-width-halfs" valign="top"> <%= t('show')%></label>
+    </th>
+
+    </tr>
+
+    <%
+    @guardian_data.each do |search|
+    %>
+    <tr>
+    
+     <td class="mg-td-width-half mg-capitalize-text" valign="top"><%="#{search.try(:first_name)} #{search.try(:last_name)}"%> 
+      </td>
+     <%student_data=MgStudent.find_by(:id=>search.mg_student_id)%>
+     
+
+      <td class="mg-td-width-half mg-capitalize-text" valign="top"><%=student_data.try(:first_name)%>-<%=student_data.try(:last_name)%>
+      </td>
+      <td class="mg-td-width-half" valign="top"><%=search.try(:relation)%>
+      </td>
+      
+      <%phone_data=MgPhone.find_by(:mg_user_id=>search.mg_user_id,:phone_type=>"mobile")%>
+      <td class="mg-td-width-half" valign="top"><%=phone_data.try(:phone_number)%>
+      </td>
+      <%email_data=MgEmail.find_by(:mg_user_id=>search.mg_user_id)%>
+      <td class="mg-td-width-half" valign="top"><%=email_data.try(:mg_email_id)%>
+      </td>
+      <td class="mg-align-center">
+        <span>
+                  <%= link_to "<i class=\"fa fa-eye\"></i>".html_safe, {controller: "guardians", action: "show" ,id:search.id } , method: :get ,:title=>"Show" ,:class=>"mg-icon-btn"%>
+                  <%#= link_to 'Show', guardian_path(guardian) ,:style=>"border: none; color: #363131; padding: 0.3px 0px 0.2px 0px;"%>    
+                </span>
+      </td>
+
+      
+  </tr>
+    <%end%>
+  </table>
+  <%end%>
+  <%if @address_book_data.present?%>
+<h4 class="customize-mg-h4">Address Book<%#=reqStr%></h4>
+  
+  <table border="1" class="mg-showdata-bg" cellspacing="1" cellpadding="1" style="width: 109.4%;">
+  <tr>
+    
+    <th>
+      <label class="mg-label mg-td-width-halfs" valign="top"> <%= t('Name')%></label>
+    </th>
+    <th>
+      <label class="mg-label mg-td-width-halfs" valign="top"> <%= t('Designation')%></label>
+    </th>
+    
+    
+    <th style="width: 130px;">
+      <label class="mg-label mg-td-width-halfs" valign="top"> <%= t('Phone NO')%></label>
+    </th>
+    <th style="width: 130px;">
+      <label class="mg-label mg-td-width-halfs" valign="top"> <%= t('Email Id')%></label>
+    </th>
+
+    </tr>
+
+    <%
+    @address_book_data.each do |search|
+    %>
+    <tr>
+    
+     <td class="mg-td-width-half mg-capitalize-text" valign="top"><%=search.try(:name)%>
+      </td>
+     
+      <td class="mg-td-width-half" valign="top"><%=search.try(:designation)%>
+      </td>
+      
+      
+      <td class="mg-td-width-half" valign="top"><%=search.try(:contact_number)%>
+      </td>
+     
+      <td class="mg-td-width-half" valign="top"><%=search.try(:email_id)%>
+      </td>
+
+      
+  </tr>
+    <%end%>
+  </table>
+  <%end%>
+  </div>
+  <br/>
+  <br/>
+  <%= link_to t('clear'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+  <%else%>
+  <h4>No Records Found</h4>
+  <br/>
+  <br/>
+  <%= link_to t('clear'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+  <%end%>
+  
+
+
+  
+
+<script>
+/*$(".show-vendor-btns").click(function(){
+        var myID =$(this).attr('id');
+        var Id=myID.split("-");
+        var urlLink = "/inventory/vendor_show/"+Id[0];
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(html){
+                  $('#showVendorDIVID').dialog({
+                    modal: true,
+                    minHeight: 'auto',
+                    minWidth: '500',
+                    title: "Vendor Detail",
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+            }
+        });
+});*/
+
+
+
+</script>
+<style>
+.icon-padding-label
+{
+  background: -moz-linear-gradient(center top , #DBE8F7, #92AECD) repeat scroll 0 0 rgba(0, 0, 0, 0) !important;
+    border: 1px solid #5F7A92 !important;
+    border-radius: 4px;
+    color: #1D212A !important;
+    cursor: pointer;
+    font-size: 1.1em;
+    padding: 1.2px 5px !important;
+}
+
+.customize-mg-h4{
+  background: #479d1e none repeat scroll 0 0;
+  color: #feffff;
+  font-size: 0.9em;
+  font-weight: bold;
+  margin-top: 0;
+  width: 788px !important;
+  padding: 12px;
+  text-transform: capitalize;
+}
+</style>

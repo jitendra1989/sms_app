@@ -1,0 +1,67 @@
+
+
+
+
+        
+        
+<table class="mg-tbl-margin mg-show-tbl-width">
+    <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="selectClass"><%= t ('select_book_condition') %><span class="required-field">&nbsp;*</span></label><br/>
+        
+       <%=select_tag :book_status, options_for_select([["As Issued","as_issued"],["Partly Damaged","partially_damaged"],["Badly Damaged","badly_damaged"],["Lost","lost"]]),:prompt=>t('select'),:onchange=>"selectBookStatus(this.value)"%>
+      </td>
+    </tr>
+    <%if Date.today>@inventaoru_update.due_date%>
+    <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="selectSection"><%= t ('fine_amount') %><span class="required-field">&nbsp;*</span></label><br/>
+        
+       <%=text_field_tag 'fine_amount',@amount,readonly: true%>
+       
+      </td>
+    </tr>
+    <%end%>
+    <tr>
+  <!--   <div id="select_sections" style="display:none"> -->
+
+      <td class="mg-td-width-one-third">
+    <div id="select_sections" class="demo_class" style="display: none;">
+
+        <label class="mg-label" for="selectSection"><%= t ('fine_amount') %><span class="required-field">&nbsp;*</span></label><br/>
+       </div>
+    <div id="select_sections2" class="demo_class" style="display: none;">
+
+       <%=text_field_tag :amount,nil,:id=>@inventaoru_update.issued_to+"fine_class",:class=>"fine_status123"%>
+       </div>
+ 
+     
+      </td>
+      <!--  </div> -->
+    </tr>
+    </table>
+ <br/>
+      <button  id="Renew-<%=@inventory_id%>-<%=raw @inventaoru_update.issued_to%>" class="submit_for_fine_data  form_close_calss mg-custom-form-btn">Submit</button>
+      <button  id='return-<%=@inventory_id%>' class="cancel-submits-returns-data  form_close_calss mg-custom-form-btn">Cancel</button>
+
+    
+
+    <script>
+    function selectBookStatus(data){
+      var data=data
+      
+      
+       if (data=="partially_damaged"|| data=="badly_damaged"||  data=="lost"){
+       
+
+      $(".demo_class").show();
+           }
+      
+      else {
+
+      $(".demo_class").hide();
+        
+      }
+    }
+
+    </script>

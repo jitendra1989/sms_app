@@ -1,0 +1,272 @@
+<!-- <%#parent_url = request.env['HTTP_REFERER']
+    if parent_url!=nil  && (parent_url.include? "search_vendor")
+       @page="searchvendor"
+    else
+        @page="vendorshow"
+    end
+%> -->
+
+
+
+<table border="1" class="mg-showdata-bg" cellspacing="1" cellpadding="1">
+   <tr>
+     <td valign="top" style="width:200px;">
+   		<label class="mg-label"> <%= t('category')%></label>
+   	 </td>
+   	 <td valign="top">
+  		<%if @item.category.present?%>
+     <%=@item.try(:category)%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+  	 </td>
+ </tr>
+ <tr>
+     <td valign="top">
+   		<label class="mg-label"> <%= t('name')%></label>
+   	 </td>
+   	 <td valign="top" style="width: 100%;">
+  	<%if @item.name.present?%>
+        <%=@item.try(:name)%>
+     
+     <%else%>
+     <h5><%="No Data"%></h5>
+     <%end%>
+  	 </td>
+ </tr>
+ <tr>
+     <td valign="top">
+      <label class="mg-label"> <%= t('vendor_code')%></label>
+     </td>
+     <td valign="top" style="width: 100%;">
+    <%if @item.vendor_code.present?%>
+        <%=@item.try(:vendor_code)%>
+     
+     <%else%>
+     <h5><%="No Data"%></h5>
+     <%end%>
+     </td>
+ </tr>
+ <tr>
+     <td valign="top">
+      <label class="mg-label"> <%= t('contact_person')%></label>
+     </td>
+     <td valign="top" style="width: 100%;">
+    <%if @item.contact_name.present?%>
+        <%=@item.try(:contact_name)%>
+     
+     <%else%>
+     <h5><%="No Data"%></h5>
+     <%end%>
+     </td>
+ </tr>
+  <tr>
+     <td valign="top">
+      <label class="mg-label"> <%= t('street_address')%></label>
+     </td>
+     <td valign="top" style="width: 100%;">
+    <%if @item.street_address.present?%>
+        <%=@item.try(:street_address)%>
+     
+     <%else%>
+     <h5><%="No Data"%></h5>
+     <%end%>
+     </td>
+ </tr>
+
+ <tr>
+     <td valign="top">
+      <label class="mg-label"> <%= t('city')%></label>
+     </td>
+     <td valign="top" style="width: 100%;">
+    <%if @item.city.present?%>
+        <%=@item.try(:city)%>
+     
+     <%else%>
+     <h5><%="No Data"%></h5>
+     <%end%>
+     </td>
+ </tr>
+
+ <tr>
+     <td valign="top">
+      <label class="mg-label"> <%= t('state')%></label>
+     </td>
+     <td valign="top" style="width: 100%;">
+    <%if @item.state.present?%>
+        <%=@item.try(:state)%>
+     
+     <%else%>
+     <h5><%="No Data"%></h5>
+     <%end%>
+     </td>
+ </tr>
+
+ <tr>
+     <td valign="top">
+      <label class="mg-label"> <%= t('pincode')%></label>
+     </td>
+     <td valign="top" style="width: 100%;">
+    <%if @item.postal_code.present?%>
+        <%=@item.try(:postal_code)%>
+     
+     <%else%>
+     <h5><%="No Data"%></h5>
+     <%end%>
+     </td>
+ </tr>
+
+
+ <tr>
+     <td valign="top">
+      <label class="mg-label"> <%= t('country')%></label>
+     </td>
+     <td valign="top" style="width: 100%;">
+    <%if @item.country.present?%>
+        <%=@item.try(:country)%>
+     
+     <%else%>
+     <h5><%="No Data"%></h5>
+     <%end%>
+     </td>
+ </tr>
+
+ <tr>
+     <td valign="top">
+      <label class="mg-label"> <%= t('phone_number')%></label>
+     </td>
+     <td valign="top" style="width: 100%;">
+    <%if @item.phone_number.present?%>
+        <%=@item.try(:phone_number)%>
+     
+     <%else%>
+     <h5><%="No Data"%></h5>
+     <%end%>
+     </td>
+ </tr>
+
+ <tr>
+     <td valign="top">
+      <label class="mg-label"> <%= t('fax_number')%></label>
+     </td>
+     <td valign="top" style="width: 100%;">
+    <%if @item.fax_number.present?%>
+        <%=@item.try(:fax_number)%>
+     
+     <%else%>
+     <h5><%="No Data"%></h5>
+     <%end%>
+     </td>
+ </tr>
+
+ <tr>
+     <td valign="top">
+      <label class="mg-label"> <%= t('email_id')%></label>
+     </td>
+     <td valign="top" style="width: 100%;">
+    <%if @item.email.present?%>
+        <%=@item.try(:email)%>
+     
+     <%else%>
+     <h5><%="No Data"%></h5>
+     <%end%>
+     </td>
+ </tr>
+
+ <tr>
+     <td valign="top">
+      <label class="mg-label"> <%= t('information')%></label>
+     </td>
+     <td valign="top" style="width: 100%;">
+    <%if @item.information.present?%>
+        <%=@item.try(:information)%>
+     
+     <%else%>
+     <h5><%="No Data"%></h5>
+     <%end%>
+     </td>
+ </tr>
+
+</table>
+<br/>
+<p>
+<!-- =========================================================================================== -->
+<%@vendorId=@item.id%>
+<%@category=MgInventoryItemCategory.where(:is_deleted=>0, :mg_school_id=>session[:current_user_school_id]).pluck(:name, :id)%>
+
+<label class="mg-label"> <%= t('select_category')%></label>&nbsp;&nbsp;&nbsp;&nbsp;<%=select_tag :vendor_mg_category_id, options_for_select(@category),:prompt=>"All Categories" ,:onchange=>"changeItemFunction(this, #{@vendorId})"%><br>
+<!-- =============================================================================================== -->
+</p>
+
+<table border="1" class="mg-showdata-bg" cellspacing="1" cellpadding="1">
+   <tr>
+      <td valign="top">
+      <label class="mg-label"> <%= t('items')%></label>
+     </td>
+     <td valign="top" style="width: 100%;">
+
+     <%temp=MgInventoryVendorItem.where(:mg_vendor_id=>@item.id, :is_deleted=>0, :mg_school_id=>session[:current_user_school_id])
+     if temp.present?
+      tempItem=""
+      temp.each do |vendor|
+        tempItemName=MgInventoryItem.find_by(:id=>vendor.mg_item_id)
+        tempItem+=tempItemName.try(:name)
+        tempItem+=", "
+      end
+
+      strlength=tempItem.length
+      reqStr=tempItem.slice(0,strlength-2)
+     %>
+     <span id="category_wise_item_ID">
+     <%=reqStr%></span>
+     <%else%>
+     <h5><%="No Data"%></h5>
+     <%end%>
+     </td>
+ </tr>
+
+</table>
+<br/>
+<br/>
+
+
+<a class="mg-small-form-btn cancel-form-dialog"><%=t("cancel")%></a>
+
+
+<%#= render  partial: 'application/common_left_close' %>
+
+
+
+<script>
+$( document ).ready(function() {
+
+});
+
+
+    
+
+ //  $(document).on("change","#vendor_mg_category_id",function(e){
+
+ //  //  $("#vendor_mg_category_id").change(function(){
+
+
+ //  //            $("#category_wise_item_ID").empty();
+
+
+ //  // //$(document).on("change","#vendor_mg_category_id",function(e){
+ //  //   vendorId=<%=@vendorId%>;
+ //  //   var categoryId=$(this).val();
+ //  //   alert(vendorId+"  "+categoryId)
+ //  //     $.ajax({
+ //  //           url: "/inventory/category_wise_item",
+ //  //           type: "GET",
+ //  //           data: {"mg_category_id":categoryId , "vendor_id":vendorId},
+ //  //           //dataType: "html",
+ //  //           success: function(data) {
+ //  //               alert(data);
+ //  //            $("#category_wise_item_ID").empty();
+ //  //            $("#category_wise_item_ID").append(data);
+ //  //           }
+ //  //       });
+ // });
+</script>

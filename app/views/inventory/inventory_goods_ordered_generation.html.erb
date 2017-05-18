@@ -1,0 +1,98 @@
+<br/>
+<br/>
+<%if @inventory_proposal_item.present?%>
+<table border="1" class="mg-table-nowrap mg-showdata-bg mg-show-tbl-width" cellspacing="1" cellpadding="1">
+ 
+<tr>
+<th> <label class="mg-label"> <%= t('store_name')%></label>
+</th>
+
+
+
+<th> <label class="mg-label"> <%= t('item_name')%></label>
+</th>
+<th> <label class="mg-label"> <%= t('requisition_name')%></label>
+</th>
+<th> <label class="mg-label"> <%= t('date')%></label>
+</th>
+
+
+
+<%@inventory_proposal_item.each do |info|%>
+<tr>
+     <td class="mg-td-width-half" valign="top">
+     <%info_data=MgInventoryProposal.find_by(:id=>info.mg_inventory_proposal_id)%>
+      <%if info_data.nil?%>
+      <%else%>
+     <%store_data=MgInventoryStoreManagement.find_by(:id=>info_data.mg_store_id)%>
+     <%=store_data.store_name%>
+    
+     </td>
+     <td class="mg-td-width-half" valign="top">
+     <%item_data=MgInventoryItem.find_by(:id=>info.mg_item_id)%>
+     <%=item_data.name%>
+    
+     </td>
+ 
+     <td class="mg-td-width-half" valign="top">
+     
+     <%=info_data.requisition_name%>
+    
+     </td>
+
+    <td class="mg-td-width-half" valign="top">
+     <%if info.date.present?%>
+     <%@dateFormat = MgSchool.find_by(:id=>session[:current_user_school_id]).date_format %>
+     <%=info.date.present? ? info.date.strftime(@dateFormat) : ""%>
+     <%else%>
+     <h5><%="No Data"%></h5>
+     <%end%>
+     </td>
+
+ 
+     <%end%>
+     
+     
+     
+ </tr>
+
+
+
+ <%end%>
+
+</table>
+
+
+
+<%else%>
+<h5>No records to show</h5>
+<%end%>
+
+<script>
+
+
+
+$(document).on("click", ".show-inventory-proposal-btns", function(e){
+        var myID =$(this).attr('id');
+        var Id=myID.split("-");
+        var urlLink = "/inventory/projection_report_show/"+Id[0];
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(html){
+                  $('#showInventoryProjectionDIVID').dialog({
+                    modal: true,
+                    minHeight: 'auto',
+                    width: 'auto',
+                    title: "Item Projection",
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+});
+
+</script>

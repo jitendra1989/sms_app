@@ -1,0 +1,35 @@
+<!-- Sec --> 
+<%= form_for :subjects, url: subjects_path do |t| %>
+       <p>
+          <%= label_tag :batch %><br>
+         <%= select_tag :batch, options_for_select(%w[1st_sem  2nd_sem 3ed_sem 4th_sem 5th_sem 6th_sem 7th_sem 8th_sem]) %>
+       </p>
+
+       <p>
+          <%= label_tag :subject_name %><br>
+          <%= text_field_tag :subject_name   %>
+        </p>
+       
+        <p>
+          <%= label_tag :subject_code %><br>
+          <%= text_field_tag :subject_code %>
+        </p>
+        
+       <p>
+          <%= label_tag :max_weekly_class %><br>
+          <%= text_field_tag :max_weekly_class %>
+        </p>
+      <p>
+        <%= label_tag :is_deleted, "is Active" %><br />
+          <%= label_tag :is_deleted, "Yes", :value => "true"  %>
+          <%= radio_button_tag :is_deleted, true %>
+          <%= label_tag :is_deleted, "No", :value => "false" %>
+          <%= radio_button_tag :is_deleted, false, :checked => true %>
+      </p>
+        <p>
+          <%= submit_tag %>
+        </p>
+        
+  
+        <% end %>
+       

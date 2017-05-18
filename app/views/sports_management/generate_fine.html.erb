@@ -1,0 +1,155 @@
+<% navigation_add t('generate_fine'),:controller=>'sports_management', :action=>'generate_fine' %>
+<%=render partial: "sports_left"%>
+
+  <%=link_to t("new_fine_generation"),{:controller =>
+ "sports_management", :action => "generate_fine_new"},
+ :class=>"mg-custom-form-btn"%>
+ <br/><br/>
+
+<div id="createlaboratoryfineFeeParticularDivId">
+</div>
+<h4 class="mg-h4">Fine Particular List</h4>
+  <div>
+  <!-- <button id='create_ids'  class="create-new-laboratory-fine-class mg-custom-form-btn mg-btn-bottom-margin">Create New Fine Particular</button> -->
+
+  <div >
+
+<% if @fineparticular.length > 0 %>
+<div class="mg_pagination">
+  
+   
+   <table class="batch-tbl mg-tbl-margin" > 
+      <tr >
+       
+       <th>Fine Name</th>
+       <th> Description </th>
+      
+       <!-- <th>Fine From</th> -->
+       <th>Amount</th>
+       
+      
+       <th><%=t('actions')%></th>
+    </tr>
+    <%#=@subjects.inspect%>
+
+    <% @fineparticular.each do |sub| %><!--alldata.each_with_index { |(key, value), index| -->
+      <tr>
+
+        
+          <td><%= sub.fine_name %></td>
+        
+        
+
+        <td><%= truncate(sub.try(:description), :length => 25) %></td>
+        
+
+       
+
+        
+          
+            <!-- <td><%#=sub.fine_from  %></td> -->
+          
+       
+
+
+
+        <td><%= sub.amount%></td>
+        
+        
+        
+        
+      
+      <td>  
+      <!-- <a href='#', id='<%=raw sub.id %>' class="show_fee_class">show </a> -->
+      <button title="Show" id="<%=raw sub.id %>" class="sports_fine_fee_class mg-icon-btn"><i class="fa fa-eye"></i></button>
+
+        <button title="Edit" id="<%=raw sub.id %>" class="sports_edit_fine_fee_class mg-icon-btn"><i class="fa fa-pencil-square-o"></i></button>
+
+      <button title="Delete" onclick="confirm('Are you sure to delete?') ? window.location='/sports_management/destroy_fee_fine_particular/<%=sub.id%>' : ''" class="mg-icon-btn"><i class="fa fa-trash"></i></button> 
+
+      
+     </td> 
+       
+      
+      </tr>
+    <% end %>
+
+  </table>
+  <br/>
+      <%= will_paginate @fineparticular, :container => false %>
+  </div>
+</div>
+<% else %>
+  <h5>Please create some Fine Particular... </h5>
+
+<% end %>  
+<!-- Partial Section close-->
+
+<div id="showfineFeesParticularDivId"></div>
+<div id="createFeeParticularDivId"></div>
+<div id="editfineFeesParticularDivId"></div>
+
+  <%= render  partial: 'common_left_close' %>
+  
+ <script type="text/javascript">
+     $(document).ready(function(){
+  focusCurrentTab("generate_fineAID","generate_fineLiID");
+
+     
+   });
+$(document).on("click", ".sports_fine_fee_class", function(e){
+        var ID1 =$(this).attr('id');
+        //var urlLink = "/student_categories/"+studentCategoryID+"/edit";
+        var urlLink = "/sports_management/show_fine_fee_particular";
+      //  alert(urlLink);
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            data: {"id":ID1},
+            success: function(html){  
+                   //$('<div class="fancybox-outer" style="padding: 15px; width: auto; height: auto;"></div>').dialog({
+                   $('#showfineFeesParticularDivId').dialog({
+                  
+                    modal: true,
+                    title: "Show Fine Fee Particular ",
+                    width: 'auto',
+                    minHeight: 210,
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+});
+ $(document).on("click", ".sports_edit_fine_fee_class", function(e){
+        var ID1 =$(this).attr('id');
+      //   alert(ID1);
+        //var urlLink = "/student_categories/"+studentCategoryID+"/edit";
+        var urlLink = "/sports_management/edit_fine_fee_particular";
+      //  alert(urlLink);
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            data: {"id":ID1},
+            success: function(html){
+                    $('#editfineFeesParticularDivId').dialog({
+                    modal: true,
+                    title: "Edit Fine Particular",
+                    minWidth: 300,
+                    height: 500,
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+});
+
+
+</script>
+
+

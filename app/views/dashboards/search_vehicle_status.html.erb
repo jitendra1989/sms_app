@@ -1,0 +1,48 @@
+<%= render partial: 'principle_dashboard_left' %>
+
+<%
+vehicle_data=MgVehicle.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:vehicle_number,:id)
+%>
+<%="Select Vehicle:"%>
+<%=select_tag :vehicle_data,options_for_select(vehicle_data),:prompt=>"Select",:onchange=>"vehicleInfo(this.value)"%>
+
+<br/>
+<br/>
+<div id="Vehicle_details_info"></div>
+<%= render partial: 'application/common_left_close' %>
+
+
+<script>
+ $(document).ready(function(){
+
+    focusCurrentTab("dashboards_vehicleAID","dashboards_vehicleLiID");
+    focusDashboards();
+
+// dateFormatStr =  getJsDateFormat();
+// var joiningDate =  $.datepicker.formatDate(dateFormatStr,new Date($('#employee_joining_date').val()));
+// $('#employee_joining_date').val(joiningDate);
+});
+function vehicleInfo(data){
+//
+$.ajax({
+    url:"/dashboards/vehicle_information",
+    cache: false,
+    data:{"id":data},
+    success: function(html){  
+   // alert(data);
+
+        $("#Vehicle_details_info").empty();
+
+        $("#Vehicle_details_info").append(html);
+    },
+    error: function(html){
+
+        $("#Vehicle_details_info").empty();
+        
+    }
+
+})
+
+}
+
+</script>

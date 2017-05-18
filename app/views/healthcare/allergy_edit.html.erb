@@ -1,0 +1,40 @@
+<% navigation_add t('allergy'),"/healthcare/allergy_index" %>
+<% navigation_add t('edit_allergy'),"/healthcare/allergy_edit/#{@allergy.id}" %>
+<%=render partial: "allergy_form"%>
+
+<script>
+  // var temp=2;
+// $(document).on("click", "#healthcare_details", function(e){
+// $("#healthcare_details").click(function(){
+//     var lastRepeatingGroup = $('.demo-health-div').last();
+//     var cloned = lastRepeatingGroup.clone();
+//     cloned.find('input').val('');
+//     cloned.find('textarea').val('');
+//     cloned.find('.ids-allergy-class').val(0);
+//     cloned.insertAfter( lastRepeatingGroup );
+//     $(".valid_upto_purchase_new:visible").each(function(index,element){
+//         $(this).text(index+1);
+//         cloned.find(".valid_upto_purchase_new").attr("id","valid_upto_"+(index+1));
+//     });
+//   $(".required-incremented-field:visible").each(function(index,element){
+//           $(this).text(index+1);
+//     });
+// }); 
+
+
+// $(document).on("click", ".remove-library-details", function(e){
+//    var total = $('.demo-health-div').length
+//    // var last_count = $('.healthcare_details').text();
+//    //console.log(last_count);
+//  //alert(last_count); 
+//    if(total!=1)
+//    {
+//     $('.demo-health-div').parent('td').parent().remove(); 
+//     }
+//     $(".required-incremented-field:visible").each(function(index,element){
+//           $(this).text(index+1);
+//     });
+// });
+
+
+</script>

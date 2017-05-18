@@ -1,0 +1,20 @@
+<!-- Sec --> 
+<!-- Partial left content -->
+<%= render partial: 'student_dashboard_left' %>
+<!-- Partial Index -->
+<%= render partial: 'student' %>
+<!-- Partial Section close-->
+<%= render partial: 'application/common_left_close' %>
+
+
+<script type="text/javascript">
+    
+
+ $(document).ready(function(){
+
+    focusCurrentTab("viewStudentDashboard","viewStudentDashboardLiID");
+    focusDashboards();
+
+});
+
+</script>

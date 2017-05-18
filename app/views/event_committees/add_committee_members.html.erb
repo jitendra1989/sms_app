@@ -1,0 +1,67 @@
+
+<%= render  partial: '/events/events_left' %>
+<% navigation_add t('event_committees'), event_committees_path %>
+<% navigation_add t('add_committee_members'), add_committee_members_path %>
+
+<h4 class="mg-h4"><%= t('add_committee_members')%></h4>
+
+
+<div>
+	<label class="mg-label mg-tt-width "><%=t('select_committee') %><span class="required-field"> *</span></label>
+   <%=select_tag :mg_committee_id ,options_for_select(@event_committees,params[:mg_event_committee_id]),:onchange=>"optionForMembers(this.value)",:prompt=>t('select') , :id=>"selectCommitteeSelectTagID" ,:class=>"mg-select-btn"%>
+</div>
+
+
+
+
+<!-- <p class="mg-p-mgtop"> -->
+<div id="memberAssignDivID" style="display:none">
+    <div id="eventCommiteeMembersListDIVID"></div>
+<p>
+    <div id="formForEmployeeOrStudentDIVID"></div></p>
+</div>
+<!-- </p> -->
+
+
+
+
+<%= render  partial: 'application/common_left_close' %>
+<script>
+
+
+
+
+
+$(document).ready(function () {
+  focusCurrentTab("viewAddCommitteeMemberAID","viewAddCommitteeMemberLiID");
+  //focusDashboards();
+  var mg_event_committee_id=$("#selectCommitteeSelectTagID").val();
+if(mg_event_committee_id !=''){
+  optionForMembers(mg_event_committee_id);
+}
+  
+});
+
+$(document).on("click", ".class-event-committee-class", function(e){
+ $('#addStudentCommitteeSubmitFormID').attr("disabled", false);
+
+});
+$(document).on("click", ".class-event-committee-class", function(e){
+  var delete_photo=$("input#mg_student_id_").is(':checked');
+  if(!delete_photo){
+    $('#addStudentCommitteeSubmitFormID').attr("disabled", true);
+  }
+});
+
+$(document).on("click", ".class-event-committee-add-employee-cls", function(e){
+ $('#addEmployeeCommitteeSubmitFormID').attr("disabled", false);
+
+});
+$(document).on("click", ".class-event-committee-add-employee-cls", function(e){
+  var delete_photo=$("input#mg_employee_id_").is(':checked');
+  if(!delete_photo){
+    $('#addEmployeeCommitteeSubmitFormID').attr("disabled", true);
+  }
+});
+</script>
+

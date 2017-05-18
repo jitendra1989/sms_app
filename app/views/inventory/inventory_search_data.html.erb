@@ -1,0 +1,129 @@
+
+<%if @search.present?
+@items=MgInventoryItem.where("id IN (?)",@item)
+      tempItem=""
+      @items.each do |item|
+        tempItemName=MgInventoryItem.find_by(:id=>item.id)
+        tempItem+=tempItemName.try(:name)
+        tempItem+=", "
+      end
+
+      strlength=tempItem.length
+      reqStr=tempItem.slice(0,strlength-2)
+
+%>
+
+<!-- ==================================================================================== -->
+
+<%if @code_present=="yes"
+@items_code=MgInventoryItem.where("id IN (?)",@item)
+      tempItems=""
+      @items_code.each do |item|
+        tempItemName=MgInventoryItem.find_by(:id=>item.id)
+        tempItems+=tempItemName.try(:code)
+        tempItems+=", "
+      end
+
+      strlengths=tempItems.length
+      reqStrs=tempItems.slice(0,strlengths-2)
+  end
+%>
+
+
+
+<!-- <h4 class="mg-h4">Result for Name:- <%#=reqStr%></h4> -->
+
+<%if @code_present=="yes"%>
+  <!-- <h4 class="mg-h4">Result for Code:- <%#=reqStrs%></h4> -->
+<%end%>
+
+
+<div class="mg-scroll-employee-bar">
+<table border="1" class="mg-showdata-bg mg-homework-tbl" cellspacing="1" cellpadding="1">
+<tr>
+  <th>
+    <label class="mg-label mg-td-width-halfs" valign="top"> <%= t('vendor_category')%></label>    
+  </th>
+  <th>
+    <label class="mg-label mg-td-width-halfs" valign="top"> <%= t('vendor_name')%></label>
+  </th>
+  <th>
+    <label class="mg-label mg-td-width-halfs" valign="top"> <%= t('item_code')%></label>
+  </th>
+  <th>
+    <label class="mg-label mg-td-width-halfs" valign="top"> <%= t('contact_person')%></label>
+  </th>
+  <th style="width: 130px;">
+    <label class="mg-label mg-td-width-halfs" valign="top"> <%= t('phone_number')%></label>
+  </th>
+  <th style="width: 100px;">
+    &nbsp;&nbsp;
+<label class="mg-label mg-td-width-halfs" valign="top"> <%= t('action')%></label>
+  </th>
+  </tr>
+  <%
+  @search.each do |search|
+  %>
+  <tr>
+    <td class="mg-td-width-half" ><%=search.try(:category)%></td>
+    <td class="mg-td-width-half" ><%=search.try(:name)%></td>
+    <td class="mg-td-width-half" ><%=@item.try(:code)%></td>
+    <td class="mg-td-width-half" ><%=search.try(:contact_name)%></td>
+    <td class="mg-td-width-half" ><%=search.try(:phone_number)%></td>
+    <!-- ================================================================================= -->
+          <td class="mg-td-width-half" >
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      <button title="Show" id="<%=raw search.id %>-showinventoryBTNID" class="show-vendor-btns icon-padding-label mg-icon-btns"><i class="fa fa-eye"></i></button>
+      <%#= link_to "<i class=\"fa fa-eye\"></i>".html_safe, {:controller => "inventory", :action => "vendor_show",:id =>search.id} , :method=>'post' ,:title=>"Show" ,:class=>"mg-icon-btn"%>
+      </td>
+    <!-- ==================================================================================== -->
+</tr>
+  <%end%>
+</table>
+</div>
+<p class="mg-p-mgtop">
+  <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+</p>
+<%else%>
+<br/>
+<h4>No Results found<h4>
+<%end%>
+
+<script>
+$(".show-vendor-btns").click(function(){
+        var myID =$(this).attr('id');
+        var Id=myID.split("-");
+        var urlLink = "/inventory/vendor_show/"+Id[0];
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(html){
+                  $('#showVendorDIVID').dialog({
+                    modal: true,
+                    minHeight: 'auto',
+                    minWidth: '500',
+                    title: "Vendor Detail",
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+            }
+        });
+});
+
+
+
+</script>
+<style>
+.icon-padding-label
+{
+  background: -moz-linear-gradient(center top , #DBE8F7, #92AECD) repeat scroll 0 0 rgba(0, 0, 0, 0) !important;
+    border: 1px solid #5F7A92 !important;
+    border-radius: 4px;
+    color: #1D212A !important;
+    cursor: pointer;
+    font-size: 1.1em;
+    padding: 1.2px 5px !important;
+}
+</style>

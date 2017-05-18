@@ -1,0 +1,19 @@
+<br/>
+<br/>
+
+<h4 class="mg-h4"><%= t('cash_transaction')%></h4>
+<table border="1" class=" mg-showdata-bg mg-show-tbl-width" cellspacing="1" cellpadding="1">
+<tr>
+	<th> <label class="mg-label"> <%= t('customer_name')%></label></th>
+	<th> <label class="mg-label"> <%= t('amount')%></label></th>
+	 <th class="mg-align-center"> <label class="mg-label"> <%= t('actions')%></label></th> 
+<%@sales.each do |info|%>
+	<tr>
+		<td><%=info.try(:customer_name)%></td>
+		<td><%=info.try(:amount)%></td>
+		<td class="mg-align-center" ><button title="Show" id="<%=raw info.try(:id) %>-showSaleDetailsBTNID" class="show-sale-item-btn-cls mg-icon-btn"><i class="fa fa-eye"></i></button></td>
+ 	</tr>
+ <%end%>
+
+</table>
+

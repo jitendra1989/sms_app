@@ -1,0 +1,442 @@
+<!-- Sec --> 
+<% navigation_add 'Attendance', employee_index_path %>
+
+<%= render partial: 'dashboards/employee_left' %>
+
+    <section >
+    
+    <!-- <table width=100% border="0" cellspacing="0" cellpadding="0">
+        <tr>
+         <td valign="top">
+           <aside class="userMenuBoxLeft">
+                    <ul>
+                    
+                        <li class="myMenu">Attendance</li>
+
+                        <li id="studentAttendanceLiID" class="active">
+                            <a id="studentAttendanceAID" class="activeMenu" href="/attendances"><div><i class="fa fa-wrench">&nbsp;&nbsp;</i>Student&#39;s Attendance<i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px;"></i></div></a>
+                        </li>
+                        <li id="employeeAttendanceLiID" >
+                            <a id="employeeAttendanceAID" href="/employees_attendances"><div><i class="fa fa-user">&nbsp;&nbsp;</i>Employee&#39;s Attendance<i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px;"></i></div></a>
+                        </li>
+                    </ul>
+            </aside>
+         </td>
+         <td valign="top"> -->
+             <div class="rightBodyContent" style="margin-left:0px;">
+               <article class="mailContentRight">
+                    <div class="bodyContent">
+                      <div class="content-tab-employee-attendence">
+                       <ul class="tabs" data-persist="true">
+                            <li><a href="#b-report" style="font-family: calibri"><%= t('attendence')%></a></li>
+                            <!-- <li><a href="#s-report">Employee Report</a></li> -->
+                             <!-- <li><a href="#subjects-report">Subjecs</a></li> -->
+                       </ul>
+                       <div class="content-header">
+                             <div id="b-report">
+                                <table class="mg-btn-bottom-margin">
+                                   <tr>
+                                      <td>
+                                        <div class="content-box">
+
+        
+                                    <!-- <p> Employee Department </p>
+                                      <%#= text_field_tag :dept_name, @mg_employee_department_name[0] %> -->
+                                                
+                                        </div>
+                                     </td>
+                                     <td>
+                                        <!-- date picker -->
+                                        <label class="mg-label mg-leave-width" style="font-family: calibri">Select Date</label>
+                                        <input id="employeeAttendanceDatePickerOneID" class="employee-attendance-month-employee mg-text-field" type="text" placeholder="Select Month" />
+                                     </td>
+                                   </tr>
+                                </table>
+                                    <div style="display:none">
+                                         <ul>
+                                            <li><span>Department 1</span></li>
+                                            <li><span>NOVEMBER 2014</span></li>
+                                            <li><span>Generate PDF<input type="image" src="/assets/adobe.png/"
+                                            /></span></li>
+                                         <ul>
+                                     </div>
+                                
+
+                                <table class="att-calendar">
+                               
+                                 </table>
+                            </div>
+                           
+                            
+
+
+                            <div id="s-report">
+                                 <div class="content-box">
+                                     <table>
+                                   <tr>
+                                      <td>
+                                        <div class="content-box">
+                                            
+                                         
+
+                                        </div>
+                                     </td>
+                                     <td>
+                                        <!-- <input class="employee-attendance-month-employee" type="text" placeholder="Select Month" /> -->
+                                     </td>
+                                   </tr>
+                                </table>
+                                    <div style="display:none">
+                                         <ul>
+                                            <li><span>Department 1</span></li>
+                                            <li><span>NOVEMBER 2014</span></li>
+                                            <li><span>Generate PDF<input type="image" src="/assets/adobe.png/"/></span></li>
+                                         <ul>
+                                     </div>
+                                
+                                </div>             
+                            </div>
+                          </div>
+                       </div>
+                    </div>
+                </article>
+              </div>
+        <!--   </td>
+         </tr>
+
+
+
+    </table> -->
+
+
+    
+    </section>
+  
+
+
+<%= render partial: 'application/common_left_close' %>
+
+
+<style> 
+.ui-datepicker-calendar {
+   display: none; 
+    }
+</style>
+
+
+<script>
+    
+$(document).ready(function(){
+   focusCurrentTab("viewEmployeeAttendances_demo","viewEmployeeAttendances_demoLiID");
+    focusDashboards();
+});
+// on click is close for that button
+// index page js
+$(document).ready(function(){
+              $(".content-tab-employee-attendence").tabs();
+               $('#employeeAttendanceDatePickerOneID').val($.datepicker.formatDate('MM yy',new Date()));
+
+              $('#employeeAttendanceDatePickerOneID').datepicker({
+                    changeMonth: true,
+                    changeYear: true,
+                    dateFormat: 'MM yy',
+                    showButtonPanel: true,
+                    beforeShow: function (){
+                        setTimeout(function() {
+                         $(".ui-datepicker-buttonpane")
+                            .html('')
+                            .append("<button id='individualEmployeeAttendanceDoneBTNID'>Done</button>");
+                        }, 1);
+                    },
+                    onChangeMonthYear: function (){
+                        setTimeout(function() {
+                        
+                         $(".ui-datepicker-buttonpane")
+                            .html('')
+                            .append("<button id='individualEmployeeAttendanceDoneBTNID'>Done</button>");
+
+                   //         $(this).datepicker( "setDate", month + '/1/' + year );
+                        }, 1);
+                    }, 
+                    dateFormat: 'MM yy',
+                    onClose: function(dateText, inst) { 
+                        var month = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
+                      // month1=month;
+
+                        var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
+                     // year1=year;
+
+                        $('#employeeAttendanceDatePickerOneID').datepicker('setDate', new Date(year, month, 1));
+                    }
+          });
+//employee current month attendence
+
+                
+               
+                    $( "#employeeAttendanceDatePickerOneID" ).datepicker("hide");
+
+                  
+
+                    var d = new Date();
+                    var month = d.getMonth();
+                    var year=d.getFullYear();
+
+                    var days = new Array(7);
+                    days[0]=  "Sun";
+                    days[1] = "Mon";
+                    days[2] = "Tues";
+                    days[3] = "Wed";
+                    days[4] = "Thur";
+                    days[5] = "Fri";
+                    days[6] = "Sat";
+
+
+                    var day=new Date().getDate();
+                    Date.prototype.getDayName = function() {
+                            return days[ this.getDay() ];
+                        };
+                    //  generate dynamic calendr here
+                    var totalDays = parseInt(daysInMonth1(new Date().getMonth()+1, new Date().getFullYear()));
+
+                    var strDates = "<tr><th>Name</th>"
+                    for(var index=1; index <= totalDays;index++){
+                               var now = new Date(new Date().getFullYear(),new Date().getMonth(),index);
+                  strDates +="<th>"+index+"<br/>"+now.getDayName()+"</th>";
+                                 
+                                
+                    }
+                  //  console.log(strDates);
+                  $('.header-row-data').empty();
+                    $('.header-row-data').prepend( strDates );
+
+
+                    // Making Ajax Call to find the student name  
+                     var urlLink = "/employees_attendances/employee_attendence/"; 
+               
+                             $.ajax({
+               
+                        url: urlLink,
+                        cache: false, 
+                        success: function(data) {
+                                var month = parseInt(new Date().getMonth()) + 1;
+                                var year = parseInt(new Date().getFullYear());
+                                var strName = "";
+                                
+                                console.log(data[2])
+                                for(var outerIndex = 0;outerIndex < data[0].length;outerIndex++){
+                                    strName += "<tr><td>"+data[0][outerIndex].first_name+"</td>"
+                                    for(var index=1; index <= totalDays;index++){
+                                      // 'month':month1, 'year':year1
+                                      var date=year+'-'+month+'-'+index;
+                                      // alert(date)
+                                      var value=0;
+                                      if(day<index){
+                                      value=4;
+                                      }else{
+                                      if(data[1].length >0){
+
+                                       for(var dbindex=0;dbindex< data[1].length;dbindex++){
+                                                var checkDate=month+'/'+index+'/'+year
+
+                                                d = new Date(checkDate); //This returns Wed Apr 02 2014 17:28:55 GMT+0800 (Malay Peninsula Standard Time)
+                                                x = d.getDay(); //This returns a number, starting with 0 for Sunday
+                                                if(data[2].indexOf(x)>-1){
+                                                  value = 2;
+                                                }
+                                            
+                                                if(data[1][dbindex].year ==year && data[1][dbindex].month ==month && data[1][dbindex].day== index && data[1][dbindex].mg_employee_id==data[0][outerIndex].id){
+                                                   
+                                                   value = 1;
+
+                                                }
+
+                                     }
+                                     }else{
+                                            var checkDate=month+'/'+index+'/'+year;
+                                            x = new Date(checkDate).getDay();
+                                            if(data[2].indexOf(x)>-1){
+                                              value = 2;
+                                            }
+                                      }
+                                    }
+                                      if(value!=4)
+                                        {
+                                                if(value == 2){
+                                                  strName +="<td><i class='fa fa-ellipsis-h'></i></td>"
+                                                }
+                                             if(value ==1){
+
+                                                          strName +="<td class='mg-att-bg-clr'><i class='fa fa-circle' > </i></td>"
+                                                        }else{
+                                                          if(value != 2){
+                                                          strName +="<td class='mg-att-bg-clr'><i class='fa fa-check' > </i></td>"
+                                                           }
+                                                        }
+
+                                      }else{
+                                        strName +="<td></td>";
+                                      }
+
+
+
+                                    }
+                                    strName +="</tr>"
+                                }
+                                $('.att-calendar').empty();
+                                $('.att-calendar').append( strDates+"</tr>"+strName );
+                                console.log(strName);
+
+
+
+                              },
+                        error: function() {
+                                alert("Please Select Department");
+                              }
+                });  // Ajax close
+
+             
+                
+function daysInMonth1(iMonth, iYear){
+                    return new Date(iYear, iMonth, 0).getDate();
+                }  
+
+
+});
+
+//employee selected month attendence
+
+
+$(document).on("click","#individualEmployeeAttendanceDoneBTNID",function(){
+                  // close dialog pane and generate date using
+                  // Access students details from the ruby
+                  //   alert("month   ");
+                 
+                   // var SelectValueIs = $( "#attendances_mg_employee_department_id" ).val();
+                
+               
+                    $( "#employeeAttendanceDatePickerOneID" ).datepicker("hide");
+
+                     var month = parseInt($("#ui-datepicker-div .ui-datepicker-month :selected").val()) + 1;
+                        var year = parseInt($("#ui-datepicker-div .ui-datepicker-year :selected").val());
+                     //alert(daysInMonth(month, year));
+                    //    getDateData();
+
+                    var days = new Array(7);
+                    days[0]=  "Sun";
+                    days[1] = "Mon";
+                    days[2] = "Tues";
+                    days[3] = "Wed";
+                    days[4] = "Thur";
+                    days[5] = "Fri";
+                    days[6] = "Sat";
+
+
+
+                    Date.prototype.getDayName = function() {
+                            return days[ this.getDay() ];
+                        };
+                    //  generate dynamic calendr here
+                    var totalDays = parseInt(daysInMonth(month, year));
+
+                    var strDates = "<tr><th>Name</th>"
+                    for(var index=1; index <= totalDays;index++){
+                               var now = new Date(year,month-1,index);
+                  strDates +="<th>"+index+"<br/>"+now.getDayName()+"</th>";
+                                 
+                                
+                    }
+                  //  console.log(strDates);
+                  $('.header-row-data').empty();
+                    $('.header-row-data').prepend( strDates );
+
+
+                    // Making Ajax Call to find the student name  
+                     var urlLink = "/employees_attendances/employee_attendence/"; 
+                   //  alert(urlLink); 
+                             $.ajax({
+               
+                        url: urlLink,
+                        cache: false, 
+                        success: function(data) {
+
+                                var strName = "";
+                                var day=new Date().getDate();
+
+                                var current_month = parseInt(new Date().getMonth()) + 1;
+                                var current_year = parseInt(new Date().getFullYear());
+                                for(var outerIndex = 0;outerIndex < data[0].length;outerIndex++){
+                                    strName += "<tr><td>"+data[0][outerIndex].first_name+"</td>"
+                                    for(var index=1; index <= totalDays;index++){
+                                      // 'month':month1, 'year':year1
+                                      var date=year+'-'+month+'-'+index
+                                      // alert(date)
+                                      var value=0;
+                                      if(day<index && current_month==month && current_year==year){
+                                      value=4;
+                                      //}else if(current_month<month || current_year<year){// && current_year<year
+                                      }else if(new Date(month+'/01/'+year) > new Date(current_month+'/01/'+current_year)){
+                                      value=5;
+                                      }else{
+                                         var checkDate=month+'/'+index+'/'+year
+
+                                                d = new Date(checkDate); //This returns Wed Apr 02 2014 17:28:55 GMT+0800 (Malay Peninsula Standard Time)
+                                                x = d.getDay(); //This returns a number, starting with 0 for Sunday
+                                                if(data[2].indexOf(x)>-1){
+                                                  value = 2;
+                                                }
+                                       for(var dbindex=0;dbindex< data[1].length;dbindex++){
+                                            
+
+                                                if(data[1][dbindex].year ==year && data[1][dbindex].month ==month && data[1][dbindex].day== index && data[1][dbindex].mg_employee_id==data[0][outerIndex].id && x!=0){
+                                                   
+                                                   value = 1;
+
+                                                }
+
+                                     }
+                                   }
+                                   if (value!=5){
+                                        if (value!=4){
+                                      if(value == 2){
+                                        strName +="<td><i class='fa fa-ellipsis-h'></i></td>"
+                                      }
+                                     if(value ==1){
+
+                                                  strName +="<td class='mg-att-bg-clr'><i class='fa fa-circle' > </i></td>"
+                                                }else{
+                                                  if(value != 2){
+                                                  strName +="<td class='mg-att-bg-clr'><i class='fa fa-check' > </i></td>"
+                                                    }
+                                                }
+
+                                                }else{
+                                          strName +="<td></td>";
+                                        }
+                                    }else{
+                                          strName +="<td></td>";
+                                    }
+
+
+
+                                    }
+                                    strName +="</tr>"
+                                }
+                                $('.att-calendar').empty();
+                                $('.att-calendar').append( strDates+"</tr>"+strName );
+                                console.log(strName);
+
+
+
+                              },
+                        error: function() {
+                                alert("Please Select Department")
+                              }
+                });  // Ajax close
+
+             
+                });  
+
+          function daysInMonth(iMonth, iYear){
+                    return new Date(iYear, iMonth, 0).getDate();
+                }  
+</script>

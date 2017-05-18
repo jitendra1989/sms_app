@@ -1,0 +1,100 @@
+<!-- Sec --> 
+
+<table border="1" class="mg-showdata-bg mg-tbl-layout mg-btn-bottom-margin" cellspacing="1" cellpadding="1">
+    <tr>
+     <td class="mg-td-width-half" valign="top">
+  		<label class="mg-label"><%=t("fine_name")%></label>
+  	 </td>
+  	 <td class="mg-td-width-half" valign="top">
+  		<%= @fine_particular.fine_name %>
+  	 </td>
+ 	</tr>
+
+	<tr>
+		<td class="mg-td-width-half" valign="top">
+  			<label class="mg-label"><%=t("description")%> </label>
+  		</td>
+  		<td class="mg-td-width-half" valign="top">
+  			<%= @fine_particular.description %>
+  		</td>
+	</tr>
+ 
+	<tr>
+		<td class="mg-td-width-half" valign="top">
+  			<label class="mg-label"><%=t("item_category")%></label>
+  		</td>
+      <%temp_item=MgFeeFineParticular.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id],:mg_inventory_fine_particular_id=>@fine_particular.id).first%>
+
+<%
+puts "777777777777777777777777777777777777777777777777777"
+puts temp_item.inspect
+puts "777777777777777777777777777777777777777777777777777"
+
+
+%>
+
+      <%item=MgInventoryItem.find_by(:id=>temp_item.mg_inventory_item_id)%>
+      <%category=MgInventoryItemCategory.find_by(:id=>item.mg_category_id)%>
+  		<td class="mg-td-width-half" valign="top">
+  			<%= category.try(:name) %>
+  		</td>
+	</tr>
+
+  <tr>
+    <td class="mg-td-width-half" valign="top">
+        <label class="mg-label"><%=t("item")%></label>
+      </td>
+      <td class="mg-td-width-half" valign="top">
+        <%= item.try(:name) %>
+      </td>
+  </tr>
+
+
+ 	<tr>
+ 		<td class="mg-td-width-half" valign="top">
+  			<label class="mg-label"><%=t("amount")%> </label>
+  		</td>
+  		<td class="mg-td-width-half" valign="top">
+  			<%= @fine_particular.amount %>
+  		</td>
+	</tr>
+  <!-- =================================================================================== -->
+
+  <table border="1" class="batch-tbl mg-scroll-result-bar" cellspacing="1" cellpadding="1">
+
+<tr>
+<th> <label class="mg-label"> <%= t('student_name')%></label>
+</th>
+<th> <label class="mg-label"> <%= t('class_name')%></label>
+</th>
+
+</tr>
+ <%@student_data=MgFeeFineParticular.where(:mg_inventory_fine_particular_id=>@fine_particular.id,:mg_school_id=>session[:current_user_school_id],:is_deleted=>0)%>
+     <%@student_data.each do|data|%>
+<tr>
+
+     <%if data.mg_student_id.present?
+        student=MgStudent.find_by(:id=>data.mg_student_id)
+          %>
+      <td class="mg-td-width-half" valign="top"><%=student.try(:first_name)%> <%=student.try(:last_name)%></td>
+     <%end%>
+     </td>
+     <% batch=MgBatch.find_by(:id=>data.mg_batch_id)
+      batch_courses_id=MgBatch.where(:id=>data.mg_batch_id).pluck(:mg_course_id)
+     course=MgCourse.find_by(:id=>batch_courses_id)
+     %>
+     <td class="mg-td-width-half" valign="top"><%=course.course_name%><%="-"%><%=batch.try(:name)%></td>
+ </tr>
+<%end%>
+  
+
+</table>
+
+  <!-- ========================================================================================= -->
+</table>
+
+<p class="mg-p-mgtop">
+    <a class="mg-small-form-btn cancel-form-dialog"><%=t("cancel")%></a>
+</p>
+
+

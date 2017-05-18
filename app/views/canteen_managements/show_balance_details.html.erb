@@ -1,0 +1,49 @@
+<%if @canteen_bill_details.present?%>
+  <div class="mg-scroll-employee-bar">
+    <table class="batch-tbl mg-tbl-margin table-batchs-tbl">  
+      <th style="width:80px;"><%= t('sl_no') %></th>
+      <th style="width:110px;"><%= t('bill_date') %></th>
+      <th style="width:110px;"><%= t('total_amount') %></th>
+      <th style="width:150px;"><%= t('paid_amount') %></th>
+      <th style="width:130px;"><%= t('balance_amount') %></th>
+      <th style="width:80px;"><%= t('action') %></th>
+      
+      <%count=0%>
+      <%@canteen_bill_details.each do |bill_details|%>
+        <%bill_date=bill_details.created_at.strftime("%d/%m/%y")%>
+        <%count=count+1%>
+        <tr class="">
+          <td class="mg-align-center"><span class="incremented-field-text-cls"><%=count%></span></td>
+          <td class="mg-align-center">
+            <%= bill_date%><br/>
+          </td>
+          <td class="mg-align-center">
+            <%= bill_details.try(:total_amount)%><br/>
+          </td>
+          <td class="mg-align-center">
+            <%= bill_details.try(:paid_amount)%><br/>
+          </td>
+          <td class="mg-align-center">
+            <%= bill_details.try(:balance_amount)%><br/>
+          </td>
+          <td class="mg-align-center">
+            <button title="Bill History" id="<%= raw bill_details.id %>-showexmBTNID" class="show-all-bill-history-details mg-icon-btn"><i class="fa fa-eye"></i></button>
+          </td>
+        </tr>
+      <%end%>
+
+      <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td class="mg-align-center"><b><%="Total Balance Amount"%><b></td>
+        <td class="mg-align-center">
+          <b><%= text_field_tag "balance_amount[]",@total_balance_amount,:class =>"mg-select-btn total-balance-amount-cls",:readonly=>true%></b>
+        </td>
+        <td></td>
+      </tr>
+    </table>
+  </div>
+<%else%>
+  <%="No bill details available"%>
+<%end%>

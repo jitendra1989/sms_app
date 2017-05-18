@@ -1,0 +1,67 @@
+<!-- Sec sdzv--> 
+<% navigation_add 'Show Notifications', "/notifications/show_by_box" %>
+<% navigation_add 'View Notifications', "/notifications/view_notification/#{@notification.id}" %>
+
+<% if @user_type.to_s == "employee" %>
+
+	<%= render partial: 'dashboards/employee_left' %>
+    <!-- <p>employee</p> -->
+		<%= render partial: 'view_notify' %>
+		
+	<%= render partial: 'application/common_left_close' %>
+<% end %>
+
+<% if @user_type.to_s == "principal" %>
+	
+	
+	<%if((@parent_url!=nil) && (@parent_url.include? "show_by_box")) %>
+		<%= render  partial: 'notification_left' %>
+	<%else%>
+		<%= render partial: 'dashboards/principle_dashboard_left' %>
+	<%end%>
+	<%= render partial: 'view_notify' %>
+
+	<%= render partial: 'application/common_left_close' %>
+<% end %>
+
+
+
+
+<% if @user_type.to_s == "student" %>
+
+	<%= render partial: 'dashboards/student_dashboard_left' %>
+	<!-- <p>principle</p> -->
+	<%= render partial: 'view_notify' %>
+		
+	<%= render partial: 'application/common_left_close' %>
+
+<% end %>
+
+<% if @user_type.to_s == "guardian" %>
+
+	<%= render partial: 'dashboards/guardian_dashboard_left' %>
+	<!-- <p>principle</p> -->
+	<%= render partial: 'view_notify' %>
+		
+	<%= render partial: 'application/common_left_close' %>
+
+<% end %>
+
+<% if @user_type.to_s == "admin" %>
+
+	<%= render partial: 'notification_left' %>
+	<!-- <p>principle</p> -->
+	<%= render partial: 'view_notify' %>
+		
+	<%= render partial: 'application/common_left_close' %>
+
+<% end %>
+
+
+<script type="text/javascript">
+     $(document).ready(function(){
+
+     	 focusCurrentTab("showPrincipleNotification","showPrincipleNotificationLiID");
+         focusDashboards();
+   });
+</script>

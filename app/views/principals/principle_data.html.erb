@@ -1,0 +1,116 @@
+<%
+	@syllabuscheck=MgSyllabusTracker.where(:is_deleted=>0,:mg_employee_id=>@empPrincipleId).pluck(:mg_syllabus_id).uniq
+%>
+
+
+<%if  @syllabuscheck[0].to_s.empty?%>
+
+
+<h5>No tracks found for this employee...</h5>
+<%else%>
+
+<%
+#<%@feesquery2=MgBatch.where(:is_deleted =>0).order("mg_course_id").pluck(:id)
+@syllabus=MgSyllabusTracker.where(:is_deleted=>0,:mg_employee_id=>@empPrincipleId).pluck(:mg_syllabus_id).uniq
+puts "111111111111111111111111111"
+puts @syllabus.inspect
+puts "111111111111111111111111111"
+%>
+
+<%@dataHash=Hash.new%>
+<%@dataHashs=Hash.new%>
+<%@array=Array.new%>
+<%@arrayy=Array.new%>
+
+<%@syllabus.each do |sys|%>
+<%@ss=MgSyllabus.find(sys)%>
+<%=@ss.name%> 
+
+<br/>
+
+<%@unit=MgSyllabusTracker.where(:mg_syllabus_id=>sys,:mg_employee_id=>@empPrincipleId).pluck(:mg_unit_id).uniq%>
+<%
+puts "2222222222222222222222222222"
+puts @unit.inspect
+puts "2222222222222222222222222222"
+%>
+
+<%
+
+
+@unit.each do |unit|%>
+<%@ss=MgUnit.find(unit)%>
+<%@ss.unit_name%>
+<%@empId=MgEmployee.where(:mg_user_id=>session[:user_id]).pluck(:id)%>
+
+ 
+<!--=================================div===================================================-->
+<%
+@emptimetaken=MgSyllabusTracker.where(:mg_unit_id=>unit,:mg_employee_id=>@empPrincipleId, :mg_syllabus_id=>sys).count
+puts "ccccccccccccccccccccccccccccccccc"
+puts unit
+puts @empPrincipleId
+puts sys
+puts "ccccccccccccccccccccccccccccccccc"
+puts "333333333333333333333333333"
+puts @emptimetaken.inspect
+puts "333333333333333333333333333"
+@emptimealloted=MgUnit.where(:id=>unit).pluck(:time)
+
+# @dataHash[@ss.unit_name]=@countno
+# array.push(@dataHash)
+# @dataHash[@ss.unit_name]=@countnos[0]
+# array.push(@dataHash)
+
+
+@array=Array.new
+
+@array.push("Taken",@ss.unit_name)
+#@arrayy.push(@countno)
+
+@dataHash[@array]=@emptimetaken
+
+@array=Array.new
+@array.push("Allotted",@ss.unit_name)
+#@arrayy.push(@countnos[0])
+
+@dataHash[@array]=@emptimealloted[0]
+@array=Array.new
+
+# @arrayy.push(@countno)
+# @arrayy.push(@countnos)[0]
+
+#@dataHash[@ss.unit_name]=@countnos[0]
+
+%>
+
+ <!--=================================div===================================================-->
+
+
+
+<!--
+rrayy.push(batch.name,date.admission_date.strftime("%b"))
+				 admission_hash[array]=@student_count
+
+
+ &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp -->
+
+<%end%>
+<!-- <#%=@dataHash%>
+<#%=array%> -->
+ <!--<#%@dataHash[@array]=@arrayy%>-->
+
+<%=column_chart(@dataHash)%>
+<%=@dataHash%>
+
+<%@dataHash=Hash.new%>
+<%@dataHashs=Hash.new%>
+<%@array=Array.new%>
+<%@arrayy=Array.new%>
+
+
+
+
+<br/>
+<%end%>
+<%end%>

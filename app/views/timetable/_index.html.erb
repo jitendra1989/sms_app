@@ -1,0 +1,122 @@
+<h4 class="mg-h4">Week Day</h4>
+<div>
+   <label class="mg-label mg-label-width ">Select Wing<span class="required-field"> *</label>
+  <%=select_tag :mg_wing_id,options_for_select(@schoolWings),:prompt=>t('select'),:onchange=>"batchesForSelectedWing(this.value)"%>
+
+<div id="selectSectionDivId" style="display:none;">
+<label class="mg-label mg-label-width "><%=t('select')%> <%=t('batch')%></label>
+<%=select_tag :batch,options_for_select([]),:onchange=>"batchesChange(this.value)"%>
+</div>
+
+<div id="commonWeekdayDiv" style="display:none;">
+	<table>
+	<tr>
+		<td>
+			<aside style="width: 150px;">
+				<div class="mg-custom-labels">
+					<label class="mg-label mg-label-width "><%=t('sunday')%></label>
+					<label class="mg-label mg-label-width "><%=t('monday')%></label>
+					<label class="mg-label mg-label-width "><%=t('tuesday')%></label>
+					<label class="mg-label mg-label-width "><%=t('wednesday')%></label>
+					<label class="mg-label mg-label-width "><%=t('thursday')%></label>
+					<label class="mg-label mg-label-width "><%=t('friday')%></label>
+					<label class="mg-label mg-label-width "><%=t('saturday')%></label>
+				</div>
+			</aside>
+		</td>
+			<td id="selectedWeekdayTdID">
+			<%@allvalue.each do |value|%>
+				<%= check_box_tag "weekdays[#{value}]", 1,  @weekdaychecked.include?(value) ? true : false ,:style=>"margin-bottom: 10px;",:onclick=>"buttonEnable()"%><br>
+				<%end%>
+			</td>
+	</tr>
+</table>
+<button id="weekdaySavebtn" class= "mg-small-form-btn" disabled><%=t('save')%></button>
+</div>
+
+ <%#= link_to t('cancel'), :back, {:class=>"btn btn-default cancel-form-dialog"} %>
+</div>
+
+<script>
+	$(document).on("click","#weekdaySavebtn",function(e){
+		var batchId=$("#batch").val();
+		var wing_id=$("#mg_wing_id").val();
+		var checkedvalue="";
+		var uncheckedvalue="";
+	    $("#selectedWeekdayTdID > input").each(function(index) {
+		         var currentInputID = $(this).attr("id");
+		         var checked=$("input#"+currentInputID).is(':checked');
+		         if(checked){
+		         	checkedvalue+=currentInputID.split("_")[1]+",";	
+		         }
+		         else{
+		         	uncheckedvalue+=currentInputID.split("_")[1]+",";
+		         }
+		  });
+		jQuery.ajax({
+            url: "/timetable/create",
+            type: "GET",
+            data: {"batch_id" :batchId,"checked_weekday":checkedvalue,
+            "unchecked_weekday":uncheckedvalue,"mg_wing_id":wing_id},
+            dataType: "html",
+            success: function(data) {
+            	alert("Weekdays Updated Successfully");
+            	$("#weekdaySavebtn").attr("disabled", "disabled");
+            },
+            error:function(){
+            	alert("Something went wrong!");
+            }
+        });
+	});
+	
+	function batchesChange(batchId){
+		var wing_id=$("#mg_wing_id").val();
+		if(wing_id==""){
+			$("#commonWeekdayDiv").hide()
+		}
+		else{
+			jQuery.ajax({
+            url: "/timetable/show",
+            type: "GET",
+            data: {"batch_id" :batchId,"mg_wing_id":wing_id},
+            dataType: "html",
+            success: function(html) {
+            	$("#commonWeekdayDiv").show();
+              $("#commonWeekdayDiv").html(html);
+              if(wing_id=="Select"){
+				$("#weekdaySavebtn").attr("disabled", "disabled");
+				$("#selectedWeekdayTdID").attr("disabled", "disabled");
+			   }
+				else{
+					// $("#weekdaySavebtn").removeAttr("disabled");
+			   }
+            },
+            error:function(){
+            	alert("Something went wrong!");
+            }
+        });
+		}
+		
+	}
+
+	function buttonEnable(){
+		$("#weekdaySavebtn").removeAttr("disabled");
+	}
+	
+	function batchesForSelectedWing(wing_id){
+		jQuery.ajax({
+            url: "/timetable/batches_for_selected_wing",
+            type: "GET",
+            data: {"mg_wing_id" :wing_id},
+            dataType: "html",
+            success: function(html) {
+              $("#selectSectionDivId").html(html);
+              var batch_id=$("#batch").val();
+              batchesChange(batch_id);
+            },
+            error:function(){
+            	alert("Something went wrong!");
+            }
+        });
+	}
+</script>

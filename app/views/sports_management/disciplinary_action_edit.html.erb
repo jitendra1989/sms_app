@@ -1,0 +1,248 @@
+<% navigation_add t('disciplinary_action'),:controller=>'sports_management', :action=>'disciplinary_action' %>
+<% navigation_add t('Edit_disciplinary_action'),:controller=>'sports_management', :action=>'disciplinary_action_edit' %>
+<%#= render partial:'sports_left' %>
+
+<%if session[:user_type]=="employee"%>
+  <%@user_autho=true%>
+    <%= render partial: 'dashboards/employee_left' %>
+<%else%>
+  <%@user_autho=false%>
+    <%=render partial: "sports_left"%>
+<%end%>
+
+
+
+
+<%#= form_for :discipline_form , url: @action=="new" ? 'disciplinary_action_create' :
+ '/sports_management/'+@discipline_data.try(:id).to_s+'/disciplinary_action_update',:html => {:id => 'discipline_actID' } do |f| %>
+
+
+
+ <h4 class="mg-h4"><%= t('edit_disciplinary_action')%></h4>
+<%= form_for :discipline_form , :url=>{:action=>'disciplinary_action_update',:id=>@discipline_data.try(:id).to_s},:html => {:id => 'discipline_actID' } do |f| %>
+
+ <%= f.hidden_field :is_deleted, :value => 0 %>
+ <%= f.hidden_field :mg_school_id, :value => session[:current_user_school_id] %>
+ <%= f.hidden_field :updated_by, :value => session[:user_id] %>
+ <%= f.hidden_field :dis_id, :value => @discipline_data.id %>
+
+
+ <p>
+  <label class="mg-label mg-tt-width" style="width:185px;vertical-align: top;"><%=t('subject')%><span class="required-field"> *</span></label><br>
+  <%# if @action=='new'%>
+  <%#= f.text_area :subject,:class=>"mg-text-field" %>
+  <%# else %>
+  <%= f.text_area :subject,:class=>"mg-text-field",:value => @discipline_data.subject, :readonly=>@user_autho %>
+  <%# end %>
+ </p>
+
+<p>
+    <%= f.label :select_programme, t('select_programme'),:class=>"mg-label mg-rm-text-trans"%><span class="required-field"> *</span><br>
+    <% wings_data=MgWing.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:wing_name,:id)%>
+     <%=f.select :mg_wing_id,options_for_select(wings_data,:selected=>@discipline_data.mg_wing_id),{include_blank: false,:prompt=>"Select"},:onchange => 'progChangeFunction1()' ,:disabled=>true,:class=> 'mg-text-field wing-no'%>
+      <%#=f.select :mg_wing_id,options_for_select(wings_data,:selected=>@discipline_data.mg_wing_id),:prompt=>"Select",:onchange => 'progChangeFunction1()',:class=> 'mg-text-field wing-no'%>
+    
+</p>
+
+
+ <p id='wing-dilv'>
+  <label class="mg-label mg-tt-width" style="width:185px"><%=t('select_semester')%><span class="required-field"> *</span>
+  </label><br>
+  
+  <%=select_tag :mg_batches_id,options_for_select(@course_data,@discipline_data.mg_batches_id),:disabled=>true,:prompt=>"Select"%>
+  
+</p>
+
+<p id="">
+  <!-- <label class="mg-label mg-tt-width" style="width:185px"><#%=t('select_student')%><span class="required-field"> *</span></label><br>
+<div class="mg-scroll-subjectlist-bar">
+  <table class="batch-tbl">
+    <tr>
+      <th class="mg-align-center">
+        <label class="mg-label"><#%=t('select')%></label><br/>
+        <a  id="selecAllAID" class="mg-pop-link">All</a>
+        <a  id="selectNoneAID" class="mg-pop-link">None</a>
+      </th>
+      <th>
+        <#%=t('name')%>
+      </th>
+    </tr>
+    </table>
+    </div> -->
+</p>
+<div id="student_list">
+<%="Select Students:"%>
+<table class="mg-tbl-margin mg-tbl-layout">
+<tr>
+<td  valign="top">
+ <span id="selected_students">
+
+    <%=select_tag :selectedStudentsId, options_for_select(@students),:multiple => true,:size =>10 ,:class=>"mg-add-library-particular"%>
+</span>
+
+    <%if session[:user_type] =='employee'%>
+        <a  id="" class="mg-custom-form-btn">Add</a> 
+    <%else%>  
+        <a  id="AddTransportFees12" class="mg-custom-form-btn mg-add-rem-btn">Add</a> 
+    <%end%>
+
+</td>
+<td  valign="top">
+    <span id="removing_employees">
+
+<%=select_tag :transportSelectedStudents,options_for_select(@students_dat),:multiple => true,:size =>10 ,:class=>"mg-add-library-particular data14s"%>
+</span>
+
+    <%if session[:user_type] =='employee'%>
+        <a  id="" class="mg-custom-form-btn">Remove</a>
+    <%else%>
+        <a  id="RemoveTransportFees12" class="mg-custom-form-btn mg-add-rem-btn">Remove</a>
+    <%end%>
+
+
+</td>
+</tr>
+</table><br/>
+ </div>
+ <p>
+  <label class="mg-label mg-tt-width" style="width:185px;vertical-align: top;"><%=t('remark')%><span class="required-field"> *</span></label><br>
+  
+  <%= f.text_area :remark,:class=>"mg-text-field",:value =>@discipline_data.remark, :readonly=>@user_autho  %>
+  
+ </p>
+
+<p>
+   <label class="mg-label mg-tt-width" style="width:185px;vertical-align: top;"><%=t('action_taken_by_teacher')%><span class="required-field"> *</span></label><br>
+   
+
+
+<%if session[:user_type]=="employee"%>
+   
+   <%= f.text_area :action_taken,:class=>"mg-text-field",:value => @discipline_data.action_taken,:readonly=>false %>
+   <%else%>
+   <%= f.text_area :action_taken,:class=>"mg-text-field",:value => @discipline_data.action_taken,:readonly=>true %>
+   <%end%>
+
+</p>  
+ <%= f.hidden_field :param_data, :value => @discipline_data.try(:id) %>
+
+<p>
+   <label class="mg-label mg-tt-width" style="width:185px"><%=t('status')%><span class="required-field"> *</span><br>
+   </label><br>
+   
+   <%=f.select :status,options_for_select([["Open","Open"],["Closed","Closed"]],:selected=>@discipline_data.status),:prompt=>"Select",:class=>"mg-select-btn", :readonly=>true %>
+   
+
+</p>
+
+<p class="mg-p-mgtop">
+    <a onclick="$(this).closest('form').submit()" style="display:none" class="mg-small-form-btn submit-btn-data1"><%=t("save")%></a>
+    <a   class="mg-small-form-btn submit-btn-data1232"><%=t("save")%></a>
+      <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+</p>
+
+<%end%>
+<%= render partial: 'application/common_left_close' %>
+
+<script>
+  
+
+$(document).ready(function(){
+  focusCurrentTab("disciplinary_actionAID","disciplinary_actionLiID");
+
+
+$(".submit-btn-data1232").click(function(){
+            $(".data14s option").prop('selected',true);
+          $(".submit-btn-data1").click();
+            
+         })
+    
+    $("#discipline_actID").validate({
+    rules: {
+      "discipline_form[mg_wing_id]": {required: true},
+      "discipline_form[mg_batches_id]": {required: true},
+      "discipline_form[remark]": {required: true},
+      "discipline_form[action_taken]": {required: true},
+      "discipline_form[status]": {required: true},
+      "batches_id": {required: true},
+      "mg_batches_id": {required: true},
+      "transportSelectedStudents[]": {required: true},
+
+
+      
+    }
+  });
+});
+
+
+
+
+     //    var roomDataId = $( ".wing-no" ).val();
+     //    var dis_id = $( "#discipline_form_dis_id" ).val();
+
+     //    if(roomDataId > 0) {
+  
+     //    var urlLink = "/sports_management/wing_wise_course_list/";
+     //         $.ajax({
+     //         url: urlLink,
+     //         cache: false,
+     //         data: {"method":"edit","mg_wing_id":roomDataId,"edit":"data","id":dis_id},
+     //         success: function(data){
+     //         $("#wing-div").empty().append(data);
+     //            }
+     //     });
+     // }
+
+  //  function semesterChangesfunction(semester_id){
+  //   $.ajax({
+  //     url:"/sports_management/batch_wise_student_list",
+  //     data:{"mg_batches_id":semester_id},
+  //     success:function(html){
+  //     $("#student_list").html(html);
+  //     }
+  //   });
+  // }
+ $(document).on("click","#AddTransportFees12",function(e){
+
+
+
+ var selectedOptions=$("#selectedStudentsId option:selected").remove();
+
+
+$("#transportSelectedStudents").append(selectedOptions);
+
+
+  });
+$(document).on("click","#RemoveTransportFees12",function(e){
+
+var selectedOption=$("#transportSelectedStudents option:selected").remove();
+
+$("#selectedStudentsId").append(selectedOption);
+
+  });
+
+function progChangeFunction1(){
+        var roomDataId = $( ".wing-no" ).val();
+  
+        var urlLink = "/sports_management/wing_wise_course_list/";
+             $.ajax({
+             url: urlLink,
+             cache: false,
+             data: {"mg_wing_id":roomDataId},
+             success: function(data){
+             $("#wing-dilv").empty().append(data);
+                }
+         });
+     
+   }
+
+    function semesterChangesfunction(semester_id){
+    $.ajax({
+      url:"/sports_management/batch_wise_student_list",
+      data:{"mg_batches_id":semester_id},
+      success:function(html){
+      $("#student_list").empty().html(html);
+      }
+    });
+  }
+</script>

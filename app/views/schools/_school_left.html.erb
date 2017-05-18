@@ -1,0 +1,145 @@
+<!-- Sec --> 
+<section id="userBodyContentBox" style="margin: 0 auto;">
+    <table width=100% border="0" cellspacing="0" cellpadding="0"  style="margin-bottom: 0px;">
+        <tr>
+            <td valign="top" class="userBodyContentBox1">
+                <div class="userMenuBoxLeft" style="width: 210px;">
+                    <ul class="menuListHome">
+                        <li class="myAccountMenu"><%=t("school")%></li>
+
+<!--                         <li id="" class="active">
+                            <a class="menuItemsActivities activeMenu" href="/schools" id="viewSchoolList">
+                                <div class="setMenu"><i class="fa fa-tachometer">&nbsp;&nbsp;</i>School List<i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px;"></i>
+                                </div>
+                            </a>
+                        </li> -->
+                       <!--  <li>
+                            <a class="menuItemsActivities" href="/schools/new" id="createNewSchool" >
+                                <div class="setMenu"><i class="fa fa-tachometer">&nbsp;&nbsp;</i>Create New School<i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px;"></i>
+                                </div>
+                            </a>
+                        </li> -->
+                         <li id="schoolInformationLiID">
+                            <a class="menuItemsActivities" href="/schools/<%=session[:current_user_school_id]%>" id="createNewSchool" >
+                                <div class="setMenu"><i class="fa fa-file-text-o">&nbsp;&nbsp;</i><%=t("school_information")%><!-- <i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i> -->
+                                </div>
+                            </a>
+                        </li>
+
+                        <!-- <li id="managePrincipleLiID">
+                            <a class="custom-fields" href="/principals" id="managePrincipleID" >
+                                <div class="setMenu"><i class="fa fa-pencil">&nbsp;&nbsp;</i>Manage Principal <i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i> 
+                                </div>
+                            </a>
+                        </li> -->
+
+                          <!-- <li id="schoolWingLiID">
+                            <a class="school-wing" href="/wings" id="wingListAID" >
+                                <div class="setMenu"><i class="fa fa-pencil">&nbsp;&nbsp;</i>School Wings<i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i>
+                                </div>
+                            </a>
+                        </li> -->
+
+<!-- 
+                        <li id="schoolWingLiID">
+                            <a class="school-wing" href="/wings" id="wingListAID" >
+                                <div class="setMenu"><i class="fa fa-th-large">&nbsp;&nbsp;</i>School Wings <i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i>
+
+                         <li id="schoolCustomFieldLiID">
+                            <a class="custom-fields" href="/schools/custom_fields" id="manageCustomFields" >
+                                <div class="setMenu"><i class="fa fa-pencil">&nbsp;&nbsp;</i>School Custom Fields<i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i> 
+
+                                </div>
+                            </a>
+                        </li>
+                        
+                        Shravan Added 
+                        <li class="myAccountMenu">Student Settings</li>
+
+                        <li id="createNewStudentCategoryLiID">
+                            <a class="menuItemsActivities" href="/student_categories" id="createNewStudentCategoryAID">
+                                <div class="setMenu"><i class="fa fa-sitemap">&nbsp;&nbsp;</i><%#= t('managestudentcategory') %><i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i> 
+                                </div>
+                            </a>
+                        </li>
+
+                        <li id="viewStudentCustomFieldLiID">
+                            <a class="menuItemsActivities" href="/students/custom_new" id="viewStudentCustomFieldAID">
+                                <div class="setMenu"><i class="fa fa-pencil">&nbsp;&nbsp;</i>Student Custom Fields <i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i> 
+                                </div>
+                            </a>
+                        </li>
+
+                        <li id="viewGuardianCustomFieldiId">
+                            <a class="menuItemsActivities" href="/guardians/custom_new" id="viewGuardianCustomFieldAId">
+                                <div class="setMenu"><i class="fa fa-pencil">&nbsp;&nbsp;</i>Guardian Custom Fields <i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i> 
+                                </div>
+                            </a>
+                        </li>
+
+                        <li class="myAccountMenu">Employee Settings</li>
+
+                        <li id="createManDeptLiID">
+                            <a class="menuItemsActivities" href="/mg_employee_departments" id="manageEmployeeDepartment">
+                                <div class="setMenu"><i class="fa fa-sitemap">&nbsp;&nbsp;</i><%#= t('manageemployeedepartment') %> <i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(-33%);"></i> 
+                                </div>
+                            </a>
+                        </li>
+
+                        <li id="createManCatLiID">
+                            <a class="menuItemsActivities" href="/mg_employee_categories" id="manageEmployeeCategory">
+                                <div class="setMenu"><i class="fa fa-sitemap">&nbsp;&nbsp;</i><%#= t('manageemployeecategory') %> <i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i>
+                                </div>
+                            </a>
+                        </li>
+
+                        
+                        
+                        <li id="createManPosLiID">
+                            <a class="menuItemsActivities" href="/mg_employee_positions" id="manageEmployeePosition">
+                                <div class="setMenu"><i class="fa fa-sitemap">&nbsp;&nbsp;</i><%#= t('manageemployeeposition') %> <i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i>
+                                </div>
+                            </a>
+                        </li>
+
+                        <li id="manageCustomFieldsiID">
+                            <a class="custom-fields" href="/employees/custom_new" id="manageCustomFieldsAID" >
+                                <div class="setMenu"><i class="fa fa-pencil">&nbsp;&nbsp;</i>Employee Custom Fields <i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i> 
+                                </div>
+                            </a>
+                        </li>
+
+                        <li class="myAccountMenu">Timetable Settings</li>
+
+                        <li id="createTimeTableLiID">
+                            <a class="menuItemsActivities" href="/timetable/time_table_index" id="createTimeTableAID">
+                                <div class="setMenu"><i class="fa fa-table">&nbsp;&nbsp;</i>Academic year<i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i> 
+                                </div>
+                            </a>
+                        </li>
+
+                         <li id="viewWeekDayLiId" class="active">
+                            <a class="menuItemsActivities " href="/timetable/weekday_index" id="viewWeekDayAId">
+                                <div class="setMenu"><i class="fa fa-list">&nbsp;&nbsp;</i>Week Day <i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i> 
+                                </div>
+                            </a>
+                        </li>
+
+                        <li id="createClassTimingsLiID">
+                            <a class="menuItemsActivities" href="/timetable/class_timing_index" id="createClassTimingsAID" >
+                                <div class="setMenu"><i class="fa fa-plus-square-o">&nbsp;&nbsp;</i>Create Class Timings <i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i> 
+                                </div>
+                            </a>
+                        </li> -->
+
+                    </ul>  
+                </div>
+            </td>
+            <td valign="top" id="manageSchools" class="mg-table-td-main-2">
+                
+
+<script>
+$(document).ready(function(){
+    focusSchool();
+});
+</script>

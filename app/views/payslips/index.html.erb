@@ -1,0 +1,105 @@
+<% navigation_add t('payslips'), :controller=>'payslips' %>
+<%=render partial: 'payslip_left'%>
+<h4 class="mg-h4"><%=t('payslip_list')%></h4>
+<%=render partial: 'sort'%>
+<%= form_for :sort_payslip, :url=>payslip_release_path, :html => {
+                            :id => 'indexPayslipApprovalCreateFormID' } do |f| %>
+	<%if @payslip.present?%>
+	<%=render partial: 'index'%>
+		<p class="mg-p-mgtop">
+		  <%= link_to t("export_approved_payslips"), payslips_path(format: "xls", :date_month_approve_date=> "#{@month}-#{@year}") , :class=>'mg-small-form-btn'%>
+      <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("release_selected_payslips")%></a>
+      <%#= link_to t("export_salary_component"),:controller=>'payslips' ,:action=>"salary_deduction", :id=>"#{@month}-#{@year}" , :html=>{:class=>'mg-small-form-btn'}%>
+     <!--  <a href="/payslips/salary_deduction?month=<%#=@month%>&year=<%#=@year%>" class="mg-small-form-btn"><%#=t("export_salary_deduction")%></a> -->
+      <%#= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+		        
+		</p>
+	<%else%>
+	<h5>No Records are Present</h5>
+	<%end%>
+
+  <%end%>
+
+
+<div id="payslipsEditGenDIVID"></div>
+<div id="showPayslipDIVID"></div>
+
+<%= render partial: 'application/common_left_close' %>
+
+
+
+<script type="text/javascript">
+$(document).on("click", ".select-all-payslip-approval", function(e){
+  e.preventDefault();
+  $('.payslip-approval-cls').each(function () {
+    if($(this).attr("id")=='yes'){
+      $(this).prop('checked', true);
+    } 
+  });
+        
+  });
+   $(document).on("click", ".select-non-payslip-approval", function(e){
+     e.preventDefault();
+    $(".payslip-approval-cls").prop('checked', false);
+       
+  }); 
+$(document).ready(function(){
+		$("li").removeClass( "active" );
+        $("a").removeClass( "activeMenu" );
+
+        $("#viewPayslipsLiID").addClass( "active" );
+        $("#viewPayslipsCalendar").addClass( "activeMenu" );
+
+         focusPaySlip();
+
+
+        // $("#indexPayslipApprovalCreateFormID").validate({
+        // rules: {
+        // // "payslip_approved[]": {required: true}
+        // }
+        // });
+
+        $("#date_month_approve").datepicker( {
+        changeMonth: true,
+        changeYear: true,
+        showButtonPanel: true,
+        dateFormat: 'MM yy',
+        beforeShow: function (){
+                          setTimeout(function() {
+                        $(".ui-datepicker-buttonpane")
+                            .html('')
+                            .append("<button id='dateMonthDateMonthIndexPayslipBTNID'>Done</button>");
+                        }, -6)
+                    },
+         onChangeMonthYear: function (){
+                        setTimeout(function() {
+                        
+                         $(".ui-datepicker-buttonpane")
+                            .html('')
+                            .append("<button id='dateMonthDateMonthIndexPayslipBTNID'>Done</button>");
+                        }, -5)
+
+                    }, 
+        onClose: function(dateText, inst) { 
+            var month = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
+            var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
+            $(this).datepicker('setDate', new Date(year, month, 1));
+        }
+    });
+
+   });
+
+$(document).on("click", "#dateMonthDateMonthIndexPayslipBTNID", function(e){
+  $( "#date_month_approve" ).datepicker("hide");
+  var month = parseInt($("#ui-datepicker-div .ui-datepicker-month :selected").val()) + 1;
+  var year = parseInt($("#ui-datepicker-div .ui-datepicker-year :selected").val());
+  $("#date_month_approve_date").val(month+"-"+year);
+  $("#payslipIndexSubmitFormID").click();
+});
+</script>
+
+<style>
+.ui-datepicker-calendar {
+    display: none;
+    }
+</style>

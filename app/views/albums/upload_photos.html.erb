@@ -1,0 +1,304 @@
+<% navigation_add t('albums'), albums_path %>
+<% navigation_add t('upload_photos'),   upload_photos_path %>
+
+<%= render  partial: '/events/events_left' %>
+
+<h4 class="mg-h4"><%= t('photos')%></h4>
+ <%= link_to t('back'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+ <!-- <div > -->
+   <%= form_for :photos, url: delete_photos_path, :html => {
+                                :id => 'albumPhotosDeleteFormID' } do |h| %>
+        <%if @photos.present?%>
+        <div id="links-1" class="mg-scroll-employee-bar">
+          <%@photos.each do |image_list|%>
+            <a href="<%=image_list.photo.url%>" title="" id="openImageAID">
+                <%=image_tag image_list.photo.url(:square) ,:class=>"mg-thumb-album open-image-A-cls"%>
+            </a>
+           
+          <%= check_box_tag 'mg_album_photos_id[]', image_list.id, false ,{:class=>"albumb-delete-photos-cls"}%>
+
+        <%end%>
+              </div>
+        <%#= h.submit 'delete selected photos' ,:class=>"mg-small-form-btn", :id=>"hideDeleteButtonFormID", disable_with: "Submitting..."%>
+         <p class="mg-p-mgtop">
+            <a onclick="$(this).closest('form').submit()" id="deleteSelectedPhotosAID" class="mg-small-form-btn"><%=t("delete selected photos")%></a>
+              <%#= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+              <a  id="deleteUnSelectedPhotosAID" class="mg-small-form-btn cancel-form-dialog"><%=t("cancel")%></a>
+          </p> 
+          
+        <!-- <button class="mg-small-form-btn"><%#=t('delete_selected_photos')%></button> -->
+        <%else%>
+        <div id="links-1"></div>
+          <h5>Add some photos for album...</h5>
+        <%end%>
+
+
+        <%end%>
+
+
+
+ <%#= will_paginate @photos, :container => false %>
+  <!-- </div> -->
+
+
+<div id="blueimp-gallery" class="blueimp-gallery">
+     The container for the modal slides
+    <div class="slides"></div>
+     Controls for the borderless lightbox 
+    <h3 class="title"></h3>
+    <a class="prev">‹</a>
+    <a class="next">›</a>
+    <a class="close">×</a>
+    <a class="play-pause"></a>
+    <ol class="indicator"></ol>
+ The modal dialog, which will be used to wrap the lightbox content 
+    <div class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title"></h4>
+                </div>
+                <div class="modal-body next"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default pull-left prev">
+                        <i class="glyphicon glyphicon-chevron-left"></i>
+                        Previous
+                    </button>
+                    <button type="button" class="btn btn-primary next">
+                        Next
+                        <i class="glyphicon glyphicon-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> 
+
+<h4 class="mg-h4"><%= t('upload_photos')%></h4>
+ <%= form_for :photos, url: upload_photos_save_path, :html => {
+                                :id => 'albumPhotoFormID', :multipart=>true } do |f| %>
+
+<!-- <p>
+     <%#= f.label :mg_album_id, t('album') ,:class=>"mg-label"%><span class="required-field"> *</span><br>
+    <%#= f.collection_select(:mg_album_id, MgEvent.where(:is_deleted=>0, :mg_school_id=>session[:current_user_school_id]), :id, :nm,{:include_blank => 'Select'} ,:class=>"mg-select-btn")  %>
+  </p> -->
+
+ <label class="mg-label mg-rm-text-trans" for="upload_file" ><%= t('upload_images') %></label>
+  
+         <div class="image-upload-for-event-cls"  style="float: left; width: 100%;">
+            <span class="image-upload-spam-cls" style="float: left;">
+             <%= file_field_tag "file[]",:onchange =>"validateImage(this.value,this, this.src);", :class=>"image-upload-cls", :id=>"photoUploadID"%>
+              
+              <!-- <img id="1-employeeImageTagID" src="#" alt="your image"  height="100" width="100"/>  -->
+            </span>
+             <a class="emp-remove-image-upload mg-custom-form-btn mg-icon-btn" style="color: #297ACC; font-size:0.8em; float: left; position: relative; right: 0px; margin-top: 3px;"><i class="fa fa-trash"></i></a><br/>
+       </div><br/>
+        <a id="addImageUploadsAID" class="mg-label-inner-form mg-custom-form-btn mg-icon-btn" style="color: #297ACC; font-size:0.8em;" ><i class="fa fa-plus">&nbsp;<%=t('add_images')%></i></a> <br/>
+ </br>
+  <%=hidden_field_tag :mg_album_id,params[:id]%>
+
+
+    <%#= f.submit t('save') ,:class=>"mg-small-form-btn"%>
+      <%#= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+
+
+  <p class="mg-p-mgtop">
+    <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("save")%></a>
+      <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+
+  </p>
+
+         
+<% end %>  
+
+
+
+
+
+
+<%= render  partial: 'application/common_left_close' %>
+<script>
+
+
+
+// $(document).on("click", ".albumb-delete-photos-cls",function() { 
+//             alert("hello");
+//             // $(".more").hide();  
+//             document.getElementById("links").disabled = true;
+//             // $("#links").block();   
+//     return false;
+// });   
+  
+// $(document).on("click", "div.post",function(event) {
+//      var morediv = $(this).find(".more");
+                  
+//      morediv.slideToggle('fast');
+// });
+
+
+
+$(document).ready(function () {
+ // $('#deleteSelectedPhotosAID').attr("disabled", "true");
+ // $('#hideDeleteButtonFormID').attr("disabled", "true");
+
+ 
+  $("#deleteSelectedPhotosAID").contents().unwrap().wrap("<button id='deleteSelectedPhotosAID' class='mg-small-form-btn'></button>");
+  $('#deleteSelectedPhotosAID').attr("disabled", "true");
+ focusCurrentTab("viewAlbumsPhotosAID","viewAlbumstosLiID");
+      //focusDashboards();
+$("#albumPhotoFormID").validate({
+
+rules: {
+"file[]": {required: true}//,
+//"file[]": {required: true}
+
+}
+});
+});
+$(document).on("click", ".albumb-delete-photos-cls", function(e){
+ $('#hideDeleteButtonFormID').attr("disabled", false);
+ $("#deleteSelectedPhotosAID").contents().unwrap().wrap("<a onclick='$(this).closest("+'"form"'+").submit()' id='deleteSelectedPhotosAID' class='mg-small-form-btn'></a>");
+
+
+});
+$(document).on("click", ".albumb-delete-photos-cls", function(e){ 
+  var delete_photo=$("input#mg_album_photos_id_").is(':checked');
+  if(!delete_photo){
+    // $('#hideDeleteButtonFormID').attr("disabled", true);
+     $("#deleteSelectedPhotosAID").contents().unwrap().wrap("<button id='deleteSelectedPhotosAID' class='mg-small-form-btn'></button>");
+     $('#deleteSelectedPhotosAID').attr("disabled", "true");
+
+  }
+});
+
+$(document).on("click", "#deleteUnSelectedPhotosAID", function(e){ 
+  var delete_photo=$("input#mg_album_photos_id_").is(':checked');
+   $(".albumb-delete-photos-cls").prop('checked', false);
+   $("#deleteSelectedPhotosAID").contents().unwrap().wrap("<button id='deleteSelectedPhotosAID' class='mg-small-form-btn'></button>");
+     $('#deleteSelectedPhotosAID').attr("disabled", "true");
+});
+
+
+
+
+
+
+$(document).on("click", ".delete-albums-photos-btn", function(e){
+     
+                var myID =$(this).attr('id');
+                    var Id=myID.split("-");
+
+
+                
+                var retVal = confirm("Are you sure to delete?");
+                if(retVal){
+                  //  alert(retVal);
+                     var urlLink = "/albums/delete_photo/"+Id[0];
+
+                      $.ajax({
+                        url: urlLink ,
+                        cache: false,
+                        success: function(html){
+                           window.location.reload();
+                                       
+                        }
+                    });
+
+                }else{   
+                   return false;
+                }
+
+        }); 
+
+
+
+
+document.getElementById('links-1').onclick = function (event) {
+  if (event.target.id != "mg_album_photos_id_") {
+        event = event || window.event;
+        var target = event.target || event.srcElement,
+            link = target.src ? target.parentNode : target,
+            options = {index: link, event: event},
+            links = this.getElementsByTagName('a');
+         blueimp.Gallery(links, options);
+      }
+};
+
+
+
+function validateImage(inputFile, that, src) {
+
+  if ( that.files && that.files[0]) {
+    //alert("inside if");
+    var reader = new FileReader();
+    reader.onload = imageIsLoaded(that);
+    reader.readAsDataURL(that.files[0]);
+  }
+  var allowedExtension = ["jpg", "jpeg", "gif", "png"];
+  var extName = inputFile.split('.');
+  if ($.inArray(extName[1], allowedExtension) == -1){
+     window.alert("Only image file with extension: .jpg, .jpeg, .gif or .png is allowed");
+      // $(that).src('');
+      $(that).removeAttr("src").val('');
+  }
+  else{
+    // $("#schoolImageTagID").attr("src","ssc.jpeg.url");
+
+  }
+ 
+} 
+
+
+function imageIsLoaded(that) {
+  // alert($("#photoUploadID").prop('src'));
+    // $('#1-employeeImageTagID').attr('src', $("#schoolImageTagID").attr("src"));
+};
+
+
+
+
+$(document).on("click", ".emp-remove-image-upload", function(e){
+
+   var total = $('.emp-remove-image-upload').length
+   if(total!=1)
+   {
+        $(this).parent('div').remove();
+   }
+   //alert($(this).val());
+});
+
+
+$(document).on("click", "#addImageUploadsAID", function(e){
+    var lastRepeatingGroup = $('.image-upload-for-event-cls').last();
+    var cloned = lastRepeatingGroup.clone();
+    cloned.find('input').val('');
+    cloned.find('input').attr('class',"image-upload-cls");
+    cloned.find('label').remove('');
+    cloned.find('img').val('');
+    $(cloned.find('img')).attr('src', '');
+    cloned.insertAfter( lastRepeatingGroup );
+    return false;
+}); 
+
+$(document).on("click", ".emp-edit-removes-files-upload", function(e){
+
+   var total = $('.emp-edit-removes-files-upload').length
+   if(total!=1)
+   {
+        $(this).parent('div').remove();
+    }
+});
+</script>
+
+<style>
+
+body {
+    overflow: visible !important;
+}
+
+#openImageAID {
+  text-decoration: none;
+}
+
+</style>

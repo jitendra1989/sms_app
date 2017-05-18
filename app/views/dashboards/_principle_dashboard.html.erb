@@ -1,0 +1,80 @@
+<!-- Sec -->
+<select id="graphId" class="mg-dashboard-select-btn">
+		<option value="1">Employees By Category</option>
+		<option value="2">Employees By Department</option>
+</select>
+
+
+  <%   @catList =   MgEmployeeCategory.where(:is_deleted => 0, :mg_school_id => session[:current_user_school_id])
+
+      dataHash = Hash.new 
+
+      @catList.each do |catObj|
+
+           empSize =    MgEmployee.where(:mg_employee_category_id => catObj.id).size
+ 
+          dataHash[catObj.category_name] = empSize
+       end 
+      
+
+  %>
+
+
+  <div id="catDiv"   width="642" height="300" style="display:none"> 
+    <%= pie_chart(dataHash ) %>
+  </div>
+
+
+
+  <%   @deptList =   MgEmployeeDepartment.where(:is_deleted => 0, :mg_school_id => session[:current_user_school_id])
+
+
+      deptDataHash = Hash.new 
+
+      @deptList.each do |deptObj|
+
+           empSize =    MgEmployee.where(:mg_employee_department_id => (deptObj.id.to_s)).size
+ 
+          deptDataHash[deptObj.department_name] = empSize
+       end 
+      
+
+  %>
+
+
+  	<div id="deptDiv"  width="642" height="300" style="display:none"> 
+    	<%= pie_chart(deptDataHash ) %>
+	</div>
+
+
+<script type="text/javascript">
+	
+$("#graphId").on("change",function(){
+
+	
+	if($(this).val()==1){
+		$("#deptDiv").hide();
+		$("#catDiv").show();
+	}else{
+		$("#deptDiv").show();
+		$("#catDiv").hide();
+
+	}
+
+
+
+});
+
+$(document).ready(function(){
+	$("#catDiv").show();
+})
+
+</script>	
+
+
+
+
+
+
+
+

@@ -1,0 +1,79 @@
+<% navigation_add t('registration'), :controller=>'placements', :action=>'placements_registration' %>
+<%= render  partial: 'placements_left' %>
+<h4 class="mg-h4"><%= t('placements_registration_list')%></h4>
+<button onclick="window.location.href='/placements/placements_registration_new'" class="mg-btn-bottom-margin mg-custom-form-btn"><%= t('new_registration')%></button>  
+<%if @placements_registration.present?%>
+<div class="mg_pagination">
+<table class="batch-tbl mg-tbl-margin">   <!-- border="2" --> 
+ <tr >
+    <th class="mg-rm-text-trans"><%=t('name_of_the_company')%></th>
+    <th> <%=t('industry')%></th>
+    <th> <%=t('location')%></th>
+    <th> <%=t('contact_person')%></th>
+    <th> <%=t('contact_number')%></th>
+    <th> <%=t('status')%></th>
+    <th><%=t('actions')%></th>
+  </tr>
+  <% @placements_registration.each do |e| %>
+    <tr>
+      <td class='mg-capitalize-text'><%= e.try(:name_of_the_company) %></td>
+      <td class='mg-capitalize-text'><%= e.try(:industry) %></td>
+      <td><%= e.try(:location) %></td>
+      <td class='mg-capitalize-text'><%= e.try(:contact_person) %></td>
+      <td><%= e.try(:contact_number) %></td>
+      <td><%= e.try(:status) %></td>
+      <td>
+        <button title="Change Password" id="<%=raw e.id %>-showlabBTNID" class="placement-Registration-change-password-manager-btn mg-icon-btn"><i class="fa fa-exchange"></i></button>
+        
+        <button title="Show" onclick="window.location.href='/placements/<%=e.id%>/placements_registration_show'" class="show-event-type-btn mg-icon-btn"><i class="fa fa-eye"></i></button>
+        <button title="Edit" onclick="window.location.href='/placements/<%=e.id%>/placements_registration_edit'" class="edit-event-type-btn mg-icon-btn"><i class="fa fa-pencil-square-o"></i></button>
+        <button title="Delete"  onclick="confirm('Are you sure to delete?') ? window.location.href='/placements/<%=e.id%>/placements_registration_delete/' : ''" class="delete-event-type-btn mg-icon-btn"><i class="fa fa-trash"></i></button></td>
+    </tr>
+  <% end %>
+</table>
+ <%= will_paginate @placements_registration, :container => false %>
+  </div>
+
+<%else%>
+<p>No Registrations</p>
+<%end%>
+
+
+<div id="showPlacementsRegistrationDIVID"></div>
+<div id="showRegistrationChangePasswordManagerkDIVID"></div>
+
+
+
+
+<%= render  partial: 'application/common_left_close' %>
+<script>
+  $( document ).ready(function() {
+    focusCurrentTab("placementsRegistrationAID","placementsRegistrationLiID");
+  });
+
+ 
+  $(document).on("click", ".placement-Registration-change-password-manager-btn", function(e){
+  var myID =$(this).attr('id');
+  var Id=myID.split("-");
+  var urlLink = "/placements/placement_registration_password/"+Id[0];
+  $.ajax({
+      url: urlLink ,
+      cache: false,
+      data: {"change_store_password":"change_password_by_admin"},
+      success: function(html){
+            $('#showRegistrationChangePasswordManagerkDIVID').dialog({
+              modal: true,
+              minHeight: 'auto',
+              width: 'auto',
+              title: "Change Password",
+              open: function () {
+                  
+                  $(this).html(html);
+              }
+          }); 
+         
+      }
+  });
+});
+
+</script>

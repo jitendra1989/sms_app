@@ -1,0 +1,163 @@
+<section id="userBodyContentBox" style="margin: 0 auto;">
+    <table  border="0" cellspacing="0" cellpadding="0"  style="margin-bottom: 0px;">
+        <tr>
+            <td valign="top" class="userBodyContentBox1">
+                <aside class="userMenuBoxLeft" style="width: 210px;">
+                    <ul class="menuListHome">
+
+                     <li class="myAccountMenu">About Hostel</li>
+                        <%if session[:user_type]=="hostel_admin"%>
+
+                        <li id="hostel_application_listLiID">
+                            <a class="Principle-Profile" href="/hostel_management/hostel_application_list" id="hostel_application_listAID">
+                                <div class="setMenu"><i class="fa fa-building">&nbsp;&nbsp;</i><%=t('hostel_application')%>
+                                </div>
+                            </a>
+                        </li>
+                        
+                            <li id="health_manageLiID">
+                                <a class="menuItemsActivities" href="/hostel_management/health_management_admin/" id="health_manageAID">
+                                    <div class="setMenu"><i class="fa fa-comment">&nbsp;&nbsp;</i><label class="mg-label-text-transform-none" for="hostelcontroller"><%=t('health_management')%>
+                                   </label></div>
+                                </a>
+                        </li>
+
+                        <li id="hostelRoomsALiID">
+                            <a class="Principle-Profile" href="/hostel_management/hostel_rooms_admin" id="hostelRoomsAAID">
+                                <div class="setMenu"><i class="fa fa-th-large">&nbsp;&nbsp;</i><%=t('unoccupiable_room')%>
+                                </div>
+                            </a>
+                        </li>
+
+                         <li id="hostel_disciplinary_data_listLiID">
+                            <a class="Principle-Profile" href="/hostel_management/discipline_report_admin" id="hostel_disciplinary_data_listAID">
+                                <div class="setMenu"><i class="fa fa-bars">&nbsp;&nbsp;</i><%=t('discipline_report')%>
+                                </div>
+                            </a>
+                        </li>
+                         <li id="hostel_issues_listLiID">
+                            <a class="Principle-Profile" href="/hostel_management/hostel_issues_list" id="hostel_issues_listAID">
+                                <div class="setMenu"><i class="fa fa-bars">&nbsp;&nbsp;</i><%=t('hostel_issues')%>
+                                </div>
+                            </a>
+                        </li>
+
+                        <li id="HostelDetailsLiID">
+                            <a class="Principle-Profile" href="/hostel_management/hostel_details" id="HostelDetailsAID">
+                                <div class="setMenu"><i class="fa fa-building-o">&nbsp;&nbsp;</i><%=t('hostel')%>
+                                </div>
+                            </a>
+                        </li>
+
+                        <li id="hostelFeeLiID">
+                            <a class="Principle-Profile" href="/hostel_management/hostel_fee_category" id="hostelFeeAID">
+                                <div class="setMenu"><i class="fa fa-credit-card-alt">&nbsp;&nbsp;</i><%=t('hostel_fees')%>
+                                </div>
+                            </a>
+                        </li>
+
+                        <li id="hostelfee_scheduleLiID">
+                                <a class="menuItemsActivities" href="/hostel_management/hostel_fee_schedule/" id="hostelfee_scheduleAID">
+                                    <div class="setMenu"><i class="fa fa-calendar-check-o">&nbsp;&nbsp;</i><label class="mg-label-text-transform-none" for="hostelcontroller"><%=t('hostel_fee_schedule')%>
+                                   </label></div>
+                                </a>
+                            </li>
+                        <%end%>
+
+
+                        <%if session[:user_type]=="hostel_warden"%>
+                         <li id="roomTypeLiID">
+                            <a class="Principle-Profile" href="/hostel_management/room_type" id="roomTypeAID">
+                                <div class="setMenu"><i class="fa fa-th-large">&nbsp;&nbsp;</i><%=t('room_type')%>
+                                </div>
+                            </a>
+                        </li>
+
+                        <li id="hostelFloorLiID">
+                            <a class="Principle-Profile" href="/hostel_management/hostel_floor" id="hostelFloorAID">
+                                <div class="setMenu"><i class="fa fa-bars">&nbsp;&nbsp;</i><%=t('floor')%>
+                                </div>
+                            </a>
+                        </li>
+                        <li id="hostelRoomsLiID">
+                            <a class="Principle-Profile" href="/hostel_management/hostel_rooms" id="hostelRoomsAID">
+                                <div class="setMenu"><i class="fa fa-home">&nbsp;&nbsp;</i><%=t('rooms')%>
+                                </div>
+                            </a>
+                        </li>
+                        <li id="allocate_rooms_listLiID">
+                            <a class="Principle-Profile" href="/hostel_management/allocate_rooms_new" id="allocate_rooms_listAID">
+                                <div class="setMenu"><i class="fa fa-table">&nbsp;&nbsp;</i><%=t('allocate_rooms')%>
+                                </div>
+                            </a>
+                        </li>
+                         <li id="re_allocate_rooms_listLiID">
+                            <a class="Principle-Profile" href="/hostel_management/warden_re_allocate_rooms" id="re_allocate_rooms_listAID">
+                                <div class="setMenu"><i class="fa fa-table">&nbsp;&nbsp;</i><%=t('reallocate_rooms')%>
+                                </div>
+                            </a>
+                        </li>
+                        <li id="going_out_provisionWLiID">
+                                <a class="menuItemsActivities" href="/hostel_management/going_out_provision_warden/" id="going_out_provisionWAID">
+                                    <div class="setMenu"><i class="fa fa-taxi">&nbsp;&nbsp;</i><label class="mg-label-text-transform-none" for="hostelcontroller"><%=t('going_out_provision')%>
+                                   </label></div>
+                                </a>
+                            </li>
+                        <li id="health_manageLiID">
+                                <a class="menuItemsActivities" href="/hostel_management/health_management/" id="health_manageAID">
+                                    <div class="setMenu"><i class="fa fa-code-fork">&nbsp;&nbsp;</i><label class="mg-label-text-transform-none" for="hostelcontroller"><%=t('health_management')%>
+                                   </label></div>
+                                </a>
+                        </li>
+                         <li id="disciplane_listLiID">
+                            <a class="Principle-Profile" href="/hostel_management/discipline_report" id="disciplane_listAID">
+                                <div class="setMenu"><i class="fa fa-file-text">&nbsp;&nbsp;</i><%=t('discipline_report')%>
+                                </div>
+                            </a>
+                        </li>
+                        <li id="hostel_complaintLiID">
+                            <a class="Principle-Profile" 
+                            href="/hostel_management/hostel_complaint" 
+                            id="hostel_complaintAID">
+                                <div class="setMenu"><i class="fa fa-comment">&nbsp;&nbsp;</i><%=t('hostel_issues')%>
+                                </div>
+                            </a>
+                        </li>
+
+                        <li id="HostelDetailsLiID">
+                            <a class="Principle-Profile" href="/hostel_management/hostel_details" id="HostelDetailsAID">
+                                <div class="setMenu"><i class="fa fa-building-o">&nbsp;&nbsp;</i><%=t('hostel')%>
+                                </div>
+                            </a>
+                        </li>
+
+                        <li id="hostelStudentAttendanceLID">
+                            <a class="Principle-Profile" href="/hostel_management/students_attendance" id="hostelStudentAttendanceAID">
+                                <div class="setMenu"><i class="fa fa-check-square-o">&nbsp;&nbsp;</i><%=t('attendance')%>
+                                </div>
+                            </a>
+                        </li>
+                        <li id="hostelStudentLeaveLID">
+                            <a class="Principle-Profile" href="/hostel_management/hosteler_leave" id="hostelStudentLeaveAID">
+                                <div class="setMenu"><i class="fa fa-circle-thin">&nbsp;&nbsp;</i><%=t('hosteler_leave')%>
+                                </div>
+                            </a>
+                        </li>
+                        <%end%>
+                        
+
+                        
+                    </ul>    
+
+                </aside>
+            </td>
+            <td  valign="top" id="manageEmployeeCategoryID" class="mg-table-td-main-2" style="width: 745px;">
+            
+            <%=render partial: 'layouts/messages'%>
+<script>
+$( document ).ready(function() {
+    
+    // focusPlacements();
+});
+</script>
+

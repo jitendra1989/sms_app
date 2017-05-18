@@ -1,0 +1,33 @@
+
+<!-- <%#= render  partial: 'laboratory/laboratry_left' %> -->
+
+ <div class="mg-custom-labels">
+<%= form_for :laboratry, url: laboratory_unit_create_path, :html => {
+                            :id => 'labunitCreateID' } do |f| %>
+<%= f.hidden_field :is_deleted, :value => 0 %>
+<%= f.hidden_field :mg_school_id, :value => session[:current_user_school_id] %>
+<%= f.hidden_field :created_by, :value => session[:user_id] %>
+<%= f.hidden_field :updated_by, :value => session[:user_id] %>
+<p>
+    <label class="mg-label" style="width:140px"><%= t('unit_name') %><span class="required-field">&nbsp;*</span></label>
+    <br/>
+   <%= f.text_field :unit_name,:class=>"mg-text-field" %>
+</p>
+<p class="mg-p-mgtop">
+    <!-- <%#= f.submit t('save') ,:class=>"mg-small-form-btn"%> -->
+    <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("save")%></a>
+<a class="mg-small-form-btn cancel-form-dialog"><%=t("cancel")%></a>
+
+    <%#= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+</p>
+<% end %>
+</div>
+<!-- <%#= render  partial: 'application/common_left_close' %> -->
+<script>
+
+$("#labunitCreateID").validate({
+        rules: {
+        "laboratry[unit_name]": {required: true, name_validate: true, maxlength: 35}
+      }
+    });
+</script>

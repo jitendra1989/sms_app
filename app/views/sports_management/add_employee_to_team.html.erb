@@ -1,0 +1,157 @@
+
+      <h4 class="mg-h4"><%=t('select_employee')%></h4>
+<div id="attendanceCalendarScroll">
+
+  <table class="mg-tbl-margin mg-show-tbl-width mg-inner-table-align">
+    <tr>
+        <th>Select Department</th>
+
+        <th>Select Employee</th>
+        <th></th>
+
+        <th>Selected Employee*</th>
+
+    </tr>
+
+    <tr>
+      <td>
+        <% if params[:data].present? %>
+          <%=select_tag :notSelectedemployee, options_for_select(@departments),:multiple => true,:size =>10,:class=>"mg-select-btn"%>
+        <% else %>
+          <%=select_tag :notSelectedemployee, options_for_select(@departments),:multiple => true,:size =>10,:class=>"mg-select-btn"%>
+          
+        <% end%>
+
+      </td>
+
+
+      <td>
+        <%=select_tag :selectedemployees,options_for_select([]),:multiple => true,:size =>10 ,:class=>"mg-add-library-particular"%>
+
+      </td>
+      <td>
+        <a  id="editaddingemployeedatas" class="mg-custom-form-btn mg-add-rem-btn">Add</a> 
+      </td>
+
+      <td>
+
+      <%=select_tag :selected_employees,options_for_select([]),:multiple => true,:size =>10 ,:class=>"mg-add-library-particular data14"%>
+
+      </td>
+      <td>
+          <a  id="removingdata" class="mg-custom-form-btn mg-add-rem-btn">Remove</a>
+      </td>
+  </tr>
+
+</table>
+
+</div>
+
+
+  <script type="text/javascript">
+
+  $(document).on("click","#editaddingemployeedatas",function(e){
+    var demo=$("#selectedemployees").val();
+    var texts=$("#selectedemployees :selected").text();
+    var text=texts.split("  ")
+    var array=[];
+
+    $("#selected_employees option").each(
+      function() {
+        array.push(this.value);
+      }
+    );
+
+     for(var i=0;i<demo.length;i++)
+     {
+        var a =false;
+        for(var j=0;j<array.length;j++){
+          if (demo[i]==array[j]){
+            a=true;
+          }
+        }
+
+        if (a){
+          }
+        else{
+         var addselectedOption=$("#selectedemployees option:selected")
+         var str="<option value="+demo[i]+">"+text[i]+"</option>"
+         $("#selected_employees").append(str);
+         $("#selected_employees option").prop('selected',true);
+        }
+      }
+   });
+
+
+  $(document).on("click","#removingdata",function(e){
+      var selectedOption=$("#selected_employees option:selected").remove();
+      $("#selected_employees option").prop('selected',true)
+    });
+
+   $(document).on("click","#notSelectedemployee",function(e){
+      var wing_id=$("#notSelectedemployee").val();
+        $.ajax({
+                url: "/sports_management/emp_data/"+wing_id,
+                type: "GET",
+                data: {"wing_id":wing_id},
+                success: function(data) {
+                  $("#selectedemployees").empty();
+                  $("#selectedemployees").html(data.main);
+                },
+                error:function(){
+                  alert("Something went wrong!");
+                }
+            });
+    });
+
+
+ $(document).on("click","#selectedemployeedata",function(e){
+    var sec_id=$("#selectedemployeedata").val();
+    var wing_id=$("#notSelectedemployee").val();
+    jQuery.ajax({
+            url: "/sports_management/section_employees",
+            type: "GET",
+            data: {"data":"suc","stu_id":sec_id},
+            success: function(html) {
+               $("#employeeListLabelID").show();
+               $("#selectedemployees").html(html.main);
+            },
+            error:function(){
+              alert("Something went wrong!");
+            } 
+      });
+    
+});
+
+ </script>
+  
+ 
+
+
+  
+<script type="text/javascript">
+  $(document).ready(function () {
+   $("#eventCommitteesFormID").validate({
+
+rules: {
+"mg_employee_id[]": {required: true}
+
+}
+});
+});
+
+</script>
+
+
+
+<style type="text/css">
+  #attendanceCalendarScroll{
+    border: 1px solid #bcbcbc;
+    overflow-x: scroll;
+    max-width: 719px;
+  }
+
+  .ui-datepicker-calendar {
+   display: none;
+  }
+</style>

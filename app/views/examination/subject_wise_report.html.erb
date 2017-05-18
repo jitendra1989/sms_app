@@ -1,0 +1,54 @@
+<%= render  partial: 'examination_table_left' %>
+
+
+
+<%= form_for :subject_wise_report, :url=>{:controller=>'examination',:action=>'generated_report2'} do |f| %>
+
+
+<div>
+<%="Select Section"%>
+   <%=select_tag :mg_batch_id,options_from_collection_for_select(@batches,"id","full_name"),:prompt=>"All Sections",:onchange=>"mysubjectreport(this.value)"%>
+</div>
+
+
+<div class="subject-list">
+
+</div>
+
+
+
+
+
+
+<%= f.submit "view", :class => "submit_button" %>
+
+
+<%end%>
+
+
+
+
+
+
+
+
+<%= render  partial: 'examination_table_close' %>
+<script>
+function mysubjectreport(batchid){
+    var urlLink = "/examination/list_subjects/";
+      
+  
+        $.ajax({
+            url: urlLink ,
+            data:{"mg_batch_id":batchid},
+            cache: false,
+            success: function(data){
+                //alert("hii")
+            //console.log(html);
+            $(".subject-list").empty();
+            $(".subject-list").append(data);
+        }
+       
+      }); 
+    }
+</script>

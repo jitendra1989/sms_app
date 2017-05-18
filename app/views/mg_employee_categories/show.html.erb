@@ -1,0 +1,75 @@
+<!-- Sec --> 
+
+<!-- <h3>Listing category details</h3> -->
+
+<% @employee_categories = MgEmployeeCategory.where(:is_deleted => 0, :mg_school_id => session[:current_user_school_id]) %>
+
+<%#= link_to "Add Categories!", { controller: "mg_employee_categories" }, id: "link_add", class: "employee-category" %>
+
+
+<table class="batch-tbl">
+    
+  
+    <tr>
+      <th>CategoryName</th>
+      <th>Prefix</th>
+      <th>Suffix</th>
+      <th>Status</th>
+      <th><%=t("actions")%></th>
+    </tr>
+   
+    <% @employee_categories.each do |employee_category| %>
+      <tr>
+        <td><%= employee_category.category_name %></td>
+        <td><%= employee_category.prefix %></td>
+        <td><%= employee_category.suffix %></td>
+
+        <td><%= employee_category.status %></td>
+
+        <td>
+           <button title="Edit" class="edit-employee-category mg-icon-btn" id="editEmployeeCategoryID-<%= employee_category.id%>"><i class="fa fa-pencil-square-o"></i></button>
+           <button title="Delete" class="delete-employee-category mg-icon-btn" id="deleteEmployeeCategoryID-<%= employee_category.id%>"><i class="fa fa-trash"></i></button>
+        </td>
+
+      </tr>
+    <% end %>
+</table><br/>
+
+<button class="new-employee-category" id="newEmployeeCategoryID">Add Category</button>
+
+<style type="text/css">
+  
+table.batch-tbl {
+   /* font-family: verdana,arial,sans-serif;*/
+    font-size:11px;
+    color:#104564;
+    border-width: 1px;
+    border-color:  #6592b2;
+    border-collapse: collapse;
+    margin-left: 20px;
+}
+table.batch-tbl th {
+    background: linear-gradient(to bottom, #d9dfeb, white) repeat scroll 0 0 rgba(0, 0, 0, 0);
+    border-width: 1px;
+    padding: 8px;
+    border-style: solid;
+    border-color:  #6592b2;
+}
+table.batch-tbl tr {
+    background-color:white;
+}
+
+
+
+table.batch-tbl td {
+    border-width: 1px;
+    padding: 8px;
+    border-style: solid;
+    border-color:  #6592b2;
+}
+
+</style>
+
+
+
+

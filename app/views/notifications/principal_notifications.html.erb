@@ -1,0 +1,52 @@
+<% navigation_add 'Send Notifications', principal_notifications_path %>
+
+<%user=MgUser.find(session[:user_id])%>
+<%=hidden_field_tag 'user_type', user.user_type%>
+<!--ss Principle no-->
+<% if @user_type.to_s == "employee" %>
+
+	<%#= render partial: 'application/common_left_close' %>
+ <%= render partial: '/dashboards/employee_left' %>
+    
+    <!-- <p>employee</p> -->
+    <% if !params[:emailnotice].blank? %>
+        <div class="alert alert-info mg-success-msg">
+          <%= params[:emailnotice] %>
+        </div>
+    <% end %>
+	<%= render partial: 'notifications/send_notification' %>
+		
+	<%= render partial: 'application/common_left_close' %>
+<%# end %>
+<%# elsif @user_type.to_s == "principal" %>
+
+	<%#= render partial: 'dashboards/principle_dashboard_left' %>
+	<%#= render partial: 'notifications/send_notification' %>
+	<%#= render partial: 'dashboards/principle_dashboard_left_close' %>
+
+<% else @user_type.to_s == "admin" || @user_type.to_s == "principal" || @user_type.to_s == "superprincipal" %>
+	<%= render  partial: 'notification_left' %>
+    <% if !params[:emailnotice].blank? %>
+        <div class="alert alert-info mg-success-msg">
+          <%= params[:emailnotice] %>
+        </div>
+    <% end %>
+	<%= render partial: 'notifications/send_notification'  %>
+
+	<%= render  partial: 'application/common_left_close' %>
+
+<% end %>
+
+<script type="text/javascript">
+     $(document).ready(function(){
+
+     	 focusCurrentTab("viewPrincipleNotification","viewPrincipleNotificationLiID");
+     	 // focusNotification();
+     	 var user_type=$("#user_type").val();
+     	 console.log(user_type);
+     	 if(user_type=="superprincipal" || user_type=="principal"){
+     	 	focusNotification();
+     	 }
+         
+   });
+</script>

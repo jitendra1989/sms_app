@@ -1,0 +1,25 @@
+      <%=render :partial => 'course_section'%>
+
+<div id="student_list_for_library_status">
+</div>
+    <button  id='reservation-<%=@inventory_data %>' class="submits_reservation_data  form_close_calss mg-custom-form-btn">Submit</button>
+    <button  id='reservation-<%=@inventory_data %>' class="cancel-submits-reservation-data  form_close_calss mg-custom-form-btn">Cancel</button>
+
+
+<script>
+$(document).on("click",".cancel-submits-reservation-data",function(e){
+
+      e.preventDefault();
+
+        var ID =$(this).attr('id');
+          var data=ID.split("-");
+              var status_data=data[0];
+              var id=data[1];
+      
+         $("#issued_pop_up").empty();
+          $("#Renew-"+id+"").attr("disabled",false)
+           $("#Return-"+id+"").attr("disabled",false	)
+
+                    });
+
+      </script>

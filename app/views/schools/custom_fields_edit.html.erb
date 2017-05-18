@@ -1,0 +1,66 @@
+<!-- Sec --> 
+
+	
+<%= form_for :demo,  :url=>{:controller=> "schools", :action=> "custom_fields_update", :id=>@demo.id},:html => { :id => "schoolCustomEditFieldsFormID" ,:multipart => true } do |f| %>
+<div class="field1">
+
+    <%= f.hidden_field :mg_school_id, :value => session[:current_user_school_id]%>
+    <%= f.hidden_field :is_deleted, :value => 0%>
+     
+    <%= f.hidden_field :model_name, :value => "school"%>
+   </div>
+
+  <p class="field">
+    <label class="mg-label">Field Name<span class="required-field "> *</span></label>
+    <%= f.text_field :name ,:class=>"mg-text-field"%>
+  </p>
+
+  <p id="field2">
+    <label class="mg-label">Field Type<span class="required-field "> *</span></label>
+    <%= f.select :data_type, options_for_select([["Check Box","check_box"], ["Radio Button","radio_button"],["Input Text","input_type"],["Drop Down","drop_down"]],:selected => @demo[:data_type] ),{:include_blank => 'Select'} ,:class=>"mg-select-btn"%>
+ </p>
+  
+  <p id="field4">
+  <%= f.label :Default_Value, 'Default Value' ,:class=>"mg-label"%><br/>
+    <%= f.text_area :text_data ,:class=>"mg-text-field"%>
+    </p>
+  
+ <p id="field3">
+  </p>
+
+<div style="display:none">
+  <p>
+    <%= f.label :is_deleted, "Status" ,:class=> "mg-label"%><br />
+    <%= f.label :is_deleted, "Active" ,:class=>"mg-label-inner-form"%>
+    <%= f.radio_button :is_deleted, false , :checked => true%>
+    <%= f.label :is_deleted, "In Active" ,:class=>"mg-label-inner-form" %>
+    <%= f.radio_button :is_deleted, true %>
+</p>
+</div>
+
+  <p class="actions">
+    <%#= f.submit t("save") ,:class=>"mg-small-form-btn"%>
+    <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("save")%></a>
+     <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+    </p>
+<% end %>
+
+<script type="text/javascript">
+     $(document).ready(function(){
+
+      // $("li").removeClass( "active" );
+      //   $("a").removeClass( "activeMenu" );
+
+      //  $("#schoolCustomFieldLiID").addClass("active");
+      //    $("#manageCustomFields").addClass("activeMenu");
+
+      //    focusSchool();
+
+         $("#schoolCustomEditFieldsFormID").validate({
+      rules:{
+        "demo[name]":{required:true},
+        "demo[data_type]":{required:true}
+      }
+    });
+   });
+</script>

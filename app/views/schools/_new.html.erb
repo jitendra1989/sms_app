@@ -1,0 +1,366 @@
+<!-- Sec --> 
+<div class="box">
+<%= form_for :school ,  url:schools_path, :html=>{:id=>'school_form'} do |f| %>
+ <!-- <table width="100%">
+        
+        <td valign="top">
+            <aside class="userMenuBoxLeft" style="width: 110px; margin-top: 15px;">
+                 <img src="/assets/logo.jpg" style="width:100px ; height: 100px; margin-top: 1em;" />
+                 <%#= image_tag  @school.logo.url(:medium, timestamp: false),:class => 'img-size'  %>
+ 
+                 <%#= image_tag @schools.logo.url(:medium, timestamp: false) ,:style => "width: 100px; height: 125px;" %>
+            </aside> 
+        </td>
+        </table> -->
+  <table class="pop-up-inner-text mg-tbl-margin mg-show-tbl-width">
+    <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="SchoolName"><%= t ('school_name') %><span class="required-field">&nbsp;*</span></label><br/>
+        <%= f.text_field :school_name ,:class=>"mg-text-field"%>
+      </td>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label"  for="SchoolCode"><%= t 'school_code' %><span class="required-field">&nbsp;*</span></label><br/>
+        <%= f.text_field :school_code ,:class=>"mg-text-field"%>
+      </td>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="Starttime"><%= t ('starttime') %><span class="required-field">&nbsp;*</span></label><br/>
+        <%= f.text_field :start_time ,:class=>"mg-text-field mg-start-time-field"%>
+      </td>
+    </tr>
+    <tr>
+      
+      <td class="mg-td-width-one-third">
+        <label class="mg-label"  for="Endtime"><%= t 'endtime' %><span class="required-field">&nbsp;*</span></label><br/>
+        <%= f.text_field :end_time ,:class=>"mg-text-field mg-end-time-field"%>
+      </td>
+      <td class="mg-td-width-one-third">
+          <label class="mg-label" for="AffilicatedTo "><%= t 'affilicatedto' %><span class="required-field">&nbsp;*</span></label><br/>
+          <%= f.text_field :affilicated_to ,:class=>"mg-text-field"%>
+        </td>
+        <td class="mg-td-width-one-third">
+          <label class="mg-label"  for="Affilication Number/Registration Number "><%= t 'regnum' %><span class="required-field">&nbsp;*</span></label><br/>
+          <%= f.text_field :reg_num ,:class=>"mg-text-field"%>
+        </td>
+    </tr>
+    <tr>
+        <td>
+          <label class="mg-label" for="leaveCalendarStartDate"><%= t 'leave_cal_start_date' %></label><br/>
+          <%= f.text_field :mg_leave_calendar_start_date,:class=>"mg-text-field"%>
+        </td>
+        <td>
+         <label class="mg-label" for="subdomain"><%= t 'subdomain_name' %><span class="required-field">&nbsp;*</span></label><br/>
+          <%=f.text_field :subdomain,:onchange =>"checkForUniqueSubDomainName(this);"%>
+        </td>
+    </tr>
+  </table>
+  <h4 class="mg-h4"><b><%=t("school_logo")%></b></h4>
+  <table class="mg-btn-bottom-margin mg-show-tbl-width">
+    <tr>
+        <td width="15%">
+          <label class="mg-custom-labels mg-label"  for="schoollogo "><%=t("school_logo")%><span class="required-field">&nbsp;*</span></label><br/>
+          <%#= image_tag  @school.logo.url(:medium, timestamp: false),:class => 'mg-img-size mg-btn-bottom-margin mg-custom-labels',:id=>"schoolImageTagID"  %>
+          <img id="schoolImageTagID" class="mg-img-size mg-btn-bottom-margin mg-custom-labels" src="#" style="display:none">
+          </td>
+          <td>
+          <%= f.file_field :logo,:onchange =>"validateFiles(this.value,this);" %>
+          <%#= file_field 'user_pic', accept: 'image/png,image/gif,image/jpeg'%>
+          <%#= @school.logo_file_name %>
+        </td>
+      </tr>
+  </table>
+
+  <h4 class="mg-h4"><b>Address Details</b></h4>
+  <table class="pop-up-inner-text mg-tbl-margin mg-show-tbl-width">
+    <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="AddressLine1 "><%= t 'addressline1' %><span class="required-field">&nbsp;*</span></label><br/>
+        <%= f.text_field :address_line1 ,:class=>"mg-text-field"%>
+      </td>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="AddressLine2 "><%= t 'addressline2' %></label><br/>
+        <%= f.text_field :address_line2 ,:class=>"mg-text-field"%>
+      </td>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="Street "><%= t 'street' %></label><br/>
+        <%= f.text_field :street ,:class=>"mg-text-field"%>
+      </td>
+    </tr>
+    <tr>   
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="Landmark "><%= t 'landmark' %></label><br/>
+        <%= f.text_field :landmark ,:class=>"mg-text-field"%>
+      </td>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label"  for="City "><%= t 'city' %><span class="required-field">&nbsp;*</span></label><br/>
+        <%= f.text_field :city ,:class=>"mg-text-field"%>
+      </td>
+       <td class="mg-td-width-one-third">
+        <label class="mg-label" for="State "><%= t 'state' %><span class="required-field">&nbsp;*</span></label><br/>
+        <%= f.text_field :state ,:class=>"mg-text-field"%>
+      </td>
+    </tr>
+    <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="Pincode "><%= t 'pincode' %><span class="required-field">&nbsp;*</span></label><br/>
+        <%= f.text_field :pin_code ,:class=>"mg-text-field"%>
+      </td>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="Country "><%= t 'country' %><span class="required-field">&nbsp;*</span></label><br/>
+        <%= f.text_field :country ,:class=>"mg-text-field"%>
+      </td>
+    </tr>
+  </table>
+  
+  <h4 class="mg-h4"><b>Contact Details</b></h4>
+  <table class="pop-up-inner-text mg-tbl-margin mg-show-tbl-width">
+    <tr>
+      <td class="mg-td-width-one-third">
+      
+
+        <label class="mg-label" for="phone_number "><%= t 'phone_number' %><span class="required-field">&nbsp;*</span></label>
+        <%= tooltip '<i class="fa fa-question"></i>'.html_safe, { :tooltip => 'Can enter digits only. No arbitrary symbols like -,*,#,etc are allowed. Phone Number should not be initialised with 0, eg: If your number is 06542-2651XX, then enter it like 65422651XX. No need to mention \'0\' in the beginning.' }, :class => 'mytooltip mg-icon-btn' ,:style=>"font-size: 0.85em;"%><br/>
+        <%= f.text_field :mobile_number, :rows => "10"%>
+        </br>
+
+      </td>
+      <td class="mg-td-width-one-third">
+      
+        <label class="mg-label" for="FaxNumber "><%= t 'faxnumber' %><span class="required-field">&nbsp;*</span></label>&nbsp;<%= tooltip '<i class="fa fa-question"></i>'.html_safe, { :tooltip => 'Can enter digits only. No arbitrary symbols like -,*,#,etc are allowed. Fax Number should not be initialised with 0, eg: If your number is 06542-2651XX, then enter it like 65422651XX. No need to mention \'0\' in the beginning.' }, :class => 'mytooltip mg-icon-btn' ,:style=>"font-size: 0.85em;"%><br/>
+        <%= f.text_field :fax_number ,:class=>"mg-text-field"%>
+        </br>
+
+      </td>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="EmailId "><%= t 'emailid' %><span class="required-field">&nbsp;*</span></label><br/>
+        <%= f.text_field :email_id ,:class=>"mg-text-field mg-text-email-field"%>
+      </td>
+      
+    </tr>
+    </table>
+    
+    <h4 class="mg-h4"><b>Other Details</b></h4>
+    <table class="pop-up-inner-text mg-tbl-margin mg-show-tbl-width" style="margin-top: -20px;">
+      <td class="mg-table-select-data-width">
+        <label class="mg-label"  for="DateFormat "><%= t 'dateformat' %><span class="required-field">&nbsp;*</span></label><br/>
+        <%= f.select :date_format, options_for_select([["dd/mm/yy","%d/%m/%y"], ["dd/mm/yyyy","%d/%m/%Y"]]) %>
+      </td>
+      <!-- <td width="350px"> -->
+        <!-- <label class="mg-label" for="Language "><#%= t 'schoolLanguage' %><span class="required-field">&nbsp;*</span></label><br/>
+        <#%= select_tag 'locale', options_for_select([['English','en'],['Spanish','es'],['Hindi','hi'],['German','de']], I18n.locale.to_sym)%> -->
+      <!-- </td> -->
+      <td class="mg-table-select-data-width">
+          <label class="mg-label"  for="TimeZone "><%= t 'timezone' %><span class="required-field">&nbsp;*</span></label><br/>
+          <%= f.time_zone_select :timezone %>
+        </td>
+      
+        <!-- <td width="450px">
+          <label class="mg-label"  for="TimeZone "><#%= t 'timezone' %><span class="required-field">&nbsp;*</span></label><br/>
+          <#%= f.time_zone_select :timezone %>
+        </td> -->
+        <td class="mg-td-width-one-third">
+          <label class="mg-label" for="CurrencyType "><%= t 'currencytype' %><span class="required-field">&nbsp;*</span></label><br/>
+          <%= f.select :currency_type, options_for_select([["$"], ["Rs"]])%>
+        </td>
+        </tr>
+      <tr>
+        <td class="mg-td-width-one-third"> 
+          <label class="mg-label"  for="GradingSystem "><%= t 'gradingsystem' %><span class="required-field">&nbsp;*</span></label><br/>
+          <%= f.select :grading_system, options_for_select([["CCE",1], ["CWE",2],["GPA",3]])%>
+        </td>
+      </tr><br>
+      <!-- <tr>
+        <td class="mg-table-select-data-width">
+          <label class="mg-label"  for="schoollogo "><%#= t 'logo' %><span class="required-field">&nbsp;*</span></label><br/>
+          <%#= image_tag  @school.logo.url(:medium, timestamp: false),:class => 'mg-img-size'  %>
+          <%#= f.file_field :logo ,:class=>"mg-text-margin"%>
+          <%#= @school.logo_file_name %>
+        </td>
+      </tr> -->
+    </table>
+  <%= f.hidden_field :language %>
+  <%= f.hidden_field :is_deleted,:value=>0 %>
+ <br/> <p class="mg-custom-labels">
+<%= submit_tag t("save"),:class=>"mg-small-form-btn"%>
+ <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+ </p>
+  </div>
+<%end%>
+ <!-- <button class="cancel-form-dialog"><%#= t('cancel') %></button> -->
+<script>
+  $(document).ready(function(){
+
+    dateFormatStr =  getJsDateFormat();
+    $('#school_mg_leave_calendar_start_date').datepicker({ changeMonth: true,
+                changeYear: true,yearRange: "-50:+50",dateFormat: dateFormatStr});
+  //   var leave_start_date =  $.datepicker.formatDate(dateFormatStr,new Date($('#school_mg_leave_calendar_start_date').val()));
+  // $('#school_mg_leave_calendar_start_date').val(leave_start_date);
+
+    <!-- 
+    $(".mg-end-time-field").change(function(){
+      var endtime = $(this).val();
+
+      var starttime = $(".mg-start-time-field").val();
+      //alert(starttime);
+      //alert(endtime);
+    st = minFromMidnight(starttime);
+et = minFromMidnight(endtime);
+
+if(st>=et){
+    alert("End time must be greater than start time");
+    $(".mg-end-time-field").val("");
+}
+
+
+
+
+function minFromMidnight(tm){
+  //alert("came");
+ var ampm= tm.substr(-2)
+ var clk = tm.substr(0, 4);
+ var m  = parseInt(clk.match(/\d+$/)[0], 10);
+ var h  = parseInt(clk.match(/^\d+/)[0], 10);
+ h += (ampm.match(/pm/i))? 12: 0;
+ return h*60+m;
+}
+});
+
+
+
+    $(".mg-start-time-field").change(function(){
+      var endtime = $(".mg-end-time-field").val();
+
+      var starttime = $(".mg-start-time-field").val();
+      //alert(starttime);
+      //alert(endtime);
+    st = minFromMidnight(starttime);
+et = minFromMidnight(endtime);
+
+if(st>=et){
+    alert("Start time must be smaller than end time");
+    $(".mg-start-time-field").val("");
+}
+
+
+
+
+function minFromMidnight(tm){
+  //alert("came");
+ var ampm= tm.substr(-2)
+ var clk = tm.substr(0, 4);
+ var m  = parseInt(clk.match(/\d+$/)[0], 10);
+ var h  = parseInt(clk.match(/^\d+/)[0], 10);
+ h += (ampm.match(/pm/i))? 12: 0;
+ return h*60+m;
+}
+});
+    -->
+
+//
+
+$(function () {
+    $.validator.addMethod('dateFormat',
+    function (value, element) {
+      dateFormatStr =  getJsDateFormat();
+        if (this.optional(element)) {
+            return true;
+        }
+        var ok = true;
+        try {
+            $.datepicker.parseDate(dateFormatStr, value);
+        }
+        catch (err) {
+            ok = false;
+        }
+        return ok;
+    },
+      "Please enter a date in the format "+ getDateFormat(dateFormatStr) +".");
+      dateFormatStr =  getJsDateFormat();
+
+    $(".datefield").datepicker({ dateFormat: dateFormatStr, changeYear: true });
+});
+
+
+
+
+$("#school_language").val($("#locale").val());
+
+$('#school_start_time').timepicker({ 'scrollDefault': 'now' });
+$('#school_end_time').timepicker({ 'scrollDefault': 'now' });
+
+    $("#school_form").validate({
+      rules:{
+        "school[school_name]":{required:true},
+        "school[school_code]":{required:true},
+        "school[address_line1]":{required:true},
+        "school[mg_leave_calendar_start_date]":{dateFormat:true},
+
+        "school[city]":{required:true},
+        "school[state]":{required:true},
+        "school[pin_code]":{required:true,number:true,minlength:6, maxlength:6},
+        "school[country]":{required:true},
+        "school[mobile_number]":{required:true,number:true, maxlength:10},
+        "school[email_id]":{required:true, email:true},
+        "school[fax_number]":{required:true,number:true, maxlength:10},
+        "school[date_format]":{required:true},
+        "school[language]":{required:true},
+        "school[timezone]":{required:true},
+        "school[start_time]":{required:true},
+        "school[end_time]":{required:true},
+        "school[currency_type]":{required:true},
+        "school[affilicated_to]":{required:true},
+        "school[reg_num]":{required:true},
+        "school[grading_system]":{required:true},
+        "school[subdomain]":{required:true}
+      },
+       messages: {
+        "school[pin_code]": {minlength: "Please enter 6 digits.", maxlength: "Please enter only 6 digits."},
+        "school[mobile_number]": {maxlength: "Please enter only 10 digits."},
+        "school[fax_number]": {maxlength: "Please enter only 10 digits."},
+          }
+    });
+
+    $("#locale").change(function(){
+      $("#school_language").val($("#locale").val());
+    });
+});
+
+function validateFiles(inputFile,that) {
+
+  if ( that.files && that.files[0]) {
+    //alert("inside if");
+    var reader = new FileReader();
+    reader.onload = imageIsLoaded;
+    reader.readAsDataURL(that.files[0]);
+  }
+  var allowedExtension = ["jpg", "jpeg", "gif", "png"];
+  var extName = inputFile.split('.');
+  if ($.inArray(extName[1], allowedExtension) == -1){
+     window.alert("Only image file with extension: .jpg, .jpeg, .gif or .png is allowed");
+     $("#school_logo").val('');
+  }
+  else{
+    $("#schoolImageTagID").attr("src","ssc.jpeg.url");
+
+  }
+ 
+}
+function imageIsLoaded(e) {
+    $('#schoolImageTagID').attr('src', e.target.result);
+    $('#schoolImageTagID').show();
+};
+
+
+</script>
+<!-- Sec --> 
+<style type="text/css">
+  .ui-button-icon-only .ui-icon {
+    margin-left: -9px;
+    top: 8px;
+  }
+
+  .mytooltip {
+cursor: pointer;
+color: green;
+border-bottom: 1px dotted green
+}
+</style>

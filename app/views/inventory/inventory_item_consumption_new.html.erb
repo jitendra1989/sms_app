@@ -1,0 +1,135 @@
+<% navigation_add 'Consumption', inventory_item_consumption_index_path %>
+<% navigation_add 'New Consumption', inventory_item_consumption_new_path %>
+
+<%=render partial:"inventory_left"%>
+<h4 class="mg-h4">New Consumption</h4>
+<%=form_for :mg_inventory_item_consumption,url:inventory_item_consumption_create_path,:html => {:id => 'newItemConsumptionFormID'} do |f|%>
+	<%= f.hidden_field :is_deleted, :value => 0 %>
+	<%= f.hidden_field :mg_school_id, :value => session[:current_user_school_id] %>
+	<%= f.hidden_field :created_by, :value => session[:user_id] %>
+	<%= f.hidden_field :updated_by, :value => session[:user_id] %>
+	<p>
+		<label class="mg-label mg-tt-width" style="width:185px"><%=t('select_item_category')%><span class="required-field"> *</span></label>
+		<%=f.collection_select(:mg_inventory_item_category_id,MgInventoryItemCategory.where(:is_deleted=>0, :mg_school_id=>session[:current_user_school_id]),:id, :name,{:include_blank => t('select')},:class=>"mg-select-btn",:onchange=>"itemCategoryChangeFunction(this.value)")%>
+	</p>
+
+	<p>
+		<label class="mg-label mg-tt-width" style="width:185px"><%=t('select_item_name')%><span class="required-field"> *</span></label>
+		<%=f.select :mg_inventory_item_id,options_for_select([]),:prompt=>"Select",:class=>"mg-select-btn"%>
+	</p>
+	<!-- <p>
+		<label class="mg-label mg-tt-width" style="width:185px"><%#=t('auto_generated_id')%></label>
+		<%#=f.text_field :item_prefix,:readonly=>true,:class=>"mg-text-field"%>
+	</p> -->
+
+	<!-- <p>
+		<label class="mg-label mg-tt-width" style="width:185px"><%#=t('select_item_type')%><span class="required-field"> *</span></label>
+		<%#=f.select :item_type,options_for_select([["Sale","sale"],["Consumption","consumption"]]),:prompt=>"Select",:class=>"mg-select-btn"%>
+	</p> -->
+
+	<p>
+		<label class="mg-label mg-tt-width" style="width:185px"><%=t('select_room')%><span class="required-field"> *</span></label>
+		<%=f.select :mg_inventory_room_id,options_for_select([]),:prompt=>"Select",:class=>"mg-select-btn"%>
+		<%#=f.collection_select(:mg_inventory_room_id,MgInventoryRoomManagement.where(:is_deleted=>0, :mg_school_id=>session[:current_user_school_id]),:id, :room_no,{:include_blank => t('select')},:class=>"mg-select-btn",:onchange=>"roomChangeFunctionForConsumption(this.value)")%>
+	</p>
+	<p>
+		<label class="mg-label mg-tt-width" style="width:185px"><%=t('select_rack')%><span class="required-field"> *</span></label>
+		<%=f.select :mg_inventory_rack_id,options_for_select([]),:prompt=>"Select",:class=>"mg-select-btn"%>
+	</p>
+
+	<p>
+		<label class="mg-label mg-tt-width" style="width:185px"><%=t('total_quantity_available')%></label>
+		<%=text_field_tag :total_quantity,nil,:readonly=>true,:class=>"mg-text-field"%>
+	</p>
+
+	<p>
+		<label class="mg-label mg-tt-width" style="width:185px"><%=t('quantity_available')%></label>
+		<%=f.text_field :quantity_available,:readonly=>true,:class=>"mg-text-field"%>
+	</p>
+
+	<p>
+		<label class="mg-label mg-tt-width" style="width:185px"><%=t('quantity_consumed')%><span class="required-field"> *</span></label>
+		<%=f.text_field :quantity_consumed,:class=>"mg-text-field"%>
+	</p>
+
+	<p>
+		<label class="mg-label mg-tt-width mg-label-text-transform-none" style="width:185px"><%=t('date_of_consumption')%><span class="required-field"> *</span></label>
+		<%=f.text_field :consumption_date,:class=>"mg-text-field consumption_date"%>
+	</p>
+
+	<p>
+		<label class="mg-label mg-tt-width" style="width:185px"><%=t('consumption_type')%><span class="required-field"> *</span></label>
+		<%=f.select :consumption_type,options_for_select([["Issued","issued"],["Used","used"],["Damaged","damaged"],["Lost","lost"]]),:prompt=>"Select",:class=>"mg-select-btn"%>
+		<%#=f.text_field :consumption_type,:class=>"mg-text-field"%>
+	</p>
+	<p class="mg-description-p" style="display:none">
+		<label class="mg-label mg-tt-width" style="width:185px;vertical-align: top;"><%=t('description')%></label>
+		<%= f.text_area :description,:class=>"mg-text-field" %>
+	</p>
+	<div id="consumption-issued-div">
+		<p id="consumer-type-p"></p>
+	</div>
+
+	<p class="mg-p-mgtop">
+    	<a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("save")%></a>
+    	<%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+	</p>
+
+	
+<%end%>
+<%=render partial:"common_left_close"%>
+
+<script>
+$(document).ready(function(){
+	focusCurrentTab("itemconsumptionAID","itemconsumptionLiID");
+	$("#newItemConsumptionFormID").validate({
+		rules: {
+			"mg_inventory_item_consumption[mg_inventory_item_category_id]": {required: true},
+			"mg_inventory_item_consumption[mg_inventory_item_id]": {required: true},
+			"mg_inventory_item_consumption[mg_inventory_room_id]": {required: true},
+			"mg_inventory_item_consumption[mg_inventory_rack_id]": {required: true},
+			"mg_inventory_item_consumption[item_type]": {required: true},
+			"mg_inventory_item_consumption[quantity_consumed]": {required: true,number:true,min: 0},
+			"mg_inventory_item_consumption[consumption_date]": {required: true},
+			"mg_inventory_item_consumption[consumption_type]": {required: true},
+			"mg_consumer_type_id": {required: true},
+			"mg_department_id": {required: true},
+			"mg_batch_id": {required: true},
+			"employeeIds[]": {required: true},
+			"studentIds[]": {required: true}
+		}
+	});
+	dateFormatStr =  getJsDateFormat();
+    $( ".consumption_date" ).datepicker({ changeMonth: true,
+                changeYear: true,yearRange: "-50:+0",maxDate: "0" ,dateFormat: dateFormatStr});
+
+});
+
+$(document).on("change","#mg_inventory_item_consumption_consumption_type",function(){
+  var consumption_type=$(this).val();
+  if(consumption_type=="issued"){
+    $(".mg-description-p").hide();
+	$("#consumption-issued-div").show();
+    consumption_type_changes();
+  }
+  else if(consumption_type=="used" || consumption_type=="damaged" || consumption_type=="lost"){
+    $(".mg-description-p").show();
+	$("#consumption-issued-div").hide();
+    $("#mg_inventory_item_consumption_description").val("");
+  }
+  else{
+    $(".mg-description-p").hide();
+	$("#consumption-issued-div").hide();
+    $("#mg_inventory_item_consumption_description").val("");
+  }
+});
+
+function consumption_type_changes(){
+	$.ajax({
+		url:"/inventory/inventory_consumption_type_changes",
+		success:function(html){
+			$("#consumer-type-p").html(html);
+		}
+	});
+}
+</script>

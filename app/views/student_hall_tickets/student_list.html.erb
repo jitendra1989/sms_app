@@ -1,0 +1,171 @@
+<% if @student_list.length>0 %>
+<h4 class="mg-h4"><%=t('student_list')%></h4>
+<div class="mg-scroll-employee-bar mg-btn-bottom-margin">
+  <table class="batch-tbl table-batchs-tbl">
+    <tr class="subject-table-header">
+      <th><%= t('student_id') %></th>
+      <th><%= t('name') %></th>
+      <th class="mg-rm-text-trans"><%= t('dateofbirth') %></th>    
+      <th><%= t('hall_ticket_release') %></th>
+      <th><%= t('send_hall_ticket') %></th>      
+      <th><%= t('actions') %></th>      
+    </tr>  
+      <% @student_list.each do |f| %>  
+        <tr>
+          <% @mg_id=params[:mg_course_id] %>
+          <td class="mg-align-center"><%= f.try(:student_temporary_id) %></td>
+          <td class="mg-capitalize-text"><%= f.try(:first_name) %>&nbsp;<%= f.try(:middle_name) %>&nbsp;<%= f.try(:last_name) %></td>
+          <% @dateFormat = MgSchool.find_by(:id=>session[:current_user_school_id]).date_format %>
+          <td class="mg-align-center"><%= f.try(:date_of_birth).try(:strftime,@dateFormat) %></td>
+          <td class="mg-align-center">
+            <%=student_record(f.id)%>
+          </td>               
+          <% if student_record(f.id)=="Not Release" %>
+            <td class="mg-align-center student-id-cls">
+              <%= check_box_tag(f.id, "student_ids", false, :onclick=>"toggleCheckBox(#{f.id},this);",:class=>"checbox-toggel-cls")%>            
+            </td>
+          <%else%>
+            <td class="mg-align-center student-id-cls">
+              <%= check_box_tag(f.id, "student_ids", false, :onclick=>"toggleCheckBox(#{f.id},this);",:class=>"checbox-toggel-cls")%>            
+            </td>
+          <%end%>
+          <td>
+            <button title="<%=t('show')%>" id="<%= raw f.id %>-viewHallBTNID" class="viewHallTCKT mg-icon-btn"><i class="fa fa-eye"></i></button>
+            <% @student_exam_detail = MgEntranceExamDetail.find_by(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id],:mg_course_id=>params[:mg_course_id]) %>
+            <% if @student_exam_detail.present? %>
+              <span style="margin-right: 4px;font-size: 12px">      
+                <%= link_to "<i class=\"fa fa-file-pdf-o\"></i>".html_safe, {:controller => "student_hall_tickets", :action => "generate_pdf",:mg_id =>f.mg_course_id,:id=>f.id,:format=>"pdf"},:title=>"Generate pdf", :target=>"_blank",:class=>"mg-icon-btn hall_ticket_pdf" %>
+              </span>                   
+            <% end %>      
+          </td>          
+        </tr>
+      <% end %>       
+  </table> 
+  </div>
+  <p class="mg-p-mgtop">   
+    <a class="mg-small-form-btn submit-student-hall-ticket-btn"><%=t('email')%></a>  
+    <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>     
+  </p>
+  <div id="viewHalTCKT">  
+  
+</div>
+
+<% else %>
+  <h5 class="mg-custom-labels"><%=t('no_student_display')%></h5>
+<% end %>
+<div id="spinner">
+  <img src="/images/ajax-loader.gif" alt="Loading..."/>
+</div>
+<div id="overlay"></div> 
+
+<script>
+
+  function spin(){    
+    $("#overlay").show();
+    $("#spinner").show();
+  };
+  function stopSpin(){
+    $("#overlay").hide();
+    $("#spinner").hide();
+  };
+
+  $(".viewHallTCKT").on("click",function(){
+    var stID = $(this).attr('id');
+    var id = stID.split("-");
+    var mgid = <%=@mg_id%>;   
+    var urlLink = "/student_hall_tickets/"+id[0];  
+    $.ajax({
+      url: urlLink,
+      data: {"mg_course_id":mgid},    
+      cache: false,
+      success: function(html){
+        $("#viewHalTCKT").dialog({      
+          modal: true,
+          title: "Student Hall Ticket",
+          minHeight: "auto",
+          width: "auto",
+          open: function(){
+            $(this).html(html);
+          }
+        });
+      },
+      error: function(){
+          alert("iside error");
+        }
+    });
+  });
+  
+  var student_id_list = [];     
+  function toggleCheckBox(student_id,that)
+  {
+    var a = $(that).parent(".student-id-cls").find('.checbox-toggel-cls').is(':checked');
+         
+    if(a==true){
+      student_id_list.push(student_id);      
+    }else{      
+      var index = student_id_list.indexOf(student_id);
+      if (index > -1) {
+        student_id_list.splice(index, 1);
+        //student_id_list.pop(student_id);
+      }
+    }
+  }
+
+  $(".submit-student-hall-ticket-btn").click(function(e){
+    e.preventDefault();
+    var class_id = $("#student").val();
+    if(student_id_list!='')
+    {     
+      var urlLink = "/student_hall_tickets/send_hall_ticket";
+      spin();
+      $.ajax({
+          url: urlLink ,
+          data: { 'student_id_list':student_id_list,"format":"pdf","class_id":class_id},
+          cache: true,
+          success: function(html){
+            stopSpin();   
+            alert("Released Hall ticket Successfully");          
+            //window.location = "/student_hall_tickets"
+            //alert(location);
+            //location.reload();
+            studentList(class_id);
+          }
+      });
+    }else{
+      alert("Please Select atleast One");
+      return false;          
+    }
+  });
+
+</script>
+
+
+<style>
+  
+#spinner
+{
+  /*width:150px;
+  height: 150px;*/
+  position: relative;
+  /*top: 80%;*/
+  /*left: 33%;*/
+  text-align:center;
+  margin-left: -12em;
+  top: -190px;
+  z-index:2;
+  overflow: auto;
+  display: none;
+}   
+
+#overlay {
+  background-color: rgba(0, 0, 0, 0.8);
+  z-index: 999;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  display: none;
+}
+
+</style>

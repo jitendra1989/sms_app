@@ -1,0 +1,50 @@
+<!-- Sec --> 
+<%= form_for @employee_department, url: mg_employee_department_path, method: :patch, html: {role: :form} do |f| %>
+<!--<#%= form_for :article, url: employee_path, method: :patch do |f| %>-->
+  <p>
+    <%= f.label t('departmentname') ,:class=>"mg-label"%><span class="required-field"> *</span><br>
+    <%= f.text_field :department_name ,:class=>"mg-text-field"%>
+  </p>
+   <p>
+    <%= f.label t('departmentcode') ,:class=>"mg-label"%><span class="required-field"> *</span><br>
+    <%= f.text_field :department_code ,:class=>"mg-text-field"%>
+  </p>
+<div style="display:none">
+    <p>
+   
+      <%= f.label t('status') ,:class=>"mg-label"%>       <br />
+      <%= f.label :status, t("active"), :value => "true"  ,:class=>"mg-label-inner-form" %>
+      <%= f.radio_button :status, false , :checked => true%>
+      <%= f.label :status, t("inactive"), :value => "false" ,:class=>"mg-label-inner-form" %>
+      <%= f.radio_button :status, true %> <br />
+    </p>
+</div>
+  <p>
+    <%#= f.submit t('save') ,:class=>"mg-small-form-btn"%>
+    <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("save")%></a>
+    <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+  </p>
+<% end %>
+
+<!-- <span class="mg-cncl-btn-align">
+  <button class="cancel-form-dialog btn btn-cancel"><%= t('cancel') %></button>
+</span> -->
+
+<!-- <button class="cancel-form-dialog"><%#= t('cancel') %></button> -->
+
+
+
+<script>
+  $(document).ready(function(){
+    $(".edit_mg_employee_department").validate({
+                      rules: {
+                "mg_employee_department[department_name]": {required: true},
+                "mg_employee_department[department_code]": {required: true},
+                "mg_employee_department[status]": {required: true}
+                }
+    });
+  });
+
+
+</script>
+ 

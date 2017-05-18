@@ -1,0 +1,125 @@
+<% navigation_add t('timetable'), timetable_index_path %>
+<% navigation_add t('timetable')+' Creation', timetable_time_table_creation_path %>
+
+<%= render  partial: 'timetable_left' %>
+<h4 class="mg-h4"><%=t('timetable')%> Creation</h4>
+<%#=link_to "Generate Time Table" , { :id => 'generate_timetableId' } %>
+<div>
+<p>
+<button id="generate_timetableId" class="mg-timetable-form-btn">Generate <%t('timetable')%></button>
+</p>
+<p>
+<button id="delete_timetableId" class="mg-timetable-form-btn">Delete <%t('timetable')%></button>
+</p>
+
+<div id="spinner">
+    <img src="/assets/ajax-loader.gif" alt="Loading..."/>
+</div>
+<div id="overlay"></div>
+
+<%#=link_to "Delete Time Table", :controller=>"timetable",:action=>"delete_timetable"  %>
+</div>
+<%= render  partial: 'timetable_left_close' %>
+
+<script>
+
+$(document).ready(function(){
+
+    focusCurrentTab("timeTableCreationAID","timeTableCreationLiID");
+    focusTimeTable();
+
+$("#generate_timetableId").click(function(){
+	//alert("some");
+	 generate_timetable();
+});
+
+ $("#delete_timetableId").click(function(){
+	//alert("some");
+	 		delete_timetable();
+		});
+
+});
+
+
+function spin(){
+    
+    $("#overlay").show();
+    $("#spinner").show();
+};
+
+function stopSpin(){
+    $("#overlay").hide();
+    $("#spinner").hide();
+};
+
+
+function generate_timetable(){
+    var retVal = confirm("Are you sure to generate timetable?");
+    if (retVal)
+    {
+        var urlLink = "/timetable/generate_timetable/";
+        spin();
+        $.ajax({
+        url: urlLink ,
+        cache: false,
+        success: function()
+        {
+            alert("Time table has been generated")
+            stopSpin();   
+        }
+                }); 
+    }
+    
+    };
+
+
+   
+    function delete_timetable(){
+        var retVal = confirm("Are you sure to delete timetable?");
+        if(retVal)
+        {
+                var urlLink = "/timetable/delete_timetable/";
+                spin();
+                $.ajax({
+                url: urlLink ,
+                cache: false,
+                success: function()
+                {
+                    alert("Deleted successfully")
+                    stopSpin();
+                }
+                       }); 
+        } 
+    };
+    </script>
+   
+
+
+
+<style>
+#spinner
+{
+    /*width:150px;
+    height: 150px;*/
+    position: relative;
+    /*top: 80%;*/
+    /*left: 33%;*/
+    text-align:center;
+    margin-left: -12em;
+    margin-top: 95px;
+    z-index:2;
+    overflow: auto;
+    display: none;
+}   
+
+#overlay {
+    background-color: rgba(0, 0, 0, 0.8);
+    z-index: 999;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    display: none;
+}
+</style>

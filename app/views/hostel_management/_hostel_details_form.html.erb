@@ -1,0 +1,379 @@
+
+<%#= render  partial: 'hostel_management_left' %>
+<%= render  partial: 'master_settings/master_settings_left' %>
+
+<% navigation_add t('hostel'), :controller=>'hostel_management', :action=>'hostel_details' %>
+
+<% if @action=='new'%>
+	<h4 class="mg-h4"><%=t('hostel_details')%></h4>
+	<% navigation_add t('new'),:controller=>'hostel_management',:action=>'hostel_details_new' %>
+<% else %>
+	<h4 class="mg-h4"><%=t('edit_hostel_details')%></h4>
+	<% navigation_add  t('edit'), :controller=>'hostel_management', :action=>'hostel_details_edit',:id=>params[:id] %>
+<%end%>
+
+<%= form_for :hostel_details ,:url=>@action=='new' ? 'hostel_details_create': '/hostel_management/'+@hostel_data.try(:id).to_s+'/hostel_details_update', :html => {:id => 'hostel_detailsID' } do |f| %>
+
+
+<%= f.hidden_field :is_deleted, :value => 0 %>
+<%= f.hidden_field :mg_school_id, :value => session[:current_user_school_id] %>
+<%= f.hidden_field :created_by, :value => session[:user_id] %>
+<%= f.hidden_field :updated_by, :value => session[:user_id] %>
+
+
+   <p>
+	    <%= f.label :name, t('name') ,:class=>"mg-label"%><span class="required-field"> *</span><br>
+
+		<% if @action=='new'%>
+	    	<%= f.text_field :name  ,:class=> 'mg-text-field'%>
+
+		<% else %>
+	    	<%= f.text_field :name  ,:class=> 'mg-text-field',:value=>@hostel_data.name%>
+		<%end%>
+  </p>
+
+  <p>
+    	<%= f.label :description, t('description') ,:class=>"mg-label"%><br/>
+
+    	<% if @action=='new'%>
+	    	<%= f.text_area :description  ,:class=> 'mg-text-field'%>
+		<% else %>
+	    	<%= f.text_area :description  ,:class=> 'mg-text-field',:value=>@hostel_data.description%>
+		<%end%>
+  </p>
+
+   <p>
+    	<%= f.label :category, t('category') ,:class=>"mg-label"%><span class="required-field"> *</span><br>
+
+    	<% if @action=='new'%>
+	    	<%= f.select :category,options_for_select(['Boys','Girls','Coed']),:prompt=>"Select" ,:class=> 'mg-text-field'  %>
+		<% else %>
+	    	<%= f.select :category,options_for_select(['Boys','Girls','Coed'],:selected=>@hostel_data.category),:prompt=>"Select" ,:class=> 'mg-text-field'  %>
+
+		<%end%>
+  </p>
+<%#hostel_rooms=MgHostelRoom.where(:mg_hostel_details_id=>@hostel_data.try(:id),:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).sum(:availability)%>
+	<p>
+		<%= f.label :total, t('total') ,:class=>"mg-label"%><br>
+	<% if @action=='new'%>
+		<%= f.text_field :total,:value=>0,:class=>"mg-select-btn mg-text-field",:disabled=>true %>
+	<% else %>
+		<%= f.text_field :total,:value=>@hostel_data.try(:total),:class=>"mg-select-btn mg-text-field",:disabled=>true %>
+	<%end%>
+
+	</p>
+	<p>
+		<%= f.label :occupancy, t('occupancy') ,:class=>"mg-label"%><br>
+	<% if @action=='new'%>
+		<%= f.text_field :occupancy,:value=>0,:class=>"mg-select-btn mg-text-field",:disabled=>true %>
+	<% else %>
+		<%= f.text_field :occupancy,:value=>@hostel_data.try(:total)-@hostel_data.try(:availability),:class=>"mg-select-btn mg-text-field",:disabled=>true %>
+	<%end%>
+
+	</p>
+
+	<p>
+		<%= f.label :availability, t('availability') ,:class=>"mg-label"%><br>
+	<% if @action=='new'%>
+		
+		<%= f.text_field :availability,:value=>0,:class=>"mg-select-btn mg-text-field",:disabled=>true %>
+	<% else %>
+		<%= f.text_field :availability,:value=>@hostel_data.try(:availability),:class=>"mg-select-btn mg-text-field",:disabled=>true %>
+	<%end%>
+	</p>
+
+
+	<p>
+		<%= f.label :visible_to_student, t('visible_to_student') ,:class=>"mg-label"%><br>
+		<% if @action=='new'%>
+			<%= check_box_tag 'visible_to_student',"yes"%>
+		<%else%>
+			<%if @hostel_data.try(:visible_to_student)==true%>
+				<%= check_box_tag 'visible_to_student',"yes",:checked%>
+			<%else%>
+				<%= check_box_tag 'visible_to_student',"yes"%>
+			<%end%>
+		<%end%>
+
+		<%#= check_box_tag 'visible_to_student', school.id, :checked, {:id=>"defaultSchoolId", :disabled =>false}%>
+		
+	</p>
+
+
+
+
+
+	<h4 class="mg-h4"><%=t('programme_wise_quota')%></h4>
+
+	<% wing_data=MgWing.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:wing_name,:id) %>
+
+	<% if @action=='new' %>
+		<a id="addRound" class="mg-label-inner-form mg-custom-form-btn" style="" >Add Program</a><br>
+		
+		<table class="exam-rounds mg-show-tbl-width batch-tbl">
+			<tr>
+				<th><%="Program"%><span class="required-field prgme">*</span></th>
+				<th><%="Maximum Occupancy"%><span class="required-field prgme">*</span></th>
+				<th><%="Action"%></th>
+			</tr>
+			<!-- <tr> -->
+				<!-- <a id="addRound" class="mg-label-inner-form mg-custom-form-btn" style="color: #297ACC; font-size:0.8em; position: relative; top: -1px;" >Add Program</a> -->
+			<!-- </tr> -->
+			<tr class="prgm-div"> 
+				<td class="mg-align-center">
+					<%#= f.label :programme, t("select_programme") ,:class=>"mg-label "%>
+					<%= select_tag "programme[1]",options_for_select(wing_data),{:class => 'prgm',:prompt=>"Select"} %>
+				</td>
+				<td class="mg-align-center">
+					<!-- <%#= f.label :max_occupancy, t("maximum_occupancy") ,:class=>"mg-label "%><span class="required-field max-occ">*</span> -->
+					<%= text_field_tag "max_occupancy[1]",nil,{:class => 'occu1 occu1_data',:prompt=>"Select"} %>
+				</td>
+				<td class="mg-align-center">
+					<a  title="Remove" class="remove-rule mg-icon-btn" style="margin-left: 5px"> <i class="fa fa-trash" ></i></a>
+				</td>
+			</tr>
+			<br>
+	  </table><br>
+  <% else %>
+	  <a id="addRound" class="mg-label-inner-form mg-custom-form-btn" style="color: #297ACC; font-size:0.8em; position: relative; top: -1px;" >Add Program</a><br>
+	 	<table class="exam-rounds mg-show-tbl-width batch-tbl">
+			<!-- <tr> -->
+				<!-- <a id="addRound" class="mg-label-inner-form mg-custom-form-btn" style="color: #297ACC; font-size:0.8em; position: relative; top: -1px;" >Add Program</a> -->
+			<!-- </tr> -->
+			<tr>
+				<th><%=t('programme')%><span class="required-field prgme">*</span></th>
+				<th><%=t('maximum_occupancy_programme')%><span class="required-field prgme">*</span></th>
+				<th><%=t('action')%></th>
+			</tr>
+			<% for i in 0...@prgm_data.length %>
+				<tr class="prgm-div"> 
+					<td class="mg-align-center">
+						<!-- <%#= f.label :programme, t("select_programme") ,:class=>"mg-label "%><span class="required-field prgme">*</span> -->
+						<%= select_tag "programme[1]",options_for_select(wing_data,:selected=>@prgm_data[i].programme),{:class => 'prgm',:prompt=>"Select"} %>
+					</td>
+					<td class="mg-align-center">
+						<!-- <%#= f.label :max_occupancy, t("maximum_occupancy") ,:class=>"mg-label "%><span class="required-field max-occ">*</span> -->
+						<%= text_field_tag "max_occupancy[1]",@prgm_data[i].max_occupancy,{:class => 'occu1 occu1_data',:prompt=>"Select"} %>
+					</td>
+			    <td class="mg-align-center">
+						<a  title="Remove" class="remove-rule mg-icon-btn" style="margin-left: 5px"> <i class="fa fa-trash" ></i></a>
+					</td>
+				</tr>
+			<% end %>
+			<br>
+  	</table><br/>
+ 	<% end %>
+
+
+<h4 class="mg-h4"><%=t('rules')%></h4>
+<% if @action=='new' %>
+  <a id="addRule" class="mg-label-inner-form mg-custom-form-btn" style="color: #297ACC; font-size:0.8em; position: relative; top: -1px;" >Add Rule</a><br>
+
+	<br/><table class="rules-class mg-show-tbl-width batch-tbl">
+		<!-- <tr> -->
+			<!-- <a id="addRule" class="mg-label-inner-form mg-custom-form-btn" style="color: #297ACC; font-size:0.8em; position: relative; top: -1px;" >Add Rule</a> -->
+		<!-- </tr> -->
+		<tr>
+			<th style="width: 250px;"><%=t("name")%></th>
+			<th style="width: 314px;"><%=t("description")%></th>
+			<th><%=t("action")%></th>
+		</tr>
+			<!-- <th><%#=t("name")%></th> -->
+      	<!-- <th><%#=t("description")%><span class="required-field">&nbsp;*</span></th> -->
+			<!-- <td> -->
+				<!-- <tr class="rules-div">  -->
+			<!-- </td> -->
+
+		<tr class="demo-div rules-div">
+      <div id="finalDueFineDivId">
+      <div class="due-fine-div" id="dueFineDivId">
+      <!-- <thead></thead><span class="required-incremented-field">1</span></td> -->
+    
+    	<td class="mg-align-center mg-inventory-td-class">
+        <%= text_field_tag "name[1]",nil,{:class => 'name'}%>
+      </td>
+      <td class="mg-align-center mg-inventory-td-class">
+        <%= text_area_tag "description[1]",nil,{:class => 'desc1',:style=>"width: 198px;height: 47px;"}%>
+      </td>
+			<!-- <td></td> -->
+			<td class="mg-align-center">
+				<a  title="Remove" class="remove-prgm mg-icon-btn" style="margin-left: 5px"> <i class="fa fa-trash" ></i></a>
+			</td>
+		</tr>	
+ 	</table>
+<% else %>
+	<a id="addRule" class="mg-label-inner-form mg-custom-form-btn" style="color: #297ACC; font-size:0.8em; position: relative; top: -1px;" >Add Rule</a><br/><br/>
+	<table class="rules-class mg-show-tbl-width batch-tbl">
+		<tr>
+			<th><%=t('name')%><span class="required-field">&nbsp;*</span></th>
+			<th><%=t('description')%><span class="required-field">&nbsp;*</span></th>
+			<th><%=t('action')%></th>
+		</tr>
+		<!-- <tr> -->
+			<!-- <a id="addRule" class="mg-label-inner-form mg-custom-form-btn" style="color: #297ACC; font-size:0.8em; position: relative; top: -1px;" >Add Rule</a> -->
+		<!-- </tr> -->
+		<% for i in 0...@rule_data.length %>
+			<tr class="rules-div"> 
+				<td class="mg-align-center">
+					<!-- <%#= f.label :name, t("name") ,:class=>"mg-label "%><span class="required-field">*</span> -->
+					<%= text_field_tag "name[1]",@rule_data[i].name,{:class => 'name'} %>
+				</td>
+				<td class="mg-align-center">
+					<!-- <%#= f.label :description, t("description") ,:class=>"mg-label "%><span class="required-field">*</span> -->
+					<%= text_area_tag "description[1]",@rule_data[i].description,{:class => 'desc1',:style=>"width: 193px; height: 47px; margin-top: 6px;"}%>
+				</td>
+				<td class="mg-align-center">
+					<a  title="Remove" class="remove-prgm mg-icon-btn" style="margin-left: 5px"> <i class="fa fa-trash" ></i></a>
+				</td>
+			</tr>
+		<% end %>
+	 </table>
+<% end %>	
+
+	<p class="mg-p-mgtop">
+	    <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("save")%></a>
+	    <%= link_to t('cancel'), {:controller=>'hostel_management',:action=>'hostel_details'}, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+	</p>
+
+
+  <% end %>
+
+<%= render  partial: 'application/common_left_close' %>
+
+<script type="text/javascript">
+	$( document ).ready(function() {
+	    focusCurrentTab("HostelDetailsAID","HostelDetailsLiID");
+	    reset_fun();
+	    reset_rule_fun();
+	  });
+
+
+	$("#hostel_detailsID").validate({
+
+		rules: {
+			"hostel_details[name]": {required: true},
+			"hostel_details[category]": {required: true},
+			"programme[1]": {required: true},
+			"max_occupancy[1]": {required: true,number:true},
+			"name[1]": {required: true},
+			"description[1]": {required: true}
+			}
+	});
+
+
+	$(document).on("click", "#addRound", function(e){
+		var length=$('.remove-prgm').length;
+		if(length<10){
+
+		var lastRepeatingGroup = $('.prgm-div').last();
+	    var cloned = lastRepeatingGroup.clone();
+
+	    var str="programme_"+($('.prgm-div').length+1);
+	    var str1="programme["+($('.prgm-div').length+1)+"]"
+	    
+	    cloned.find(".prgm").prop('id',str );
+	    cloned.find(".prgm").prop('name',str1 );
+	    cloned.find('a#addRound').remove();
+	    cloned.insertAfter( lastRepeatingGroup );
+	    cloned.find('select').val('');
+	    cloned.find('input').val('');
+
+	    reset_fun();
+		}
+	    return false;
+  }); 
+
+
+	$(document).on("click", ".remove-prgm", function(e){
+	   var total = $('.remove-prgm').length;
+	   if(total!=1)
+	   {
+	        $(this).parent().parent().remove();
+	    }
+	    reset_fun();
+	   });
+
+	function reset_fun(){
+		var count=1;
+	    $('.prgm').each(function(){
+	    	$(this).attr('id',"programme_" + count.toString() );
+	    	$(this).attr('name','programme[' + count.toString() + ']' );
+	    	$(this).siblings("label").text("programme");
+	    	count++;
+	    });
+
+	    var count_occ=1;
+	    $('.occu1').each(function(){
+	    	$(this).attr('id',"max_occupancy_" + count_occ.toString() );
+	    	$(this).attr('name','max_occupancy[' + count_occ.toString() + ']' );
+	    	$(this).siblings("label").text("Maximum Occupancy");
+	    	count_occ++;
+    	});
+	   
+	}
+
+
+
+
+
+
+
+	$(document).on("click", "#addRule", function(e){
+		var length=$('.remove-rule').length;
+		if(length<10){
+
+			var lastRepeatingGroup = $('.rules-div').last();
+	    var cloned = lastRepeatingGroup.clone();
+
+	    var str="name_"+($('.rules-div').length+1);
+	    var str1="name["+($('.rules-div').length+1)+"]"
+
+	    var str2="description_"+($('.rules-div').length+1);
+	    var str3="description["+($('.rules-div').length+1)+"]"
+
+	    cloned.find(".name").prop('id',str );
+	    cloned.find(".name").prop('name',str1 );
+
+	    cloned.find(".desc1").prop('id',str2 );
+	    cloned.find(".desc1").prop('name',str3 );
+
+	    cloned.find('a#addRule').remove();
+	    cloned.insertAfter( lastRepeatingGroup );
+	    cloned.find('input').val('');
+	    cloned.find('textarea').val('');
+	    reset_rule_fun();
+		}
+    return false;
+  }); 
+
+
+	$(document).on("click", ".remove-rule", function(e){
+	   var total = $('.remove-rule').length;
+	   if(total!=1)
+	   {
+	        $(this).parent().parent().remove();
+	    }
+	    reset_rule_fun();
+	   });
+
+	function reset_rule_fun(){
+
+		var count=1;
+	    $('.name').each(function(){
+	    	$(this).attr('id',"name_" + count.toString() );
+	    	$(this).attr('name','name[' + count.toString() + ']' );
+	    	$(this).siblings("label").text("name");
+	    	count++;
+	    });
+
+	    var count_occ=1;
+	    $('.desc1').each(function(){
+	    	$(this).attr('id',"description_" + count_occ.toString() );
+	    	$(this).attr('name','description[' + count_occ.toString() + ']' );
+	    	$(this).siblings("label").text("description");
+	    	count_occ++;
+    	});
+	   
+	}
+      
+</script>

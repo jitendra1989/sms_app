@@ -1,0 +1,180 @@
+<%= render  partial: 'dashboards/employee_left' %>
+<%#= render  partial: 'homework/homework_left' %>
+<h4 class="mg-h4"><%= t('show_assignment') %></h4>
+<table border="1" class="mg-showdata-bg mg-tbl-layout" cellspacing="1" cellpadding="1">
+   <tr>
+     <td class="mg-td-width-half" valign="top">
+<label class="mg-label"> <%= t('class')%></label></td><td>
+<%if @assignment.mg_batch_id.present?
+        batch=MgBatch.find(@assignment.mg_batch_id)
+        course=MgCourse.find(batch.mg_course_id)
+        %>
+     <%=course.course_name%>-<%= batch.name %>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+</td></tr>
+
+<tr>
+     <td class="mg-td-width-half" valign="top">
+
+<label class="mg-label"> <%= t('subject')%></label></td><td>
+<%if @assignment.mg_subject_id.present?%>
+      <%subject=MgSubject.find(@assignment.mg_subject_id)%>
+     <%=subject.subject_name%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+</td>
+</tr><tr>
+     <td class="mg-td-width-half" valign="top">
+
+<label class="mg-label"> <%= t('title')%></label></td><td>
+<%if @assignment.title.present?%>
+     <%=@assignment.title%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+</td>
+</tr>
+
+<tr>
+     <td class="mg-td-width-half" valign="top">
+
+<label class="mg-label"> <%= t('due_date')%></label></td><td>
+<% timeformat=MgSchool.find_by_id(@assignment.mg_school_id)%>
+      <% if timeformat.present?%>
+     <%=@assignment.due_date.strftime(timeformat.date_format)%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+</td></tr>
+
+<tr>
+     <td class="mg-td-width-half" valign="top">
+
+<label class="mg-label"> <%= t('details')%></label></td><td>
+<%if @assignment.detail.present?%>
+     <%=@assignment.detail.html_safe%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+</td></tr>
+
+
+
+
+</table>
+<br/>
+<!-- ==========================Employee attachment=============================== -->
+
+<%@document=MgAssignmentDocumentation.where(:mg_assignment_id=>@assignment.id,:user_type=>"employee",:is_deleted=>0,:mg_school_id=>session[:current_user_school_id])
+        if @document.length>0
+%>
+<label class="mg-label" style="width:140px"><%= t('attachment') %><span class="required-field">&nbsp;</span></label><br/>
+
+<%html_icon='<span title="Download" class="mg-icon-btn"><i class="fa fa-download"></i></span>'%>
+&nbsp;&nbsp;&nbsp;&nbsp;<%
+@document.each do |doc|%>
+    <p>
+    <%= link_to_if doc.file.url, html_icon.html_safe, doc.file.url , :target=>"_blank"%>
+    <%=doc.file_file_name%>
+    </p>
+
+
+<%end
+end%>
+</p>
+<!-- ==========================Employee attachment=============================== -->
+
+
+
+
+ 
+<!-- ==================================================== -->
+<h4 class="mg-h4"><%= t('student_list') %></h4>
+
+<div class="mg-scroll-bar">
+
+    <table class="batch-tbl mg-tbl-margin">
+    <tr class="subject-table-header">
+       <th>
+        <%=t('student_name')%>
+       </th>
+       <th>
+        <%=t('status')%>
+       </th>
+       <th>
+        <%=t('actions')%>
+       </th>
+    </tr>
+    <%@assignment_submission.each do |assignment|%>
+      <tr>
+        <%if assignment.mg_student_id.present?%>
+          <td>
+          <%student=MgStudent.find(assignment.mg_student_id)%>
+          <%=student.first_name%>
+          </td>
+          <td>
+          <%=assignment.status.split.map(&:capitalize).join(' ')%>
+
+            <%#= select_tag :status, options_for_select([[t("Select"), ""], [t("pending"), "pending"], [t("submitted"), "submitted"], [t("completed"), "completed"]],:selected => assignment.status),{:disabled => true} %>
+          </td>
+
+          <td>
+              <table>
+              <tr>
+                <%= link_to "Update".html_safe, {:controller => "homework", :action => "student_show",:id =>assignment.id} , :method=>'post' ,:title=>"Select" ,:class=>"mg-icon-btn mg-custom-form-btn mg-right-align"%>
+
+                 <!--  <button title="Update" id="<%#=raw assignment.id %>-assignmentBTNID" class="update-assignment-management-btn mg-icon-btn"><%#=t("update")%></button>  -->
+                </tr>
+                </table>
+          </td>
+          
+        <%end%>
+      </tr>
+    <%end%>
+    
+    </table>
+    </div>
+<div id="showUpdateAssignmentManagementDIVID"></div>
+
+<br/>
+<%= link_to 'Cancel', homework_path ,:style=>"font-size: 0.8em; color: #297ACC; text-decoration: none;" ,:class=>"mg-custom-form-btn"%>
+<%= render  partial: 'application/common_left_close' %>
+<style>
+.mg-scroll-bar{
+       border: 1px solid #b2b2b2;
+       width: 342px;
+       height: 360px;
+       overflow-y: scroll;
+   }
+</style>
+<script>
+
+$(document).ready(function(){
+            focusCurrentTab("viewCreateHomework","viewCreateHomeworkLiID");
+
+          });
+
+$(document).on("click", ".update-assignment-management-btn", function(e){
+        var myID =$(this).attr('id');
+        var Id=myID.split("-");
+        var urlLink = "/homework/student_show/"+Id[0];
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(html){
+                  $('#showUpdateAssignmentManagementDIVID').dialog({
+                    modal: true,
+                    minHeight: 'auto',
+                    width: 'auto',
+                    title: "Assignment",
+                    open: function () {
+                        $(this).html(html);
+                    }
+                }); 
+            }
+        });
+});
+</script>

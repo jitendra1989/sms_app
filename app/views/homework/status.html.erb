@@ -1,0 +1,133 @@
+<%= render partial: 'dashboards/principle_dashboard_left' %>
+
+<h4 class="mg-h4"><%= t('homework_status') %></h4>
+<% navigation_add 'Homework', :controller=> 'homework', :action=>'status'  %>
+
+<p>
+    <label class="mg-label" style="width:140px"><%= t('select_teacher') %><span class="required-field">&nbsp;*</span></label>
+    <br/>
+    <%
+    	employee=MgTimeTableEntry.select(:mg_employee_id).where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).uniq
+    	employee_array=Array.new
+    	employee.each do |empl_id|
+    		small_array=Array.new
+    						  emp=MgEmployee.find_by(:id=>empl_id.mg_employee_id)
+    						  	if  (!(emp.first_name.to_s.empty?))
+								   small_array.push("#{emp.first_name}")
+								   small_array.push("#{emp.id}")
+	                               employee_array.push(small_array)
+	                             end
+                          end
+    %>
+     <%=select_tag :employee_id, options_for_select(employee_array),:prompt=>"Select",:class=>"mg-select-btn select-student-homework-class",:onchange=>"addStudentHomework()" %>
+</p>
+<p>
+ <label class="mg-label mg-custom-labels mg-label-width "><%=t("select_class")%><span class="required-field">&nbsp;*</span></label><br/>
+  <%=select_tag :employee_class,options_for_select([[]]), :prompt=>"Select",:onchange=>"addAssignmentEmployeeSubject()", :class=>"class-batch-fine-class homework-employee-class"%>
+</p>
+
+<p>
+ <label class="mg-label mg-custom-labels mg-label-width "><%=t("select_subject")%><span class="required-field">&nbsp;*</span></label><br/>
+  <%=select_tag :employee_subject,options_for_select([[]]), :prompt=>"Select",:onchange=>"addAssignmentEmployeeStatus()", :class=>"class-batch-fine-class homework-employee-subject-class"%>
+</p>
+
+<div id="homework_principal_status_ID"></div>
+
+
+
+
+
+
+
+
+
+
+<%= render  partial: 'application/common_left_close' %>
+
+<script>
+$(document).ready(function(){
+	focusCurrentTab("viewEmployeeCreateHomeworkAID","viewEmployeeCreateHomeworkLiID");
+})
+
+function addStudentHomework(){
+   var class_val=$(".select-student-homework-class").val();
+   var apdStr = '<option value="">Select</option>';
+      $(".homework-employee-class").empty().append(apdStr);
+  if(class_val > 0) {
+           var urlLink = "/homework/section_list/"+class_val;
+           $.ajax({ 
+               url: urlLink,
+               cache: false,
+               success: function(data){
+                  if(data.length > 0){
+                      var apdStr = '<option value="select">Select</option>';
+                     for(key in data){
+                        apdStr += '<option value="'+data[key][1]+'">'+data[key][0]+'</option>'
+                      }
+                    // console.log(apdStr);
+                      $(".homework-employee-class").empty().append(apdStr);
+                  }
+               }  
+           });
+    }else{
+      var apdStr = '<option value="">Choose Section</option>';
+      $(".homework-employee-class").empty().append(apdStr);
+      // alert("Please select category");
+    }
+}
+
+function addAssignmentEmployeeSubject()
+{
+	var batch_id=$(".homework-employee-class").val();
+	var emp_id=$(".select-student-homework-class").val();
+   var apdStr = '<option value="">Select</option>';
+      $(".homework-employee-subject-class").empty().append(apdStr);
+  if(batch_id > 0) {
+           var urlLink = "/homework/subject_list/";
+           $.ajax({ 
+               url: urlLink,
+               cache: false,
+               data:
+            {
+                 emp_id:emp_id , batch_id:batch_id
+             },
+               success: function(data){
+                 console.log(data);
+                  if(data.length > 0){
+                      var apdStr = '<option value="select">Select</option>';
+                     for(key in data){
+                        apdStr += '<option value="'+data[key][1]+'">'+data[key][0]+'</option>'
+                      }
+                    // console.log(apdStr);
+                      $(".homework-employee-subject-class").empty().append(apdStr);
+                  }
+               }  
+           });
+    }else{
+      var apdStr = '<option value="">Choose Subject</option>';
+      $(".homework-employee-subject-class").empty().append(apdStr);
+      // alert("Please select category");
+    }
+}
+
+function addAssignmentEmployeeStatus(){
+	var emp_id=$(".select-student-homework-class").val();
+	var batch_id=$(".homework-employee-class").val();
+	var subject_id=$(".homework-employee-subject-class").val();
+	var urlLink = "/homework/homework_status/";
+           $.ajax({ 
+               url: urlLink,
+               cache: false,
+               data:
+            {
+                 emp_id:emp_id , batch_id:batch_id , subject_id:subject_id
+             },
+               success: function(html){
+                 
+                  $("#homework_principal_status_ID").empty();
+                  $("#homework_principal_status_ID").append(html);
+               }  
+           });
+}
+
+</script>

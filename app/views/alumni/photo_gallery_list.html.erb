@@ -1,0 +1,92 @@
+<%= render partial:'alumni_left'%>
+<% navigation_add t('gallery'), :controller=>'alumni',:action=>'gallery_list' %>
+<% navigation_add t('upload_photos'), :controller=>'alumni',:action=>'photo_gallery_list',:id=>params[:id] %>
+
+<h4 class="mg-h4"><%= t('shared_photos')%></h4>
+<%= form_for :photos, url: delete_gallery_photos_path, :html => {:id => 'photosGalleryFormID' } do |h| %>
+  <%=hidden_field_tag :submitted_form_for,"delete_photos"%>
+  <%if @photos.present?%>
+    <div id="links-1" class="mg-scroll-employee-bar">
+      <%@photos.each do |image_list|%>
+        <a href="<%=image_list.image.url%>" title="" id="openImageAID">
+          <%=image_tag image_list.image,:size => "260x180" ,:class=>"mg-thumb-album open-image-A-cls"%>
+        </a> 
+      <%end%>
+    </div>
+    <p class="mg-p-mgtop">
+      <%= link_to t('back'), {:action=>'gallery_list'}, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+    </p> 
+  <%else%>
+    <div id="links-1"></div>
+    <h5>No Photo availabe...</h5>
+  <%end%>
+<%end%>
+
+
+<div id="blueimp-gallery" class="blueimp-gallery">
+    The container for the modal slides
+    <div class="slides"></div>
+     Controls for the borderless lightbox 
+    <h3 class="title"></h3>
+    <a class="prev">‹</a>
+    <a class="next">›</a>
+    <a class="close">×</a>
+    <a class="play-pause"></a>
+    <ol class="indicator"></ol>
+ The modal dialog, which will be used to wrap the lightbox content 
+    <div class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title"></h4>
+                </div>
+                <div class="modal-body next"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default pull-left prev">
+                        <i class="glyphicon glyphicon-chevron-left"></i>
+                        Previous
+                    </button>
+                    <button type="button" class="btn btn-primary next">
+                        Next
+                        <i class="glyphicon glyphicon-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%= render  partial: 'application/common_left_close' %>
+
+
+
+<script>
+
+  $(document).ready(function () {
+    focusCurrentTab("videoGalleryListAID","videoGalleryListLID");
+  });
+
+
+  document.getElementById('links-1').onclick = function (event) {
+    if (event.target.id != "mg_album_photos_id_") {
+      event = event || window.event;
+      var target = event.target || event.srcElement,
+          link = target.src ? target.parentNode : target,
+          options = {index: link, event: event},
+          links = this.getElementsByTagName('a');
+       blueimp.Gallery(links, options);
+    }
+  };
+
+</script>
+
+<style>
+  body {
+    overflow: visible !important;
+  }
+
+  #openImageAID {
+    text-decoration: none;
+  }
+</style>

@@ -1,0 +1,74 @@
+<% if @student_list.length>0 %>
+  <%@school = MgSchool.where(:id=>session[:current_user_school_id],:is_deleted=>0)%>
+
+  <h4 class="mg-h4"><%=t('student_list')%></h4>
+  <div class="mg-scroll-employee-bar mg-btn-bottom-margin">
+    
+    <table class="batch-tbl table-batchs-tbl">
+      <tr class="subject-table-header">
+        <th><%= t('student_id') %></th>
+        <th><%= t('name') %></th>
+        <th class="mg-rm-text-trans"><%= t('dateofbirth') %></th>
+        <th><%= t('obtained_marks') %></th>
+        <th><%= t('total_marks') %></th>
+        <%if @school[0].disable_entrance_exam_test==false%>
+          <th><%= t('index') %></th>
+        <%end%> 
+        <th><%= t('status') %></th> 
+        <th style="width: 13%;">
+          <a href="#" id="checkAllCheckBoxInExamDetail" class="mg-pop-link">All</a>
+          <a href="#" id="unCheckAllCheckBoxInExamDetail" class="mg-pop-link">None</a>
+        </th>
+      </tr>
+      <tbody id="selectstudentListDivID">  
+        <% @student_list.each do |f| %>
+          <tr class="students-admission-class">
+            <% @mg_id=params[:mg_course_id] %>
+            <td class="mg-align-center"><%= f.try(:student_temporary_id) %></td>   
+            <td class="mg-capitalize-text"><%= f.try(:first_name) %>&nbsp;<%= f.try(:middle_name) %>&nbsp;<%= f.try(:last_name) %></td>
+            <% @dateFormat = MgSchool.find_by(:id=>session[:current_user_school_id]).date_format %>
+            <td class="mg-align-center"><%= f.try(:date_of_birth).try(:strftime,@dateFormat) %></td>   
+            <td class="mg-align-center"><%= f.marks_obtained %></td>
+            <td class="mg-align-center"><%= f.total_marks %></td>
+            <%if @school[0].disable_entrance_exam_test==false%>
+              <td class="mg-align-center"><%= f.selection_index %></td>
+            <%end%>
+            <td class="mg-capitalize-text"><%= f.is_selected_for_entrance_test %></td>
+            <%= hidden_field_tag "appear_all_studentid[]",f.id %>                           
+            <td class="mg-align-center">
+              <%= check_box_tag("shortlisted_for_exam[]", name=f.id, false, :onclick=>"",:class=>"checked-checkbox-for-test students-checkbox-checkstatus")%>          
+            </td>              
+          </tr>                      
+        <% end %>
+      </tbody>      
+    </table>
+  </div>
+  <p class="mg-p-mgtop">
+    <a onclick="selectFormForExam('selectentranceexam')", class="submit mg-small-form-btn"><%= t("accept") %></a>
+    <a onclick="selectFormForExam('rejectentranceexam')", class="submit mg-small-form-btn"><%= t("reject") %></a>
+    <a onclick="prinListForSelectedStudent()" class="mg-small-form-btn"><%= t("print") %></a>
+    <%=link_to t('cancel'),:back,:class=>"mg-small-form-btn"%>
+  </p>
+<% else %>
+    <h5 class="mg-custom-labels"><%= t('No Student Display') %></h5>
+<% end %>
+
+<script>
+  $(document).ready(function(){
+    var temp=<%=@student_list_count%>;
+    $("#total_student").val(temp);
+    $("#total_student").attr("disabled",true);    
+  });
+
+  $("#checkAllCheckBoxInExamDetail").on("click", function(e){
+    $(".checked-checkbox-for-test").prop('checked', true);
+    e.preventDefault();        
+  });
+
+  $("#unCheckAllCheckBoxInExamDetail").on("click", function(e){
+    $(".checked-checkbox-for-test").prop('checked', false);
+    e.preventDefault();
+  });  
+   
+</script>
+

@@ -1,0 +1,119 @@
+
+<%= render  partial: 'laboratory/laboratry_left' %>
+<% navigation_add t('item_consumption'), "/laboratory/consumption/" %>
+<% if flash[:notice].present? %>
+<p class="mg-p-mgtop">
+
+<span style="color:red;font-weight: normal;  position: relative; top: -12px;"> <%#= flash[:notice] %></span>
+</p>
+
+<% end %>
+
+<h4 class="mg-h4"><%= t('item_consumption_list') %></h4>
+
+<%= button_to 'Add Consumption', {:controller => "laboratory", :action => "consumption_new" } ,:class=>"mg-custom-form-btn"%>
+<p>
+<!-- =================================================================================== -->
+<%= form_for :short_lab_wise, url: laboratory_consumption_path, :html => {
+                            :id => 'labconsumptionshortCreateID' } do |f| %>
+<%lab_short=MgLab.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:lab_name,:id)%>
+<%if session[:user_type]=="employee"%>
+<%else%>
+ <%=f.select :mg_lab_id,options_for_select(lab_short,:selected=> @id   ),{:prompt=>t('select_all')},:onchange => 'this.form.submit();' %>
+ <%end%>
+
+<%= f.submit t('save') ,:class=>"mg-small-form-btn hidden-button-onchange-submit-class" , :style=>"display:none"%>
+
+<%end%>
+<!-- =================================================================================== -->
+</p>
+<div class="mg_pagination">
+<%if @consumption.length>0%>
+<table  class="batch-tbl mg-tbl-margin">   <!-- border="2" --> 
+  <tr class="subject-table-header">
+    <!-- <th>Subject Id</th> -->
+    <th><%= t('lab_name') %></th>
+    <th><%= t('category_name') %></th>
+    <th><%= t('item_name') %></th>
+    <th><%= t('quantity_consumed') %></th>
+    <th><label class=" mg-label-text-transform-none" for="dateofconsumption"><%= t ('date_of_consumption') %></label></th>
+    <!-- <th><%#= t('date_of_consumption ') %></th> -->
+    <th><%= t('consumption_type') %></th>
+    <th  style="width: 92px;"><%= t('actions') %></th>
+  </tr>
+  <% @consumption.each do |lab| %>
+    <tr>
+      <%laboratry=MgLab.find(lab.mg_lab_id)%>
+      <td><%= laboratry.lab_name %></td>
+      <%cat=MgLabInventory.find_by(:id=>lab.mg_category_id)%>
+      <td><%= cat.try(:category_name) %></td>
+      <%item_table=MgInventoryManagement.find(lab.mg_item_id)%>
+      <td><%= item_table.item_name %></td>
+      <td><%= lab.quantity_consumption %></td>
+
+      <% @timeformat=MgSchool.find_by_id(lab.mg_school_id)%>
+      <% if @timeformat.present?%>
+      <td><%= lab.date.strftime(@timeformat.date_format) %></td>
+      <%else%>
+      <td></td>
+      <%end %>
+      <td><%= lab.consumption_type %></td>
+      <td style="width: 8.5em;">
+      <span class="mg-paginatin-a-link">
+      	<button title="Show" id="<%=raw lab.id %>-showconsumptionBTNID" class="show-consumption-management-btn mg-icon-btn"><i class="fa fa-eye"></i></button>
+      </span>
+      <span class="mg-paginatin-a-link">
+      <%= link_to "<i class=\"fa fa-pencil-square-o\"></i>".html_safe, {:controller => "laboratory", :action => "consumption_edit",:id =>lab.id} , :method=>'post' ,:title=>"Edit" ,:class=>"mg-icon-btn"%>
+      </span>
+      <span class="mg-paginatin-a-link" style="margin-left: 1px;">
+      <%= link_to "<i class=\"fa fa-trash\"></i>".html_safe, {:controller => "laboratory", :action => "consumption_delete",:id =>lab.id }, :method=>'post' ,:title=>"Delete" ,:class=>"mg-icon-btn",data: { confirm: 'Are you sure to delete?' } %>
+      </span>
+      </td>
+    </tr>
+  <% end %>
+</table>
+<br/>
+ <div class="pagination-align" style="position: relative; bottom: 10px;">
+              <%#= will_paginate @consumption, :container => false %>
+              <%= will_paginate @consumption, :params => { :custom_param => "paginated"+"-"+"#{@id}" } %>
+           </div>
+<%else%>
+<h5>No Consumption data is created </h5>
+<%end%>
+</div>
+<div id="showConsumptionDIVID"></div>
+
+
+<%= render  partial: 'application/common_left_close' %>
+
+<script>
+$( document ).ready(function() {
+            focusCurrentTab("viewLabConsumptionIndex","viewLabItemConsumptionLiID");
+          //focusStudentHeaderBox();
+});
+
+
+$(document).on("click", ".show-consumption-management-btn", function(e){
+        var myID =$(this).attr('id');
+        var Id=myID.split("-");
+        var urlLink = "/laboratory/consumption_show/"+Id[0];
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(html){
+                  $('#showConsumptionDIVID').dialog({
+                    modal: true,
+                    minHeight: 'auto',
+                    width: 'auto',
+                    title: "Item Consumption",
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+});
+</script>
+

@@ -1,0 +1,124 @@
+
+
+
+
+
+  
+        
+<h4 class="mg-h4"><%= t('Create Request')%></h4>
+
+<%= form_for :guardian_student_transport ,  :url=>{:action=>"transport_facility_create",:controller=>"dashboards",:id=>@id}, :html=>{:id=>'route_form'} do |f| %>
+
+        
+      
+         <%=hidden_field_tag :status ,"Pending"%>
+       
+        
+<table class="pop-up-inner-text mg-tbl-margin mg-show-tbl-width">
+      
+    <tr>
+      <td class="mg-td-width-one-third">
+      
+        <label class="mg-label"  for="selectRoute"><%= t ('select_route') %><span class="required-field">&nbsp;*</span></label><br/>
+
+        <%@data=MgTransport.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:route_name,:id)%>
+      
+
+               <%=select_tag :mg_transport_routes_ids ,options_for_select(@data),:prompt=>"Select",:onchange=>"selects_transports_routes_requesties(this.value)"%><br>
+               
+      </td>
+    </tr>
+    
+    <tr>
+      <td class="mg-td-width-one-third">
+      
+        <label class="mg-label"  for="selectRoute"><%= t ('select_vehicle') %><span class="required-field">&nbsp;*</span></label>
+
+       
+                <div id="vehicles_transports_selects_ids">
+               <%=select_tag :mg_routes_ids ,options_for_select([]),:prompt=>"Select"%>
+               </div>
+               
+      </td>
+    </tr>
+     <tr>
+      <td class="mg-td-width-one-third">
+      
+        <label class="mg-label"  for="selectpickupPoint"><%= t ('select_pickup_point') %><span class="required-field">&nbsp;*</span></label><br/>
+     
+        <div id="transport_demo">
+       
+ <% @transport_data_arry=MgTransportTimeManagement.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:bus_stop_name,:id)%>
+
+
+<%=select_tag :mgss_route_ids ,options_for_select(@transport_data_arry),:prompt=>"Select"%><br>
+
+         <%#=f.select :mgs_transports_id ,options_for_select([]),:prompt=>"Select"%><br>
+         </div>
+         
+      </td>
+    </tr>
+
+      
+    
+</table>
+  
+ <br/> <p class="mg-custom-labels">
+<%= submit_tag t("save"),:class=>"mg-small-form-btn"%>
+ <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+ </p>
+ 
+<%end%>
+
+
+
+
+<script>
+// $("#students_ids").change(function(){
+//     alert("adsfhaa")
+//     $(".demooooooooooo").toggle();
+//   });
+
+ 
+// function select_pickup_point(data)
+// {
+//   var urlLink = "/dashboards/select_stop_name";
+
+// $.ajax({
+// url: urlLink,
+//              cache: false,
+//              data:{"id":data},
+//              success: function(data){
+
+
+//               $("#transport_demo").empty();
+//               $("#transport_demo").append(data);
+
+               
+//              }
+
+
+// });
+
+// }
+function selects_transports_routes_requesties(data){
+  
+        var urlLink = "/transports/confirmation_request_new";
+        $.ajax({
+        url: urlLink ,
+        cache: false,
+        data: {"id" :data},
+        success: function(data)
+        {
+
+      $("#vehicles_transports_selects_ids").empty();
+      $("#vehicles_transports_selects_ids").html(data);
+            
+  
+        }
+                }); 
+    
+    
+    };
+
+</script>

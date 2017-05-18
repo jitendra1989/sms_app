@@ -1,0 +1,36 @@
+<% navigation_add t('recruitment_assistant'), :controller => 'placements', :action => 'index_recruitment_assistant' %>
+<%= render  partial: 'master_settings/master_settings_left' %>
+<h4 class="mg-h4"><%= t('about_recruitment_assistant') %></h4>
+<button class="add-recruitment-assistant mg-btn-bottom-margin mg-custom-form-btn"><%= t('add_recruitment_assistant')%></button>
+<%if @users.length>0%>
+  <%= render  partial: 'login_index' %>
+<%else%>
+  <h5>No Recruitment Assistant created</h5>
+<%end%>
+<%= render  partial: 'application/common_left_close' %>
+<div id="newRecruitmentAssistantDivId"></div>
+
+<script>
+  $( document ).ready(function() {
+    focusCurrentTab("recruitmentAssistantLoginAID","recruitmentAssistantLID");
+  });
+
+  $(document).on("click", ".add-recruitment-assistant", function(e){
+    var urlLink = "/placements/new_user";
+    $.ajax({
+      url: urlLink ,
+      cache: false,
+      success: function(html){
+        $('#newRecruitmentAssistantDivId').dialog({
+          modal: true,
+          minHeight: 'auto',
+          minWidth: '250px',
+          title: "New Recruitment Assistant",
+          open: function () {
+          $(this).html(html);
+          }
+        }); 
+      }
+    });
+  });
+</script>

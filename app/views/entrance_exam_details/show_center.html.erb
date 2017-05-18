@@ -1,0 +1,55 @@
+<%= form_for :exam_center, :url=>{:controller=>"entrance_exam_details",:action=>"update_center"},:html => { :id => "updateTestCenterFormID" ,:multipart => true } do |f| %>
+  <table>
+    <tr>
+      <td>
+        <label class="mg-label mg-custom-labels" for="select_class"><%= t('enter_exam_enabled') %></label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <%@school = MgSchool.where(:id=>session[:current_user_school_id],:is_deleted=>0)%>
+        <%if @school[0].disable_entrance_exam_test==true%>
+          <%= f.check_box :entrance_exam_test, :checked => true%>
+        <%else%>
+          <%= f.check_box :entrance_exam_test,{}%>
+        <%end%>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <label class="mg-label mg-custom-labels" for="select_class"><%= t('out_side_test_center_enabled') %></label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <%@school = MgSchool.where(:id=>session[:current_user_school_id],:is_deleted=>0)%>
+        <%if @school[0].is_test_center==true%>
+          <%= f.check_box :is_test_center, :checked => true%>
+        <%else%>
+          <%= f.check_box :is_test_center,{}%>
+        <%end%>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <p class="mg-p-mgtop">
+          <a onclick="$(this).closest('form').submit()" id="" class="submit mg-small-form-btn"><%=t("save")%></a> 
+          <%= link_to t('cancel'), {:controller=>'entrance_exam_details',:action=>'exam_test_center'}, {:class=>"mg-small-form-btn cancel-form-dialog"} %>      
+        </p>
+      </td>
+    </tr>
+  </table>
+<%end%>
+
+
+<script>
+  $(document).ready(function(){
+    if($("#exam_center_entrance_exam_test").is(':checked')){
+      $("#exam_center_is_test_center").attr("disabled",false);
+    }else{
+      $("#exam_center_is_test_center").prop('checked',false);
+      $("#exam_center_is_test_center").attr("disabled",true);
+    }
+  });
+
+  $(document).on("click","#exam_center_entrance_exam_test",function(){
+    if($(this).is(':checked')){
+      $("#exam_center_is_test_center").attr("disabled",false);
+    }else{
+      $("#exam_center_is_test_center").prop('checked',false);
+      $("#exam_center_is_test_center").attr("disabled",true);
+    }
+  });
+</script>

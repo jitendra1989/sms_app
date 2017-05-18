@@ -1,0 +1,49 @@
+
+
+ <table border="1" class="mg-showdata-bg mg-tbl-layout" cellspacing="1" cellpadding="1">
+   <tr>
+     <td class="mg-td-width-half" valign="top">
+   		<label class="mg-label"> <%= t('item_type')%></label>
+   	 </td>
+   	 <td class="mg-td-width-half" valign="top">
+  		<%if @item.name.present?%>
+     <%=@item.name%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+  	 </td>
+ </tr>
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('description')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+      <%if @item.description.present?%>
+     <%=@item.description%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+     </td>
+ </tr>
+
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('is_issuable')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+      <%if @item.is_issuable.present?%>
+     <%=(@item.is_issuable) ? "Yes" : "No"%>
+     <%else%>
+     <%="No"%>
+     <%end%>
+     </td>
+ </tr>
+
+</table>
+<br/>
+
+<a class="mg-small-form-btn cancel-form-dialog"><%=t("cancel")%></a>
+
+<%#= link_to 'Cancel', :back ,:style=>"font-size: 0.8em; color: #297ACC; text-decoration: none;" ,:class=>"mg-custom-form-btn"%>
+
+ 

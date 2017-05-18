@@ -1,0 +1,20 @@
+<!-- Sec --> 
+<!-- Partial left content -->
+<%= render partial: 'guardian_dashboard_left' %>
+<!-- Partial Index -->
+<%= render partial: 'guardian_dashboard' %>
+<!-- Partial Section close-->
+<%= render partial: 'guardian_dashboard_close' %>
+
+
+<script type="text/javascript">
+    
+
+ $(document).ready(function(){
+
+    focusCurrentTab("viewGuardianDashboard","viewGuardianDashboardLiID");
+    focusDashboards();
+
+});
+
+</script>

@@ -1,0 +1,348 @@
+<h4 class="mg-h4"><%=t('classtimings')%></h4>
+<div>
+	<label class="mg-label mg-label-width ">Select Wing<span class="required-field"> *</label>
+	      <%=select_tag :mg_wing_id,options_for_select(@schoolWings),:prompt=>t('select'),:onchange=>"batchesForSelectedWingInClassTimings(this.value)"%>
+	<br/>
+	<div id="selectSectionInClassTimingsDivId" style="display:none">
+		<label class="mg-label mg-custom-labels "><%=t('select')%> <%=t('coursebatch')%></label>
+		<%=select_tag :batch,options_for_select([]),:onchange=>"addClassBatches(this.value)"%>
+	</div>
+
+	<%#=@commonClassTimings.weekday%>
+
+
+
+	<div id="classTimingList">
+	<%if @commonClassTimings.length > 0%>
+		<div class="mg-scroll-employee-bar">
+		<table class="batch-tbl">
+			<tr>
+				<th><%=t('weekday')%></th>
+				<th><%=t('name')%></th>
+				<th><%=t('starttime')%></th>
+				<th><%=t('endtime')%></th>
+				<th><%=t("actions")%></th>
+			</tr>
+			<%@commonClassTimings.each do|commonClassTiming|%>
+			<% if commonClassTiming.weekday=="0"%>
+	        	<% @day="Sunday"%>
+		      <% elsif commonClassTiming.weekday=="1"%>
+		        <% @day="Monday"%>
+		      <% elsif commonClassTiming.weekday=="2"%>
+		       <%  @day="Tuesday"%>
+		      <% elsif commonClassTiming.weekday=="3"%>
+		       <%  @day="Wednesday"%>
+		      <% elsif commonClassTiming.weekday=="4"%>
+		        <% @day="Thursday"%>
+		      <% elsif commonClassTiming.weekday=="5"%>
+		       <%  @day="Friday"%>
+		      <% else%>
+		       <%  @day="Saturday"%>
+		      <% end%>
+			<tr>
+				<td><%=@day%></td>
+				<td><%=commonClassTiming.name%></td>
+				<td><%=commonClassTiming.start_time.strftime("%k:%M%p")%></td>
+				<td><%=commonClassTiming.end_time.strftime("%k:%M%p")%></td>
+				<td>
+					<button title="Edit" id="<%=raw commonClassTiming.id%>" class="editClassTimings mg-icon-btn" ><i class="fa fa-pencil-square-o"></i></button>
+					<button title="Delete" id="<%=raw commonClassTiming.id%>" class="deleteClassTimings mg-icon-btn"><i class="fa fa-trash"></i></button>
+				</td>
+			</tr>
+			<%end%>
+		</table>
+		<% else %>
+		<!-- <h5>No class timings Created</h5> -->
+		<% end %>
+	</div><br/>
+
+	<%=hidden_field_tag 'mg_school_id',session[:current_user_school_id]%>
+	<!-- <button id="addClassTimingButton" class="mg-custom-form-btn">Add Class</button> -->
+	<div id="addClassDialogDiv">
+	</div>
+	<div id="editClassDialogDiv">
+	</div>
+</div>
+
+<script>
+function addClassBatches(batchId){
+	var wing_id=$("#mg_wing_id").val();
+	if(wing_id==""){
+		$("#classTimingList").hide();
+	}
+	else{
+		jQuery.ajax({
+            url: "/timetable/show_class_timings",
+            type: "GET",
+            data: {"mg_batch_id" :batchId,"mg_wing_id":wing_id},
+            dataType: "html",
+            success: function(html) {
+            	$("#classTimingList").show();
+              $("#classTimingList").html(html);
+			// if(wing_id=="Select"){
+			// 	$("#addClassTimingButton").attr("disabled", "disabled");
+			// }
+			// else{
+			// 	$("#addClassTimingButton").removeAttr("disabled");
+			// }
+            },
+            error:function(){
+            	alert("Something went wrong!");
+            }
+        });
+	}
+
+	}
+
+	$(document).on("click","#editClassTimingSaveBtn",function(){
+		var wing_id=$("#mg_wing_id").val();
+		var name=$("#classtimings_name").val();
+		var edit_error_message="";
+		var is_break="";
+		var checkedWeekdayValue="";
+		var uncheckedWeekdayValue="";
+		var isBreak=$("input#classtimings_is_break").is(':checked');
+		if(isBreak){
+			is_break=1;
+		}
+		else{
+			is_break=0;
+		}
+	    $("#selectedWeekdayforEditClassTimingsTdID > input").each(function(index) {
+         var currentInputID = $(this).attr("id");
+         var checked=$("input#"+currentInputID).is(':checked');
+         if(checked){
+	         	checkedWeekdayValue+=currentInputID.split("_")[1]+",";	
+	         }
+	         else{
+	         	uncheckedWeekdayValue+=currentInputID.split("_")[1]+",";
+	         }
+	  	});
+		var week_day=$("#weekday").val();
+		var Id=$("#classtimings_id").val();
+		var is_deleted=$("#classtimings_is_deleted").val();
+		var batch_id=$("#batch").val();
+		var start_time_hour=$("#classtimings_start_time_4i").val();
+		var start_time_min=$("#classtimings_start_time_5i").val();
+		var start_time=start_time_hour+":"+start_time_min+":00";
+		var end_time_hour=$("#classtimings_end_time_4i").val();
+		var end_time_min=$("#classtimings_end_time_5i").val();
+		var end_time=end_time_hour+":"+end_time_min+":00";
+		var school_id=$("#mg_school_id").val();
+		if(end_time < start_time){
+			alert("End Time should be greater than Start Time");
+		}
+		if(name == "" || name.size <= 0){
+			edit_error_message+="Please enter name"
+		}
+		if(checkedWeekdayValue==""){
+			edit_error_message+="Please select weekday"
+		}
+		if(edit_error_message!=""){
+			alert(edit_error_message);
+		}
+		else{
+			$.ajax({
+				url:"/timetable/update_class_timing",
+				data:{"name":name,"start_time":start_time,"end_time":end_time,"is_break":is_break,"is_deleted":is_deleted,"mg_batch_id":batch_id,"id":Id,"weekday":week_day,"checkedWeekdayValue":checkedWeekdayValue,"uncheckedWeekdayValue":uncheckedWeekdayValue,"mg_school_id":school_id,"mg_wing_id":wing_id},
+				type:"GET",
+				success:function(data){
+					// if(!data){
+					// 	alert("Please provide different time frame ");
+					// }else{
+						var batch_id=$("#batch").val();
+						addClassBatches(batch_id);
+						$(".ui-dialog-titlebar-close").click();
+					// }
+						
+				},
+				error:function(data){
+					alert("Something went wrong!");
+				}
+			});
+		}
+		
+	});
+
+	$(document).on("click","#addClassTimingSaveBtn",function(){
+		var wing_id=$("#mg_wing_id").val();
+		var checkedvalue="";
+		var uncheckedvalue="";
+		var error_message="";
+		$("#selectedWeekdayforClassTimingsTdID > input").each(function(index) {
+				var currentInputID = $(this).attr("id");
+		         var checked=$("input#"+currentInputID ).is(':checked');
+		         if(checked){
+		         	checkedvalue+=currentInputID.split("_")[1]+",";	
+		         }
+		         else{
+		         	uncheckedvalue+=currentInputID.split("_")[1]+",";
+		         }
+		  });
+		if(checkedvalue==""){
+			error_message+="Please select weekday \n";
+	  	}
+		var name=$("#addClass_name").val();
+		if(name == "" || name.size <= 0){
+			error_message+="Please enter name";
+		}
+		
+
+		var is_break="";
+		var isBreak=$("input#addClass_is_break").is(':checked');
+		if(isBreak){
+			is_break=1;
+		}
+		else{
+			is_break=0;
+		}
+		var week_day=$("#weekday").val();
+		var is_deleted=$("#addClass_is_deleted").val();
+		var batch_id=$("#batch").val();;
+		var start_time_hour=$("#start_time_game_time_4i").val();
+		var start_time_min=$("#start_time_game_time_5i").val();
+		var start_time=start_time_hour+":"+start_time_min+":00";
+		var end_time_hour=$("#end_time_game_time_4i").val();
+		var end_time_min=$("#end_time_game_time_5i").val();
+		var end_time=end_time_hour+":"+end_time_min+":00";
+		var school_id=$("#mg_school_id").val();
+		if(end_time < start_time){
+			alert("End Time should be greater than Start Time");
+		}
+		if(error_message!=""){
+			alert(error_message);
+		}
+		else{
+			$.ajax({
+				url:"/timetable/save_class_timing",
+				data:{"name":name,"start_time":start_time,"end_time":end_time,"is_break":is_break,"is_deleted":is_deleted,"mg_batch_id":batch_id,"weekday":week_day,"checkedvalue":checkedvalue,"mg_school_id":school_id,"mg_wing_id":wing_id},
+
+				dataType:"JSON",
+				type:"GET",
+				success:function(data){
+					console.log("data="+data)
+					if(!data){
+						alert("Time range already exists");
+					}else{
+
+					var batch_id=$("#batch").val();
+					addClassBatches(batch_id);
+					$(".ui-dialog-titlebar-close").click();
+					}
+				},
+				error:function(data){
+					alert("Something went wrong!");
+				}
+			});
+		}
+	});
+
+	$(document).on("click","#addClassTimingButton",function(){
+		//var wing_id=$("#mg_wing_id").val();
+		var wing_id=$("#mg_wing_id").val();
+		console.log(wing_id);
+		var batchId=$("#batch").val();
+		jQuery.ajax({
+			url:"/timetable/create_class_timing",
+			type:"GET",
+			dataType: "html",
+			data:{"batch_id":batchId,"mg_wing_id":wing_id},
+			success:function(html){
+
+				//$("#addClassDialogDiv").empty();
+				$("#addClassDialogDiv").dialog({
+					modal: true,
+                    title: "Create Class Timings",
+                    open: function () {
+                        $(this).html(html);
+                    },
+                    close: function (e) {
+                        $(this).empty();
+                    }
+				});
+			},
+			error:function(){
+				alert("Something went wrong!");
+			}
+		});
+	});
+
+	$(document).on("click",".editClassTimings",function(){
+		var id=$(this).attr("id");
+		console.log("id="+id);
+		jQuery.ajax({
+			url:"/timetable/edit_class_timing",
+			type:"GET",
+			data:{"id":id},
+			dataType: "html",
+			success:function(html){
+				$("#editClassDialogDiv").dialog({
+					modal: true,
+                    title: "Edit Class Timings",
+                    open: function () {
+                        $(this).html(html);
+                    },
+                    close: function (e) {
+                        $(this).empty();
+                    }
+				});
+				
+			},
+			error:function(){
+				alert("Something went wrong!");
+			}
+		});
+	});
+
+	$(document).on("click",".deleteClassTimings",function(e){
+		e.preventDefault();
+		var id=$(this).attr("id");
+		var batch_id=$("#batch").val();
+		if(confirm("Are you sure?")){
+			jQuery.ajax({
+			url:"/timetable/delete_class_timings",
+			type:"GET",
+			data:{"id":id,"mg_batch_id":batch_id},
+			success:function(html){
+				alert("Deleted Successfully");
+				addClassBatches(batch_id);
+			},
+			error:function(){
+				alert("Something went wrong!");
+			}
+		});
+		}
+		else{
+			$(".ui-dialog-titlebar-close").click();
+		}
+	});
+
+	function batchesForSelectedWingInClassTimings(wing_id){
+		
+		jQuery.ajax({
+            url: "/timetable/batches_for_selected_wing_in_classtimings",
+            type: "GET",
+            data: {"mg_wing_id" :wing_id},
+            dataType: "html",
+            success: function(html) {
+              $("#selectSectionInClassTimingsDivId").html(html);
+              var batch_id=$("#batch").val();
+              addClassBatches(batch_id);
+            },
+            error:function(){
+            	alert("Something went wrong!");
+            }
+        });
+	}
+	
+</script>
+
+<style type="text/css">
+  .mg-scroll-bar-class-timings{
+      border: 1px solid #b2b2b2;
+      max-height: 240px;
+      margin-bottom: 9px;
+      overflow-y: scroll;
+      width: 50%;
+  }
+</style>

@@ -1,0 +1,15 @@
+<!-- Sec --> 
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Action name:</strong>
+  <%= @mg_action.action_name %>
+</p>
+
+<p>
+  <strong>Description:</strong>
+  <%= @mg_action.description %>
+</p>
+
+<%= link_to 'Edit', edit_mg_action_path(@mg_action) %> |
+<%= link_to 'Back', mg_actions_path %>

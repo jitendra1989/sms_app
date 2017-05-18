@@ -1,0 +1,10 @@
+<!-- Sec --> 
+<p id="notice"><%= t('notice') %></p>
+
+<p>
+  <strong><%t('rolename')%>:</strong>
+  <%= @mg_student_category.name %>
+</p>
+
+<%= link_to "<i class=\"fa fa-pencil-square-o\"></i>".html_safe, edit_mg_student_category_path(@mg_student_category) ,:title="Edit" ,:class=>"mg-icon-btn"%> |
+<%= link_to "<i class=\"fa fa-trash\"></i>".html_safe, mg_student_categories_path ,:title="Delete" ,:class=>"mg-icon-btn"%>

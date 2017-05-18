@@ -1,0 +1,158 @@
+<table border="1" class="mg-showdata-bg " cellspacing="1" cellpadding="1">  
+  <tr>
+    <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('name')%></label>
+    </td>
+    <td class="mg-td-width-half mg-capitalize-text" valign="top">
+      <%= @student.try(:first_name) %><%=" "%><%= @student.try(:last_name) %>
+    </td>
+  </tr> 
+  <tr>
+    <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('admission_number')%></label>
+    </td>
+    <td class="mg-td-width-half mg-capitalize-text" valign="top">
+      <%= @student.try(:admission_number) %>
+    </td>
+  </tr>
+  <tr>
+    <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('semester')%></label>
+    </td>
+    <td class="mg-td-width-half mg-capitalize-text" valign="top">
+      <%= @student.try(:course_batch_name_student) %>
+    </td>
+  </tr>
+</table>
+
+
+
+<table border="1" class="mg-showdata-bg mg-tbl-layout" cellspacing="1" cellpadding="1">
+  <tr>
+    <br/><label class="mg-label"> <%= t('vaccination_details')%></label>
+  </tr>
+</table>
+<% if @vaccinations.size>0%>
+  <table border="1" class="mg-showdata-bg mg-tbl-layout" cellspacing="1" cellpadding="1">
+    <tr>
+       <th class="mg-td-width-half" valign="top">
+     		<label class="mg-label"> <%= t('immunization')%></label>
+     	 </th>
+     	 <th class="mg-td-width-half" valign="top">
+          <label class="mg-label"> <%= t('age_recommended')%></label>
+    	 </th>
+       <th class="mg-td-width-half" valign="top">
+          <label class="mg-label"> <%= t('due_date')%></label>
+       </th>
+       <th class="mg-td-width-half" valign="top">
+          <label class="mg-label"> <%= t('date')%></label>
+       </th>
+       <th class="mg-td-width-half" valign="top">
+          <label class="mg-label"> <%= t('is_particular_student')%></label>
+       </th>
+   </tr>
+   <%@vaccinations.each do |v|%>
+      <%if v.is_particular_student==true%>
+        <tr>
+           <td class="mg-td-width-half" valign="top">
+              <%= v.try(:name)%>
+           </td>
+           <td class="mg-td-width-half" valign="top">
+             <%= v.try(:age_recommended) %>
+           </td>
+            <td class="mg-td-width-half" valign="top">
+             <%=v.try(:due_date).present? ? v.try(:due_date).strftime(@school.date_format) : "" %>
+           </td>
+           <td class="mg-td-width-half" valign="top">
+             <%=v.try(:date).present? ? v.try(:date).strftime(@school.date_format) : "" %>
+           </td>
+           <td class="mg-td-width-half" valign="top">
+             <%= t("yes")%>
+           </td>
+       </tr>
+     <%else%>
+        <tr>
+           <td class="mg-td-width-half" valign="top">
+              <%= v.try(:mg_vaccination).try(:name)%>
+           </td>
+           <td class="mg-td-width-half" valign="top">
+             <%= v.try(:mg_vaccination).try(:age_recommended) %>
+           </td>
+            <td class="mg-td-width-half" valign="top">
+             <%=v.try(:due_date).present? ? v.try(:due_date).strftime(@school.date_format) : "" %>
+           </td>
+           <td class="mg-td-width-half" valign="top">
+             <%=v.try(:date).present? ? v.try(:date).strftime(@school.date_format) : "" %>
+           </td>
+           <td class="mg-td-width-half" valign="top">
+             <%= t("no")%>
+           </td>
+        </tr>
+     <%end%>
+    <%end%>
+  </table>
+<%else%>
+  <%=t("No Vaccinations Report Created")%>
+<%end%>
+
+<table border="1" class="mg-showdata-bg mg-tbl-layout" cellspacing="1" cellpadding="1">
+  <tr>
+    <br/><label class="mg-label"> <%= t('booster_doses_details')%></label>
+  </tr>
+</table>
+
+<table border="1" class="mg-showdata-bg mg-tbl-layout" cellspacing="1" cellpadding="1">
+  <tr>
+     <th class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('immunization')%></label>
+     </th>
+     <th class="mg-td-width-half" valign="top">
+        <label class="mg-label"> <%= t('frequency')%></label>
+     </th>
+     <th class="mg-td-width-half" valign="top">
+        <label class="mg-label"> <%= t('due_date')%></label>
+     </th>
+     <th class="mg-td-width-half" valign="top">
+        <label class="mg-label"> <%= t('date')%></label>
+     </th>
+ </tr>
+ <%@booster_detail.each do |v|%>
+    <%if v.is_particular_student==true%>
+      <tr>
+         <td class="mg-td-width-half" valign="top">
+            <%= v.try(:name)%>
+         </td>
+         <td class="mg-td-width-half" valign="top">
+           <%= v.try(:frequency) %>
+         </td>
+         <td class="mg-td-width-half" valign="top">
+          <%=v.try(:due_date).present? ? v.try(:due_date).strftime(@school.date_format) : "" %>
+         </td>
+         <td class="mg-td-width-half" valign="top">
+          <%=v.try(:date).present? ? v.try(:date).strftime(@school.date_format) : "" %>
+         </td>
+     </tr>
+   <%else%>
+      <tr>
+         <td class="mg-td-width-half" valign="top">
+            <%= v.try(:mg_booster_dose).try(:name)%>
+         </td>
+         <td class="mg-td-width-half" valign="top">
+           <%= v.try(:mg_booster_dose).try(:frequency) %>
+         </td>
+         <td class="mg-td-width-half" valign="top">
+           <%=v.try(:due_date).present? ? v.try(:due_date).strftime(@school.date_format) : "" %>
+         </td>
+         <td class="mg-td-width-half" valign="top">
+           <%=v.try(:date).present? ? v.try(:date).strftime(@school.date_format) : "" %>
+         </td>
+      </tr>
+   <%end%>
+  <%end%>
+</table>
+ <p class="mg-p-mgtop">
+    <a class="mg-small-form-btn cancel-form-dialog"><%=t('cancel')%></a> 
+</p> 
+ 
+
+

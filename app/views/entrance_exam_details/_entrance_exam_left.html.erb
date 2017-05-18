@@ -1,0 +1,104 @@
+<section id="userBodyContentBox" >
+  <table width=100% border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td valign="top" class="userBodyContentBox1">
+        <aside class="userMenuBoxLeft" style="width: 210px;">
+          <ul class="menuListHome">
+            <li class="myAccountMenu"><%=t('admission')%></li>       
+            <li id="manageStudentID">
+              <a class="menuItemsActivities" href="/mg_student_admissions" id="manageStudentLID">
+                <div class="setMenu"><i class="fa fa-pencil">&nbsp;&nbsp;</i><%=t('about_student')%>
+                </div>
+              </a>
+            </li>
+            <%@school = MgSchool.where(:id=>session[:current_user_school_id],:is_deleted=>0)%>
+            <%if @school[0].is_test_center==true && @school[0].disable_entrance_exam_test==true%>
+              <li id="mgEXMVenuesID">
+                <a class="menuItemsActivities" href="/entrance_exam_details/exam_venue" id="mgEXMVenuesLID">
+                  <div class="setMenu"><i class="fa fa-pencil">&nbsp;&nbsp;</i><%=t('about_venues')%>
+                  </div>
+                </a>
+              </li>
+            <%end%>
+
+            <%if @school[0].disable_entrance_exam_test==true%>
+
+              <li id="mgEXMSelectionID">
+                <a class="menuItemsActivities" href="/entrance_exam_details/cut_off_index" id="mgEXMSelectionLID">
+                  <div class="setMenu"><i class="fa fa-book">&nbsp;&nbsp;</i><%=t('entrance_exam_selection')%>
+                  </div>
+                </a>
+              </li>
+            <%elsif @school[0].disable_entrance_exam_test==false%>
+              <li id="mgStudentIndexID">
+                <a class="menuItemsActivities" href="/entrance_exam_details/students_index" id="mgStudentIndexLID">
+                  <div class="setMenu"><i class="fa fa-pencil">&nbsp;&nbsp;</i><%=t('student_index')%>
+                  </div>
+                </a>
+              </li>
+              
+              <li id="mgEXMSelectionID">
+                <a class="menuItemsActivities" href="/entrance_exam_details/cut_off_index" id="mgEXMSelectionLID">
+                  <div class="setMenu"><i class="fa fa-book">&nbsp;&nbsp;</i><%=t('admission_selection')%>
+                  </div>
+                </a>
+              </li>
+            <%end%>
+
+            <%if @school[0].disable_entrance_exam_test==true%>
+              <li id="viewEXMDetailID">
+                <a class="menuItemsActivities" href="/entrance_exam_details" id="viewEXMDetailLID">
+                  <div class="setMenu"><i class="fa fa-calendar">&nbsp;&nbsp;</i><%=t('entrance_exam_details')%>
+                  </div>
+                </a>
+              </li>
+
+              <li id="viewStudentHallTCKT">
+                <a class="menuItemsActivities" href="/student_hall_tickets" id="viewStudentHallTCKTID">
+                  <div class="setMenu"><i class="fa fa-location-arrow">&nbsp;&nbsp;</i><%=t('hall_ticket')%>
+                  </div>
+                </a>
+              </li>  
+
+              <li id="entranceEXMMarksID">
+                <a class="menuItemsActivities" href="/entrance_exam_details/exam_marks" id="entranceExmMarksLID">
+                  <div class="setMenu"><i class="fa fa-book">&nbsp;&nbsp;</i><%=t('entrance_exam_marks')%>
+                  </div>
+                </a>
+              </li> 
+            <%#end%> 
+
+            <li id="mgStudentIndexID">
+              <a class="menuItemsActivities" href="/entrance_exam_details/students_index" id="mgStudentIndexLID">
+                <div class="setMenu"><i class="fa fa-pencil">&nbsp;&nbsp;</i><%=t('student_index')%>
+                </div>
+              </a>
+            </li>
+            
+            <%#if @school[0].disable_entrance_exam_test==true%>
+              <li id="admissionEXMSelectionId">
+                <a class="menuItemsActivities" href="/entrance_exam_details/selection_for_exam" id="admissionEXMSelectionLID">
+                  <div class="setMenu"><i class="fa fa-plus-square-o">&nbsp;&nbsp;</i><%=t('admission_selection')%>
+                  </div>
+                </a>
+              </li>
+            <%end%>                             
+
+            <li id="admissionManagementID">
+              <a class="menuItemsActivities" href="/admission_managements" id="admissionManagementLID">
+                <div class="setMenu"><i class="fa fa-wrench">&nbsp;&nbsp;</i><%=t('manage_admission')%>
+                </div>
+              </a>
+            </li>
+          </ul>  
+        </aside>
+      </td>
+    
+    <td  valign="top" id="manageAdminCategoryID" class="mg-table-td-main-2">
+    <%=render partial: 'layouts/messages'%>
+
+<script>
+  $(document).ready(function(){
+    focusheaderBox("ADMISSION");
+  });
+</script>

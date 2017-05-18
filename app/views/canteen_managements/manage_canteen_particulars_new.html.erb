@@ -1,0 +1,338 @@
+<!-- Sec --> 
+ <%= form_for :fesses2, url: {:action=>'manage_canteen_particulars_create',:controller=>'canteen_managements',:id=>params[:id]}, :html => {:id => 'inventoryfeeParticularCreateFormId', :class => 'elm_class',
+                            :style => 'elm_style' } do |f| %>
+
+  <%= f.hidden_field :mg_school_id, :value=> session[:current_user_school_id]%>
+  <%=f.hidden_field :selected_account_id%>
+  <div style="float:left; width:40%;">
+    <p>
+      <%= f.label :fee_category ,:class=>"mg-label"%><br>
+      <%@category=MgFeeCategory.where(:id=>session[:feedetails_id]).pluck(:name,:id)%>
+      <%=f.select :fee_category,options_for_select(@category)%>
+    </p>
+
+    <p>
+      <%= f.label :fee_particular ,:class=>"mg-label"%><span class="required-field"> *</span><br>
+      <%@particularName=MgParticularType.where(:mg_fee_category_id=>session[:feedetails_id]).pluck(:particular_name,:id)%>
+      <%=f.select :mg_particular_type_id,options_for_select(@particularName),{:include_blank=>"Select"},:class=>"mg-select-btn",:onchange=>"accountDetail(this.value)"%>
+    </p>
+
+    <p id="account_detail_id">
+      <%= f.label :select_account ,:class=>"mg-label"%><span class="required-field"> *</span><br>
+      <%account=Array.new
+        account.push("Central","central")
+        accounts=MgAccount.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:mg_account_name,:id)
+        accounts.insert(0,account)
+      %>
+     <%=f.select :account,options_for_select(accounts),{:include_blank =>"Select"} ,:class=>"mg-select-btn"%>
+    </p>
+
+    <p>
+      <%= f.label :amount,:class=>"mg-label"%><span class="required-field"> </span><br>
+      <%= f.text_field :amount,:class=>"mg-text-field",:readonly=>true%>
+    </p>
+
+    <div style="display:none;">
+      <p>
+        <%= f.label :is_deleted, "Is Active" ,:class=>"mg-label"%><br />
+         <label for="is_deleted" class="mg-label-inner-form "><%=t('active')%></label>
+        <%#= f.label :is_deleted, "Active", :value => "true"  ,:class=>"mg-label-inner-form"%>
+        <%= f.radio_button :is_deleted, false , :checked => true%>
+         <label for="is_deleted" class="mg-label-inner-form "><%=t('inactive')%></label>
+        <%#= f.label :is_deleted, "In Active", :value => "false" ,:class=>"mg-label-inner-form"%>
+        <%= f.radio_button :is_deleted, true %>
+      </p>
+    </div>
+
+    <p class="mg-p-mgtop">
+      <%= f.submit t('save') ,:class=>"mg-small-form-btn fee-particular-new-class" , :style=>"display:none"%>
+      <a onclick="submission_criteria_form(this); " class="input_field mg-small-form-btn "><%=t("save")%></a>
+       <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"}%>
+    </p>
+  </div>
+
+<!-- ========================================================================================= -->
+
+    <div id="billDetailStudentDivId" class="studentDivClass" style=";">
+    <label class="mg-label mg-tt-width" style=""><%= t('select') %> <%= t('semester') %><span class="required-field">&nbsp;*</span></label>
+
+
+    <%= select_tag "selected_batches1[]",options_for_select(MgBatch.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:name,:id)),:prompt=>"Select",:multiple => false,:class=>"mg-select-btn",:onchange=>"mgBatchChangeFunctions(this.value)"%>
+ 
+    <%#= f.collection_select(:mg_batch_id,MgBatch.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]), :id, :course_batch_name,{:selected=>"",:include_blank => t("select")},:class =>"mg-select-btn",:onchange=>"mgBatchChangeFunction(this.value)")%><br/>
+
+    <label class="mg-label mg-tt-width" style=""><%= t('select_student') %><span class="required-field">&nbsp;*</span></label>
+    <%#= f.collection_select(:mg_student_id,MgStudent.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]), "id", "student_full_name",{:selected=>"",:include_blank => t("select")},:class =>"mg-select-btn",:onchange=>"",:disabled=>@bool_val)%>
+    <%= select_tag "selectedStudents[]",options_for_select(MgStudent.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:first_name,:id)),:prompt=>"Select",:class=>"mg-select-btn",:onchange=>""%><br/>
+  </div>
+
+<!-- ========================================================================================= -->
+<!-- selected_batches1 -->
+
+
+  <div style="float:left; width:60%;">
+    <label class="mg-label"><%#=t('select_semester')%></label><br/>
+    <!-- <label class="mg-label"><%#=t('select')%></label> <a href="#" id="checkAllCheckBoxInFeeParticularId" class="mg-pop-link">All</a> -->
+    <!-- <a href="#" id="unCheckAllCheckBoxInFeeParticularId" class="mg-pop-link">None</a> -->
+    <%id=session[:feedetails_id]%>
+    <%@feesquery3=MgBatch.where(:mg_school_id => session[:current_user_school_id],:is_deleted=>0).order("mg_course_id").pluck(:name,:id,:mg_course_id)%>
+
+ <!--    <div id="classSectionDivID" class="mg-scroll-bar-course-batch">
+      <%#@feesquery3.each do |d|%>
+        <input id="item_selected_batches1"  class="auto-ckeckbox-fee-particular-batch-cls" name="selected_batches1[]" type="checkbox" value="<%#=raw d[1]%>" />
+        <%#@course=MgCourse.select(:course_name).find_by_id(d[2])%>
+        <%#if@course!=nil%>
+          <%#= @course.course_name %> - <%#=d[0]%><br/> 
+        <%#else%>
+          <%#=d[0]%><br/> 
+        <%#end%>
+      <%#end%>
+    </div> -->
+<!-- =========================================================================================== -->
+
+    <div id="values" name="value">
+     <!--  <label class="mg-label"><%#= t('admissionnumber') %></label> -->
+      <%#= f.radio_button :value1,"demo",:checked=> false%><br>
+      <label class="mg-label" id="studentListLabelID" style="display:none;"><%= t('student_list') %></label>
+
+      <div class="fee-particular-admission-number-cls" >
+        <!-- <label class="mg-label" for="admissionNumber"><%#= t('admissionnumber') %></label> -->
+        <%#=select_tag :admission_no,options_for_select([]),:multiple => true,:size =>10%>
+        <%#=f.text_field :admission_no ,id:"feeParticularAdmissionID",class:"check-for-valid-admission-number-cls mg-text-field" %>
+      </div>
+       
+      <%#= f.label :StudentCategory %>
+      <!-- <label class="mg-label"><%#= t('studentCategory') %></label> -->
+      <%#= f.radio_button :value1,"demo2",:checked=> false%>
+
+      <!-- <div class="fee-particular-student-category-cls" style="display:none;">
+        <label class="mg-label" for="student_category"><%#= t('selectStudentCategory') %></label><br/>
+        <%#=f.collection_select(:mg_student_category_id, MgStudentCategory.where(:is_deleted=>0, :mg_school_id=>session[:current_user_school_id]), :id, :name, {:include_blank=>"Select"} ,:class=> 'mg-select-btn' )%>
+      </div> -->
+    </div>
+
+    <p>
+    <div id="FeeCategoryID">
+    </div>
+    </p>
+  </div>
+<% end %>
+
+<style type="text/css">
+  .mg-scroll-bar-course-batch{
+      width: 250px;
+      height: 150px;
+      overflow: scroll;
+  }
+</style>
+
+
+<script>
+  $(document).ready(function(){
+
+    $("#inventoryfeeParticularCreateFormId").validate({
+      rules: 
+      {
+          "fesses2[name]": {required: true},
+          "fesses2[amount]": {required: true,number: true,min:1},
+          "fesses2[mg_particular_type_id]": {required: true},
+          "fesses2[value1]":{required: true},
+          "fesses2[account]": {required: true},
+          "mg_account_id": {required: true}
+      }
+    });
+  });
+
+
+
+  function mgBatchChangeFunctions(batch_id){
+    // alert("Hi")
+  $.ajax({
+    url: '/canteen_managements/student_details',
+    data:{"mg_batch_id":batch_id},
+    cache: false,
+    success: function(data){
+      // alert(data);
+      if(data.length > 0){
+        var apdStr = '<option value="">Select</option>';
+        for(key in data){
+          apdStr += '<option value="'+data[key].id+'">'+data[key].admission_number+" - "+data[key].first_name.substr(0,1).toUpperCase()+data[key].first_name.substr(1)+" "+data[key].last_name.substr(0,1).toUpperCase()+data[key].last_name.substr(1)+'</option>'
+        }
+        $("#selectedStudents_").empty().append(apdStr);
+      }
+      else{
+        var apdStr = '<option value="">Select</option>';
+        $("#fesses2_mg_student_id").empty().append(apdStr);;
+      }
+    }
+  });
+}
+
+
+  // function mgstudentch(batch_id){
+    // alert("Hi")
+    $("#selectedStudents_").change(function(){
+      mg_batch_id=$("#selected_batches1_").val();
+      mg_student_id=$(this).val();
+        $.ajax({
+          url: '/canteen_managements/student_amount_details',
+          data:{"mg_batch_id":mg_batch_id,"mg_student_id":mg_student_id},
+          cache: false,
+          success: function(data){
+            // alert(data);
+            if(data > 0){
+              $("#fesses2_amount").val(data);
+            }
+            else{
+              $("#fesses2_amount").val("");
+              alert("No Balance amount.");
+            }
+          }
+        });
+    })
+// }
+
+
+
+
+  $(document).on("click","#fesses2_value1_demo",function(e){
+
+    
+    var checkedvalue="";
+    var uncheckedvalue="";
+
+    
+    $("input[name^=selected_batches]:checked").each(function(index){
+      
+    
+      checkedvalue+=$(this).val()+" ";
+
+    });
+   
+    if (checkedvalue.length==0)
+
+    {
+      // alert("Please select the Class & Section");
+    }
+      else
+      {
+
+      checkedvalue=checkedvalue.trim().replace(/ /g,",");
+     // alert("Hi");
+      jQuery.ajax({
+            url: "/fees/section_students",
+            type: "GET",
+            data: {"batch_value":checkedvalue},
+            dataType: "html",
+            success: function(data) {
+              // alert(data);
+               $(".fee-particular-admission-number-cls").empty();
+               $(".fee-particular-admission-number-cls").append(data);
+               $("#notSelected").attr("multiple",false);
+             
+              
+            },
+            error:function(){
+              // alert("Something went wrong!");
+            }
+        });
+    }
+  });
+
+  function submission_criteria_form(that){
+    tempvar=$("#fesses2_amount").val();
+    if (tempvar=="")
+    {
+        alert("No amount to submit.")
+    }else{
+        var temp=0;
+        $("input[name^=selected_batches]:checked").each(function(index){
+              //checkedvalue+=$(this).val()+" ";
+              temp++;
+          });
+          if (temp>0)
+          {
+            student_selected();
+            $(that).closest('form').submit();
+          }
+          else{
+            // alert("Please select semester");
+            $(that).closest('form').submit();
+          }
+    }
+  }
+
+  function student_selected(){
+    var selected_students=$("#selectedStudents").val();
+    if(selected_students==null){
+      // alert("Please select students");
+    }
+    else
+    {
+      $(".fee-particular-new-class").click();
+    }
+  }
+
+  $(document).on("click",".auto-ckeckbox-fee-particular-batch-cls",function(){
+    var checkedvalue=checkingBatchesSelected();
+      checkedvalue=checkedvalue.trim().replace(/ /g,",");
+      console.log("val");
+      console.log(checkedvalue);
+      jQuery.ajax({
+            url: "/fees/section_students",
+            type: "GET",
+            data: {"batch_value":checkedvalue},
+            dataType: "html",
+            success: function(html) {
+               $("#studentListLabelID").show();
+               $(".fee-particular-admission-number-cls").html(html);
+            },
+            error:function(){
+              // alert("Something went wrong!");
+            } 
+      });
+  });
+
+  function checkingBatchesSelected(){
+    var checkedvalue="";
+      var uncheckedvalue="";
+      $("input[name^=selected_batches]:checked").each(function(index){
+          checkedvalue+=$(this).val()+" ";
+      });
+      return checkedvalue;
+  }
+
+  // #Bindhu Added for account starts
+  function accountDetail(particular_type){
+    var category_id=$("#fesses2_fee_category").val();
+    // alert(category_id);
+    // alert(particular_type);
+    $.ajax({
+      url:"/fees/account_detail",
+      data:{"particular_type_id":particular_type,"fee_category":category_id},
+      success:function(html){
+        
+        $("#account_detail_id").html(html);
+        var account_id=$("#mg_account_id").val();
+        if (account_id!=null){
+          $("#fesses2_selected_account_id").val(account_id);
+          // $("#fesses2_selected_account_id").attr('disabled',false);
+          $("#fesses2_selected_account_id").removeAttr("disabled");
+          $("#mg_account_id").removeAttr("disabled");
+        }
+      },
+      error:function(){
+        alert("inside error");
+
+      }
+    });
+  }
+  // #Bindhu Added for account ends
+</script>
+
+
+
+
+
+
+

@@ -1,0 +1,212 @@
+<% navigation_add t('query_record'), :controller=>'front_office_management' ,:action=> 'query_record_index' %>
+<%=hidden_field_tag "search_by_date",params["search_date"]%>
+<%if session[:user_type]=="principal"%>
+  <%= render partial: 'dashboards/principle_dashboard_left' %>
+<%else%>
+  <%=render partial: 'front_office_management_left'%>
+<%end%>
+<div id="editquery_recordfomdata">
+<h4 class="mg-h4"><%=t('query_record')%></h4>
+<p>
+<%if session[:user_type]=="front_office_manager"%>
+<button class="add_query_record_cls mg-btn-bottom-margin mg-custom-form-btn"><%= t('add_query')%></button>
+<%end%>
+<%= form_tag query_record_index_path, :id =>'searchByDateForm', multipart: true do %>
+  &nbsp;<%= t('search_by_date')%>
+  &nbsp;&nbsp;<%=text_field_tag :search_date,nil, :class=> 'mg-text-field' %>
+  <a onclick="$(this).closest('form').submit()" id="saveStudentRecordID" class="submit mg-small-form-btn"><%=t("search")%></a> 
+<%end%>
+</p>
+<% if @query_record_data.present? %>
+<div class="mg-scroll-employee-bar">
+	<table  class="batch-tbl mg-tbl-margin  mg-tbl-layout">   <!-- border="2" --> 
+	  <tr class="subject-table-header">
+	    <th><%= t('query_number') %></th>
+	    <th><%= t('name') %></th>
+	    <th><%= t('request_type') %></th> 
+	    <th><label class="mg-rm-text-trans"><%= t('type_of_query') %></label></th>
+      <th><%= t('caller_category') %></th> 
+      <th style="width: 120px;"><%= t('to_principal') %></th> 
+
+      <%if session[:user_type]=="front_office_manager"%>
+        <th>
+            <%=t('select')%>
+            <div class="mg-text-margin">
+              <a href="#" id="checkAllCheckBoxForExcel" class="mg-pop-link">All</a>
+              <a href="#" id="unCheckAllCheckBoxForExcel" class="mg-pop-link">None</a>
+            </div>
+        </th>
+        <%end%>
+      <th style="width: 120px ,margin-left: 38px;"><%= t('actions') %></th>
+	  </tr>
+
+	  <% @query_record_data.each do |s| %>
+		  <tr class="export-excel-class">
+	   		<td><%= s.query_number %></td>
+	   		<td class="mg-capitalize-text"><%= s.caller_name %></td>
+	   		<%request_type=MgCallerCategoryFom.find_by(:id=>s.mg_caller_category_fom_id)%>
+	   		<td><%= truncate(request_type.try(:name),:length=>18,:seperate=>'') %></td>
+	   		
+	   		<%query_record=MgFomQueryRecord.find_by(:id=>s.mg_fom_query_record_id )%>
+        <td><%= query_record.try(:name)%></td> 
+        <%
+          tempCat=MgCallerCategory.find_by(:id=>s.try(:mg_caller_category_id))
+        %>
+        
+	   		<td><%= tempCat.try(:name)%></td> 
+        <%if s.is_principal_required==false%>
+          <td class="mg-align-center"><%= t("yes")%></td> 
+        <%else%>
+          <td class="mg-align-center"><%= t("no")%></td> 
+        <%end%>
+
+        <%if session[:user_type]=="front_office_manager"%>
+          <td class="mg-align-center">
+            <%= check_box_tag("export_excel[]", name=s.id, false, :onclick=>"",:class=>"checked-checkbox-for-excel excel-checkbox-checkstatus")%>          
+          </td> 
+        <%end%>
+	   		
+	   		
+      	<td >	
+      		<button title="Show" id="<%=raw s.id %>-showquery_recordFomBTNID" class="show-query-record-fom-btn mg-icon-btn"><i class="fa fa-eye"></i></button>
+
+
+          <button title="Edit" id="<%=raw s.id %>-editquery_recordFomBTNID" class="edit-query-record-fom-btn mg-icon-btn"><i class="fa fa-pencil-square-o"></i></button>
+          <%if session[:user_type]=="front_office_manager"%>
+          
+        <!-- 	<span style=" position: relative;">
+           	<%#= link_to "<i class=\"fa fa-trash\"></i>".html_safe ,{ action: "query_record_delete", id: s.id },data: { confirm: "Are you sure to delete?" } ,:title=>"Delete" ,:class=>"mg-icon-btn"  %>
+        	</span> -->
+          <button title="Delete" onclick="confirm('Are you sure to delete?') ? window.location='/front_office_management/query_record_delete/<%=s.id%>' : ''" class="edit-query-record-fom-btn mg-icon-btn"><i class="fa fa-trash"></i></button>
+          <%end%>
+      	</td>
+    	  </tr>
+  <% end %>
+	</table>
+  </div>
+	<br/>
+        <%if session[:user_type]=="principal"%>
+        <%else%>
+        <a onclick="exportExcelForSelected()" class="mg-small-form-btn mg-label-text-transform-none"><%= t("submit_to_principal") %></a>
+        <%end%>
+<%else%>
+<h5>No records are created </h5>
+<%end%>
+
+<div id="showquery_recordfomdata"></div>
+</div>
+
+
+
+<%= render  partial: 'application/common_left_close' %>
+
+
+<script type="text/javascript">
+	$(document).ready(function () {
+    focusCurrentTab("query_recordAID","query_recordLiID");
+    dateFormatStr =  getJsDateFormat();
+    $( "#search_date" ).datepicker({changeMonth: true,changeYear: true,yearRange: "-50:+0",maxDate: "0",dateFormat: dateFormatStr});
+
+    $(function () {
+      $.validator.addMethod('dateFormat',
+      function (value, element) {
+        dateFormatStr =  getJsDateFormat();
+        if (this.optional(element)) {
+          return true;
+        }
+        var ok = true;
+        try {
+          $.datepicker.parseDate(dateFormatStr, value);
+        }
+        catch (err) {
+          ok = false;
+        }
+        return ok;
+      },
+      "Please enter a date in the format "+ getDateFormat(dateFormatStr) +".");
+      dateFormatStr =  getJsDateFormat();
+      $(".datefield").datepicker({ dateFormat: dateFormatStr, changeYear: true });
+    });
+
+    $("#searchByDateForm").validate({
+        rules: {        
+        "search_date": {required: true, dateFormat: true}
+      }
+    });
+
+    var searched_date = $("#search_by_date").val();
+      $("#search_date").val(searched_date);
+  });
+
+
+
+
+  $(document).on("click", ".show-query-record-fom-btn", function(e){
+    var myID =$(this).attr('id');
+    var Id=myID.split("-");
+    var urlLink = "/front_office_management/query_record_show";
+    $.ajax({
+      url: urlLink ,
+      cache: false,
+      data:{"id":Id[0]},
+      success: function(html){
+        $('#editquery_recordfomdata').html(html);
+      }
+    });
+ 	});
+
+ $(document).on("click", ".edit-query-record-fom-btn", function(e){
+   var myID =$(this).attr('id');
+   var Id=myID.split("-");
+   var urlLink = "/front_office_management/query_record_edit";
+   $.ajax({
+      url: urlLink ,
+      cache: false,
+      data:{id:Id[0]},
+      success: function(html){
+        $('#editquery_recordfomdata').html(html);
+      }
+    });
+  });
+  
+
+$("#checkAllCheckBoxForExcel").on("click", function(e){
+    $(".checked-checkbox-for-excel").prop('checked', true);
+    e.preventDefault();        
+  });
+
+  $("#unCheckAllCheckBoxForExcel").on("click", function(e){
+    $(".checked-checkbox-for-excel").prop('checked', false);
+    e.preventDefault();
+  });  
+
+    function exportExcelForSelected(){
+      var array=[];
+      $(".export-excel-class").each(function(){
+        if($(this).find(".excel-checkbox-checkstatus").is(':checked')){
+          array.push($(this).find(".excel-checkbox-checkstatus").val());
+        }
+      });
+      if (array.length > 0){
+        window.location="/front_office_management/query_record_excel/?"+"array="+array;
+        //$(".checked-checkbox-for-excel").prop('checked', false);
+      }else{
+        alert("Please check atleast one");
+      }
+    }
+
+  $(document).on("click",".add_query_record_cls",function(){
+    window.location="/front_office_management/query_record_new";
+  });
+
+  $(document).on("change","#search_date",function(){
+    var search_date =$("#search_date").val();
+    //var temp="search_by_date"+"="+search_date;
+    //alert(search_date);
+    if(search_date==''){
+      var urlLink = "/front_office_management/query_record_index";
+      window.location=urlLink;
+    }
+  });
+</script>
+

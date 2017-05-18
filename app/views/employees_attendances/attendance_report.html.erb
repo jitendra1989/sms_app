@@ -1,0 +1,82 @@
+      
+<h4 class="mg-h4">Attendance Report</h4>
+
+<!-- <div class="mg_pagination" > -->
+
+<div class="abc">
+
+<table class="batch-tbl" cellspacing="0" style="padding:0; width:100%; border-collapse:collapse;">
+        <tr  class="subject-table-header mg-table-nowrap" rowspan="2">
+          <th>First Name </th>
+          <th>Last Name </th>
+          <th>Halfday</th>
+          <!-- <th>Afternoon</th> -->
+          <th>Absent</th>
+           
+           <th>Present Days</th>
+           <th>Absent Without Notice</th>
+           <th>Late Come</th>
+           <th>Total Days</th> 
+        </tr>
+<%
+   @allEmloyees.each do |f|
+    	is_halfdayCount=0
+    	is_afternoonCount=0
+    	is_fulldayCount=0
+    	is_without_notice_count=0
+      is_late_come_count=0
+    	
+    	@date_for_employee=MgEmployeeAttendance.where(:absent_date=>@start_date.to_date..@end_date.to_date, :mg_employee_id=>f.id, :is_deleted =>0)
+    	@date_for_employee.length >0
+ 		@date_for_employee.each do |e|
+
+                  if e.is_late_come 
+                    is_late_come_count +=1
+                  else
+            		       	  if e.is_halfday && !e.is_afternoon
+            		        	is_halfdayCount +=1
+                        
+            		       	  elsif e.is_afternoon && e.is_halfday
+            		        	is_halfdayCount +=1
+
+            		   		    else
+            		        	is_fulldayCount +=1
+            		          end
+                  end
+		       if e.abcent_without_notice
+		       	is_without_notice_count +=1
+		       end
+		end
+
+%>
+<tr>
+	<%@name=MgEmployee.where(:id=>f.id).pluck(:first_name, :last_name)%>
+     	<td><a href="#" id="<%= @start_date.to_date%>,<%=@end_date.to_date%>,<%=f.id%>" class="is-all-day-count mg-file-clr"><%=@name[0][0]%></a></td>
+     	<td><a href="#" id="<%= @start_date.to_date%>,<%=@end_date.to_date%>,<%=f.id%>" class="is-all-day-count mg-file-clr"><%=@name[0][1]%></a></td>
+      <td class="mg-align-center"><a href="#" id="<%= @start_date.to_date%>,<%=@end_date.to_date%>,<%=f.id%>" class="is-half-day-count mg-file-clr"><%= is_halfdayCount %></a></td>
+		  <!-- <td><%#= is_afternoonCount%></td> -->
+		  <td class="mg-align-center"><a href="#" id="<%= @start_date.to_date%>,<%=@end_date.to_date%>,<%=f.id%>" class="is-full-day-count mg-file-clr"><%= is_fulldayCount%></a></td>
+		  <td class="mg-align-center"><%=@total_days-is_halfdayCount-is_afternoonCount-is_fulldayCount %></td>
+		  <td class="mg-align-center"><%= is_without_notice_count%></td>
+      <td class="mg-align-center"><%= is_late_come_count%></td>
+		  <td class="mg-align-center"><%=@total_days%></td>
+</tr>
+
+<%end%>
+</table>
+
+</div>
+
+<style type="text/css">
+/*  .mg-scroll-bar{
+      width: 500px;
+      height: 300px;
+      overflow: scroll;
+  }*/
+
+  .abc{
+  	  width: 700px;
+      height: 300px;
+    overflow:scroll;
+}
+</style>

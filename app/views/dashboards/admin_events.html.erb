@@ -1,0 +1,86 @@
+<h4 class="mg-h4">Calendar</h4>
+
+<div id='calendarID' class="mg-tbl-margin"></div>
+<div id="newEventCalenderDIVID"></div>
+
+<script type="text/javascript">
+
+
+// $(document).on("change","#mg_batch_calender_id",function() {
+$(document).ready(function(){
+    $('#calendarID').fullCalendar({
+    	header: {
+    				left:   'today prev,next',
+    				center: 'title',
+    				right:  'year,month,agendaWeek,agendaDay',
+    			},
+        weekends:false,
+    	defaultView: 'month',
+        //hiddenDays: [ 2, 4 ],        
+        businessHours:true,
+        minTime: "8:00:00",
+        maxTime: '18:00:00',
+        startParam: "10:00:00",
+        slotDuration:'00:20:00',
+        //slotMinutes: 20,
+        allDaySlot: false,
+         lazyFetching: true,
+
+ eventSources: [
+
+        // your event source
+        {
+        url: '/dashboards/allevents',
+         data:{
+
+            calenderType: "Admin"
+        },
+
+        error:function(){alert('Error');},
+        // color: 'yellow',
+        textColor: 'black'
+        }
+
+    ],
+
+
+	
+		
+     dayClick: function(date, allDay, jsEvent, view) {
+        
+        // change the day's background color just for fun
+
+        // $(this).css('background-color', 'red');
+
+    },
+     eventClick: function(event, element, current_event_id) {
+
+        event.title = "CLICKED!";
+        var eventID=event.id;
+        var urlLink = "/events/"+eventID;
+        $.ajax({
+        url: urlLink,
+        cache: false,
+        success: function(html) {
+             $('#newEventCalenderDIVID').dialog({
+                    modal: true,
+                    width: 'auto',
+                    title: "Event Detail",
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+        }
+
+    });
+
+        $('#calendar').fullCalendar('updateEvent', event);
+
+    }
+          
+    });
+});
+
+</script>

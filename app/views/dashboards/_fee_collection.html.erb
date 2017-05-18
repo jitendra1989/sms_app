@@ -1,0 +1,461 @@
+
+<h4 class="mg-h4">Fee Collection</h4> 
+<div class="mg-custom-labels">
+<%batch_count=0%>
+<%from_date=Date.today()-30
+to_date=Date.today()%>
+
+<%fuinal_hash=Hash.new%>
+<%mg_batch_all=MgBatch.where(:is_deleted=>0, :mg_school_id=>@mg_school_id)%>
+<%@obj1=Hash.new%>
+<%@obj3=Hash.new%>
+
+
+
+<%mg_batch_all.each do |batch|%>
+  <%amount=0%>
+    <%mg_fee_particulars=MgFeeParticular.where(:is_deleted=>0, :mg_school_id=>@mg_school_id, :mg_batch_id=>batch.id, :created_at=>from_date...to_date)%>
+    <%puts from_date.inspect%>
+    <%puts mg_fee_particulars.inspect%>
+    <%puts to_date.inspect%>
+    <%#logger.inoasdkfhash%>
+    <%@obj2=Hash.new%>
+    <%mg_fee_particulars.each do |fee|%>
+     <%@obj4=Array.new%>
+
+    <%mg_fee_particulars_array=Array.new%>
+        <%perticular_type_amount=MgFeeParticular.where(:is_deleted=>0, :mg_batch_id=>batch.id, :mg_particular_type_id=>fee.mg_particular_type_id).sum(:amount)%>
+    <%mg_fee_particulars_array.push(MgParticularType.find(fee.mg_particular_type_id).particular_name ,batch.course_batch_code)%>
+    <%mg_fee=MgParticularType.find(fee.mg_particular_type_id).particular_name%>
+
+    <%fuinal_hash[mg_fee_particulars_array]=perticular_type_amount%>
+
+    <%@obj2[mg_fee]=perticular_type_amount%>
+    <%@obj4.push(@obj2)%>
+    <%@obj3[batch.course_batch_code]=@obj4%>
+<%#@obj4=Array.new%>
+    
+
+  <%end%>
+
+<%end%>
+
+ 
+  <%#=@obj3%>
+<%#=column_chart fuinal_hash, :stacked=> true, library: { width:600,hAxis: {title: "Class & Section"}, vAxis: {title: "Amount"}}%>
+
+
+<br>
+
+
+<!-- </div> -->
+<!-- fee collection -->
+<%#=@obj3.length%>
+<%fee_collection_width=650%>
+<%if @obj3.length>4%>
+<%fee_collection_width=@obj3.length*160%>
+<%end%>
+
+
+<div id="wrapperFeeCollectionDIVID" style="padding: 30px;">
+    <canvas id="feeCollectionCanvasID" width="<%=fee_collection_width%>" height="500"></canvas>
+    <canvas id="tipFeeCollectionID" width="175" height="50"></canvas>
+</div>
+
+
+</div><br>
+<!-- </div> -->
+<!-- fee collection -->
+
+
+
+
+<style>
+
+body {
+/*    background-color: ivory;*/
+    margin-top:35px;
+}
+#wrapperFeeCollectionDIVID {
+    position:relative;
+    /*   width:300px;
+    height:150px; */
+}
+  
+
+  
+  
+#tipFeeCollectionID {
+    background-color:white;
+    border:1px solid blue;
+    position:absolute;
+      left:-200000px;
+    top:100px;
+    padding: 0px;
+}
+</style>
+
+<script>
+ $(document).ready(function(){
+    fee_collection_graph();
+});
+
+  
+  
+var chages_fee_collection123= {
+          "LKG":[
+            {
+               "SD": 1504,
+              "SD34": 9005,
+                
+             
+            }
+            ],
+          "UKG":[
+            {"SD": 8004,
+            "SD1": 7005,
+           
+            }
+              ],
+          "MKG":[
+            {"SD": 2003,
+            "SD1": 4004,
+            "SD2": 2205
+            }
+              ],
+         
+        "1st STD":[
+            {"SD": 6003,
+            "SD1": 1004,
+            "SD2": 3005,
+             "SD3": 1004,
+            "SD4": 3005,
+            }
+              ],
+         
+        
+         
+         
+    
+    };
+
+function fee_collection_graph() {
+
+var chages_fee_collection1="<%=@obj3.to_json%>";
+  var chages_fee_collection1=chages_fee_collection1.replace(/&quot;=&gt;/g,'"');
+  var chages_fee_collection1=chages_fee_collection1.replace(/&quot;/g,'"');
+      chages_fee_collection1=JSON.parse(chages_fee_collection1);
+  var chages_fee_collection= chages_fee_collection1;
+
+  var colour=["#deacba","#6ab0b1","#e95c60","#29708b","#897d92","#479b9c","#b16a8d","#a295f0","#308c5d","#e9e2a6","#b94e83","#5ca060","#4b4890","#c0b2cc","#a83c41","#cb6088","#c5a68a","#1a684d","#e76947","#906cab","#ebbd7c","#672a41","#c7a4e2","#739a87","#a1c3e1","#ae2753","#c6d1a3","#e9d1bc","#2f986f","#6a4587","#ce999b"];
+  var greater=[];
+  var colour_array=[];
+ for (var prop in chages_fee_collection) {
+        for (var d in chages_fee_collection[prop]) {
+          var big=0;
+            for (var k in chages_fee_collection[prop][d]) {
+               big=big+chages_fee_collection[prop][d][k];
+             colour_array.push(k);
+            }
+         greater.push(big)
+      }
+   }
+
+  var dd;
+  // for(dd=0;dd<colour_array.length;dd++){
+  //  //alert(colour_array[dd]);
+  //}
+ function uniqueArray( ar ) {
+  var j = {};
+  ar.forEach( function(v) {
+    j[v+ '::' + typeof v] = v;
+  });
+  return Object.keys(j).map(function(v){
+    return j[v];
+  });
+} 
+  
+  
+  var array=uniqueArray(colour_array);
+  var colour_with_data = {};
+  
+  for(dd=0;dd<array.length;dd++){
+   colour_with_data[array[dd]]=colour[dd];
+  } 
+
+  
+var Val_amount = Math.max.apply(Math, greater);
+  var bar_width=0.32;
+  var bar_width_tip=bar_width*100;
+  var canvas ;
+  var context ;
+  var Val_Max=3;
+  var Val_Min;
+  var sections;
+  var xScale;
+  var yScale;
+  var y;
+    // intialize values for each variables
+  sections = chages_fee_collection.length;
+    Val_amount=Val_amount+Val_amount*30/100;
+  if(Val_amount>5){
+    Val_Max =Math.round(Val_amount); //Math.max.apply(Math, itemValue)+2;;
+  }
+    
+      
+  var stepSize =Val_Max*30/100 ;
+  var columnSize = 50;
+  var rowSize = 60;
+  var margin = 30;
+  var header = "Amount" 
+    
+    
+  canvas = document.getElementById("feeCollectionCanvasID");
+  context = canvas.getContext("2d");
+    var tipCanvas = document.getElementById("tipFeeCollectionID");
+  var tipCtx = tipCanvas.getContext("2d");
+  //var canvasOffset = $("#feeCollectionCanvasID").offset();
+  context.fillStyle = "#8B8B8B"
+  var graph_hight=canvas.height*80/100;
+  var graph_width=canvas.width*80/100;
+  yScale = (graph_hight - columnSize - margin) / (Val_Max);
+  xScale=100;
+  
+  context.strokeStyle="#8B8B8B"; // background black lines
+  context.beginPath();
+    // column names 
+  context.font = "19 pt Arial;"
+  context.fillText(header, 0,columnSize - margin);
+    // draw lines in the background
+  context.font = "18 pt Helvetica"
+  var count =  0;
+  for (scale=Val_Max;scale>=0;scale = scale - stepSize) {
+    y = columnSize + (yScale * count * stepSize); 
+        context.fillText(Math.round(scale), margin,y + margin-30);
+    count++;
+  }
+
+
+  
+  
+  
+  
+  function getMousePos(canvas, evt) {
+        var rect = canvas.getBoundingClientRect();
+        return {
+          x: evt.clientX - rect.left,
+          y: evt.clientY - rect.top
+        };
+      }
+      var canvas = document.getElementById('feeCollectionCanvasID');
+      var context = canvas.getContext('2d');
+
+      canvas.addEventListener('mousemove', function(evt) {
+        var mousePos = getMousePos(canvas, evt);
+        var message = 'Mouse position: ' + mousePos.x + ',' + mousePos.y;
+        handleMouseMove(mousePos);
+        //alert(message);
+        // writeMessage(canvas, message);
+      }, false); 
+  
+  
+
+  
+  
+function handleMouseMove(e) {
+ 
+  mouseX = parseInt(e.x);
+  mouseY = parseInt(e.y);
+  
+  var hit = false;
+  var position=0;
+
+  if(e.x>(canvas.width*80/100)-20 ){
+      var temp_colour_pos=1;
+      var temp_colour=0;
+      for (var prop in colour_with_data) {
+          var x_pos1=(canvas.width*80/100)-20;
+          var x_pos2=(canvas.width*80/100)-5;
+          var y_pos1=(canvas.height*3/100)-5+temp_colour;
+          
+          var y_pos2= (canvas.height*3/100)-5+temp_colour+15;
+          //e.y>y_pos1
+          if(e.x>x_pos1 && e.x<x_pos2 &&  e.y>y_pos1 && e.y<y_pos2){
+          var tip_tool=canvas.width*80/100;
+           tipCanvas.style.left = (mouseX) -100+ "px";
+          tipCanvas.style.top = (mouseY) +75+ "px";
+          tipCtx.clearRect(0, 0, tipCanvas.width, tipCanvas.height);
+          tipCtx.fillStyle = 'Green';
+          tipCtx.fill();
+          tipCtx.fillText(prop, 5, 15);
+         hit = true;
+          }
+      temp_colour+=30;
+      }
+  }else{
+      for (var prop in chages_fee_collection) {
+      for (var d in chages_fee_collection[prop]) {
+              var x_pos1=position+rowSize+xScale-margin*2;
+              var x_pos2=x_pos1+bar_width_tip;
+            var y_pos1=graph_hight-margin;
+            var y_pos3=margin;
+            var amount=0;
+        for (var k in chages_fee_collection[prop][d]) {
+              amount=amount+chages_fee_collection[prop][d][k];
+              y =computeHeight_canvassyllabus(amount,graph_hight,yScale);
+                  var y_pos2=y-margin;
+            if(e.x>x_pos1 && e.x<x_pos2 && e.y<y_pos1 && e.y>y_pos2 ){
+                    var maxWidth = 50;
+              var lineHeight = 15;
+                    tipCanvas.style.left = (mouseX)+50 + "px";
+                    tipCanvas.style.top = (mouseY) -50+ "px";
+                    tipCtx.clearRect(0, 0, tipCanvas.width, tipCanvas.height);
+                    tipCtx.fillStyle = 'Green';
+                    tipCtx.fill();
+                   // tipCtx.fillText("Class : "+prop, 5, 15);
+                    wrapText(tipCtx,"Class : "+prop, 5, 15, maxWidth, lineHeight);
+                    //tipCtx.fillText(k+" : "+chages_fee_collection[prop][d][k], 5, 30);
+                    wrapText(tipCtx,k+" : "+chages_fee_collection[prop][d][k], 5, 30, maxWidth, lineHeight);
+                          hit = true;
+                     position=position+bar_width_tip*2;
+             }
+          y_pos1=y_pos1-(y_pos1-y_pos2);
+             }
+        }
+      position=position+bar_width_tip*2;
+    }
+
+  }
+  
+    
+    if (!hit) {
+        
+        tipCanvas.style.top = "-1000px";
+    }
+}
+
+ 
+  function wrapText(context, text, x, y, maxWidth, lineHeight) {
+    
+     // var words = text.split('');
+      var letter = text.length;
+     
+    
+        var line = '';
+     // alert(text.length);
+      
+
+        for(var n = 0; n < letter; n++) {
+          //alert(n+"          ");
+          //alert(text.charAt(n));
+          // var res = str.charAt(0);
+          var testLine = line + text.charAt(n) + '';
+          // alert(testline);
+          
+          var metrics = context.measureText(testLine);
+          var testWidth = metrics.width;
+          //  alert(n);
+          if ( n%21==0) {
+            // alert(x +"             "+y)
+            context.fillText(line, x, y);
+            line = text.charAt(n) + '';
+            y += lineHeight;
+          }
+          else {
+            line = testLine;
+          }
+        }
+        context.fillText(line, x, y);
+      }
+  
+ 
+  // context.stroke();
+  
+  var count_zero =  0;
+  for (scale=Val_Max;scale>=0;scale = scale - 1) {
+    y = columnSize + (yScale * count_zero * 1); 
+      if(scale==0){
+        context.beginPath();
+        context.moveTo(xScale-20,20);
+        context.lineTo(xScale-20,graph_hight);
+        context.stroke();
+        context.beginPath();
+        var x_position,y_positon;
+        x_position=graph_hight*20/100;
+        y_positon=canvas.height*100/100;
+        context.moveTo(rowSize,y)
+        context.lineTo(graph_width,y)
+        context.fillText(Math.round(scale), margin,y + margin-30);
+        context.stroke();
+      }
+    count_zero++;
+  }
+  context.stroke();
+  var no_of_count=0;
+   for (var prop in chages_fee_collection) {
+     no_of_count++;
+   }
+  
+    // print names of each data entry
+  context.font = "20 pt Verdana";
+  context.textBaseline="bottom";
+  
+   context.fillStyle = 'blue';
+    var temp=1;
+  var space_count=-(no_of_count/2);
+    var text_width=canvas.height*14/100;
+    var text_hoght=canvas.height*6.5/100;
+  
+      for (var prop in chages_fee_collection) {
+         context.rotate(0.20);
+       context.font = '8pt Calibri';
+        context.fillText(prop, xScale*temp+text_width-space_count,graph_hight-text_hoght);
+        context.rotate(-0.20);
+        text_hoght=text_hoght+13.5
+        temp+=bar_width*2;
+        space_count+=bar_width*5.5;
+  }
+  var temp_colour=0;
+      for (var prop in colour_with_data) {
+        context.beginPath();
+        context.fillStyle=colour_with_data[prop];
+        context.font = '10pt Calibri';
+        var tip_tool=canvas.width*80/100;
+        context.fillStyle = '#000000';
+        context.fillText(prop, tip_tool,(canvas.height*temp_colour*3/100)+25);
+        context.rect(tip_tool-20, (canvas.height*temp_colour*3/100)+10, 15, 15);
+        context.fillStyle = colour_with_data[prop];
+        context.fill();
+        context.stroke();
+        temp_colour+=2;
+  }
+
+    // translate to bottom of graph  inorder to match the data 
+  context.translate(0,graph_hight - margin);
+  context.scale(xScale,-1 * yScale);
+ 
+    // draw each graph bars 
+  
+  
+ var count=0;
+ for (var prop in chages_fee_collection) {
+    var position=0;
+        for (var d in chages_fee_collection[prop]) {
+          var count1=0
+            for (var k in chages_fee_collection[prop][d]) {
+              context.fillStyle=colour_with_data[k];
+              context.fillRect(count+1, position, bar_width, chages_fee_collection[prop][d][k]);
+              position=position+chages_fee_collection[prop][d][k];
+                count1+=bar_width;
+            }
+      }
+     count+=bar_width*2;
+   }
+}
+
+function computeHeight_canvassyllabus(value,height,yScale) {
+  y = height - value * yScale ; 
+    return y;
+}  
+
+</script>

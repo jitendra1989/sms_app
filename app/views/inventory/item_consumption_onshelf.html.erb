@@ -1,0 +1,53 @@
+<label class="mg-label mg-tt-width mg-label-text-transform-none" style="width:185px"><%=t('return_date')%><span class="required-field"> *</span></label>
+<%=text_field_tag :return_date,nil,:class=>"mg-text-field return_date"%><br>
+
+<%=hidden_field_tag "consumer_type",@consumer_type%>
+
+
+<table class="mg-tbl-margin mg-tbl-layout">
+	<tr>
+		<td class="mg-td-width-one-third" valign="top">
+			<label class="mg-label" style="width:185px"><%=@consumer_type%> <%=t('return_list')%></label>
+			<%#="Return List:"%>
+		</td>
+		<td class="mg-td-width-one-third" valign="top">
+			<label class="mg-label" style="width:185px"><%=@consumer_type%> <%=t('damage_list')%></label>
+			<%#="Damaged List:"%>
+		</td>
+	</tr>
+	<tr>
+		<td class="mg-td-width-one-third" valign="top">
+	 		<span id="selected_list">
+	    		<%=select_tag :returnIds, options_for_select(@issued_list),:multiple => true,:size =>10 ,:class=>"mg-add-library-particular"%>
+			</span>
+	    	<a  id="Add" class="mg-custom-form-btn mg-add-rem-btn">Add</a> 
+		</td>
+		<td class="mg-td-width-one-third" valign="top">
+			
+		    <span id="remove_list">
+				<%=select_tag :damagedIds, options_for_select([]),:multiple => true,:size =>10 ,:class=>"mg-add-library-particular"%>
+			</span>
+			<a  id="Remove" class="mg-custom-form-btn mg-add-rem-btn">Remove</a>
+		</td>
+	</tr>
+</table>
+
+
+<script>
+$(document).ready(function(){
+	$("#returnIds option").prop('selected',true);
+	$("#damagedIds option").prop('selected',true);
+	dateFormatStr =  getJsDateFormat();
+    $( ".return_date" ).datepicker({ changeMonth: true,
+                changeYear: true,yearRange: "-50:+50" ,dateFormat: dateFormatStr});
+});
+
+</script>
+
+<style>
+	.mg-add-rem-btn {
+		position: relative;
+		top: -7em;
+		margin-right: 5px;
+	}
+</style>

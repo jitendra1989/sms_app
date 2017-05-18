@@ -1,0 +1,53 @@
+<!-- Sec --> 
+<%= form_for(@mg_roles_permission) do |f| %>
+  <% if @mg_roles_permission.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@mg_roles_permission.errors.count, "error") %> prohibited this mg_roles_permission from being saved:</h2>
+
+      <ul>
+      <% @mg_roles_permission.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+  <div>
+    <label class="mg-label"><%=t('select_school')%></label><br>
+    <%school=MgSchool.where(:is_deleted=>0).pluck(:school_name,:id)%>
+    <%=select_tag "mg_school_id" ,options_for_select(school),:prompt => t('Select')%><br>
+  </div>
+
+  <div class="field">
+    <%= f.label :mg_role_id ,:class=>"mg-label"%><br>
+   <%= f.collection_select(:mg_role_id,MgRole.all, :id, :role_name,{:include_blank => 'Please Select'})%>
+  </div>
+
+  <div>
+    <label class="mg-label">Select Model</label><br>
+    <%model_name=MgModel.pluck(:model_name,:id)%>
+    <%=select_tag "mg_model_id" ,options_for_select(model_name),:prompt => 'Please Select'%><br>
+  </div>
+  <label class="mg-label">Actions</label><br>
+ <table> 
+  <%actions=MgAction.all%>
+      <% actions.each do |action|%>
+        <tr>
+          <td><%=action.action_name%></td>
+          <td>
+            <%#=hidden_field_tag 'action_ids[]', 0 %>
+            <%=check_box_tag "action_ids[]",action.id %>
+          </td>
+        </tr>
+      <%end%>
+  
+  </table>
+
+  <!-- <div class="field">
+    <%#= f.label :mg_permission_id ,:class=>"mg-label"%><br>
+    <%#= f.collection_select(:mg_permission_id,MgAction.all, :id, :action_name,{:include_blank => 'Please Select'})%>
+  </div><br/> -->
+  <div class="actions">
+    <%= f.submit "Submit" ,:class=>"mg-small-form-btn"%>
+  </div>
+<% end %>
+

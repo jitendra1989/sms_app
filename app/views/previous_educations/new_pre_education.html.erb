@@ -1,0 +1,75 @@
+<!-- Sec --> 
+<h4 class="mg-h4"><%= t('previousedcuation') %></h4>
+<div class="mg-custom-labels">
+<%= form_for :previous_educations, url: previous_educations_path, :html => {
+                            :id => 'previousEducationsID' } do |f| %>
+
+
+
+
+       
+        <%= f.hidden_field :is_deleted, :value => 0%> 
+        <%= f.hidden_field :mg_student_id,:value => @inputId %>
+        <%= f.hidden_field :mg_school_id,:value => session[:current_user_student_id] %>
+
+
+
+
+
+
+<p>
+    <%= f.label :school_name ,:class=> "mg-label"%>
+    <span class="required-field">*</span><br>
+   <%= f.text_field :school_name,:class=>"mg-text-field" %>
+ </p>
+ <p>
+    <%= f.label :course ,:class=> "mg-label"%>
+    <span class="required-field">*</span><br>
+   <%= f.text_field :course,:class=>"mg-text-field" %>
+ </p>
+
+ <p>
+    <%= f.label :year,:class=> "mg-label" %>
+    <span class="required-field">*</span><br>
+    <%= f.text_field :year,:class=>"mg-text-field"   %>
+  </p>
+
+  <p>
+    <%= f.label :marks_obtained ,:class=> "mg-label"%><br>
+    <%= f.text_field :marks_obtained,:class=>"mg-text-field"%>
+  </p>
+ 
+  <p>
+    <%= f.label :total_marks ,:class=> "mg-label"%>
+    <span class="required-field">*</span><br>
+    <%= f.text_field :total_marks,:class=>"mg-text-field" %>
+  </p>
+
+  <p>
+    <%= f.label :grade ,:class=> "mg-label"%><br>
+    <%= f.text_field :grade,:class=>"mg-text-field" %>
+  </p>
+
+  <!--<button class="skip-previous-education" id="skipPreviousEducationIDd"><#%= t('skip') %></button>           {controller:"students",action:"index"},method:
+  :get-->
+  <%= button_tag "Skip",:type => 'button',:class => "skipBtn mg-skip-btn", :onclick => "location.href = '#{students_path()}'" %>
+ 
+    <%= f.submit t('save') ,:class=>"mg-small-form-btn"%>
+  </p>
+<% end %>
+</div>
+<script>
+$(document).ready(function () {
+
+$("#previousEducationsID").validate({
+
+rules: {
+"previous_educations[school_name]": {required: true},
+"previous_educations[course]": {required: true},
+"previous_educations[year]": {required: true, minlength: 4,  number: true},
+"previous_educations[total_marks]" :{required: true, number: true}
+
+}
+});
+});
+</script>

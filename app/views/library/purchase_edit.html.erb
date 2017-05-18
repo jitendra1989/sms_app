@@ -1,0 +1,345 @@
+<%= render  partial: 'library_left' %>
+<% navigation_add 'Resource Purchase', library_purchase_path %>
+
+<h4 class="mg-h4"><%= t('edit_purchase_information')%></h4> 
+<div class="box">
+<%= form_for :library_purchase_details ,  :url=>{:controller=>'library',:action=>'purchase_update',:id=>@library_purchase_details.id}, :html=>{:id=>'edit_libraries_details_data'} do |f| %>
+
+        <%= f.hidden_field :is_deleted ,:value=>0%>
+        <%= f.hidden_field :mg_school_id ,:value=>session[:current_user_school_id]%>
+        
+<table class="mg-tbl-margin mg-show-tbl-width">
+    <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="vendorName"><%= t ('vendor_name') %><span class="required-field">&nbsp;*</span></label><br/>
+        <%= f.text_field :vendor_name ,:class=>"mg-text-field"%>
+      </td>
+    </tr>
+    <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label mg-label-text-transform-none" for="dateofPurchase"><%= t ('date_of_purchase') %><span class="required-field">&nbsp;*</span></label><br/>
+        
+        <%= f.text_field :date_of_purchase ,:class=>"mg-text-field"%>
+      </td>
+    </tr>
+    <tr>
+    <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="dateofPurchase"><%= t ('amount_paid') %><span class="required-field">&nbsp;*</span></label><br/>
+        <%= f.text_field :amount_paid ,:class=>"mg-text-field"%>
+      </td>
+    </tr>
+    <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="dateofPurchase"><%= t ('invoice_number') %><span class="required-field">&nbsp;</span></label><br/>
+        <%= f.text_field :invoice_number ,:class=>"mg-text-field"%>
+      </td>
+    </tr>
+    <tr>
+    </tr>
+</table>  
+<h4 class="mg-h4"><%= t('resource_information')%></h4> 
+<a id="library_details_for_data" class="mg-label-inner-form mg-custom-form-btn" style="color: #297ACC; font-size:0.8em; position: relative;" >Add </a> <br/>
+ <div class="mg-scroll-employee-bar mg-tbl-margin">   
+ 
+<table class="mg-show-tbl-width mg-table-nowrap batch-tbl mg-adjust-padding">  
+
+         <th><%=t("s_no.")%></th>
+        <th><%=t("resource_category")%><span class="required-field">&nbsp;*</span></label></th>
+        <th><%=t("resource_type")%><span class="required-field">&nbsp;*</span></label></th>
+        <th><%=t("name/title")%><span class="required-field">&nbsp;*</span></label></th>
+        <th><%=t("author")%></th>
+        <th><%=t("volume/edition")%></th>
+        <th><%=t("year")%></th>
+        <th><%=t("publication/company")%></th>
+        <th><%=t("isbn")%></th>
+        <th><%=t("class")%></th>
+        <th><%=t("subjectes")%><span class="required-field">&nbsp;*</span></label></th>
+        <th><%=t("cost")%><span class="required-field">&nbsp;*</span></label></th>
+        <th class="mg-rm-text-trans mg-label-text-transform-none"><%=t("no_of_copies")%><span class="required-field">&nbsp;*</span></label></th>
+        <th><%=t("total")%></th>
+        <th><%=t('actions')%></th>
+            <%@book_purchase_details.each_with_index do |details,i|%>
+
+        <tr class="demo-div">
+
+            <div id="finalDueFineDivId">
+            <div class="due-fine-div" id="dueFineDivId">
+            <td><span class="required-incremented-field"><%=i+1%></span></td>
+          
+          <td class="mg-align-center resource-category-td-class">
+
+          <%#= f.collection_select("mg_category_id[]",MgCourse.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]), :id, :course_name,{:include_blank => t("select")},:class => "call-purpose-class consumption-category-class category-laboratory-class",:name=>"mg_category_id[]")%>
+          <%= hidden_field_tag 'ids[]' ,details.id,:class=>"mg-text-field-particular required-field"%>
+
+          <%category=MgResourceCategory.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:name,:id)%>
+
+          <%=select_tag 'mg_resource_category_id[]' , options_for_select(category,:selected=>details.mg_resource_category_id),:prompt=>t('select'),:class => "call-purpose-class consumption-category-class category-laboratory-class library-purchas-new-resource-category-class" %>
+
+          </td>
+          <td class="mg-align-center resource-type-td-class">
+          <%#= text_field_tag 'item_name[]' ,nil,:class=>"mg-text-field-particular required-field"%>
+         <%type=MgResourceType.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:name,:id)%>
+
+          <%=select_tag 'mg_resource_type_id[]' , options_for_select(type,:selected=>details.mg_resource_type_id),:prompt=>t('select'),:class => "call-purpose-class consumption-category-class category-laboratory-class library-purchas-new-resource-type-class resource-type-class" %>
+
+          </td>
+          <td class="mg-align-center">
+          <%#= text_field_tag 'cost[]' ,nil,:class=>"mg-text-field-particular cost-auto-class required-field",:id=>"cost_"%>
+          <%= text_field_tag 'name[]' ,details.name,:class=>"mg-text-field-particular required-field"%>
+          </td>
+          <td class="mg-align-center">
+          <%#= text_field_tag 'cost[]' ,nil,:class=>"mg-text-field-particular cost-auto-class required-field",:id=>"cost_"%>
+          <%= text_field_tag 'author[]' ,details.author,:class=>"mg-text-field-particular required-field"%>
+          </td>
+          <td class="mg-align-center">
+          <%#= text_field_tag 'cost[]' ,nil,:class=>"mg-text-field-particular cost-auto-class required-field",:id=>"cost_"%>
+          <%= text_field_tag 'volume[]' ,details.volume,:class=>"mg-text-field-particular required-field"%>
+          </td>
+          <td class="mg-align-center">
+          <%#= text_field_tag 'cost[]' ,nil,:class=>"mg-text-field-particular cost-auto-class required-field",:id=>"cost_"%>
+          <%= text_field_tag 'year[]' ,details.year,:class=>"mg-text-field-particular required-field"%>
+          </td>
+
+
+
+           <td class="mg-align-center">
+          <%#= text_field_tag 'cost[]' ,nil,:class=>"mg-text-field-particular cost-auto-class required-field",:id=>"cost_"%>
+          <%= text_field_tag 'publication[]' ,details.publication,:class=>"mg-text-field-particular required-field"%>
+          </td>
+          <td class="mg-align-center">
+          <%#= text_field_tag 'cost[]' ,nil,:class=>"mg-text-field-particular cost-auto-class required-field",:id=>"cost_"%>
+          <%= text_field_tag 'isbn[]' ,details.isbn,:class=>"mg-text-field-particular required-field"%>
+          </td>
+          <td class="mg-align-center">
+          <%#= text_field_tag 'cost[]' ,nil,:class=>"mg-text-field-particular cost-auto-class required-field",:id=>"cost_"%>
+          <%course=MgCourse.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:course_name,:id)%>
+
+          <%=select_tag 'mg_course_id[]' , options_for_select(course,:selected=>details.mg_course_id),:prompt=>t('select'),:class => "call-purpose-class consumption-category-class category-laboratory-class" %>
+          </td>
+
+          <td class="mg-align-center">
+          <%#= text_field_tag 'cost[]' ,nil,:class=>"mg-text-field-particular cost-auto-class required-field",:id=>"cost_"%>
+          <%subject=MgManageSubject.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:name,:id)%>
+
+          <%=select_tag 'mg_subject_id[]' , options_for_select(subject,:selected=>details.mg_subject_id),:prompt=>t('select'),:class => "call-purpose-class consumption-category-class category-laboratory-class" %>
+          </td>
+
+
+          <td class="mg-align-center cost-td-class">
+          <%= text_field_tag 'cost[]' ,details.cost,:class=>"mg-text-field-particular cost-auto-class required-field",:id=>"cost_"%>
+          </td>
+          <td class="mg-align-center unit-td-class">
+          <%= text_field_tag 'no_of_copy[]' ,details.no_of_copy,:class=>"mg-text-field-particular required-field unit-auto-class",:id=>"unit_"%>
+          </td>
+          <td class="mg-align-center total-td-class">
+          <%= text_field_tag 'total[]' ,details.total,:class=>"mg-text-field-particular required-field total-auto-class",readonly: true%>
+          </td>
+
+          <td class="mg-align-center">
+                      <a title="Remove" class="remove-library-details mg-icon-btn" style="color: #297ACC; font-size:0.8em;"> <i class="fa fa-trash"></i></a>
+                      
+            </td>  
+
+            <%end%>
+             </div>
+             </div>
+          </tr>
+
+
+
+</table >
+
+  </div>                
+                      
+                     
+<br/>
+<%#=f.submit "Submit" ,:class=>"mg-small-form-btn"%>
+ <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("Submit")%></a>
+<%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+<%end%>
+</div>
+<%= render  partial: 'schools/school_left_close' %>
+
+<script>
+$( document ).on( "change", ".unit-auto-class ", function(){ 
+var unit=$(this).val();
+ // console.log($(this).parent('td').siblings(".cost-td-class").children(".cost-auto-class").val());
+  var cost=$(this).parent('td').siblings(".cost-td-class").children(".cost-auto-class").val();
+  if (cost=="")
+  {
+    alert("First provide cost for the perticular category");
+    $(this).val("");
+  }
+  else
+  {
+    var total=cost*unit;
+  $(this).parent('td').siblings(".total-td-class").children(".total-auto-class").val(total);
+  }
+});
+
+$( document ).on( "change", ".cost-auto-class", function(){
+  $(this).parent('td').siblings(".unit-td-class").children(".unit-auto-class").val("");
+  $(this).parent('td').siblings(".total-td-class").children(".total-auto-class").val("");
+});
+
+
+$(document).ready(function(){
+        focusCurrentTab("viewlibraryresourcepurchase","viewlibraryresourcepurchaseLiID");
+    
+        focusLibrary();
+ dateFormatStr =  getJsDateFormat();
+
+  $( "#library_purchase_details_date_of_purchase" ).datepicker({ changeMonth: true,
+                changeYear: true,yearRange: "-50:+0",maxDate: "0" ,dateFormat: dateFormatStr});
+         var admission_date =  $.datepicker.formatDate(dateFormatStr,new Date($('#library_purchase_details_date_of_purchase').val()));
+
+//alert(joiningDate);
+$('#library_purchase_details_date_of_purchase').val(admission_date);
+
+
+$(function () {
+    $.validator.addMethod('dateFormat',
+    function (value, element) {
+      dateFormatStr =  getJsDateFormat();
+        if (this.optional(element)) {
+            return true;
+        }
+        var ok = true;
+        try {
+            $.datepicker.parseDate(dateFormatStr, value);
+        }
+        catch (err) {
+            ok = false;
+        }
+        return ok;
+    },
+
+
+      "Please enter a date in the format "+ getDateFormat(dateFormatStr) +".");
+      dateFormatStr =  getJsDateFormat();
+
+    $(".datefield").datepicker({ dateFormat: dateFormatStr, changeYear: true });
+});
+
+$(function () {
+    $.validator.addMethod('dateFormat',
+    function (value, element) {
+      dateFormatStr =  getJsDateFormat();
+        if (this.optional(element)) {
+            return true;
+        }
+        var ok = true;
+        try {
+            $.datepicker.parseDate(dateFormatStr, value);
+        }
+        catch (err) {
+            ok = false;
+        }
+        return ok;
+    },
+
+
+      "Please enter a date in the format "+ getDateFormat(dateFormatStr) +".");
+      dateFormatStr =  getJsDateFormat();
+
+    $(".datefield").datepicker({ dateFormat: dateFormatStr, changeYear: true });
+});
+
+
+
+
+
+$("#edit_libraries_details_data").validate({
+//   $(".category-validation-class").rules("add", { 
+//   required:true
+// });
+        rules: {   
+        "library_purchase_details[vendor_name]": {required: true}, 
+        "library_purchase_details[date_of_purchase]": {required: true,dateFormat:true},    
+         "library_purchase_details[amount_paid]": {required: true,number: true},
+        // "library_purchase_details[invoice_number]": {required: true, number: true},
+        // "mg_resource_category_id[]": {required: true},
+        // "mg_resource_type_id[]": {required: true},
+        "name[]": {required: true},
+        // "author[]": {required: true},
+        // "volume[]": {required: true},
+        // "year[]": {required: true, number: true},
+        // "publication[]":{required: true},
+        // "isbn[]": {required: true},
+        // "mg_course_id[]": {required: true},
+         "mg_subject_id[]": {required: true},
+        "cost[]": {required: true, number: true, number: true},
+        "no_of_copy[]":{required: true, number: true},
+      }
+    });
+
+//===============category population as per lab starts===================================
+
+
+    //   var labID = $( ".library-purchas-new-resource-category-class" ).val();
+      
+    //   var apdStr = '<option value="">Choose Category</option>';
+    //   $(".library-purchas-new-resource-type-class").empty().append(apdStr);
+
+    //   if(labID > 0) {
+    //        var urlLink = "/library/resource_type_list/"+labID;
+    //        $.ajax({ 
+    //            url: urlLink,
+    //            cache: false,
+    //            success: function(data){
+    //              // console.log();
+    //               if(data.length > 0){
+    //                   var apdStr = '<option value="select">Select</option>';
+    //                  for(key in data){
+    //                     apdStr += '<option value="'+data[key].id+'">'+data[key].name+'</option>'
+    //                   }
+    //                 // console.log(apdStr);
+    //                   $(".library-purchas-new-resource-type-class").empty().append(apdStr);
+    //               }
+    //            }
+    //        });
+    // }else{
+    //   var apdStr = '<option value="">Choose Category</option>';
+    //   $(".library-purchas-new-resource-type-class").empty().append(apdStr);
+    //   // alert("Please select category");
+    // }
+
+
+//===============category population as per lab starts===================================
+});
+
+$(document).on('change','.library-purchas-new-resource-category-class',function(){
+      var labID = $(this).val();
+      
+      var apdStr = '<option value="">Choose Category</option>';
+      var temp =$(this).parent('.resource-category-td-class').siblings(".resource-type-td-class").children(".resource-type-class");
+      temp.empty().append(apdStr);
+      //$(".library-purchas-new-resource-type-class").empty().append(apdStr);
+
+      if(labID > 0) {
+           var urlLink = "/library/resource_type_list/"+labID;
+           $.ajax({ 
+               url: urlLink,
+               cache: false,
+               success: function(data){
+                 // console.log();
+                  if(data.length > 0){
+                      var apdStr = '<option value="select">Select</option>';
+                     for(key in data){
+                        apdStr += '<option value="'+data[key].id+'">'+data[key].name+'</option>'
+                      }
+                    // console.log(apdStr);
+                      temp.empty().append(apdStr);
+                      //var temp =$(this).parent('.resource-category-td-class').siblings(".resource-type-td-class").children(".resource-type-class");
+                  }
+               }
+           });
+    }else{
+      var apdStr = '<option value="">Choose Category</option>';
+      temp.empty().append(apdStr);
+     // var temp =$(this).parent('.resource-category-td-class').siblings(".resource-type-td-class").children(".resource-type-class");
+      // alert("Please select category");
+    }
+  });
+</script>

@@ -1,0 +1,13 @@
+
+
+<%@batch.each do |obj|%>
+
+<%@name=raw @course[0][0]%>
+<div class="mg-tbl-margin">
+	<a href="/examination/exammanagement_newLink/<%=raw obj[1]%>"  class="exammination-new-class mg-custom-form-btn"><%=@name%></a>
+	<%=obj[0]%><br>
+</div>
+
+
+
+<%end%>

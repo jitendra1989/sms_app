@@ -1,0 +1,354 @@
+<%= render  partial: 'placements_left' %>
+ <% navigation_add t('shortlist'), :controller=>'placements', :action=>'placement_student_selection' %>
+
+<% navigation_add  t('edit_shortlisted_details'), :controller=>'placements', :action=>'placement_student_selection_edit',:id=>@data %>
+
+ <%= form_for :shortlist_students , url:placement_student_selection_create_path ,:html => {:id => 'studentUploadDataInfoFormID' } do |f| %>
+
+<h4 class="mg-h4"><%=t('edit_shortlisted_list')%></h4>
+
+<p>
+
+    <%= f.label :name_of_the_company, t('name_of_the_company') ,:class=>"mg-label mg-rm-text-trans"%><span class="required-field"> *</span><br>
+    
+<%= f.text_field :mg_placement_registration_id,:value=>@placement.name_of_the_company,:readonly=>true %>
+  </p>
+
+  <p>
+
+   <%= f.label :job_id, t('placement_job_id') ,:class=>"mg-label mg-rm-text-trans"%><span class="required-field"> *</span><br>
+    
+<%= f.text_field :mg_job_upload_id,:value=>@job_upload_data.job_id,:readonly=>true %>
+<%= hidden_field_tag :mg_job_upload_id_data,@job_upload_data.id%>
+
+<%= hidden_field_tag :mg_batch_saved_id,@mg_batch_id_datass%>
+<%= hidden_field_tag :validation_id,@validation_data%>
+
+
+  </p>
+
+<p>
+
+    <%= f.label :select_passout_year, t('select_passout_year') ,:class=>"mg-label mg-rm-text-trans"%><span class="required-field"> *</span><br>
+    <%= select_tag 'time_table_year', options_for_select((2001..Time.now.year).to_a.reverse,:selected=>@time_table_year), :prompt=>"Select",:class=>"mg-text-field" %>
+  
+    <%#= f.label :select_academic_year, t('select_academic_year') ,:class=>"mg-label mg-rm-text-trans"%><!-- <span class="required-field"> *</span><br> -->
+    
+<%#= f.select :mg_time_table_id,options_for_select(@time_table),:prompt=>"Select"%>
+  </p>
+
+
+  <p>
+
+    <%= f.label :select_programme, t('select_programme') ,:class=>"mg-label mg-rm-text-trans"%><span class="required-field"> *</span><br>
+   <%= f.collection_select(:mg_wing_id, MgWing.where(:is_deleted=>0, :mg_school_id=>session[:current_user_school_id]), :id, :wing_name,{:include_blank => 'Select',:selected=>@wing_data} ,:class=>"mg-select-btn" ,:onchange=>"selectSemesterShortlistedStudentsForCompany(this.value);")%>
+
+  </p>
+ <p>
+
+    <%= f.label :select_semester, t('select_semester') ,:class=>"mg-label mg-rm-text-trans"%><span class="required-field"> *</span><br>
+   <%=select_tag :mg_batch_id ,options_for_select([]),:prompt=>t('select'),:class=>"mg-select-btn",:onchange=>"selectRoundsBasedOnJobId(this.value);"%>
+
+  </p>
+  <p id="add_student_data_on_job_id"></p>
+  <%= f.hidden_field :mg_school_id, :value => session[:current_user_school_id]%>
+  <%= f.hidden_field :created_by, :value => session[:user_id]%> 
+  <%= f.hidden_field :updated_by, :value => session[:user_id]%> 
+  <%= f.hidden_field :is_deleted, :value => 0%>
+
+<p class="mg-p-mgtop">
+     <a id="accept-class-placement-model" class="mg-custom-labels mg-small-form-btn"><%=t("save")%></a>
+        <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+       <%=f.submit t("save") ,:id=>"submitplacementFormBtnId" , :style=>"display:none"%>
+</p>
+<%end%>
+<%= render  partial: 'application/common_left_close' %>
+
+<script>
+ $(document).ready(function(){
+
+    focusCurrentTab("student_selectionAID","student_selectionLiID");
+    var validation=$("#validation_id").val();
+
+    if (validation=="1"){
+    var data=$("#shortlist_students_mg_wing_id").val();
+    var data1=$("#mg_batch_saved_id").val();
+
+    var urlLink = "/placements/onchange_data_edit";
+  
+  
+          $.ajax({
+              url: urlLink ,
+              cache: false,
+              data:{ 
+                selecter: "Select_Semester",
+                id: data,
+                data1:data1
+              },
+              success: function(data){
+
+                $("#mg_batch_id").html(data.main);              }
+          });
+
+var data2=$("#mg_batch_saved_id").val();
+
+var job_id=$("#mg_job_upload_id_data").val();
+var pass_out_year=$("#time_table_year").val();
+
+
+ var urlLink = "/placements/select_students_on_job";
+  
+          $.ajax({
+              url: urlLink ,
+              cache: false,
+              data:{ 
+                selecter: "Select_Semester",
+                id: data2,
+                job_id:job_id,
+                pass_out_year:pass_out_year,
+                data_demo:"demo"
+              },
+              success: function(data){
+
+                $("#add_student_data_on_job_id").empty().html(data);              }
+          });
+ 
+
+}
+   // $.validator.addClassRules({
+   //      data_filed_class:{
+   //      required: true
+        
+   //   }
+   //  });
+   $("#studentUploadDataInfoFormID").validate({
+
+    rules: {
+      "time_table_year": {required: true},
+      "shortlist_students[mg_wing_id]": {required: true},
+      "mg_batch_id": {required: true},
+    
+      }
+  });
+  
+  });
+
+function selectShortlistedStudentsForCompany(data){
+  var urlLink = "/placements/onchange_data";
+
+          $.ajax({
+              url: urlLink ,
+              cache: false,
+              data:{ 
+                selecter: "company_job_id",
+                id: data
+              },
+              success: function(data){
+
+                  console.log("data   ~>  "+data.main);
+                $("#shortlist_students_mg_placement_job_upload").html(data.main);              }
+          });
+}
+function selectSemesterShortlistedStudentsForCompany(data){
+  var urlLink = "/placements/onchange_data";
+  
+  
+          $.ajax({
+              url: urlLink ,
+              cache: false,
+              data:{ 
+                selecter: "Select_Semester",
+                id: data
+              },
+              success: function(data){
+
+                $("#mg_batch_id").html(data.main);              }
+          });
+}
+
+function selectRoundsBasedOnJobId(data){
+var job_id=$("#mg_job_upload_id_data").val();
+var pass_out_year=$("#time_table_year").val();
+
+ var urlLink = "/placements/select_students_on_job";
+  
+          $.ajax({
+              url: urlLink ,
+              cache: false,
+              data:{ 
+                selecter: "Select_Semester",
+                id: data,
+                job_id:job_id,
+                pass_out_year:pass_out_year
+              },
+              success: function(data){
+
+                $("#add_student_data_on_job_id").empty().html(data);              }
+          });
+}
+
+$(document).on("click",".mgStudent_job_application_information",function(){
+      
+ var inputElems=document.getElementsByClassName("student_id_data"),
+   count = 0;
+for (var i=0; i<inputElems.length; i++) {
+if (inputElems[i].type === "checkbox" && inputElems[i].checked === true && inputElems[i].disabled === false) 
+{
+    count++;
+     
+}
+
+}
+
+ 
+
+if (count>0){
+   
+      var allstudentvalues = [];
+      var allstudentdateVals = [];
+
+       
+       $('.student_id_data').each(function(){
+        if($(this).prop("checked") == true && $(this).prop("disabled")==false ){
+         var data=$(this).val();
+               var datas=data.split("-")
+               allstudentvalues.push(datas[1]);
+        var data=$(this).parent().siblings().find(".class1"+datas[0]).val();
+          allstudentdateVals.push(data);
+      }
+      });
+      
+    if($("#mg_interview_round_id").val()!=""){
+     var batch_data=$("#mg_batch_id").val();
+     var job_id=$("#job_upload_id_data").val();
+     var interview_round=$("#mg_interview_round_id").val();
+     var urlLink = "/placements/send_notification";
+
+          $.ajax({
+              url: urlLink ,
+              cache: false,
+              data:{ 
+                selecter: "company_job_id",
+                batch_data: batch_data,
+                job_id:job_id,
+                student_arr:allstudentvalues,
+                date_arr:allstudentdateVals,
+                interview_round:interview_round
+              },
+              success: function(data){
+                if(data.name=="0"){
+                  alert("Please Select Record in Selected Round")
+
+
+                }else{
+                  alert("Notification Send Successfully")
+
+                }
+                         }
+          });
+        }
+          else{
+
+            alert("Please Select Round");
+          }
+        } else{
+    alert("Select any one record")
+  }
+
+  });
+$(document).on("change","#mg_interview_round_id",function(){
+          console.log($("#array_rounds_data").val());
+
+var array_ronds_db=$("#array_rounds_data").val();
+ var array_ronds_db1=array_ronds_db.split(" ");
+var array_rounds_data1=$("#array_rounds_data_array").val();
+var array_rounds_data11=array_rounds_data1.split(" ");
+
+ var array_rounds_data2= array_rounds_data11.filter(function(obj){return array_ronds_db1.indexOf(obj)==-1;})
+  
+    var data=$(this).val();
+
+    var datas=[]
+    var data1=$("#round_data").val();
+   
+    for (i = 0; i < array_rounds_data11.length; i++) {
+    $(".class"+array_rounds_data11[i]).attr("disabled", true);
+    $(".class1"+array_rounds_data11[i]).attr("disabled", true);
+ }
+
+     if(array_ronds_db1.indexOf(data)>=0){
+
+           $(".class"+data). removeAttr("disabled");
+           $(".class1"+data). removeAttr("disabled");
+          
+  
+    } else if(array_rounds_data2[0]==data) {
+
+      $(".class"+data). removeAttr("disabled");
+           $(".class1"+data). removeAttr("disabled");
+
+ 
+      // Code for else case
+}
+    $(".class"+data).each(function(){
+
+      if($(this).prop("checked") == true && $(this).prop("disabled")==false){
+
+               var data=$(this).val();
+                var datas=data.split("-")
+              
+               $(this).parent().siblings().find(".class1"+datas[0]).removeAttr("disabled");
+                //$(this).siblings().css({"color": "red", "border": "2px solid red"})
+
+            }
+             else {
+              var data=$(this).val();
+                var datas=data.split("-")
+               
+             
+                $(this).parent().siblings().find(".class1"+datas[0]).attr("disabled", true);
+             }
+
+})
+  });
+
+function sort_unique(arr) {
+    if (arr.length === 0) return arr;
+    arr = arr.sort(function (a, b) { return a*1 - b*1; });
+    var ret = [arr[0]];
+    for (var i = 1; i < arr.length; i++) { // start loop at 1 as element 0 can never be a duplicate
+        if (arr[i-1] !== arr[i]) {
+            ret.push(arr[i]);
+        }
+    }
+    return ret;
+}
+
+
+
+$(document).on("click","#accept-class-placement-model",function(e){
+   
+   var inputElems=document.getElementsByClassName("student_id_data"),
+   count = 0;
+for (var i=0; i<inputElems.length; i++) {
+if (inputElems[i].type === "checkbox" && inputElems[i].checked === true && inputElems[i].disabled === false) 
+{
+    count++;
+     
+}
+
+}
+if (count>0){
+
+ 
+       $("#submitplacementFormBtnId").click();
+    }
+    else
+    {
+      $("#submitplacementFormBtnId").click();
+      //alert("Please check any check box");
+    }
+  
+    
+  });
+</script>

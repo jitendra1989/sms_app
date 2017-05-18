@@ -1,0 +1,153 @@
+<%if flash[:error].present?%>
+<%=flash[:error]%>
+<%end%>
+<%
+    @school_id=session[:current_user_school_id]
+
+    %>
+
+
+
+
+<table border="1" class="mg-showdata-bg mg-show-tbl-width" cellspacing="1" cellpadding="1">
+
+
+ 
+
+<tr>
+      <td class="mg-td-width-half" valign="top">
+       <label class="mg-label" for="bookNo"><%= t ('isbn_number') %></label>
+      </td>
+      <td class="mg-td-width-half" valign="top">
+        <label class="mg-label-inner-form"> <%=@inventory_data.book_no%></label>
+      </td>
+  </tr>
+ <tr>
+      <td class="mg-td-width-half" valign="top">
+       <label class="mg-label" for="bookName"><%= t ('book_name') %></label>
+      </td>
+      <td class="mg-td-width-half" valign="top">
+        <label class="mg-label-inner-form"><%=@inventory_data.book_name%></label>
+      </td>
+  </tr>
+<tr>
+      <td class="mg-td-width-half" valign="top">
+       <label class="mg-label" for="publisher"><%= t ('status') %></label>
+      </td>
+      <td class="mg-td-width-half" valign="top">
+        <label class="mg-label-inner-form"> <%=@inventory_data.status %></label>
+      </td>
+  </tr>  
+   <tr>
+      <td class="mg-td-width-half" valign="top">
+       <label class="mg-label" for="author"><%= t ('author') %></label>
+      </td>
+      <td class="mg-td-width-half" valign="top">
+        <label class="mg-label-inner-form"><%=@inventory_data.author%></label>
+      </td>
+  </tr>
+
+  <tr>
+      <td class="mg-td-width-half" valign="top">
+       <label class="mg-label" for="publisher"><%= t ('publisher') %></label>
+      </td>
+      <td class="mg-td-width-half" valign="top">
+        <label class="mg-label-inner-form"> <%=@inventory_data.publisher%></label>
+      </td>
+  </tr>  
+<tr>
+      <td class="mg-td-width-half" valign="top">
+       <label class="mg-label" for="publisher"><%= t ('edition') %></label>
+      </td>
+      <td class="mg-td-width-half" valign="top">
+        <label class="mg-label-inner-form"> <%=@inventory_data.edition%></label>
+      </td>
+  </tr>  
+  <tr>
+      <td class="mg-td-width-half" valign="top">
+       <label class="mg-label" for="publisher"><%= t ('category_name') %></label>
+      </td>
+      <%
+          books_category=MgBooksCategory.find(@inventory_data.mg_books_category_id)
+          %>
+      <td class="mg-td-width-half" valign="top">
+        <label class="mg-label-inner-form"> <%=books_category.category_name%></label>
+      </td>
+  </tr>  
+  <tr>
+      <td class="mg-td-width-half" valign="top">
+       <label class="mg-label" for="publisher"><%= t ('class') %></label>
+      </td>
+      <%
+          course_data=MgCourse.find(@inventory_data.mg_course_id)
+          %>
+      <td class="mg-td-width-half" valign="top">
+        <label class="mg-label-inner-form"> <%=course_data.course_name%></label>
+      </td>
+  </tr>  
+  <%books_data=MgBooksInventory.find(params[:book_id])%>
+  <%if books_data.issued_to.present?%>
+  <tr>
+      <td class="mg-td-width-half" valign="top">
+       <label class="mg-label" for="publisher"><%= t ('issued_to') %></label>
+      </td>
+      <%student_data=MgStudent.find_by(:id=>books_data.issued_to)%>
+      <td class="mg-td-width-half" valign="top">
+        <label class="mg-label-inner-form"> <%="#{student_data.first_name} #{student_data.last_name}"%></label>
+      </td>
+  </tr>  
+<%end%>
+  </table><br/>
+  <%#= @inventory_data.issued_to.inspect%>
+  <%if @inventory_data.status=="On-shelf" && @inventory_data.reserved_by==0 && @inventory_data.issued_to==nil%>
+
+ <!--  here daata shoule be addes -->
+
+<%#= f.submit t('issue'), class: "submit mg-small-form-btn mg-custom-labels" %>
+ <button  id='Issue-<%=@inventory_data.id %>' class="submits_function  form_close_calss mg-custom-form-btn">Issue</button>
+ <%end%>
+ <%if @inventory_data.status=="Issued" && @inventory_data.reserved_by==0 && @inventory_data.issued_to!=nil%>
+
+<%#= f.submit t('issue'), class: "submit mg-small-form-btn mg-custom-labels" %>
+ <button  id="Renew-<%=@inventory_data.id %>" class="submits_function  form_close_calss mg-custom-form-btn">Renew</button>
+ <button  id='Return-<%=@inventory_data.id %>' class="submits_function  form_close_calss mg-custom-form-btn">Return</button>
+ <button  id='Reserved-<%=@inventory_data.id %>' class="submits_function  form_close_calss mg-custom-form-btn">Reserve</button>
+ <%end%>
+ <%if @inventory_data.status=="Issued" && @inventory_data.reserved_by!=0 && @inventory_data.issued_to!=nil%>
+
+<%#= f.submit t('issue'), class: "submit mg-small-form-btn mg-custom-labels" %>
+ <button  id="Renew-<%=@inventory_data.id %>" class="submits_function  form_close_calss mg-custom-form-btn">Renew</button>
+ <button  id='Return-<%=@inventory_data.id %>' class="submits_function  form_close_calss mg-custom-form-btn">Return</button>
+ <button  id='Reserved-<%=@inventory_data.id %>' class="submits_function  form_close_calss mg-custom-form-btn">Reserve</button>
+ <%end%>
+ <%if @inventory_data.status=="Reserved"  && @inventory_data.issued_to!=nil && @inventory_data.reserved_by!=0%>
+
+<%#= f.submit t('issue'), class: "submit mg-small-form-btn mg-custom-labels" %>
+<!-- <button  id="Renew-<%#=@inventory_data.id %>" class="submits_function  form_close_calss mg-custom-form-btn">Renew</button>
+ -->
+ <button  id='Return-<%=@inventory_data.id %>' class="submits_function  form_close_calss mg-custom-form-btn">Return</button>
+ 
+ <button  id='cancel_reservation-<%=@inventory_data.id %>' class="cancel_reservation_submits_function  form_close_calss mg-custom-form-btn">Cancel Reservation</button>
+ <%end%>
+
+<%if @inventory_data.status=="Reserved"  && @inventory_data.reserved_by!=0 && @inventory_data.issued_to==nil%>
+<!-- here also data should be added -->
+<%#= f.submit t('issue'), class: "submit mg-small-form-btn mg-custom-labels" %>
+  <button  id='Issue-<%=@inventory_data.id %>' class="submits_function_for_issue  form_close_calss mg-custom-form-btn">Issue</button>
+  
+ <button  id='cancel_reservation-<%=@inventory_data.id %>' class="cancel-reservation-submits-function-for-second-time  form_close_calss mg-custom-form-btn">Cancel Reservation</button>
+
+ <%end%>
+
+
+
+<div id="fine_pop_up">
+
+</div>
+<div id="renew_fine_pop_up">
+</div>
+<div id="reserved_pop_up">
+</div>
+
+<div id="issued_pop_up">
+</div>

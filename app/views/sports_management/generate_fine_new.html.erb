@@ -1,0 +1,360 @@
+ <%= render partial:'sports_left' %>
+ <% #navigation_add t('schedule'), :controller=>'sports_management', :action=>'schedule' %>
+<% navigation_add t('generate_fine'),:controller=>'sports_management', :action=>'generate_fine' %>
+  <% #navigation_add t('new_schedule'),:controller=>'sports_management',:action=>'schedule_new' %>
+ <%= form_for :generate_fine, :url=>{:action=>"generate_fine_create"}, :html => 
+     {:id => 'generateFineNewEditFormIdData' } do |f| %>
+
+<h4 class="mg-h4"><%=  t('generate_fine') %></h4>
+ 
+<%= f.hidden_field :is_deleted, :value => 0 %>
+ <%= f.hidden_field :mg_school_id, :value => session[:current_user_school_id] %>
+ <%= f.hidden_field :created_by, :value => session[:user_id] %>
+ <%= f.hidden_field :updated_by, :value => session[:user_id] %>
+<p>
+
+ <%= f.label :fine_name ,:class=>"mg-label"%><span class="required-field"> *</span><br/>
+       <%= f.text_field :fine_name ,:class=>"mg-text-field"%>
+      <%#= f.text_field :fee_category ,:value=>@category[0].id,  :style => "diaplay:none"%>
+
+      </p>
+      <p>
+        <%= f.label :description ,:class=>"mg-label"%><br/>
+        <%= f.text_area :description ,:class=>"mg-text-field"%>
+      </p>
+      
+      <p>
+
+      <%= f.label :fine_from ,:class=>"mg-label"%><span class="required-field"> *</span><br/>
+       <%= f.text_field :fine_from ,:value=>"Sports",:readonly=>true,:class=>"mg-text-field"%>
+      <%#= f.text_field :fee_category ,:value=>@category[0].id,  :style => "diaplay:none"%>
+
+      </p>
+
+         <p>
+       <%= f.label :select_account ,:class=>"mg-label"%><span class="required-field"> *</span><br/>
+       <%account=Array.new
+        account.push("Central","central")
+        accounts=MgAccount.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:mg_account_name,:id)
+        accounts.insert(0,account)
+       %>
+       <%=f.select :mg_account_id,options_for_select(accounts),{:include_blank =>"Select"} ,:class=>"mg-select-btn"%>
+      </p>
+      <p>
+      <%= f.label :amount ,:class=>"mg-label"%><span class="required-field"> *</span><br/>
+      <%= f.text_field :amount ,:class=>"mg-text-field"%>
+      </p>
+      
+      
+      <p>
+       <%= f.label :Start_Date ,:class=>"mg-label"%><span class="required-field"> *</span><br/>
+        <%= f.text_field :start_date, :class=>"mg-text-field" %>
+      </p>
+      <p>
+      
+       <%= f.label :End_Date ,:class=>"mg-label"%><span class="required-field"> *</span><br/>
+        <%= f.text_field :end_date, :class=>"mg-text-field" %>
+      </p>
+      <p>
+     <%= f.label :Due_Date ,:class=>"mg-label"%><span class="required-field"> *</span><br>
+        <%= f.text_field :due_date, :class=>"mg-text-field" %>
+      </p>
+<h4 class="mg-h4"><%=t('select_student')%></h4>
+<div id="attendanceCalendarScroll">
+      <table class="mg-tbl-margin mg-show-tbl-width mg-inner-table-align">
+<tr>
+<th>Select Programme</th>
+<th></th>
+<th></th>
+<th>Select Semester</th>
+<th></th>
+
+<th></th>
+
+<th>Select Student</th>
+<th></th>
+<th></th>
+
+<th></th>
+
+<th>Selected Student*</th>
+<th></th>
+
+</tr>
+    <tr>
+      <td>
+
+        <%=select_tag :notSelectedstudent, options_for_select(@prgm_list),:multiple => true,:size =>10,:class=>"mg-add-library-particular mg-select-btn"%>
+
+    </td>
+    <td></td>
+    <td></td>
+
+    <td>
+ <!--  <a  id="addingdatas" class="mg-custom-form-btn mg-fee-btn">Select Dept</a>  -->
+<%=select_tag :selectedStudentdata,options_for_select([]),:multiple => true,:size =>10 ,:class=>"mg-add-library-particular"%>
+</td>
+    <td></td>
+    <td></td>
+
+<td>
+<%=select_tag :selectedStudents,options_for_select([]),:multiple => true,:size =>10 ,:class=>"mg-add-library-particular"%>
+
+</td>
+<td><a  id="editaddingstudentdatas" class="mg-custom-form-btn mg-add-rem-btn">Add</a> 
+</td>
+    <td></td>
+    <td></td>
+
+<td>
+
+<%=select_tag :selected_students,options_for_select([]),:multiple => true,:size =>10 ,:class=>"mg-add-library-particular data12"%>
+
+</td>
+<td><a  id="removingstudentdata" class="mg-custom-form-btn mg-add-rem-btn">Remove</a>
+</td>
+    </tr>
+
+    </table>
+</div>
+<p class="mg-p-mgtop">
+      <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("save")%></a>
+      <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+</p>
+
+<% end %>
+<%= render partial: 'application/common_left_close' %>
+
+
+<script>
+  
+
+$(document).ready(function(){
+    focusCurrentTab("generate_fineAID","generate_fineLiID");
+
+
+  dateFormatStr =  getJsDateFormat();
+    $( "#generate_fine_start_date" ).datepicker({changeMonth: true,changeYear: true,yearRange: "10:+50",maxDate: "1000",dateFormat: dateFormatStr});
+    $( "#generate_fine_end_date" ).datepicker({changeMonth: true,changeYear: true,yearRange: "10:+50",maxDate: "1000",dateFormat: dateFormatStr});
+    $( "#generate_fine_due_date" ).datepicker({changeMonth: true,changeYear: true,yearRange: "10:+50",maxDate: "1000",dateFormat: dateFormatStr});
+  
+
+   $("#generateFineNewEditFormIdData").validate({
+      rules: 
+      {
+          "generate_fine[fine_name]": {required: true},
+          "fesses2[amount]": {required: true,number: true,min:1},
+          "generate_fine[mg_account_id]": {required: true},
+          "generate_fine[amount]": {required: true},
+          "generate_fine[start_date]": {required: true},
+          "generate_fine[end_date]": {required: true},
+          "generate_fine[due_date]": {required: true},
+          "selected_students[]": {required: true},
+      }
+    });
+  // $("#generateFineNewEditFormId").validate({
+  //   rules: {
+  //     "generate_fine[fine_name]": {required: true},
+  //     "generate_fine[mg_account_id]": {required: true},
+  //     "generate_fine[amount]": {required: true,number:true,min: 0},
+  //     "generate_fine[mg_batches_id]": {required: true}
+      
+  //   }
+  // });
+});
+$(document).on("change",".generate_fine_start_date",function(e){
+      var end_date=$("#generate_fine_end_date").val();
+      
+      //alert(end_date)
+
+      if(!(end_date==""))
+      {
+            var start_date=$(this).val();
+
+     // console.log("Changed dob"); 
+     // console.log(new Date(Date.parse(dob,dateFormatStr)).toString());
+     // console.log(new Date(Date.parse(admission_date,dateFormatStr)).toString());
+
+     if(getDateObj(start_date,dateFormatStr)>getDateObj(end_date,dateFormatStr)){
+        alert("Start Date should be less than End Date");
+    document.getElementById('generate_fine_start_date').blur(); 
+        
+        document.getElementById('generate_fine_start_date').value ="";
+      }
+
+      var temp=$("#generate_fine_due_date").val();
+      if(!temp=="")
+      {
+      var end_date=$("#generate_fine_end_date").val();
+      var start_date=$("#generate_fine_start_date").val();
+      var due_date=$("#generate_fine_due_date").val();
+
+     if(!(getDateObj(due_date,dateFormatStr)>=getDateObj(start_date,dateFormatStr)&&getDateObj(due_date,dateFormatStr)<=getDateObj(end_date,dateFormatStr))){
+        alert("Due Date should be between Start Date and End Date");
+    document.getElementById('generate_fine_start_date').blur(); 
+
+        document.getElementById('generate_fine_start_date').value ="";
+      }
+}
+      }
+      
+   });
+
+$(document).on("change","#generate_fine_end_date",function(e){
+
+      var start_date=$("#generate_fine_start_date").val();
+     
+      if(!(start_date==""))
+      {
+        var end_date=$(this).val();
+
+     // console.log("Changed dob"); 
+     // console.log(new Date(Date.parse(dob,dateFormatStr)).toString());
+     // console.log(new Date(Date.parse(admission_date,dateFormatStr)).toString());
+
+     if(getDateObj(start_date,dateFormatStr)>getDateObj(end_date,dateFormatStr)){
+        alert("End Date should be more than Start Date");
+    document.getElementById('generate_fine_end_date').blur(); 
+
+        document.getElementById('generate_fine_end_date').value ="";
+      }
+var temp=$("#generate_fine_due_date").val();
+      if(!temp=="")
+      {
+      var end_date=$("#generate_fine_end_date").val();
+      var start_date=$("#generate_fine_start_date").val();
+      var due_date=$("#generate_fine_due_date").val();
+
+     if(!(getDateObj(due_date,dateFormatStr)>=getDateObj(start_date,dateFormatStr)&&getDateObj(due_date,dateFormatStr)<=getDateObj(end_date,dateFormatStr))){
+        alert("Due Date should be between Start Date and End Date");
+    document.getElementById('generate_fine_end_date').blur(); 
+
+        document.getElementById('generate_fine_end_date').value ="";
+      }
+}
+      }
+      
+   });
+ 
+    
+$(document).on("change","#generate_fine_due_date",function(e){
+
+      var end_date=$("#generate_fine_end_date").val();
+      var start_date=$("#generate_fine_start_date").val();
+     
+      
+      var due_date=$("#generate_fine_due_date").val();
+if(start_date=="" || end_date=="")
+{
+  alert("Enter The Start Date And End Date");
+    document.getElementById('generate_fine_due_date').blur(); 
+  document.getElementById('generate_fine_due_date').value ="";
+}
+      else
+      {
+
+     if(!(getDateObj(due_date,dateFormatStr)>=getDateObj(start_date,dateFormatStr)&&getDateObj(due_date,dateFormatStr)<=getDateObj(end_date,dateFormatStr))){
+        alert("Due Date should be between Start Date and End Date");
+        document.getElementById('generate_fine_due_date').blur(); 
+        document.getElementById('generate_fine_due_date').value ="";
+      }
+   }
+   });
+
+
+
+ 
+
+
+  $(document).on("click","#editaddingstudentdatas",function(e){
+
+
+    var demo=$("#selectedStudents").val();
+    var texts=$("#selectedStudents :selected").text();
+    var text=texts.split("  ")
+    var array=[];
+
+    $("#selected_students option").each(
+      function() {
+        array.push(this.value);
+      }
+    );
+
+     for(var i=0;i<demo.length;i++)
+     {
+        var a =false;
+        for(var j=0;j<array.length;j++){
+          if (demo[i]==array[j]){
+            a=true;
+          }
+        }
+
+        if (a){
+          }
+        else{
+         var addselectedOption=$("#selectedStudents option:selected")
+         var str="<option value="+demo[i]+">"+text[i]+"</option>"
+         $("#selected_students").append(str);
+         $("#selected_students option").prop('selected',true);
+        }
+      }
+   });
+
+
+  $(document).on("click","#removingstudentdata",function(e){
+      var selectedOption=$("#selected_students option:selected").remove();
+      $("#selected_students option").prop('selected',true)
+    });
+
+
+   $(document).on("click","#notSelectedstudent",function(e){
+      var wing_id=$("#notSelectedstudent").val();
+      
+        $.ajax({
+                url: "/sports_management/sem_data",
+                type: "GET",
+                data: {"data":"wing","wing_id":wing_id},
+                success: function(data) {
+                  $("#selectedStudentdata").empty();
+                  $("#selectedStudentdata").html(data.main);
+                },
+                error:function(){
+                  alert("Something went wrong!");
+                }
+            });
+      
+    });
+
+
+ $(document).on("click","#selectedStudentdata",function(e){
+    var sec_id=$("#selectedStudentdata").val();
+    var wing_id=$("#notSelectedstudent").val();
+    jQuery.ajax({
+            url: "/sports_management/section_students",
+            type: "GET",
+            data: {"data":"suc","stu_id":sec_id,"data":"edit"},
+            success: function(html) {
+               $("#studentListLabelID").show();
+               $("#selectedStudents").html(html.main);
+            },
+            error:function(){
+              alert("Something went wrong!");
+            } 
+      });
+    
+});
+
+
+</script>
+
+
+
+<style type="text/css">
+  #attendanceCalendarScroll{
+    border: 1px solid #bcbcbc;
+    overflow-x: scroll;
+    max-width: 719px;
+  }
+
+ 
+</style>

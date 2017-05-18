@@ -1,0 +1,240 @@
+<% navigation_add t('timetable'), timetable_index_path %>
+<% navigation_add t('change_teacher'), :controller=>'timetable', :action=>'change_teacher_time_table' %>
+
+<%= render  partial: 'timetable_left' %>
+ <%= form_for :time_table,:url=>change_teacher_permanent_save_path, :html => {
+                            :id => 'changeTeacherFormID' } do |f| %>
+
+<h4 class="mg-h4">Change Teacher</h4>
+<label class="mg-label mg-custom-labels mg-tt-width mg-tbl-margin"><%=t('select_acadamic_year')%><span class="required-field"> *</span></label>
+<%=select_tag :acadamic_year,options_for_select(@acadamic_year),:onchange=>"select_acadamic_year_function(this.value)",:prompt=>t('select')%><br>
+<label class="mg-label mg-custom-labels mg-tt-width mg-tbl-margin">Select Date<span class="required-field"> *</span></label>
+<%#=date_select :start_date,:order => [:day,:month,:year], prompt: { day: 'Select day', month: 'Select month', year: 'Select year' }%>
+<%=text_field_tag :date,Date.today.strftime(@school.date_format), :html=>{:id=>"change_teacher_index" }, :onchange=>"dateSelectChangeTeacherFunction()" , :class=>"mg-text-field"%>
+<br>
+
+<label class="mg-label mg-custom-labels mg-tt-width mg-tbl-margin"><%=t('select')%> <%=t('class')%><span class="required-field"> *</span></label>
+<%=select_tag :mg_course_id,options_for_select(@course),:prompt=>t('select'),:onchange=>"classTimingsForSelectedCourse(this.value)"%><br>
+
+<label class="mg-label mg-custom-labels mg-tt-width mg-tbl-margin"><%=t('select')%> <%=t('section')%><span class="required-field"> *</span></label>
+<%=select_tag :mg_batch_id,options_for_select([]),:prompt=>t('select'),:onchange=>"classTimingsForSelectedBatch(this.value)"%><br>
+
+
+
+<div id="classTimingsForSelectedBatchDivID">
+	<label class="mg-label mg-custom-labels mg-tt-width mg-tbl-margin">Select Period<span class="required-field"> *</span></label>
+	<%=select_tag :mg_class_timing_id,options_for_select([]),:prompt=>t('select')
+	%><br>
+</div>
+
+<label class="mg-label mg-custom-labels mg-tt-width mg-tbl-margin">Select Subject<span class="required-field"> *</span></label>
+<%=select_tag :mg_subject_id,options_for_select(@subject),:prompt=>t('select'),:onchange=>"teacherForSelectedSubject(this.value)"%><br>
+
+<div id="teacherForSelectedSubjectDivID">
+	<label class="mg-label mg-custom-labels mg-tt-width mg-tbl-margin">Select Teacher<span class="required-field"> *</span></label>
+	<%=select_tag :mg_employee_id,options_for_select([]),:prompt=>t('select'), :id=>"employeeSelectTagChangeTeacherSTAGID"%><br>
+</div>
+
+  <p style="float: left;" class="mg-p-mgtop">
+    <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("save")%></a>
+      <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+  </p>
+
+<%end%>
+<br/>
+
+
+<%= render  partial: 'changed_teacher_list' %>
+
+<%= render  partial: 'application/common_left_close' %>
+
+<script type="text/javascript">
+	
+      $(document).ready(function () {
+
+
+		 $(function () {
+		    $.validator.addMethod('dateFormat',
+		    function (value, element) {
+		      dateFormatStr =  getJsDateFormat();
+		        if (this.optional(element)) {
+		            return true;
+		        }
+		        var ok = true;
+		        try {
+		            $.datepicker.parseDate(dateFormatStr, value);
+		        }
+		        catch (err) {
+		            ok = false;
+		        }
+		        return ok;
+		    },
+		      "Please enter a date in the format "+ getDateFormat(dateFormatStr) +".");
+		      dateFormatStr =  getJsDateFormat();
+
+		    $(".datefield").datepicker({ dateFormat: dateFormatStr, changeYear: true });
+		});
+       
+        $("li").removeClass( "active" );
+        $("a").removeClass( "activeMenu" );
+
+        $("#changeTeacherPermanentLiID").addClass( "active" );
+        $("#changeTeacherPermanentAID").addClass( "activeMenu" );
+
+        focusTimeTable();
+
+        var dateFormatStr =  getJsDateFormat();
+
+     	$( "#date" ).datepicker({  minDate: new Date(date),changeMonth: true,changeYear: true,yearRange: "-100:+0", dateFormat: dateFormatStr });
+     	$( "#changed_date" ).datepicker({  minDate: new Date(date),changeMonth: true,changeYear: true,yearRange: "-100:+0", dateFormat: dateFormatStr });
+
+
+     	$("#changeTeacherFormID").validate({
+        rules: {
+        "acadamic_year": {required: true},
+        "mg_course_id": {required: true},
+        "mg_batch_id": {required: true},
+        "date": {dateFormat: true,required: true},
+        "mg_class_timing_id": {required: true},
+        "mg_subject_id": {required: true},
+        "mg_employee_id": {required: true}
+        }
+      });
+      });
+
+
+
+function dateSelectChangeTeacherFunction(){
+	$("#period_list").html('<option value="">Select</option>');
+		$("#mg_employee_id").html('<option value="">Select</option>');
+		$("#mg_batch_id").html('<option value="">Select</option>');	
+		$("#employeeSelectTagChangeTeacherSTAGID").html('<option value="">Select</option>');
+		$("#mg_class_timing_id").html('<option value="">Select</option>');
+		$("#mg_course_id").val('');
+		$("#mg_subject_id").val('');	
+		
+}
+function teacherForSelectedSubject(mg_subject_id){
+	var mg_class_timing_id=$("#mg_class_timing_id").val();
+	var mg_batch_id=$("#mg_batch_id").val();
+	var mg_timetable_id=$("#acadamic_year").val();
+	if(mg_timetable_id==''){
+		alert("Please select acadamic year");
+		$('#mg_subject_id').val('');
+	}else if( mg_batch_id==""){
+		alert("Please select Section");
+		$('#mg_subject_id').val('');
+	}else if(mg_class_timing_id==''){
+		alert("Please select Period");
+		$('#mg_subject_id').val('');
+	}else{
+		$.ajax({
+			url:"/timetable/class_timings_for_selected_batch",
+			data:{ 
+					"mg_subject_id":mg_subject_id,
+					"mg_class_timing_id":mg_class_timing_id,
+					"mg_batch_id": mg_batch_id,
+					"mg_timetable_id": mg_timetable_id,
+					"key_select": "subject"
+					},
+			type:"GET",
+			success:function(data){
+				// 
+				console.log(data);
+				var str="<option value=''>Select</option>";
+				for(var i in data){
+					// if (data[i].weekday_id)
+					str +="<option value="+data[i].id+">"+data[i].name+"</option>";
+				}
+				$("#employeeSelectTagChangeTeacherSTAGID").html(str);
+			}
+		});
+	}
+}
+
+function classTimingsForSelectedCourse(mg_course_id) {
+	if ($("#acadamic_year").val()==''){
+		alert("Please select acadamic year");
+		$("#mg_course_id").val('');
+		$('#mg_subject_id').val('');
+	}else if($("#date").val()==''){
+		alert("Please select date");
+		$("#mg_course_id").val('');
+		$('#mg_subject_id').val('');
+	}
+	else{
+		$.ajax({
+			url:"/timetable/class_timings_for_selected_batch",
+			data:{ 
+					"mg_course_id":mg_course_id,
+					"key_select": "course"
+					},
+			type:"GET",
+			success:function(data){
+				// 
+				console.log(data);
+				var str="<option value=''>Select</option>";
+					for(var i in data){
+						str +="<option value="+data[i].id+">"+data[i].name+"</option>";
+					}
+					$("#period_list").html('<option value="">Select</option>');	
+					$("#employeeSelectTagChangeTeacherSTAGID").html('<option value="">Select</option>');
+					$("#mg_class_timing_id").html('<option value="">Select</option>');
+				$("#mg_batch_id").html(str);
+				$('#mg_subject_id').val('');
+			}
+		});
+	}
+
+}
+
+function classTimingsForSelectedBatch(batchId){
+	var arr={0: "Sunday", 1: "Monday", 2: "Tuesday", 3: "Wednesday", 4: "Thursday", 5: "Friday", 6: "Saturday"};
+	var date=$("#date").val();
+	console.log(date);
+	 if(date==''){
+		 alert("Please select date");
+	 }else{
+
+
+		$.ajax({
+			url:"/timetable/class_timings_for_selected_batch",
+			data:{
+				"batch_id":batchId,
+				"date": date,
+				"key_select": "batch"
+			},
+			type:"GET",
+			success:function(data){
+				// 
+				console.log(data);
+				var str="<option value=''>Select</option>";
+					for(var i in data){
+						// if (data[i].weekday_id)
+						str +="<option value="+data[i].id+">"+data[i].name+"</option>";
+					}
+					$("#period_list").html('<option value="">Select</option>');
+					$("#employeeSelectTagChangeTeacherSTAGID").html('<option value="">Select</option>');
+				$("#mg_class_timing_id").html(str);
+				$('#mg_subject_id').val('');
+			}
+		});
+	}
+}
+
+function select_acadamic_year_function (value) {
+	// if (value==''){
+		// $("#mg_batch_id").html('<option value="">Select</option>');
+		$("#period_list").html('<option value="">Select</option>');
+		$("#mg_employee_id").html('<option value="">Select</option>');
+		$("#mg_batch_id").html('<option value="">Select</option>');	
+		$("#employeeSelectTagChangeTeacherSTAGID").html('<option value="">Select</option>');
+		$("#mg_class_timing_id").html('<option value="">Select</option>');
+		$('#mg_subject_id').val('');
+		$('#mg_course_id').val('');
+
+
+		
+	// }
+}
+</script>

@@ -1,0 +1,88 @@
+<%# javascript 'applicatio.js' %>
+<%#javascript 'cloud_admins.js' %>
+<%#= javascript_include_tag params[:controller] %> 
+<%#= stylesheet_link_tag params[:controller],'headerStyle','dashboards','footerStyle','homeStyle','bootstrap','attendanceStyle' %>
+
+<%= render partial: 'dashboards/cloud_admin_dashboard_left' %>
+
+
+<h4 class="mg-h4"><%=t('manage_principal')%></h4>
+<div class="mg-custom-labels">
+<%#=link_to "Create Super Principal", {:controller => :cloud_admins, :action => :super_principal}, {:method => :get }%>
+<%= button_to "Create Principal", { action: "add_principal"}, method: :get, :class=>"mg-custom-form-btn " %>
+
+<% if @employees.present?%>
+
+ <div class="mg_pagination">
+    <table class="batch-tbl mg-tbl-margin">
+      <tr>
+        <th><%= t('employeenumber') %></th>
+        <th><%= t('firstname') %></th>
+        <th><%= t('lastname') %></th>
+        <th><%= t('profile') %></th>
+        <th><%= t('department') %></th>
+        <th><%= t('joiningdate') %></th>
+        <th><%= t('actions') %></th>
+      </tr>
+      <% @employees.each do |employee| %>
+        <tr>
+          <td class="table-padding-mod"><%= employee.employee_number %></td>
+          <td class="table-padding-mod"><%= employee.first_name %></td>
+          <td class="table-padding-mod"><%= employee.last_name %></td>
+          <!-- <div style="display:none", class="view-div" id="<%= employee.id%>">
+          <%#= render_breadcrumbs :separator => ' >> ' %>
+          </div> -->
+          <%@pos=MgEmployeePosition.find_by_id( employee.mg_employee_position_id)%>
+         <td class="table-padding-mod" style="width: 6.7em">
+          <%if @pos.present?%>
+                <%= @pos.position_name%>
+          <%end%>
+         </td>
+         <td class="table-padding-mod">
+          <%  @dep=MgEmployeeDepartment.find_by_id( employee.mg_employee_department_id)%>
+          <%= @dep.department_name%>
+         </td>
+         <% @timeformat=MgSchool.find_by_id(employee.mg_school_id)%>
+         <% if @timeformat.present?%>
+          <td class="table-padding-mod">
+            <%= employee.joining_date.strftime(@timeformat.date_format) %>
+          </td>
+          <%else%>
+          <td></td>
+         <%end %>
+         <td class="table-padding-mod" style="text-align: center;">
+          <!-- <button title="Show" class="show-super-principal mg-icon-btn" id="showEmployeeID-<%= employee.id%>"><i class="fa fa-eye"></i>
+          </button> -->
+          <%#= button_to 'Show', { action: "show_admin", id: employee.id },method: :get, :class=>"mg-icon-btn "  %>
+           
+          <%= link_to "<i class=\"fa fa-eye\"></i>".html_safe, {controller: "cloud_admins", action: "show_principal" ,id:employee.id } ,:title=>"Show" ,:class=>"mg-icon-btn" %>
+
+          <button title="Edit" class="edit-principal-profile mg-icon-btn" id="editEmployeeID-<%= employee.id%>"><i class="fa fa-pencil-square-o"></i></button>
+
+          <%= link_to "<i class=\"fa fa-trash\"></i>".html_safe, {controller: "cloud_admins", action: "delete_principal" ,id:employee.id } ,:title=>"Delete" ,:class=>"mg-icon-btn" , data: { confirm: "Are you sure?" },:style=>"float: right; margin-left: 1px;"%>
+
+          <!-- <button title="Delete" class="delete-employee mg-icon-btn" id="deleteEmployeeID-<%= employee.id%>"><i class="fa fa-trash"></i></button> -->
+          <%#= button_to "Delete", { action: "delete_admin", id: employee.id },method: :get, :class=>"mg-icon-btn ", data: { confirm: "Are you sure?" }, :style=>"<i class='fa fa-trash'></i>" %>
+
+          </td>
+        </tr>
+      <% end %>
+    </table>
+    <%= will_paginate @employees, :container => false %>
+  </div>
+  <% else %>
+  <h5>Please create principal... </h5>
+<% end %>
+<div id="editPrincipalDialog" style="padding: 2px;"></div>
+</div>
+
+<%= render partial: 'application/common_left_close' %>
+
+<script type="text/javascript">
+
+ $(document).ready(function() {
+    focusCurrentTab("viewCloudAdminDashboardShowPrincipal","viewCloudAdminDashboardShowPrincipalLiID");
+    focusDashboards();
+ });
+
+</script>

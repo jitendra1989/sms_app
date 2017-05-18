@@ -1,0 +1,169 @@
+<table border="1" class="batch-tbl mg-tbl-layout mg-showdata-bg mg-show-tbl-width" cellspacing="1" cellpadding="1">
+   <tr>
+     <td class="mg-td-width-half" valign="top">
+     <label class="mg-label"> <%= t('subject_name')%></label>
+     </td>
+     <td class="mg-td-width-half mg-label-inner-form" valign="top">
+     <%if @purchase.mg_laboratory_subject_id.present?%>
+   <%lab=MgLaboratorySubject.find_by(:id=>@purchase.mg_laboratory_subject_id)%>
+     <%=lab.name%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+     </td>
+ </tr>
+
+
+<tr>
+     <td class="mg-td-width-half" valign="top">
+     <label class="mg-label"> <%= t('room_no')%></label>
+     </td>
+     <td class="mg-td-width-half mg-label-inner-form" valign="top">
+     <%if @purchase.mg_room_id.present?%>
+   <%lab=MgLab.find_by(:id=>@purchase.mg_room_id)%>
+     <%=lab.room_no%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+     </td>
+ </tr>
+
+
+
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+     <label class="mg-label"> <%= t('vendor_name')%></label>
+     </td>
+     <td class="mg-td-width-half mg-label-inner-form" valign="top">
+     <%if @purchase.vendor_name.present?%>
+     <%=@purchase.vendor_name%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+     </td>
+ </tr>
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+     <label class="mg-label mg-label-text-transform-none"> <%= t('date_of_purchase')%></label>
+     </td>
+     <td class="mg-td-width-half mg-label-inner-form" valign="top">
+     <% @timeformat=MgSchool.find_by_id(@purchase.mg_school_id)%>
+      <% if @timeformat.present?%>
+      <%= @purchase.date.strftime(@timeformat.date_format) %>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+     </td>
+ </tr>
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+     <label class="mg-label"> <%= t('amount_paid')%></label>
+     </td>
+     <td class="mg-td-width-half mg-label-inner-form" valign="top">
+     <%if @purchase.amount_paid.present?%>
+     <%=@purchase.amount_paid%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+     </td>
+ </tr>
+
+ </table><br>
+ <%@information=MgItemInformation.where(:mg_purchase_id=>params[:id],:is_deleted=>0,:mg_school_id=>session[:current_user_school_id])%>
+<table border="1" class="batch-tbl mg-tbl-layout mg-showdata-bg mg-show-tbl-width" cellspacing="1" cellpadding="1">
+
+<tr>
+<th> <label class="mg-label"> <%= t('category_name')%></label>
+</th>
+<th> <label class="mg-label"> <%= t('item_name')%></label>
+</th>
+<th> <label class="mg-label"> <%= t('valid_upto')%></label>
+</th>
+<th> <label class="mg-label"> <%= t('cost')%></label>
+</th>
+<th> <label class="mg-label"> <%= t('unit')%></label>
+</th>
+<th> <label class="mg-label"> <%= t('total')%></label>
+</th>
+</tr>
+<%@information.each do |info|%>
+<tr>
+     <td class="mg-td-width-half" valign="top">
+     <%if info.mg_category_id.present?
+          category=MgLabInventory.find_by(:id=>info.mg_category_id)
+          %>
+     <%=category.category_name%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+     </td>
+
+     <td class="mg-td-width-half" valign="top">
+     <%if info.item_name.present?%>
+     <%=info.item_name%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+     </td>
+
+     <td class="mg-td-width-half" valign="top">
+     <% @timeformat=MgSchool.find_by_id(@purchase.mg_school_id)%>
+     <% if @timeformat.present?%>
+        <%if info.valid_upto.present?%>
+            <%= info.try(:valid_upto).strftime(@timeformat.date_format) %>
+        <%else%>
+        <%="No Data"%>
+
+        <%end%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+     </td>
+
+
+     <td class="mg-td-width-half" valign="top">
+     <%if info.cost.present?%>
+     <%=info.cost%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+     </td>
+
+
+     <td class="mg-td-width-half" valign="top">
+     <%if info.unit.present?%>
+     <%=info.unit%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+     </td>
+
+     <td class="mg-td-width-half" valign="top">
+     <%if info.total.present?%>
+     <%=info.total%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+     </td>
+ </tr>
+
+
+
+ <%end%>
+
+</table>
+
+<br/>
+<%= link_to 'Cancel', laboratory_purchase_path ,:style=>"font-size: 0.8em; color: #297ACC; text-decoration: none;" ,:class=>"mg-custom-form-btn"%>
+<style>
+/*.mg-show-tbl-width {
+    width: 64% !important;
+}*/
+..table.batch-tbl th {
+    border-color: #363131;
+    border-style: solid;
+    border-width: 1px;
+    padding: 3px;
+    text-align: center;
+}
+</style>

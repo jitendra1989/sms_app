@@ -1,0 +1,15 @@
+<label class="mg-label mg-tt-width" style="width:185px"><%=t('select_semester')%><span class="required-field"> *</span></label>
+<%=select_tag :mg_batch_id,options_for_select(@batches),:prompt => t('select'),:class=>"mg-select-btn",:onchange=>"semesterChangesfunction(this.value)"%>
+<p id="student_list"></p>
+
+<script>
+	function semesterChangesfunction(semester_id){
+		$.ajax({
+			url:"/inventory/batch_wise_student_list",
+			data:{"mg_batch_id":semester_id},
+			success:function(html){
+				$("#student_list").html(html);
+			}
+		});
+	}
+</script>

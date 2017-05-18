@@ -1,0 +1,47 @@
+<%= render  partial: 'examination_table_left'%>
+
+<!-- <h1><%#= "Exams" %></h1> -->
+<h4 class="mg-h4"><%="Student Rank Per Batch"%></h4>  
+
+<div class="mg-custom-labels">
+  <div id="page-yield">
+
+    <% unless flash[:notice].nil? %>
+      <h5 class="flash-msg"> <%= flash[:notice] %> </h5>
+    <% end %>
+
+    <div class="box">
+      <h4><%= t('overall_rankings') %> : <%= @batch.name %> - <%= @batch.mg_course.full_name %></h4>
+      <div id="score-table">
+        <% unless @students.empty? %>
+          <% unless @grouped_exams.empty? %>
+            <table id="listing" width="100%" cellpadding="1" cellspacing="1" >
+              <tr class="tr-head">
+                <th class="unsortable"><%= "sl_no"%></th>
+                <th><%= "name" %></th>
+                <th><%= "admission_number" %></th>
+                <th><%= "marks" %></th>
+                <th><%= "Rank" %></th>
+              </tr>
+              <% @ranked_students.each_with_index do |student,i| %>
+                <tr class="tr-<%= cycle('odd', 'even') %>">
+                  <td class="col-1"><%= (i+1)  %></td>
+                  <td class="col-2"><%= student[3].first_name %></td>
+                  <td class="col-1"><%= student[3].admission_number.present? ? student[3].admission_number : "-" %></td>
+                  <td class="col-1"><%= student[1] %></td>
+                  <td class="col-1"><%= student[0] %></td>
+                </tr>
+              <% end %>
+            </table>
+          <% else %>
+            <h5 class="flash-msg"><%="no_grouped_exams_for_this_batch" %> </h5>
+          <% end %>
+        <% else %>
+          <h5 class="flash-msg"><%= "no_students_for_this_batch" %></h5>
+        <% end %>
+      </div>
+     
+    </div>
+  </div>
+</div>
+<%= render  partial: 'examination_table_close' %>

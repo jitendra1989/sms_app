@@ -1,0 +1,128 @@
+<table border="1" class="mg-showdata-bg" cellspacing="1" cellpadding="1">
+  <tr>
+    <td class="custome-mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('allergy')%></label>
+    </td>
+    <td class="mg-label-inner-form" valign="top" style="width: 431px;">
+      <%=@allergies.first.try(:allergy_for)%>
+    </td>
+  </tr>
+  <%if @allergies.first.try(:allergy_for)=="student"%>
+    <tr>
+      <td class="mg-td-width-half" valign="top">
+        <label class="mg-label"> <%= t('semester')%></label>
+      </td>
+      <td class="mg-td-width-half mg-label-inner-form" valign="top">
+        <% batchobj = MgBatch.find_by(:id=>@allergies.first.try(:mg_batch_id),:is_deleted=>0)%>
+        <%@courseObj = MgCourse.find_by_id(batchobj.mg_course_id)%>
+        <%= (@courseObj.try(:course_name)) +"-"+ batchobj.try(:name) %>
+      </td>
+    </tr>
+  <%else%>
+    <tr>
+       <td class="mg-td-width-half" valign="top">
+       <label class="mg-label"> <%= t('department')%></label>
+       </td>
+       <td class="mg-td-width-half mg-label-inner-form" valign="top">
+          <%emp=MgEmployeeDepartment.find_by(:id=>@allergies.first.try(:mg_employee_department_id))%>
+          <%=emp.try(:department_name)%>
+       </td>
+    </tr>
+  <%end%>
+  <%if @allergies.first.try(:allergy_for)=="student"%>
+      <tr>
+         <td class="mg-td-width-half" valign="top">
+         <label class="mg-label"> <%= t('Name')%></label>
+         </td>
+         <td class="mg-td-width-half mg-label-inner-form mg-capitalize-text" valign="top">
+            <%stud=MgStudent.find_by(:id=>@allergies.first.try(:mg_student_id))%>
+            <%=stud.try(:first_name)%><%=" "%><%=stud.try(:last_name)%>
+         </td>
+      </tr>
+  <%else%>
+      <tr>
+         <td class="mg-td-width-half" valign="top">
+         <label class="mg-label"> <%= t('Name')%></label>
+         </td>
+         <td class="mg-td-width-half mg-label-inner-form mg-capitalize-text" valign="top">
+            <%emp=MgEmployee.find_by(:id=>@allergies.first.try(:mg_employee_id))%>
+            <%=emp.try(:first_name)%><%=" "%><%=emp.try(:last_name)%>
+         </td>
+      </tr>
+  <%end%>
+</table><br>
+<table border="1" class="mg-showdata-bg" cellspacing="1" cellpadding="1">
+  <tr>
+    <th> <label class="mg-label"> <%= t('name')%></label>
+    </th>
+    <th> <label class="mg-label"> <%= t('what_happened')%></label>
+    </th>
+    <th> <label class="mg-label"> <%= t('how_severe')%></label>
+    </th>
+    <th> <label class="mg-label"> <%= t('medication_detail')%></label>
+    </th>
+  </tr>
+  <%@allergies.each do |info|%>
+    <tr>
+      <td class="mg-td-width-half" valign="top">
+        <%if info.name.present?%>
+          <%=info.try(:name)%>
+        <%else%>
+          <%="No Data"%>
+        <%end%>
+      </td>
+      <td class="mg-td-width-half" valign="top">
+        <div class="long-text-scroll-cls comments-space">
+          <%if info.try(:description).present?%>
+            <%= word_wrap info.try(:description), :line_width => 33 %>
+          <%else%>
+            <%="No Data"%>
+          <%end%>
+        </div>
+      </td>
+
+      <td class="mg-td-width-half" valign="top">
+        <%if info.try(:status).present?%>
+          <%= word_wrap info.try(:status), :line_width => 56 %>
+        <%else%>
+          <%="No Data"%>
+        <%end%>
+      </td>
+
+      <td class="mg-td-width-half" valign="top">
+        <div class="long-text-scroll-cls comments-space">
+          <%if info.try(:medication_detail).present?%>
+            <%=info.try(:medication_detail)%>
+          <%else%>
+            <%="No Data"%>
+          <%end%>
+        </div>
+      </td>
+    </tr>
+  <%end%>
+</table>
+
+<p class="mg-p-mgtop">
+  <a class="mg-small-form-btn cancel-form-dialog"><%=t('cancel')%></a>
+</p>
+
+
+<script type="text/javascript">
+$(document).ready(function () {
+  textSeeMoreLess();
+});
+
+</script>
+
+<style type="text/css">
+  .custome-mg-td-width-half{
+    width: 51%;
+  }
+
+  div .long-text-scroll-cls {
+    height: 176px;
+    overflow: scroll;
+    text-align: initial;
+    width: 296px;
+  }
+</style>

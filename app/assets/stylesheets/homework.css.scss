@@ -1,0 +1,13 @@
+// Place all the styles related to the homework controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+ 
+ .mg-homework-tbl {
+ 	table-layout: fixed;
+ 	width: 100%;
+ }
+
+ .mg-homework-tbl th {
+ 	border: 1px solid  #B2B2B2;
+ 	padding: 2px 10px;
+ }

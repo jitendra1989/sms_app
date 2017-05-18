@@ -1,0 +1,127 @@
+<% navigation_add t('payroll_deduction'),:controller=>'sports_management', 
+:action=>'payroll_deduction_index' %>
+<% navigation_add t('show_payroll_deduction'),:controller=>'sports_management', :action=>'payroll_deduction_show' %>
+
+<%= render  partial: 'sports_left' %>
+
+<h4 class="mg-h4"><%= t('payroll_deduction_details')%></h4>
+
+<table border="1" class="mg-showdata-bg " cellspacing="1" cellpadding="1">
+   
+  <tr>
+     <td class="mg-td-width-half" valign="top">
+        <label class="mg-label"> <%= t('year/month_of_deduction')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+     <%=@pay_deduction.try(:mm_yyyy)%>
+     </td>
+ </tr>
+
+
+  <tr>
+     <td class="mg-td-width-half" valign="top">
+        <label class="mg-label"> <%= t('name')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+     <%=@pay_deduction.try(:name)%>
+     </td>
+ </tr>
+
+
+<!-- ====================================================================================================== -->
+<tr>
+     <td class="mg-td-width-half" valign="top">
+        <label class="mg-label"><%=t('account')%></label>
+     </td>
+     <td class="mg-td-width-half " valign="top">
+        <%if @pay_deduction.is_central==true%>
+          <!--<td>--><%='Central'%><!--</td>-->
+        <%elsif @pay_deduction.is_account==true
+          account_transaction_data=MgAccountTransaction.find_by(:for_module=>'sports_managements',:mg_particular_id=>@pay_deduction.id)
+          account_data=MgAccount.find_by(:id=>account_transaction_data.try(:mg_to_account_id))%>
+          <!--<td>--><%=account_data.try(:mg_account_name)%><!--</td>-->
+        <%else%>
+          <!--<td>--><!--</td>-->
+        <%end%>
+     </td>
+ </tr>
+<!-- ====================================================================================================== -->
+
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+        <label class="mg-label"><%=t('amount')%></label>
+     </td>
+     <td class="mg-td-width-half " valign="top">
+            <%= @pay_deduction.try(:amount) %>
+     </td>
+ </tr>
+   
+</table><br/>
+
+<h4 class="mg-h4"><%= t('payroll_deduction_data')%></h4>
+
+<% list= MgSportsPayDeductiionList.where(:is_deleted=>0,:mg_pay_deduction_details_id=>@pay_deduction.id,:mg_school_id=>session[:current_user_school_id])
+%>
+
+<table border="1" class="mg-showdata-bg " cellspacing="1" cellpadding="1">
+ <tr>
+    <th><%= t('Employee_name')%></th>
+
+    <th>  <%= t('Employee Id')%></th>
+
+    <th>  <%= t('Category')%></th>
+
+
+    <th>  <%= t('Department')%></th>  
+     
+ </tr>
+ <% list.each do |emp_details| %>
+ <% @payee_list=MgEmployee.find_by(:id=>emp_details.mg_employee_id,:is_deleted=>0, :mg_school_id=>session[:current_user_school_id])
+    ctg_data=MgEmployeeCategory.find_by(:id=>@payee_list.mg_employee_category_id)
+    dept_data=MgEmployeeDepartment.find_by(:id=>@payee_list.mg_employee_department_id)
+ %>
+
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+       
+    <%= "#{@payee_list.first_name} #{@payee_list.last_name}" %>
+     </td>
+
+     <td class="mg-td-width-half" valign="top">
+     
+     <%= "#{@payee_list.employee_number}" %>            
+      
+     </td>
+      <td class="mg-td-width-half" valign="top">
+     
+      <%="#{ctg_data.category_name}"%>            
+      
+     </td>
+      <td class="mg-td-width-half" valign="top">
+     
+      <%= "#{dept_data.department_name}" %>            
+      
+     </td>
+     
+     </td>
+</tr>
+
+<%end%>
+ 
+
+ <br/>
+
+ 
+</table><br/>
+<%= link_to t('Back'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+
+<%= render  partial: 'application/common_left_close' %>
+<script>
+$(document).ready(function () {
+
+        focusCurrentTab("payrollDeductionAID","payrollDeductionLiID");
+        
+    });
+
+
+</script>

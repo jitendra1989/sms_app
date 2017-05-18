@@ -1,0 +1,394 @@
+<!-- <a onclick="alert()" href="javascript:onclick='alert()';">Helo</a> -->
+<table class="exam-rounds">
+<tr class="prgm-div"> 
+<td>
+<%=label :max_occuoancy, "Max Occupancy" ,:class=>"mg-label max_occupancy"%>
+&nbsp;<%= text_field_tag 'max_occupancy', @programme_quota.max_occupancy,:readonly=>true ,:class=>"mg-text-field"%>
+  </td>
+  </tr>
+  <tr>
+  
+<%#@hostel.availability%>
+<td>
+<%=label :available_seats, "Available Seats" ,:class=>"mg-label availability"%>
+
+<%#@programme_quota.max_occupancy-@count%>
+<%= text_field_tag 'available_seats',@programme_quota.max_occupancy-@hostel_list_count,:readonly=>true ,:class=>"mg-text-field"%>
+</td>     
+</tr>
+</table>
+<%= form_for :placement_data,:url=>{:action=>"select_student_list_data_create"},:html=>{:id=>"alumni_registration"} do |f|%>
+<%=hidden_field_tag 'alumni_demo_data',nil%>
+<%=hidden_field_tag 'hostel_id',params[:hostel_id]%>
+<%temp=MgHostelDetails.find_by(:id=>params[:hostel_id])%>
+<%=hidden_field_tag 'programme_id',params[:wing_id]%>
+<!-- ========================================Anchor Tag======================================================== -->
+<a class="anchorClass">Rejected List</a>
+<a class="anotherAnchorClass" style="display:none">Non Rejected List</a>
+<!-- ========================================Anchor Tag======================================================== -->
+  <div class="mg_pagination drop_down_company_list nonRejectedListClass">
+  <div class="mg-h5"><b>Pending Request</b></div>
+  <!-- =================================PENDING PART )))========================================= -->
+<%@hostel_list_pending=@hostel_list.where(:status=>'Pending')%>
+<%if @hostel_list_pending.present?%>
+  <table class="batch-tbl mg-tbl-margin">
+    <tr>
+      <th>Student Name</th>
+      <!-- <th>Student Id</th> -->
+      <!-- <th>Guardian Name</th> -->
+      <th>Course</th>
+      <th class="mg-label-text-transform-none">Date of Application</th>
+      <!-- <th>Mobile No</th> -->
+      <th>Status</th>
+      <th class="mg-align-center"><label class="mg-label"><%=t('select')%></label><br/>
+                   <span>
+                   <a  id="seescheckAllCheckBoxalumniParticularId" class="mg-pop-link">All</a>
+                   </span>
+                   <span>
+          <a  id="seesunCheckAllCheckBoxalumniParticularId" class="mg-pop-link">None</a></span></th>
+    </tr>
+    <%@hostel_list_pending.each do |data|%>
+    <%student_data=MgStudent.find_by(:id=>data.mg_student_id)%>
+    <tr>
+        <td style="text-align:center"><%=data.admission_number%> - <%="#{student_data.first_name} #{student_data.last_name}"%></td>
+        <!-- <td style="text-align:center"><%#=data.admission_number%></td> -->
+        <%guardian_data=MgGuardian.find_by(:id=>data.mg_guardian_id)
+        course_data=MgCourse.find_by(:id=>data.mg_course_id)
+        batch_data=MgBatch.find_by(:id=>data.mg_batch_id)%>
+        <!-- <td style="text-align:center"><%#="#{guardian_data.try(:first_name)} #{guardian_data.try(:last_name)}"%></td> -->
+        <td style="text-align:center"><%="#{course_data.course_name}-#{batch_data.name}"%></td>
+        <td style="text-align:center"><%=data.date_of_application.strftime(@timeformat.date_format)%></td>
+        <!-- <td style="text-align:center"><%#=data.mobile_no%></td> -->
+        <td style="text-align:center"><%=data.status%></td>
+         <td style="text-align:center"><%=check_box_tag "select_data[]",data.id,false,:class=>"demo1213334"%></td>
+    </tr>
+    <%end%>
+  </table>
+  <%else%>
+  <h5>No pending request available</h5>
+<%end%>
+
+<div class="mg-h5"><b>Approved And Waiting List For <%=temp.try(:name)%></b></div>
+<%@hostel_list_approved=@hostel_list.where("status IN (?)",['Approved','Waiting List'])%>
+<%if @hostel_list_approved.present?%>
+<table class="batch-tbl mg-tbl-margin">
+  <tr>
+    <th>Student Name</th>
+    <!-- <th>Student Id</th> -->
+    <!-- <th>Guardian Name</th> -->
+    <th>Course</th>
+    <th class="mg-label-text-transform-none">Date of Application</th>
+    <!-- <th>Mobile No</th> -->
+    <th>Status</th>
+    <th class="mg-align-center"><label class="mg-label"><%=t('select')%></label><br/>
+                 <span>
+                 <a  id="seescheckAllCheckBoxalumniParticularId" class="mg-pop-link">All</a>
+                 </span>
+                 <span>
+        <a  id="seesunCheckAllCheckBoxalumniParticularId" class="mg-pop-link">None</a></span></th>
+  </tr>
+  
+<%@hostel_list_approved.each do |data|%>
+<%student_data=MgStudent.find_by(:id=>data.mg_student_id)%>
+<tr>
+    <td style="text-align:center"><%=data.admission_number%> - <%="#{student_data.first_name} #{student_data.last_name}"%></td>
+    <!-- <td style="text-align:center"><%#=data.admission_number%></td> -->
+    <%guardian_data=MgGuardian.find_by(:id=>data.mg_guardian_id)
+    course_data=MgCourse.find_by(:id=>data.mg_course_id)
+    batch_data=MgBatch.find_by(:id=>data.mg_batch_id)%>
+    <!-- <td style="text-align:center"><%#="#{guardian_data.try(:first_name)} #{guardian_data.try(:last_name)}"%></td> -->
+    <td style="text-align:center"><%="#{course_data.course_name}-#{batch_data.name}"%></td>
+    <td style="text-align:center"><%=data.date_of_application.strftime(@timeformat.date_format)%></td>
+    <!-- <td style="text-align:center"><%#=data.mobile_no%></td> -->
+    <td style="text-align:center"><%=data.status%></td>
+     <td style="text-align:center"><%=check_box_tag "select_data[]",data.id,false,:class=>"demo1213334 approved-waiting-list-check-box"%></td>
+</tr>
+<%end%>
+</table>
+<%else%>
+<h5>No approved or waiting list request available</h5>
+<%end%>
+
+<!-- ====================================APPROVED OR WAITING LIST PART )))========================================= -->
+</div>
+
+
+<!-- ======================================DELETED LISTS   ========================================= -->
+<div class="mg_pagination drop_down_company_list rejectedListClass"  style="display:none">
+<div class="mg-h5">Rejected List</div>
+<%#@hostel_list_rejected=@hostel_list.where("status IN (?)",['Rejected'])%>
+<%if @hostel_list_rejected_student.present?%>
+<table class="batch-tbl mg-tbl-margin">
+  <tr>
+    <th>Student Name</th>
+    <!-- <th>Student Id</th> -->
+    <!-- <th>Guardian Name</th> -->
+    <th>Course</th>
+    <th class="mg-label-text-transform-none">Date of Application</th>
+    <!-- <th>Mobile No</th> -->
+     <th>Status</th>
+     <th>Rejected By</th>
+     <th>Reason</th>
+     <th>action</th>
+    <!-- ==================================no status=========================== -->
+    <!-- <th class="mg-align-center"><label class="mg-label"><%#=t('select')%></label><br/>
+                 <span>
+                 <a  id="seescheckAllCheckBoxalumniParticularId" class="mg-pop-link">All</a>
+                 </span>
+                 <span>
+                 <a  id="seesunCheckAllCheckBoxalumniParticularId" class="mg-pop-link">None</a></span>
+    </th> -->
+    <!-- ==================================no status=========================== -->
+  </tr>
+<%@hostel_list_rejected_student.each do |data|%>
+<%student_data=MgStudent.find_by(:id=>data.mg_student_id)%>
+<tr>
+    <td style="text-align:center"><%=data.admission_number%> - <%="#{student_data.first_name} #{student_data.last_name}"%></td>
+    <!-- <td style="text-align:center"><%#=data.admission_number%></td> -->
+    <%guardian_data=MgGuardian.find_by(:id=>data.mg_guardian_id)
+    course_data=MgCourse.find_by(:id=>data.mg_course_id)
+    batch_data=MgBatch.find_by(:id=>data.mg_batch_id)%>
+    <!-- <td style="text-align:center"><%#="#{guardian_data.try(:first_name)} #{guardian_data.try(:last_name)}"%></td> -->
+    <td style="text-align:center"><%="#{course_data.course_name}-#{batch_data.name}"%></td>
+    <td style="text-align:center"><%=data.date_of_application.strftime(@timeformat.date_format)%></td>
+    <!-- <td style="text-align:center"><%#=data.mobile_no%></td> -->
+    <td style="text-align:center"><%=data.status%></td>
+    <td style="text-align:center"><%=data.try(:rejected_by)%></td>
+    <td style="text-align:center"><%= truncate(data.try(:reason), :length => 25) %></td>
+
+     <!-- <td style="text-align:center"><%#=check_box_tag "select_data[]",data.id,false,:class=>"demo1213334"%></td> -->
+     <td style="text-align:center">
+     <!-- <button title="Show" id="<%#=raw data.id %>-showlabBTNID" class="show-rejected-btn-cls mg-icon-btn"><i class="fa fa-eye"></i></button> -->
+    <a id="<%=raw data.id %>-showlabBTNID" class="mg-custom-labels mg-small-form-btn show-rejected-btn-cls"><i class="fa fa-eye"></i></a>
+     </td>
+</tr>
+<%end%>
+</table>
+<%else%>
+<h5>No rejected list to show</h5>
+<%end%>
+</div>
+<!-- =======================================DELETED LISTS   ================================================= -->
+<p class="mg-p-mgtop">
+  <!-- <div class="hide_for_rejected_list"> -->
+    <a id="accept-class-alumni1" class="mg-custom-labels mg-small-form-btn hide_for_rejected_list"><%=t("approve")%></a>
+    <a id="reject-class-alumni1" class="mg-custom-labels mg-small-form-btn hide_for_rejected_list"><%=t("reject")%></a>
+    <a id="waiting-class-alumni" class="mg-custom-labels mg-small-form-btn hide_for_rejected_list"><%=t("waiting_list")%></a>
+  <!-- </div> -->
+       <%= link_to t('cancel'), {:controller=>'hostel_management',:action=>'hostel_application_list'}, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+
+       <%=f.submit t("save") ,:id=>"submitalumniFormBtnIddata" , :style=>"display:none"%>
+<%end%>
+<div id="showStudentHostelRejectDIVID"></div>
+<div id="showRejectedStudentDIVID"></div>
+
+
+</p>
+
+<script>
+
+
+
+$(".anchorClass").click(function(){
+  $(".nonRejectedListClass").hide();
+  $(".hide_for_rejected_list").hide();
+  $(".rejectedListClass").show();
+  $(this).hide();
+  $('.anotherAnchorClass').show();
+})
+
+
+$(".anotherAnchorClass").click(function(){
+  $(".rejectedListClass").hide();
+  $(".nonRejectedListClass").show();
+  $(".hide_for_rejected_list").show();
+  $(this).hide();
+  $('.anchorClass').show();
+})
+
+
+$(document).on("click", "#accept-class-alumni1", function(e){
+ var inputElems=document.getElementsByClassName("demo1213334"),
+   count = 0;
+for (var i=0; i<inputElems.length; i++) {
+if (inputElems[i].type === "checkbox" && inputElems[i].checked === true) 
+  {
+      count++;
+       
+  }
+}
+if (count>0){
+    $("#alumni_demo_data").val("Accept");
+    $("#submitalumniFormBtnIddata").click();
+  }
+  else{
+    alert("Select any one recored")
+  }
+  });
+
+
+
+
+
+  $(document).on("click", "#waiting-class-alumni", function(e){
+      temp=0;
+      $( ".approved-waiting-list-check-box" ).each(function() {
+          if ($(this).prop('checked'))
+          {
+            temp=temp+1;
+            // alert("Approved or waiting list students can't be kept in waiting list.");
+          }
+      });
+      if (temp>0)
+      {
+          alert("Approved or waiting list students can't be kept in waiting list.");
+      }else{
+          var inputElems=document.getElementsByClassName("demo1213334"),
+          count = 0;
+          for (var i=0; i<inputElems.length; i++) {
+              if (inputElems[i].type === "checkbox" && inputElems[i].checked === true) 
+              {
+                  count++;
+              }
+          }
+        if (count>0){
+            $("#alumni_demo_data").val("Waiting List");
+            $("#submitalumniFormBtnIddata").click();
+          }
+          else{
+                  alert("Select any one recored");
+              }
+      }
+  });
+
+
+
+
+
+
+$(document).on("click", "#reject-class-alumni1", function(e){
+   temp=0
+   $( ".demo1213334" ).each(function() {
+          if ($(this).prop('checked'))
+          {
+            temp=temp+1;
+          }
+      });
+   if (temp>0)
+   {
+        tt=$("#select_data_").val();
+        var student_id = [];
+        $( ".demo1213334" ).each(function() {
+                if ($(this).prop('checked'))
+                {
+                  tempVar=$(this).val();
+                  student_id.push(tempVar);
+                }
+        });
+
+        hostels_id=$("#mg_hostel_details").val();
+        programmes_id=$("#programme").val();
+        id_data=hostels_id+"-"+programmes_id
+        data=student_id+"="+id_data
+        var urlLink = "/hostel_management/student_hostel_reject/"+data;
+              $.ajax({
+                  url: urlLink ,
+                  cache: false,
+                  success: function(html){
+                        $('#showStudentHostelRejectDIVID').dialog({
+                          modal: true,
+                           minHeight: '200px',
+                          width: 'auto',
+                          title: "Reason",
+                          open: function () {
+                              
+                              $(this).html(html);
+                          }
+                      });   
+                     
+                  }
+        });
+          
+   }
+   else{
+        alert("Select any one recored");
+   }
+  });
+
+
+
+$(document).on("click", ".show-rejected-btn-cls", function(e){
+      // alert('asd');
+        var myID =$(this).attr('id');
+        var Id=myID.split("-");
+        var urlLink = "/hostel_management/rejected_reason/"+Id[0];
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(html){
+                  $('#showRejectedStudentDIVID').dialog({
+                    modal: true,
+                     minHeight: '200px',
+                    width: 'auto',
+                    title: "Show Reason",
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+});
+
+
+// ===============================================================================================
+// $(document).on("click", ".show-lab-btn", function(e){
+//         var myID =$(this).attr('id');
+//         var Id=myID.split("-");
+//         var urlLink = "/laboratory/show/"+Id[0];
+//         $.ajax({
+//             url: urlLink ,
+//             cache: false,
+//             success: function(html){
+//                   $('#showLabDIVID').dialog({
+//                     modal: true,
+//                      minHeight: '200px',
+//                     width: 'auto',
+//                     title: "Show Laboratory",
+//                     open: function () {
+                        
+//                         $(this).html(html);
+//                     }
+//                 }); 
+               
+//             }
+//         });
+// });
+// ===============================================================================================
+
+  
+$(document).on("click", "#seescheckAllCheckBoxalumniParticularId", function(e){
+
+        $(".demo1213334").prop('checked', true);
+        e.preventDefault();
+        
+  });
+
+$(document).on("click", "#seesunCheckAllCheckBoxalumniParticularId", function(e){
+
+        $(".demo1213334").prop('checked', false);
+        e.preventDefault();
+        
+  });
+
+  </script>
+
+  <style type="text/css">
+    .max_occupancy{
+      margin-right: 12px 
+    }
+    .availability{
+      margin-right: 18px
+    }
+  </style>

@@ -1,0 +1,75 @@
+<% navigation_add 'Import Attendance',import_attendance_path %>
+<%= render  partial: 'mg_employee_leave_types/mg_employee_leave_types_left' %>
+<% if !params[:notice].blank? %>
+  <div class="alert alert-info mg-success-msg">
+  <%= params[:notice] %>
+  </div>
+<% end %>
+<h4 class="mg-h4">Attendance Import</h4>
+<div>
+<!-- <p> Excel file can be used to import records. The first row should be the column name. The following columns are allowed.</p>
+
+<ul>
+  <%# MgEmployeeAttendance.columns.each do |column| %>
+    <%# if column.name.in? ["id", "reason", "absent_date", "mg_employee_id","is_deleted", "created_by"] %>
+      <li>
+        <strong><%#= column.name %></strong> -
+        <%#= column.type.to_s.titleize %> type
+      </li>
+    <%# end %>
+  <%#end %>
+</ul> -->
+ 
+<!-- <p>If an <strong>id</strong> is supplied it will update the matching record instead of creating a new one.</p>
+ --> 
+<%#= form_for @product_import do |f| %>
+<%#= form_for :product_import , url: import_attendance_save_path, multipart: true,  :html => { :id => 'employeeAttendancesFormID'}, method: :patch do |f| %>
+
+<%#= form_for :product_import , url: import_employees_attendances_path, multipart: true,  :html => { :id => 'employeeAttendancesFormID'}, method: :patch do |f| %>
+  
+  <!-- <div class="field">
+    <%#= f.file_field :file %>
+  </div>
+  <div class="buttons"><%#= f.submit "Import" %></div> -->
+<%# end %>
+
+<%= form_tag import_employees_attendances_path, :id => 'employeeAttendancesFormID', multipart: true do %>
+  <%= file_field_tag :file ,:onchange =>"validateFiles(this);"%>
+  <%= submit_tag "Import" ,:class=>"mg-small-form-btn mg-tbl-margin"%>
+<% end %>
+</div>
+<%= render  partial: 'application/common_left_close' %>
+
+
+<script>
+
+    $(document).ready(function () {
+
+      focusCurrentTab("employeeLeaveImportAttendance","resetLeaveImportAttendanceLiID")
+      focusAttendance();
+
+      $("#employeeAttendancesFormID").validate({
+          rules: {
+            "file": {required: true}
+          }
+      });
+
+    });
+
+  function validateFiles(inputFile) {
+  var maxExceededMessage = "This file exceeds the maximum allowed file size (5 MB)";
+  var extErrorMessage = "Only file with extension: .xls, .xlsx is allowed";
+  var allowedExtension = ["xls", "xlsx"];
+  var extName;
+  var extError = false;
+  $.each(inputFile.files, function() {
+    extName = this.name.split('.').pop();
+    if ($.inArray(extName, allowedExtension) == -1) {extError=true;};
+  });
+  if (extError) {
+   window.alert(extErrorMessage);
+   $(inputFile).val('');
+  };
+}
+
+</script>

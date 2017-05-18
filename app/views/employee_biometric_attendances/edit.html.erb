@@ -1,0 +1,101 @@
+<%= form_for :employee_biometric_attendances, url: employee_biometric_attendance_path(@employee_biometric_attendances), method: :patch, :html => {
+                            :id => 'editEmployeeBiometricAttendancesID' } do |f| %>
+
+
+ <p>
+    <%= f.label :date, :class=> "mg-label"%><span class="required-field">*</span><br>
+    <%= f.text_field :date, :value=>@employee_biometric_attendances.date.strftime(@school.date_format) ,:id=>"employeeBiometricAttendancesDateID"	 %>
+  </p>
+ 
+  <p>
+    <%= f.label :check_in,t('check_in'),:class=> "mg-label"%><span class="required-field">*</span><br>
+    <%= f.text_field :check_in , :id=>"employeeBiometricAttendancesCheck_inID", :value=>@employee_biometric_attendances.check_in.strftime('%I:%M%p')%>
+  </p>
+  
+ <p>
+    <%= f.label :check_out ,t('check_out'),:class=> "mg-label"%><span class="required-field">*</span><br>
+    <%= f.text_field :check_out, :id=>"employeeBiometricAttendancesCheck_outID" , :value=>@employee_biometric_attendances.check_out.strftime('%I:%M%p')%>
+  </p>
+
+  <p>
+    <%= f.label :employee ,t('employee'),:class=> "mg-label"%><span class="required-field">*</span><br>
+  
+    <%= f.collection_select(:mg_employee_id, MgEmployee.where(:is_deleted=>0), :id, :first_name,{:include_blank => 'Select employee'} , disabled: true,:class=>"mg-select-btn") %>
+  </p>
+  <%=f.hidden_field :mg_school_id, :value=>session[:current_user_school_id]%>
+  <%=f.hidden_field :is_deleted, :value=>0%>
+  <%=f.hidden_field :created_by, :value=>session[:user_id]%>
+  <%=f.hidden_field :updated_by, :value=>session[:user_id]%>
+
+  <p>
+      <a  class="mg-small-form-btn employee-biometric-attendances-edit-submit-form" id="<%=@employee_biometric_attendances.id%>-employeeBiometricAttendancesAID"><%=t("save")%></a>
+      <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+  </p>
+<% end %>
+
+<script>
+$(document).ready(function () {
+  dateFormatStr =  getJsDateFormat();
+$('#employeeBiometricAttendancesDateID').datepicker({ changeMonth: true,
+               changeYear: true,dateFormat: dateFormatStr});
+   // $( "#employeeBiometricAttendancesDateID" ).datepicker({ dateFormat: 'dd-mm-yy' });
+  $('#employeeBiometricAttendancesCheck_inID').timepicker({ 'scrollDefault': 'now' });
+  $('#employeeBiometricAttendancesCheck_outID').timepicker({ 'scrollDefault': 'now' });
+$("#editEmployeeBiometricAttendancesID").validate({
+
+rules: {
+"employee_biometric_attendances[date]": {required: true},
+"employee_biometric_attendances[check_in]": {required: true},
+"employee_biometric_attendances[check_out]": {required: true},
+"employee_biometric_attendances[mg_employee_id]": {required: true}
+
+}
+});
+});
+
+function minFromMidnight(tm){
+  if (tm){
+  var ampm= tm.substr(-2)
+   var clk = tm.substr(0, 4);
+   var m  = parseInt(clk.match(/\d+$/)[0], 10);
+   var h  = parseInt(clk.match(/^\d+/)[0], 10);
+   h += (ampm.match(/pm/i))? 12: 0;
+  }
+ 
+ return h*60+m;
+}
+
+$(document).on("change","#employeeBiometricAttendancesCheck_inID",function(){
+  // var from_date=$("#clickDateID").val();
+  // var to_date=$("#events_end_date").val();
+  // if (from_date==to_date){
+    var from = $('#employeeBiometricAttendancesCheck_inID').val();
+    var to = $('#employeeBiometricAttendancesCheck_outID').val();
+    var from_time=minFromMidnight(from);
+    var to_time=minFromMidnight(to);
+      if(from_time && to_time){
+        if(from_time > to_time){
+         alert("Check In must be less than Check Out");
+          document.getElementById('employeeBiometricAttendancesCheck_inID').value="";
+      } 
+   // }
+  }
+});
+
+  $(document).on("change","#employeeBiometricAttendancesCheck_outID",function(){
+  // var from_date=$("#clickDateID").val();
+  // var to_date=$("#events_end_date").val();
+  // if (from_date==to_date){
+    var from = $('#employeeBiometricAttendancesCheck_inID').val();
+    var to = $('#employeeBiometricAttendancesCheck_outID').val();
+    var from_time=minFromMidnight(from);
+    var to_time=minFromMidnight(to);
+      if(from_time && to_time){
+        if(from_time > to_time){
+         alert("Check Out must be greater than Check In");
+          document.getElementById('employeeBiometricAttendancesCheck_outID').value="";
+      } 
+   // }
+  }
+});
+</script>

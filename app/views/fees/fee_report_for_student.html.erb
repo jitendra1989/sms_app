@@ -1,0 +1,11 @@
+<%#=@finance_transaction.inspect%>
+
+<table style="margin-left: 150px; margin-top: 5px; font-size: 1.2em;">
+<%@finance_transaction.each do |ft|%>
+<tr>
+	<td><label class="mg-label"><%=ft.id%>&nbsp;</label></td>
+	<td><label class="mg-label"><%=ft.title%></label>
+	<%#=ft.title%> <%= link_to "PDF",generate_fee_pdf_path(ft.id) ,:target=>"_blank",:class=>"mg-label-inner-form" ,:style=>"position: relative; top: 0px;"%></td>
+<tr>
+<%end%>
+</table>

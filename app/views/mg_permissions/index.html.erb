@@ -1,0 +1,26 @@
+<!-- Sec --> 
+<%= render  partial: 'settings/setting_left' %>
+<input type="button" value="Add New Permission" id= "addPermissionBtn" />
+<div class="mg_pagination">
+    <h4 class="mg-h4">Listing Permissions</h4>
+
+    <table class="batch-tbl" id='people_table'>
+        <tr>
+          <th>Model Name</th>
+          <th>Action Name</th>
+          <th><%=t("actions")%></th>
+        </tr>
+
+        <% @mg_permissions.each do |mg_permission| %>
+          <%= render partial: 'table_row', locals: {mg_permission: mg_permission} %>
+        <% end %>
+    </table>
+        <br/>
+    <div class="pagination-align">
+      <%= will_paginate @mg_permissions, :container => false %>
+    </div>
+    <br/>
+    
+</div>
+<%= render  partial: 'application/common_left_close' %>
+

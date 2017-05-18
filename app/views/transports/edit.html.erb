@@ -1,0 +1,63 @@
+<% navigation_add 'Transport', transports_path %>
+<% navigation_add  'new', transports_new_path %>
+
+
+   <%if flash[:error].present?%>
+  <div class="alert alert-info mg-success-msg">
+
+        <%=flash[:error]%>
+  <div class="alert alert-info mg-success-msg">
+        
+   <%end%>
+<h4 class="mg-h4"><%= t('route_details')%></h4>
+<div class="box">
+<%= form_for :vehicle_route,:url=>{:controller=>'transports',:action=>'update_data',:id=>@vehicle_route.id}, :html=>{:id=>'route_form'} do |f| %>
+
+        <%= f.hidden_field :is_deleted ,:value=>0%>
+        <%= f.hidden_field :mg_school_id ,:value=>@school_id%>
+        <%#= f.text_field :vehicle_number ,:class=>"mg-text-field"%>
+        
+<table class="mg-tbl-margin mg-show-tbl-width">
+    <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="routeName"><%= t ('route_name') %><span class="required-field">&nbsp;*</span></label><br/>
+        <%= f.text_field :route_name ,:class=>"mg-text-field"%>
+      </td>
+    </tr>
+    <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label"  for="description"><%= t ('description') %></label><br/>
+        <%= f.text_area :description ,:class=>"mg-text-field"%>
+      </td>
+    </tr>
+    
+</table>
+  
+ <br/> <p class="mg-p-mgtop">
+<%= submit_tag t("save"),:class=>"mg-small-form-btn"%>
+ <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+ </p>
+  </div>
+<%end%>
+ 
+<script>
+    $(document).ready(function(){
+
+   
+   
+    $("#route_form").validate({
+      rules:{
+        "vehicle_route[route_name]":{required:true},
+        "vehicle_route[mg_vehicle_id]":{required:true},
+        "employee[mg_employee_id]":{required:true},
+        "drop_start_time[game_time(4i)]":{required:true},
+        "drop_start_time[game_time(5i)]":{required:true},
+        "vehicle_route[mg_employee_category_id]":{required:true},
+        "employee[mg_employee_position_id]":{required:true}
+
+        
+      },
+     });
+     });
+
+</script>

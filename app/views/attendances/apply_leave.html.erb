@@ -1,0 +1,130 @@
+
+
+<%= form_for :attendances , url:attendances_apply_leave_for_student_path, id:@student.id, :html => {
+                            :id => 'LeaveApplyID', :class => 'LeaveApplyClass' } do |f| %>
+<!--attendances_createstudent_path-->
+<div id="hideFromToDateForStudentAttendanceDIVID">
+<p>
+    <%= f.label :From_Date , t('fromddate'),:class=>"mg-label" %><span class="required-field">&nbsp;*</span></br>
+    <%= f.text_field :from_date ,:class=>"mg-text-field"%>
+  </p>
+
+  <p>
+    <%= f.label :To_Date, t('todate') ,:class=>"mg-label"%><span class="required-field">&nbsp;*</span></br>
+    <%= f.text_field :to_date  ,:class=>"mg-text-field"%>
+  </p>
+
+</div>
+    <p> 
+        <%= f.label :is_halfday , t('ishalfday'),:class=> "mg-label"%>    
+    <%= f.hidden_field :is_halfday, :value => false ,:id=>"halfdayfield"%>
+       <input id="attendances_halfday" type="checkbox"  onclick="toggleAll();" name="attendances[halfday]"> 
+    </p> 
+     <%= f.hidden_field :is_afternoon, :value => false ,:id=>"afternoonfield"%>
+    <p>
+    <div id="hideAndSickID" style="display:none">
+
+        <p>
+          <%= f.label :Date, t('date') ,:class=>"mg-label"%><span class="required-field"> *</span></br>
+          <%= f.text_field :date  ,:class=>"mg-text-field"%>
+        </p>
+          <p>
+        <%= f.label :morning , t('morning') ,:class=> "mg-label"%>
+        <%= f.radio_button :is_afternoon, false, :checked=>true%>
+        <%= f.label :afternoon, t('afternoon'),:class=> "mg-label"%>
+        <%= f.radio_button :is_afternoon, true%>
+          <p>
+    </div>
+
+    <div class="no-of-days-attendence">
+      
+    </div>
+    <p>
+      <%= f.label :reason , t('reason'),:class=> "mg-label"%><span class="required-field">&nbsp;*</span><br>
+      <%= f.text_area :reason ,:class=>"mg-text-field"%>
+    </p>
+
+
+<!--         <%#= f.hidden_field :mg_batch_id, :value => @batID[0] %> -->
+    <%= f.hidden_field :mg_student_id, :value => @student.id %>
+    <%= f.hidden_field :mg_school_id, :value => session[:current_user_school_id] %>
+    <%= f.hidden_field :created_by, :value => session[:user_id]%>
+    <%= f.hidden_field :updated_by, :value => session[:user_id] %>
+    <%= f.hidden_field :is_deleted, :value => 0 %>
+    <%= f.hidden_field :mg_batch_id, :value => @batID[0] %>
+
+    
+
+
+
+        <p class="mg-p-mgtop">
+          <%#= f.submit t("save") ,:id => "FormID-Demo" ,:class=>"Form-form-btn mg-small-form-btn"%>
+           <a onclick="$(this).closest('form').submit()" id="FormID-Demo" class="Form-form-btn mg-small-form-btn"><%=t("save")%></a>
+          <%= link_to t('cancel'), :back, {:class=>"btn btn-default cancel-form-dialog"} %> 
+        </p>
+      <% end %>
+
+
+
+
+<script>
+dateFormatStr =  getJsDateFormat();
+
+
+$(document).ready(function () {
+     
+       $( "#attendances_from_date" ).datepicker({ minDate:new Date(), changeMonth: true,
+                changeYear: true,dateFormat: dateFormatStr });
+
+       $( "#attendances_to_date" ).datepicker({ minDate:new Date(), changeMonth: true,
+                changeYear: true,dateFormat: dateFormatStr });
+
+       $( "#attendances_date" ).datepicker({minDate:new Date(), changeMonth: true,
+                changeYear: true,dateFormat: dateFormatStr });
+
+$("#LeaveApplyID").validate({
+rules: {
+"attendances[from_date]": {required: true},
+"attendances[to_date]": {required: true},
+"attendances[reason]": {required: true},
+"attendances[date]": {required: true}
+
+}
+});
+});
+
+function toggleAll()
+{
+ $("#hideAndSickID").toggle();
+ $("#hideFromToDateForStudentAttendanceDIVID").toggle();
+}
+     //==================Dob & Admission date validation starts==========================
+     $(document).on("change","#attendances_from_date",function(e){
+      var admission_date=$("#attendances_to_date").val();
+      var dob=$(this).val();
+     // alert(getDateObj(dob,dateFormatStr)+3);
+     //if(getDateObj(dob,dateFormatStr)>getDateObj(admission_date,dateFormatStr)){
+      if(dob && admission_date) { 
+      if(!compareDate(dob, admission_date, dateFormatStr)) {
+        alert("From Date should be lesser than To Date");
+        document.getElementById('attendances_from_date').value ="";
+      }
+    }
+   });
+   $(document).on("change","#attendances_to_date",function(e){
+
+      var admission_date=$(this).val();
+      var dob=$("#attendances_from_date").val();
+
+        //if(getDateObj(dob,dateFormatStr)>getDateObj(admission_date,dateFormatStr)){
+        if(dob && admission_date) { 
+         if(!compareDate(dob, admission_date, dateFormatStr)){ 
+          alert("From Date should be lesser than To Date");
+          document.getElementById('attendances_to_date').value ="";
+        }
+       } 
+   });
+     //======================Dob & Admission date validation ends==============
+
+
+</script>

@@ -1,0 +1,27 @@
+<!-- Sec --> 
+<%= fields_for (addresstype) do |f| %>
+  <%if addresstype=="correspondance"%>
+  <%= f.hidden_field :addresstype, :value => "correspondace" %>
+  <%end%>
+  <%if addresstype=="perment"%>
+  <%= f.hidden_field :addresstype, :value => "perment" %>
+  <%end%>
+  
+  <p>
+    <%= f.label :Emergency_Contact_Name %>
+    <%= f.text_field :emergencycontactname %>
+  </p>
+  <p>
+    <%= f.label :Emergency_Contact_Number %>
+    <%= f.text_field :emergencycontactnumber %>
+  </p>
+  <p>
+    <%= f.label :Email_Id %>
+    <%= f.text_field :emailid %>
+  </p>
+  <p>
+    <%= f.label :Phone_Number %>
+    <%= f.number_field :phonenumber %>
+  </p>
+  <hr/>
+  <%end%>

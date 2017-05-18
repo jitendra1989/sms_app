@@ -1,0 +1,14 @@
+<% navigation_add t('training'), :controller=>'placements', :action=>'training_offered' %>
+<% navigation_add t('new_offered_training'), :controller=>'placements', :action=>'training_offered_new' %>
+
+<%= render  partial: 'placements_left' %>
+<h4 class="mg-h4"><%= t('new_offering_training')%></h4>
+<%= render  partial: 'placement_training' %>
+
+<%= render  partial: 'application/common_left_close' %>
+<script>
+  $( document ).ready(function() {
+    focusCurrentTab("training_offeredAID","training_offeredLiID");
+    focusCurrentTab("placementsTrainingofferedCorpAID","placementsTrainingofferedCorpLiID");
+  });
+</script>

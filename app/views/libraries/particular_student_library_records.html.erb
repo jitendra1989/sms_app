@@ -1,0 +1,28 @@
+<%if @student_lib_inforamtion.length>0%>
+<table border="1" class="mg-showdata-bg mg-show-tbl-width" cellspacing="1" cellpadding="1">
+	<tr>
+ 	<th><%=t('isbn_number')%></th> 
+	<th><%=t('book_name')%></th>
+	<th><%=t('status')%></th>
+	</tr>
+      
+      <%@student_lib_inforamtion.each do |data|%>
+      <tr>
+
+      <td valign="top">
+        <label class="mg-label-inner-form"> <%= data.book_no%></label>
+      </td>
+      <td valign="top">
+        <label class="mg-label-inner-form"> <%= data.book_name%></label>
+      </td>
+      <td valign="top">
+        <label class="mg-label-inner-form"> <%= data.status%></label>
+      </td>
+    </tr>
+
+      	<%end%>
+
+      	</table>
+        <%else%>
+        <%="No Books Are Taken For this Student"%>
+        <%end%>

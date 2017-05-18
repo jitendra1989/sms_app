@@ -1,0 +1,77 @@
+<%= render  partial: 'transport_left' %>
+<% navigation_add 'Transport', transports_path %>
+<% navigation_add 'Add Vehicle', list_vehicles_path %>
+
+<div id="transports_datasEdits">
+  <%if flash[:error].present?%>
+  <div class="alert alert-info mg-success-msg">
+
+   <%=flash[:error]%>
+   </div>
+  <%end%>
+
+<h4 class="mg-h4"><%=('vehicle')%></h4>
+
+<%= button_to 'Add Vehicle', {:controller => "transports", :action => "route_vehicle_selection",:id=>@data_id},:class=>"mg-custom-form-btn" %>
+
+
+
+<% if @all_vehicle_data.length > 0 %>
+    <div class="mg_pagination">
+
+<div id="transports_datasShows">
+</div>
+
+
+
+    <table class="batch-tbl mg-tbl-margin" cellspacing="0" style="padding:0; border-collapse:collapse;">   <!-- border="2" --> 
+      <tr >
+        <th><%=t('vehicle_number')%></th><br>
+        <th><%=t('driver_name')%></th>
+        <th><%=t('drop_start_time')%></th>
+        <th align="center"><%=t('actions')%></th>
+       </tr>
+
+    <%@all_vehicle_data.each_with_index do |vehicle| %>
+	      <tr>
+	        <td><%=vehicle.vehicle_number%></td>
+          <%if vehicle.mg_employee_id.present?%>
+	       <%
+           employee_data=MgEmployee.find(vehicle.mg_employee_id)
+
+          %>
+          <td><%=employee_data.first_name%></td>
+          <%end%>
+	      <td><%=vehicle.drop_start_time.strftime("%k:%M%p")%></td> 
+        <%#f.hidden_field :transport_id,@data_id%>
+	      <td class="mg-align-center">
+	   
+	           <button title="Show" id='<%=vehicle.id %>' class="show-vehicle-transport-details-classes mg-icon-btn"><i class="fa fa-eye"></i></button>
+	           <button title="Edit" id='<%=vehicle.id %>' class='edit-vehicle-transport-details-classes mg-icon-btn'><i class="fa fa-pencil-square-o"></i></button>           
+	           <span class="mg-a-link-pagination-align" style="left: -2px; position: relative; float: right; top: -2px;">
+	           <%= link_to "<i class=\"fa fa-trash\"></i>".html_safe ,{ action: "vehicle_transport_destroy", id: "#{vehicle.id}-#{@data_id}"},
+                                data: { confirm: "Are you sure to delete the selected entry?" } ,:title=>"Delete" ,:class=>"mg-icon-btn"  %>
+
+               </span>
+           </td>
+	      </tr>
+
+     <% end %>
+	</table>
+ <%= will_paginate @all_vehicle_data, :container => false %>
+ </div>
+	<% else %>
+	  <h5>Please create some vehicle details... </h5>
+
+	<% end %><br/>
+  <%= link_to t('back'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+</div>
+
+<%=render partial: 'transport_left_close'%>
+<script>
+$(document).ready(function(){
+
+         
+          focusCurrentTab("transport_route_managementAssociateAID","transport_route_managementAssociateLiID");
+          });
+</script>

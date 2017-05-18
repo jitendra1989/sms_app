@@ -1,0 +1,44 @@
+<%=render partial:"entrance_exam_details/entrance_exam_left" %>
+<% navigation_add t('student_index'), :controller=>'entrance_exam_details', :action=>'students_index' %>
+<h4 class="mg-h4"><%=t('classlist')%></h4>
+<%= form_for :student_index, url: update_student_index_path,:html=>{:id=>"studetnIndexFormID", :multipart=>true} do |f| %>
+  <label class="mg-label mg-custom-labels" for="select_class"><%= t('select_class') %><span class="required-field"> *</span></label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <%=select_tag "mg_course_id[]",options_for_select(@course_name),:prompt=>t('select'),:onchange=>"studentIndexFunction(this.value)",:style=>"margin-bottom: 4px;"%><br/>
+  <div id="selectStudentIndex"></div>
+<%end%>
+
+  
+<%=render partial:"common_left_close" %>
+
+<script>
+  $(document).ready(function(){
+
+    focusCurrentTab("mgStudentIndexLID","mgStudentIndexID");        
+
+   $("#studetnIndexFormID").validate({
+      rules: {     
+        "mg_course_id[]": {required: true}
+      }
+    });
+  });
+
+
+
+  function studentIndexFunction(course_id)
+  {
+    if(course_id!=''){
+      urlLink = "/entrance_exam_details/students_index_list";
+      $.ajax({
+        url: urlLink,
+        data: {"mg_course_id":course_id},
+        cache: false,
+        success: function(html){
+          $("#selectStudentIndex").html(html);
+        }
+      });
+    }else{
+      $("#selectStudentIndex").empty();    //   
+    }
+  }
+
+</script>

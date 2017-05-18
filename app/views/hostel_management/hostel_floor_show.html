@@ -1,0 +1,36 @@
+<table border="1" class="mg-showdata-bg mg-tbl-layout" cellspacing="1" cellpadding="1">
+   <tr>
+     <td class="mg-td-width-half" valign="top">
+   		<label class="mg-label"> <%= t('name')%></label>
+   	 </td>
+   	 <td class="mg-td-width-half" valign="top">
+  		<%= @hostel_floor.name %>
+  	 </td>
+ </tr>
+
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+  		<label class="mg-label"><%=t('description')%></label>
+  	 </td>
+  	 <td class="mg-td-width-half" valign="top">
+      <div class="text-scroll-for-log-text-cls comments-space" style="padding: 5px 40 0 10px">
+  		  <%= @hostel_floor.description %>
+      </div>
+  	 </td>
+ </tr>
+
+
+</table>
+ 
+
+
+  <p class="mg-p-mgtop">
+      <a class="mg-small-form-btn cancel-form-dialog"><%=t('cancel')%></a>
+  </p>
+  
+<script type="text/javascript">
+$(document).ready(function () {
+  textSeeMoreLess();
+});
+
+</script>

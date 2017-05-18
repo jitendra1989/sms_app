@@ -1,0 +1,48 @@
+<!-- Sec -->
+<div class="box">
+ <!--  <h1>Edit Courses</h1> -->
+    <%= form_for :course, :html=>{:id=>'course_form'}, url: class_path(@course), method: :patch do |f| %>
+
+      <label class="mg-label" for="course_name">Select Wing<span class="required-field"> *</label>  
+      <div class="input-container">
+      <%= f.select :mg_wing_id, options_for_select(@schoolWings,:selected=>@course.mg_wing_id),{:include_blank=>t('select')},:class=>"mg-select-btn"%>
+      </div>
+      
+       <label class="mg-label " for="course_name"><%= t('class_name') %><span class="required-field"> *</span></label>
+       <div class="input-container">
+            <%= f.text_field :course_name ,:class=>"mg-text-field"%>
+            </div>
+
+      <!--  <label class="mg-label" for="section_name"><%#= t('section_name') %></label>
+            <div class="input-container">
+              <%#= f.text_field :section_name %>
+          </div> -->
+
+
+          <label class="mg-label" for="code"><%= t('code') %><span class="required-field"> *</span></label>
+          <p class="input-container">
+              <%= f.text_field :code ,:class=>"mg-text-field"%>
+          </p>
+			<p>
+           <%#= f.submit  "Submit" ,:class=>"mg-small-form-btn"%>
+           <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("save")%></a>
+           <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+      </p>
+  <% end %>
+</div>
+
+
+<!-- <button class="cancel-form-dialog"><%#= t('cancel') %></button> -->
+<script>
+  $(document).ready(function(){
+    $("#course_form").validate({
+      rules:{
+        "course[mg_wing_id]":{required:true},
+        "course[course_name]":{required:true},
+      //  "course[section_name]":{required:true},
+        "course[code]":{required:true}
+
+      }
+    });
+  });
+</script>

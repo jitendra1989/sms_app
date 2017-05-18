@@ -1,0 +1,62 @@
+<% navigation_add t('entrance_test_setting'), :controller=>'entrance_exam_details', :action=>'exam_test_center' %>
+<%= render  partial: 'master_settings/master_settings_left.html' %>
+<h4 class="mg-h4  mg-label-text-transform-none"><%= t('entrance_test_setting') %></h4>
+
+<table class="batch-tbl mg-tbl-margin table-batchs-tbl">
+  <tr class="subject-table-header">
+    <th><%= t('exam_enabled') %></th>
+    <th><%= t('outside_test_center_enabled') %></th>
+    <th><%= t('action') %></th>  
+  </tr>
+  <tr>
+    <%@school = MgSchool.where(:id=>session[:current_user_school_id],:is_deleted=>0)%>
+    <td class="mg-capitalize-text mg-align-center">
+      <%if @school[0].disable_entrance_exam_test==true%>
+        <%= t('yes') %>
+      <%else%>
+        <%= t('no') %>
+      <% end %>
+    </td>
+    <td class="mg-capitalize-text mg-align-center">
+      <%if @school[0].is_test_center==true%>
+        <%= t('yes') %>
+      <% else %>
+        <%= t('no') %>
+      <% end %>
+    </td>
+    <td class="mg-align-center"> 
+      <button title="<%=t('edit')%>" id="<%= raw @school[0].id %>-editexmBTNID" class="edit-tests-center-cls mg-icon-btn"><i class="fa fa-pencil-square-o"></i></button>
+    </td>
+  </tr>
+</table>
+<div id="editExamTestCenterDivId"></div>
+<%= render  partial: 'application/common_left_close' %>
+
+
+<script>
+  $( document ).ready(function() {
+    focusCurrentTab("aboutEntranceTestAID","aboutEntranceTestLiID");
+  //focusStudentHeaderBox();
+  });
+
+  $(document).on("click",".edit-tests-center-cls",function(){
+    var editID = $(this).attr('id');
+    var id = editID.split("-");
+    var urlLink = "/entrance_exam_details/show_center/"+id[0];    
+    $.ajax({
+      url: urlLink,
+      cache: false,
+      success:function(data){
+        $("#editExamTestCenterDivId").dialog({
+          modal:true,
+          title:"Edit Exam Test",
+          minHeight:'auto',
+          minWidth:320,
+          open:function(){
+            $(this).html(data);
+          }
+        });
+      }
+    });
+  });
+</script>

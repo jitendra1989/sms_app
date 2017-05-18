@@ -1,0 +1,182 @@
+<%= render  partial: 'library/library_left' %>
+
+<% navigation_add 'Resource Inventory', library_inventory_path %>
+
+<h4 class="mg-h4"><%= t('resource_inventory_list') %></h4>
+
+<%= button_to 'Add Resource Inventory', {:controller => "library", :action => "inventory_new" } ,:class=>"mg-custom-form-btn"%>
+
+
+<!-- <%#= button_to 'Add Laboratory', {:controller => "laboratory", :action => "new" } ,:class=>"mg-custom-form-btn"%> -->
+<div class="mg_pagination">
+<%if @inventory.present?%>
+<table  class="batch-tbl mg-tbl-margin">   <!-- border="2" --> 
+  <tr class="subject-table-header">
+    <!-- <th>Subject Id</th> -->
+    <th><%= t('resource_category') %></th>
+    <th><%= t('resource_type') %></th>
+    <th><%= t('name/title') %></th>
+    <th><%= t('author') %></th>
+    <th><%= t('action') %></th>
+
+  </tr>
+ 
+  <% @inventory.each do |inventory| %>
+    <tr>
+    <%if inventory.mg_resource_category_id.present?%>
+      <%category=MgResourceCategory.find_by(:id=>inventory.mg_resource_category_id)%>
+      <td><%= category.try(:name) %></td>
+      <%else%>
+      <td></td>
+      <%end%>
+      <%if inventory.mg_resource_type_id.present?%>
+      <%type=MgResourceType.find_by(:id=>inventory.mg_resource_type_id)%>
+      <td><%= type.try(:name) %></td>
+      <%else%>
+      <td></td>
+      <%end%>
+      <td><%= inventory.try(:name) %></td>
+      <td><%= inventory.try(:author) %></td>
+      <td>
+      	
+      <button title="Show" id="<%=raw inventory.id %>-showlabBTNID" class="show-inventory-btn mg-icon-btn"><i class="fa fa-eye"></i></button>
+
+        <button title="Edit" id="<%=raw inventory.id %>-editlabBTNID" class="edit-inventory-btn mg-icon-btn"><i class="fa fa-pencil-square-o"></i></button>
+
+        <button title="Delete" id="<%=raw inventory.id %>-deletelabBTNID" class="delete-inventory-btn mg-icon-btn"><i class="fa fa-trash"></i></button>
+    
+
+<%= link_to 'Print Book Details', {:controller => "library", :action => "print_book_details",:id=>inventory.id } ,:target=>"_blank",:class=>" mg-custom-form-btn"%>
+    <!-- button title="Print Book Details" id="<%#=raw inventory.id %>-deletelabBTNID" class="submit_stack_pdf_book_card mg-icon-btn"><i class="fa fa-file-pdf-o"></i></button> -->
+        <%#= link_to "<i class=\"fa fa-trash\"></i>".html_safe, {:controller => "laboratory", :action => "delete",:id =>lab.id }, :method=>'post' ,:title=>"Delete" ,:class=>"mg-icon-btn",data: { confirm: 'Are you sure to delete?' } %>
+
+      </td>
+
+    </tr>
+  <% end %>
+</table>
+<br/>
+ <div class="pagination-align" style="position: relative; bottom: 10px;">
+              <%= will_paginate @inventory, :container => false %>
+           </div>
+<%else%>
+<h5>No inventory is created </h5>
+<%end%>
+</div>
+<div id="newAddInventoryDIVID"></div>
+<div id="editInventoryDIVID"></div>
+
+
+<div id="showInventoryDIVID"></div>
+
+
+<%= render  partial: 'application/common_left_close' %>
+
+<script>
+$( document ).ready(function() {
+            focusCurrentTab("viewlibraryresourceinventory","viewlibraryresourceinventoryLiID");
+          //focusStudentHeaderBox();
+});
+
+
+ // $('.submit_stack_pdf_book_card').click(function(e) {
+  
+ //    e.preventDefault();
+ //     $(this).closest('form').attr('target', '_blank')
+ //     alert("askjdfgyk");
+ // });
+// $(document).on("click", ".submit_stack_pdf_book_card", function(e){
+//         var myID =$(this).attr('id');
+//         var Id=myID.split("-");
+//         var urlLink = "/library/inventory_show/"+Id[0];
+//         $.ajax({
+//             url: urlLink ,
+//             cache: false,
+//             success: function(html){
+//                   $('#showInventoryDIVID').dialog({
+//                     modal: true,
+//                      minHeight: 'auto',
+//                     width: 'auto',
+//                     title: "Show Resource Inventory",
+//                     open: function () {
+                        
+//                         $(this).html(html);
+//                     }
+//                 }); 
+               
+//             }
+//         });
+// });
+
+
+$(document).on("click", ".show-inventory-btn", function(e){
+        var myID =$(this).attr('id');
+        var Id=myID.split("-");
+        var urlLink = "/library/inventory_show/"+Id[0];
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(html){
+                  $('#showInventoryDIVID').dialog({
+                    modal: true,
+                     minHeight: 'auto',
+                    width: 'auto',
+                    title: "Show Resource Inventory",
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+});
+
+
+$(document).on("click", ".edit-inventory-btn", function(e){
+        var myID =$(this).attr('id');
+        var Id=myID.split("-");
+        var urlLink = "/library/inventory_edit/"+Id[0];
+        window.location=urlLink;
+       
+});
+
+$(document).on("click", ".new-add-inventory", function(e){
+        var urlLink = "/library/inventory_new";
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(html){
+                  $('#newAddInventoryDIVID').dialog({
+                    modal: true,
+                     minHeight: 'auto',
+                    width: '275',
+                    title: "Add Resource Inventory",
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+});
+</script>
+<style>
+
+
+.table-batchs-tbl {
+   /* font-family: verdana,arial,sans-serif;*/
+    font-size:13px;
+    color:#363131;
+    border-width: 1px;
+    border-color:  #363131;
+    border-collapse: collapse;
+    padding: 12px ;
+    font-size: 0.8em;
+    width: 261px !important;
+    /* margin-left: 2px; */
+}
+</style>
+
+

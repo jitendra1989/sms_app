@@ -1,0 +1,76 @@
+
+<!-- 
+<label class="mg-label mg-custom-labels ">Select Section<span class="required-field"> *</span></label>
+<%#=select_tag :batch,options_from_collection_for_select(@batchs,"id","course_batch_name"),:prompt=>"select"%><br>
+<%#= hidden_field_tag :document_management_id,  @document_management_id%>
+
+<button id="shareFileForStudentBTNID"><%#=t('save')%></button><button  class="btn btn-default cancel-form-dialog" ><%#=t('cancel')%></button>
+<script>
+	
+
+</script>
+ -->
+
+
+
+<%= form_for :contents, url: share_file_for_batch_save_path, method: :patch, :html => {
+                            :id => 'shareContentForBatchFormID' } do |f| %>
+<label class="mg-label">Select Class<span class="required-field"> *</span></label>
+<%#=f.collection_select(:mg_course_id, @batchList , :id, :course_name, {:include_blank => 'Select'} ,:class=>"mg-select-btn")%>
+<%=select_tag :mg_course_id, options_for_select(@course_list),:prompt=>"Select",:class=>"mg-select-btn"%>
+
+
+<div id="bachtSelectListforDacumetsDIVID">
+</div>
+<br>
+<%=f.hidden_field :mg_document_management_id, :value=>@document_management_id%>
+<%= f.hidden_field :updated_by, :value=>session[:user_id]%>
+<%= f.hidden_field :created_by, :value=>session[:user_id]%>
+<%= f.hidden_field :mg_school_id, :value=>session[:current_user_school_id]%>
+<%= f.hidden_field :is_deleted, :value=>0%>
+<%#= f.hidden_field :mg_employee_id, :value=>@mg_employee_id.id%>
+ <input type="submit" id='submitDocumetsShareID' value="" name="commit" class="mg-small-form-btn mg-custom-labels" style="display:none" > 
+<%#=f.submit t('save'), :class=>"mg-small-form-btn", :id=>"submitContentShareID", :style="display:none" %>  <%#= link_to t('cancel'), :back, {:class=>"btn btn-default cancel-form-dialog"} %>
+<%end%>
+<p>
+<button id="submitDocumetsShareBTNID" class="btn btn-delete"><%=t('save')%></button>&nbsp;<button class="btn btn-delete cancel-form-dialog" ><%=t('cancel')%></button>
+</p>
+<script>
+
+
+$(document).on("change", "#mg_course_id", function(e){
+      var course_id=$("#mg_course_id").val();
+        var urlLink = "/my_questions/select_batch";
+        $.ajax({
+            url: urlLink ,
+            data:{
+            	course_id: course_id
+            },
+            cache: false,
+            success: function(html){
+                  $('#bachtSelectListforDacumetsDIVID').empty();
+                  $('#bachtSelectListforDacumetsDIVID').append(html);
+               
+            }
+        });
+});
+	
+
+$(document).on("click", "#submitDocumetsShareBTNID", function(e){
+  var course=$("#mg_course_id").val();
+  
+  if(course >0){
+    var mg_batch_id=$("#mg_batch_id").val();
+    if (mg_batch_id>0){
+      $('#submitDocumetsShareID').click(); 
+    }else{
+      alert("Please Select Section.");
+
+    }
+
+  }else{
+  alert("Please Select Class.");
+  }
+});
+
+</script>

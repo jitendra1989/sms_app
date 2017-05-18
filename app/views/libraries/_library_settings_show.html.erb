@@ -1,0 +1,88 @@
+
+<div id="libraryDialogID" class="mg-pop-up-padding" style="overflow-x: inherit;">
+<%if flash[:error].present?%>
+<%=flash[:error]%>
+<%end%>
+<h4 class="mg-h4"><%=t('library_settings')%></h4>
+
+<%
+library_id=MgLibrarySetting.find_by(:mg_school_id=>session[:current_user_school_id],:is_deleted=>0)
+
+%>
+
+<button id="<%=raw library_id.id%>" title="Edit Library" class="edit-library mg-icon-btn mg-btn-bottom-margin"><i class="fa fa-pencil-square-o"></i></button>
+
+
+<table border="1" class="mg-showdata-bg mg-show-tbl-width" cellspacing="1" cellpadding="1">
+
+
+
+<tr>
+      <td class="mg-td-width-half" valign="top">
+       <label class="mg-label" for="maxBooksIssuable"><%= t ('max_books_issuable') %></label>
+      </td>
+      <td class="mg-td-width-half" valign="top">
+        <label class="mg-label-inner-form"> <%= @library_data[0].max_books_issuable%></label>
+      </td>
+  </tr>
+ <tr>
+      <td class="mg-td-width-half" valign="top">
+       <label class="mg-label" for="maxBorrowDays"><%= t ('max_borrow_days') %></label>
+      </td>
+      <td class="mg-td-width-half" valign="top">
+        <label class="mg-label-inner-form"> <%= @library_data[0].max_borrow_days%></label>
+      </td>
+  </tr>
+
+   <tr>
+      <td class="mg-td-width-half" valign="top">
+       <label class="mg-label" for="fineForLateReturn"><%= t ('fine_for_late_return') %></label>
+      </td>
+      <td class="mg-td-width-half" valign="top">
+        <label class="mg-label-inner-form"> <%= @library_data[0].fine_for_late_return%></label>
+      </td>
+  </tr>
+
+  <tr>
+      <td class="mg-td-width-half" valign="top">
+       <label class="mg-label mg-label-text-transform-none" for="maxDaysonReservationAfterReturn"><%= t ('max_days_on_reservation_after_return') %></label>
+      </td>
+      <td class="mg-td-width-half" valign="top">
+        <label class="mg-label-inner-form"> <%= @library_data[0].max_days_on_reservation_after_return%></label>
+      </td>
+  </tr>  
+
+
+
+
+</table>
+<br/>
+
+<table border="1" class="mg-showdata-bg mg-show-tbl-width" cellspacing="1" cellpadding="1">
+<h4 class="mg-h4"><%=t('employees_incharge')%></h4>
+
+ <th class="mg-padding-10">Employee Name</th>
+<th class="mg-padding-10">Employee Department</th>
+
+<%
+library_settings=MgLibraryEmployee.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).all
+
+%>
+          <%library_settings.each do |settings|%>
+          <tr>
+         <%
+            employee_data=MgEmployee.find(settings.mg_employee_id)
+            employee_department=MgEmployeeDepartment.find(employee_data.mg_employee_department_id)
+          %>
+          <td><%="#{employee_data.first_name} #{employee_data.last_name}"%></td>
+          <td><%=employee_department.department_name%></td>
+
+          </tr>
+          <%end%>
+
+
+
+</table>
+</table>
+
+</div>

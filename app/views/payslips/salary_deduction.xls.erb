@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<ss:Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
+  xmlns:o="urn:schemas-microsoft-com:office:office"
+  xmlns:x="urn:schemas-microsoft-com:office:excel"
+  xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"
+  xmlns:html="http://www.w3.org/TR/REC-html40">
+  <ss:Worksheet ss:Name="Sheet1">
+    <ss:Table>
+    <%for i in 0...20%>
+          <ss:Column ss:Width="150"/>  
+    <%end%>
+      <ss:Row >
+        <ss:Cell ss:MergeAcross="25" ><ss:Data ss:Type="String"><%=t('report')%></ss:Data></ss:Cell>
+      </ss:Row>
+       <ss:Row>
+        <ss:Cell ss:MergeAcross="4" ><ss:Data ss:Type="String"><%=t('employee_details')%></ss:Data></ss:Cell>
+        <ss:Cell  ss:MergeAcross="10"><ss:Data ss:Type="String"><%=t('deduction')%></ss:Data></ss:Cell>
+      </ss:Row>
+
+      <ss:Row>
+        <ss:Cell ><ss:Data ss:Type="String"><%=t('name')%></ss:Data></ss:Cell>
+        <ss:Cell ><ss:Data ss:Type="String"><%=t('employee_number')%></ss:Data></ss:Cell>
+        <ss:Cell ><ss:Data ss:Type="String"> <%=t('department')%></ss:Data></ss:Cell>
+        <ss:Cell ><ss:Data ss:Type="String"> <%=t('month')%></ss:Data></ss:Cell>
+        <ss:Cell ><ss:Data ss:Type="String"> <%=t('year')%></ss:Data></ss:Cell>
+        <%@salary_components.each do |deduction_component|%>
+          <ss:Cell ><ss:Data ss:Type="String"> <%=deduction_component.name%></ss:Data></ss:Cell>
+        <%end%>
+      </ss:Row>
+   
+      <%date=Date.new(@year.to_i, @month.to_i, 1)%>
+      <%@payslip.each do |details|%>
+      <%employee=MgEmployee.find_by(:id=>details.mg_employee_id)%>
+      <%if employee.present?%>
+      <ss:Row>
+       <ss:Cell ><ss:Data ss:Type="String"><%=employee.try(:employee_name).capitalize%></ss:Data></ss:Cell>
+        <ss:Cell ><ss:Data ss:Type="String"><%=employee.try(:employee_number)%></ss:Data></ss:Cell>
+        <ss:Cell ><ss:Data ss:Type="String"><%=employee.try(:dept_name).capitalize%></ss:Data></ss:Cell>
+        <ss:Cell ><ss:Data ss:Type="String"> <%=date.strftime("%B")%></ss:Data></ss:Cell>
+        <ss:Cell ><ss:Data ss:Type="String"> <%=@year.to_i%></ss:Data></ss:Cell>
+        <%@salary_components.each do |deduction_component|%>
+        <%deduction_details=MgEmployeePayslipComponent.find_by(:is_deleted=>0, :mg_employee_payslip_detail_id=>details.id, :mg_school_id=>session[:current_user_school_id], :mg_salary_component_id=>deduction_component.id)%>
+          <ss:Cell ><ss:Data ss:Type="String"> <%=deduction_details.present? ? deduction_details.amount : "NA"%></ss:Data></ss:Cell>
+        <%end%>
+      </ss:Row>
+      <%end%>
+
+      <%end%>
+     
+
+
+    
+    </ss:Table>
+  </ss:Worksheet>
+</ss:Workbook>
+

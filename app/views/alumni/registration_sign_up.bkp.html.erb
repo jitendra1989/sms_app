@@ -1,0 +1,102 @@
+<div class="main_header clearfix">
+<p><center><font size="4"><%= link_to "Mindcom Forum", {:action=>"index"},:id=>"Color_data55" %></font></center></p>
+<%if session[:user_form_id].present?%>
+<%= link_to 'New Post', {:action=>"new"} ,:class=>"mg-small-form-btn123"%><br/>
+<%= link_to 'Sign Out', {:action=>"destroy_session"},:class=>"mg-small-form-btn123"%><br/>
+<%else%>
+<sapan>
+<%#= link_to 'Sign UP', new_user_registration_path ,:class=>"mg-small-form-btn123"%>
+<%= link_to 'Sign UP', {:controller=>"posts",:action=>"registration_sign_up"} ,:class=>"mg-small-form-btn123"%><br/>
+<%= link_to 'Sign In', {:controller=>"posts",:action=>"registration_sign_in"} ,:class=>"mg-small-form-btn123"%><br/>
+
+</sapan>
+<sapan>
+
+<%#= link_to 'Sign In', new_user_session_path,:class=>"mg-small-form-btn123"%><br/>
+</sapan>
+<%end%>
+</div><br/>
+<div class="wrapper_class post1">
+
+<h2>Sign up</h2>
+
+<%=form_for :resource_name, url:{:action=>"registration_create"} do |f| %>
+ 
+
+  <div class="field">
+    <%= f.label :email %><br />
+    <%= f.email_field :email, autofocus: true %>
+  </div>
+<div id="email_id_data"></div>
+  <div class="field">
+    <%= f.label :password123 %>
+    
+    
+    <%=f.password_field :encrypted_password, autocomplete: "off" %>
+  </div>
+
+  <div class="field">
+    <%= f.label :password_confirmation %><br />
+    <%=password_field_tag :password_confirmation,nil,autocomplete: "off" %>
+  </div>
+<div id="email_id_data_password"></div>
+
+ <p class="mg-p-mgtop">
+     <!--   <a onclick="$(this).closest('form').submit()" id="submitbutton" class="submit mg-change-password-form-btn mg-small-form-btn"><%#=t("save")%></a>
+      -->
+          <a id="accept-class-forum-password" class="mg-custom-labels mg-small-form-btn"><%=t("save")%></a>
+        <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+       <%=f.submit t("save") ,:id=>"submitalumnipasswordForuumBtnId" , :style=>"display:none"%>
+    
+</p>
+<% end %>
+</div>
+<script>
+$(document).on("change","#resource_name_email",function(e){
+ var urlLink = "/alumni/email_search_data";
+        $("#newpassworddivId") .text("");
+var email=$(this).val();
+  
+    
+  $.ajax({
+            url: urlLink,
+            cache: false,
+            data: {"email":email},
+            success: function(html){  
+                       if (parseInt(html.name)>0){
+
+                        $("#email_id_data").text("");
+                          //alert(html.data);
+                       }
+                       else{
+                        // alert(html.data);
+                         //alert("Wrong password")
+                          $("#email_id_data").text("Email Id does not match with Registered email Id");
+                          $("#resource_name_email").val("");
+                       }
+                    }
+                }); 
+               
+   
+
+});
+$(document).on("click","#accept-class-forum-password",function(e){
+   
+   
+    var temp=$("#resource_name_encrypted_password").val();
+    var tempo=$("#password_confirmation").val();
+    if(temp==tempo)
+    {
+       $("#email_id_data_password").text("");
+      
+       $("#submitalumnipasswordForuumBtnId").click();
+    }
+    else
+    {
+      $("#password_confirmation").val("");
+      $("#email_id_data_password").text("Password doesn't matches..");
+    }
+  
+    
+  });
+</script>

@@ -1,0 +1,152 @@
+<%= render  partial: 'library/library_left' %>
+
+<% navigation_add 'Resource Type', library_resource_path %>
+
+<h4 class="mg-h4"><%= t('resource_type_list') %></h4>
+
+<%= button_to 'Add Resource Type', {:controller => "library", :action => "resource_new" } ,:class=>"mg-custom-form-btn"%><br/>
+
+
+<!-- <%#= button_to 'Add Laboratory', {:controller => "laboratory", :action => "new" } ,:class=>"mg-custom-form-btn"%> -->
+<div class="mg_pagination">
+<%if @resource.length>0%>
+<div class="mg-scroll-employee-bar">
+<table  class="batch-tbl mg-tbl-layout">   <!-- border="2" --> 
+  <tr class="subject-table-header">
+    <!-- <th>Subject Id</th> -->
+    <th><label class="mg-label-text-transform-none" style="width:220px"><%= t('type_of_resource') %></label></th>
+    <th><%= t('description') %></th>
+    <th><%= t('resource_category') %></th>
+    <th><%= t('max_issuable_count') %></th>
+    <th><%= t('max_borrow_days') %></th>
+    <th><%= t('action') %></th>
+
+  </tr>
+ 
+  <% @resource.each do |resource| %>
+    <tr>
+      <td><%= resource.try(:name) %></td>
+
+      <td><%=truncate(resource.description .to_s, :length => 25, :separator => ' ')  %></td>
+      <%if resource.mg_resource_category_id.present?%>
+      <%category=MgResourceCategory.find_by(:id=>resource.mg_resource_category_id)%>
+      <td><%= category.name %></td>
+      <%else%>
+      <td></td>
+      <%end%>
+      <td><%= resource.try(:max_issuable_count) %></td>
+      <td><%= resource.try(:max_borrow_day) %></td>
+      <td>
+      	
+      <button title="Show" id="<%=raw resource.id %>-showlabBTNID" class="show-resource-btn mg-icon-btn"><i class="fa fa-eye"></i></button>
+
+        <button title="Edit" id="<%=raw resource.id %>-editlabBTNID" class="edit-resource-btn mg-icon-btn"><i class="fa fa-pencil-square-o"></i></button>
+
+        <button title="Delete" id="<%=raw resource.id %>-deletelabBTNID" class="delete-resource-btn mg-icon-btn"><i class="fa fa-trash"></i></button>
+
+        <%#= link_to "<i class=\"fa fa-trash\"></i>".html_safe, {:controller => "laboratory", :action => "delete",:id =>lab.id }, :method=>'post' ,:title=>"Delete" ,:class=>"mg-icon-btn",data: { confirm: 'Are you sure to delete?' } %>
+
+      </td>
+
+    </tr>
+  <% end %>
+</table>
+</div>
+<br/>
+ <div class="pagination-align" style="position: relative; bottom: 10px;">
+              <%= will_paginate @resource, :container => false %>
+           </div>
+<%else%>
+<h5>No resource is created </h5>
+<%end%>
+</div>
+<div id="newAddResourceDIVID"></div>
+<div id="editResourceDIVID"></div>
+
+
+<div id="showResourceDIVID"></div>
+
+
+<%= render  partial: 'application/common_left_close' %>
+
+<script>
+$( document ).ready(function() {
+            focusCurrentTab("viewlibraryresource","viewlibraryresourceLiID");
+          //focusStudentHeaderBox();
+});
+
+
+
+
+
+$(document).on("click", ".show-resource-btn", function(e){
+        var myID =$(this).attr('id');
+        var Id=myID.split("-");
+        var urlLink = "/library/resource_show/"+Id[0];
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(html){
+                  $('#showResourceDIVID').dialog({
+                    modal: true,
+                     minHeight: 'auto',
+                    width: 'auto',
+                    title: "Show Resource Category",
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+});
+
+
+$(document).on("click", ".edit-resource-btn", function(e){
+        var myID =$(this).attr('id');
+        var Id=myID.split("-");
+        var urlLink = "/library/resource_edit/"+Id[0];
+        window.location=urlLink;
+       
+});
+
+$(document).on("click", ".new-add-resource", function(e){
+        var urlLink = "/library/resource_new";
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(html){
+                  $('#newAddResourceDIVID').dialog({
+                    modal: true,
+                     minHeight: 'auto',
+                    width: '275',
+                    title: "Add Resource Category",
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+});
+</script>
+<style>
+
+
+.table-batchs-tbl {
+   /* font-family: verdana,arial,sans-serif;*/
+    font-size:13px;
+    color:#363131;
+    border-width: 1px;
+    border-color:  #363131;
+    border-collapse: collapse;
+    padding: 12px ;
+    font-size: 0.8em;
+    width: 261px !important;
+    /* margin-left: 2px; */
+}
+</style>
+
+

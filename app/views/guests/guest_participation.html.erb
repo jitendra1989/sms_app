@@ -1,0 +1,37 @@
+<%= render  partial: '/events/events_left' %>
+<% navigation_add t('guest_participation'), "/guests/guest_participation" %>
+ <div>
+  <label class="mg-label mg-tt-width "><%=t('select_committee') %><span class="required-field"> *</span></label>
+   <%=select_tag :mg_committee_id ,options_for_select(@event_committees,params[:mg_event_committee_id]),:onchange=>"optionForEventInvetaionGuestParticipation(this.value)",:prompt=>t('select') , :id=>"selectCommitteeSelectGuestTagID" ,:class=>"mg-select-btn"%>
+   </div>
+
+
+
+   <div>
+    <label class="mg-label mg-tt-width "><%=t('select_event') %><span class="required-field"> *</span></label>
+   <%=select_tag :mg_event_id ,options_for_select(@events,params[:mg_event_id]),:onchange=>"optionForEventGuest(this.value)",:prompt=>t('select') , :id=>"selectCommitteeSelectForEventGuestTagID" ,:class=>"mg-select-btn"%>
+</div>
+
+
+
+
+<div id="guestListDIVID"></div>
+
+<%= render  partial: 'application/common_left_close' %>
+
+<script>
+
+
+
+$(document).ready(function () {
+
+ focusCurrentTab("viewGuestsParticipationAID","viewGuestsParticipationLiID");
+     // focusDashboards();
+var mg_event_id=$("#selectCommitteeSelectForEventGuestTagID").val();
+if(mg_event_id !=''){
+	optionForEventGuest(mg_event_id);
+}
+
+});
+</script>
+

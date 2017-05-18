@@ -1,0 +1,192 @@
+
+ <%if @alumni_data.present?%>
+ <div class="mg-scroll-employee-bar">
+<%if @alumni_data.present?%>
+ 
+<h4 class="customize-mg-h4">Alumni List<%#=reqStr%></h4>
+
+  <table border="1" class="mg-showdata-bg" cellspacing="1" cellpadding="1" style="width: 109.4%;">
+  <tr>
+    <th style="width: 18%;">
+      <label class="mg-label" valign="top"> <%= t('admission_number')%></label>
+    </th>
+    <th style="width: 14%;">
+      <label class="mg-label" valign="top"> <%= t('Alumni Name')%></label>
+    </th>
+    <th style="width: 14%;">
+      <label class="mg-label mg-label-text-transform-none" valign="top"> <%= t('date_of_birth')%></label>
+    </th>
+    <th style="width: 17%;">
+      <label class="mg-label" valign="top"> <%= t('mobile_number')%></label>
+    </th>
+    <th style="width: 17%;">
+      <label class="mg-label" valign="top"> <%= t('phone_number')%></label>
+    </th>
+
+    <th style="width: 24%;">
+      <label class="mg-label" valign="top"> <%= t('Email Id')%></label>
+    </th>
+    <th style="width: 130px;">
+      <label class="mg-label" valign="top"> <%= t('organization')%></label>
+    </th>
+    <!--  <th style="width: 130px;">
+      <label class="mg-label mg-td-width-halfs" valign="top"> <%#= t('designation')%></label>
+    </th> -->
+    <th style="width: 130px;">
+      <label class="mg-label" valign="top"> <%= t('show')%></label>
+    </th>
+    
+
+    </tr>
+
+    <%
+    @alumni_data.each do |search|
+    %>
+    <tr>
+      
+      <td class="mg-capitalize-text" valign="top">
+              <%= search.try(:admission_number)%> 
+      </td>
+
+      <td class="mg-capitalize-text" valign="top">
+          <%#if search.is_name_sharable==true%>
+              <%="#{search.try(:first_name)} #{search.try(:last_name)}"%> 
+          <%#else%>
+
+          <%#end%>
+      </td>
+
+      <td class="mg-capitalize-text" valign="top">
+          <%if search.is_date_of_birth_searchable==true%>
+              <%= search.try(:date_of_birth).strftime(date_format(session[:current_user_school_id]))%> 
+          <%end%>
+      </td>
+
+      <td class="mg-capitalize-text" valign="top">
+          <%if search.is_mobile_no_sharable==true%>
+              <%= search.try(:mobile_number)%> 
+          <%else%>
+              
+          <%end%>
+      </td>
+
+      <td class="mg-capitalize-text" valign="top">
+        <%= search.try(:phone_number)%> 
+      </td>
+
+      <td class="mg-capitalize-text" valign="top">
+          <%if search.is_email_id_sharable==true%>
+              <%= search.try(:email_id)%> 
+          <%else%>
+              
+          <%end%>
+      </td>
+
+
+      <td class="mg-capitalize-text" valign="top">
+          <%if search.is_current_organization_searchabler==true%>
+              <%= search.try(:current_organization)%> 
+          <%else%>
+              
+          <%end%>
+      </td>
+
+
+      <!-- <td class="mg-td-width-half mg-capitalize-text" valign="top">
+          <%#if search.is_current_designation_searchable==true%>
+              <%#= search.try(:designation)%> 
+          <%#else%>
+              
+          <%#end%>
+      </td> -->
+      
+      <!-- #=========================================================================== -->
+      <td>
+        <span>
+
+                 <%#= link_to t('show'), {controller: "alumni", action: "alumni_registration_form_show" ,id:student.id },:class=>"new-add-polling mg-btn-bottom-margin mg-custom-form-btn"  %>
+
+
+                 <%= link_to "<i class=\"fa fa-eye\"></i>".html_safe, {controller: "alumni", action: "alumni_registration_show" ,id:search.id } , method: :get ,:title=>"Show" ,:class=>"new-add-polling mg-btn-bottom-margin mg-custom-form-btn mg-icon-btn"%>
+        </span>
+      </td>
+     <!-- #=========================================================================== -->
+  </tr>
+    <%end%>
+  </table>
+  <%end%>
+
+
+  </div>
+  <br/>
+  <br/>
+  <%= link_to t('clear'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+  <%else%>
+  <h4>No Records Found</h4>
+  <br/>
+  <br/>
+  <%= link_to t('clear'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+  <%end%>
+  
+
+     
+<script>
+
+      $(document).ready(function () {
+          focusCurrentTab("alumniSearchAID","alumniSearchAIDLId");
+      });
+
+
+</script>  
+
+  
+
+<script>
+/*$(".show-vendor-btns").click(function(){
+        var myID =$(this).attr('id');
+        var Id=myID.split("-");
+        var urlLink = "/inventory/vendor_show/"+Id[0];
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(html){
+                  $('#showVendorDIVID').dialog({
+                    modal: true,
+                    minHeight: 'auto',
+                    minWidth: '500',
+                    title: "Vendor Detail",
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+            }
+        });
+});*/
+
+
+
+</script>
+<style>
+.icon-padding-label
+{
+  background: -moz-linear-gradient(center top , #DBE8F7, #92AECD) repeat scroll 0 0 rgba(0, 0, 0, 0) !important;
+    border: 1px solid #5F7A92 !important;
+    border-radius: 4px;
+    color: #1D212A !important;
+    cursor: pointer;
+    font-size: 1.1em;
+    padding: 1.2px 5px !important;
+}
+
+.customize-mg-h4{
+  background: #479d1e none repeat scroll 0 0;
+  color: #feffff;
+  font-size: 0.9em;
+  font-weight: bold;
+  margin-top: 0;
+  width: 788px !important;
+  padding: 12px;
+  text-transform: capitalize;
+}
+</style>

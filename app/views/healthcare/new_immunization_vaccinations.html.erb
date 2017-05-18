@@ -1,0 +1,148 @@
+<%if session[:user_type]=="guardian"%>
+  <%= render partial: 'dashboards/guardian_dashboard_left' %>
+<%else%>
+  <%=render partial: 'healthcare_left'%>
+<%end%>
+
+<% navigation_add t('immunizations'),:controller=>'healthcare',:action=>'immunization_vaccinations' %>
+<% navigation_add t('new_immunizations'),:controller=>'healthcare',:action=>'new_immunization_vaccinations' %>
+
+
+<h4 class="mg-h4"><%= t('new_immunizations') %></h4>
+
+
+<%= form_for :vaccinations, :url=>'create_immunization_vaccinations', :method=> "post", :html => {:id => 'vaccinationsCreateID'} do |f| %>    
+
+  <%=hidden_field_tag "user_type",session[:user_type]%>
+  <%= f.hidden_field :is_deleted, :value => 0 %>
+  <%= f.hidden_field :mg_school_id, :value => session[:current_user_school_id] %>
+  <%= f.hidden_field :created_by, :value => session[:user_id] %>
+  <%= f.hidden_field :updated_by, :value => session[:user_id] %>
+
+  <%if session[:user_type]!="guardian"%>
+    <label class="mg-label mg-tt-width mg-tbl-margin"><%=t('select_academic_year')%><span class="required-field"> *</span></label>
+    <%=select_tag :mg_time_table_id,options_for_select(@time_table),:prompt=>"Select",:onchange=>"selectCourseFromAcademicYear(this.value)"%><br>
+
+    <label class="mg-label mg-tt-width mg-tbl-margin"><%=t('select_semester')%><span class="required-field"> *</span></label>
+    <%=select_tag :mg_batch_id,options_for_select([]),:prompt=>"Select",:onchange=>"selectStudentFromBatch(this.value)"%><br>
+  <%end%>
+
+  <label class="mg-label mg-tt-width mg-tbl-margin"><%=t('select_student')%><span class="required-field"> *</span></label>
+  <%=select_tag :mg_student_id,options_for_select([]),:prompt=>"Select",:onchange=>"selectVaccinationListFromStudent(this.value)"%><br>
+  <div id="vaccinationsListDIVID"></div>
+
+
+  <p class="mg-p-mgtop">
+    <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn vaccination-list-class" style="display:none"><%=t("save")%></a>
+    <a onclick="submission_criteria(); " class="input_field mg-small-form-btn "><%=t("save")%></a>
+    <%= link_to t('cancel'), '/healthcare/immunization_vaccinations' , {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+  </p> 
+<% end %>
+
+<%= render  partial: 'application/common_left_close' %>
+
+<script>
+  $( document ).ready(function() {
+      var dateFormatStr =  getJsDateFormat();
+         $(function () {
+          $.validator.addMethod('dateFormat',
+          function (value, element) {
+            dateFormatStr =  getJsDateFormat();
+              if (this.optional(element)) {
+                  return true;
+              }
+              var ok = true;
+              try {
+                  $.datepicker.parseDate(dateFormatStr, value);
+              }
+              catch (err) {
+                  ok = false;
+              }
+              return ok;
+          },
+            "Please enter a date in the format "+ getDateFormat(dateFormatStr) +".");
+            dateFormatStr =  getJsDateFormat();
+
+          $(".datefield").datepicker({ dateFormat: dateFormatStr, changeYear: true });
+      });
+
+      focusCurrentTab("immunizationDetailsAID","immunizationDetailsLID");          
+      $("#vaccinationsCreateID").validate({
+
+        rules: {
+          "mg_time_table_id": {required: true},
+          "mg_batch_id": {required: true  },
+          "mg_student_id": {required: true  },
+        }
+      });
+      $.validator.addClassRules("immunization-due-date-cls", {dateFormat: true});
+
+      var user_type=$("#user_type").val();
+      if (user_type=="guardian")
+      {
+        var urlLink = "/healthcare/multi_task_worker";
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(date){
+                  $("#mg_student_id").html(date.data);
+            }
+        });
+      }
+  });
+
+  function selectCourseFromAcademicYear(mg_time_table_id){
+  	if(mg_time_table_id){
+	  	var urlLink = "/healthcare/multi_task_worker";
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            data: {
+            		selecter: "selectCourseFromAcademicYear", 
+            		mg_time_table_id: mg_time_table_id
+        			},
+            success: function(date){
+                  $("#mg_batch_id").html(date.data);
+            }
+        });
+    }
+  }
+  function selectStudentFromBatch(mg_batch_id){
+  if(mg_batch_id){
+	  	var urlLink = "/healthcare/multi_task_worker";
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            data: {
+            		selecter: "selectStudentFromBatch", 
+            		mg_batch_id: mg_batch_id
+        			},
+            success: function(date){
+                  $("#mg_student_id").html(date.data);
+            }
+        });
+    }
+
+  }
+
+function selectVaccinationListFromStudent(mg_student_id){
+	// alert(mg_student_id)
+	if(mg_student_id){
+	  	var urlLink = "/healthcare/vaccinations_list";
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            data: {
+            		selecter: "selectVaccinationListFromStudent", 
+            		mg_student_id: mg_student_id
+        			},
+            success: function(html){
+                  $("#vaccinationsListDIVID").html(html);
+            }
+        });
+    }
+}
+
+
+
+</script>

@@ -1,0 +1,26 @@
+<!-- Sec --> 
+<%= form_for(@mg_role) do |f| %>
+  <% if @mg_role.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@mg_role.errors.count, "error") %> prohibited this mg_role from being saved:</h2>
+
+      <ul>
+      <% @mg_role.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :role_name ,:class=>"mg-label"%><br>
+    <%= f.text_field :role_name %>
+  </div>
+  <div class="field">
+    <%= f.label :description ,:class=>"mg-label"%><br>
+    <%= f.text_area :description %>
+  </div><br/>
+  <div class="actions">
+    <%= f.submit "Submit" ,:class=>"mg-small-form-btn"%>
+  </div>
+<% end %>

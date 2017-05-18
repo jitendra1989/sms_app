@@ -1,0 +1,15 @@
+<label class="mg-label mg-tt-width" style="width:185px"><%=t('select_department')%><span class="required-field"> *</span></label>
+<%=select_tag :mg_department_id,options_for_select(@department),:prompt => t('select'),:class=>"mg-select-btn",:onchange=>"departmentChangesfunction(this.value)"%>
+<p id="employee_list"></p>
+
+<script>
+	function departmentChangesfunction(department_id){
+		$.ajax({
+			url:"/inventory/department_wise_employee_list",
+			data:{"mg_department_id":department_id},
+			success:function(html){
+				$("#employee_list").html(html);
+			}
+		});
+	}
+</script>

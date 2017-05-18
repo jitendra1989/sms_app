@@ -1,0 +1,62 @@
+<%= form_for :classtimings,:html => { :id => "editClasstimingsFormID" ,:multipart => true } do |f| %>
+	<h5 style="color: #363131;"><strong><%=t('selectday')%></strong><span class="required-field"> *</span></h5>
+	<table>
+		<%@weekDays.each do |dayid|%>
+		<tr>
+			<td class="mg-leave-width">
+				<% if dayid.weekday=="0"%>
+			    	<% @day="Sunday"%>
+			      <% elsif dayid.weekday=="1"%>
+			        <% @day="Monday"%>
+			      <% elsif dayid.weekday=="2"%>
+			       <%  @day="Tuesday"%>
+			      <% elsif dayid.weekday=="3"%>
+			       <%  @day="Wednesday"%>
+			      <% elsif dayid.weekday=="4"%>
+			        <% @day="Thursday"%>
+			      <% elsif dayid.weekday=="5"%>
+			       <%  @day="Friday"%>
+			      <% else%>
+			       <%  @day="Saturday"%>
+			      <% end%>
+				 <%=@day%>
+			</td>
+			<td id="selectedWeekdayforEditClassTimingsTdID">
+				<%= check_box_tag "classweekdays[#{dayid.id}]", 1,@weekdayIds.include?(dayid.id) ? true : false%>
+		</td>
+		</tr>
+		<%end%>
+	</table>
+	<label class="mg-label mg-tbl-margin"><%=t('name')%><span class="required-field"> *</span></label><br>
+	<%= f.text_field :name ,:class=>"mg-text-field"%><br>
+	<label class="mg-label mg-leave-width mg-tbl-margin"><%=t('starttime')%><span class="required-field"> *</span></label>
+	
+	<%=f.time_select :start_time,:value=>@classtimings.start_time%><br>
+	<label class="mg-label mg-leave-width mg-tbl-margin"><%=t('endtime')%><span class="required-field"> *</span></label>
+	<%=f.time_select :end_time,:value=>@classtimings.end_time %><br>
+	<label class="mg-label mg-leave-width mg-tbl-margin"><%=t('isbreak')%></label>
+	 <%=f.check_box :is_break,:value=>@classtimings.is_break %>
+	 <%=f.hidden_field :id,:value=>@classtimings.id %>
+	 <%=f.hidden_field :mg_batch_id,:value=>@classtimings.mg_batch_id %>
+	 <%=f.hidden_field :is_deleted,:value=>0 %><br><br>
+	 
+	
+<%end%>
+<p>
+	<!-- <button id="editClassTimingSaveBtn" class="mg-submit-form-btn"><%#=t('save')%></button>
+	<button class="cancel-form-dialog mg-submit-form-btn"><%#= t('cancel') %></button>
+	<br><br> -->
+<a onclick="$(this).closest('form').submit()" id="editClassTimingSaveBtn" class="mg-small-form-btn"><%=t("save")%></a>
+<%#= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+<a class="mg-small-form-btn cancel-form-dialog"><%=t('cancel')%></a>
+ </p>
+<script type="text/javascript">
+     $(document).ready(function(){
+         $("#editClasstimingsFormID").validate({
+      rules:{
+        // "classtimings[name]":{required:true}
+        //"classweekdays[]":{required:true}
+      }
+    });
+   });
+</script>

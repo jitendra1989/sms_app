@@ -1,0 +1,65 @@
+
+<%= render  partial: 'library_left' %>
+<% navigation_add 'Damaged Books List', libraries_damaged_book_list_path %>
+
+<h4 class="mg-h4"><%= t('damaged_books_list')%></h4>
+
+<%if @data.length>0%>
+<div class="mg-scrl-width-bar ">
+
+ <table class="batch-tbl mg-tbl-layout" cellspacing="0" style="padding:0; border-collapse:collapse;"> 
+<tr>
+<th><%=t('book_no')%></th>
+<th><%=t('book_name')%></th>
+
+<th><%=t('author')%></th>
+<th><%=t('publisher')%></th>
+<th><%=t('edition')%></th>
+<th><%=t('cost')%></th>
+<th><%=t('category_name')%></th>
+ <th><%=t('class')%></th>
+
+</tr>
+<% @data.each do |books_data| %>
+<tr>
+<td class="mg-align-center"><%=books_data.book_no%></td>
+	
+		<td class="mg-align-center"><%=books_data.book_name%></td>
+
+	
+	    
+	        <td class="mg-align-center"><%=books_data.author%></td>
+	        
+	        <td class="mg-align-center"><%=books_data.publisher%></td>
+	        <td class="mg-align-center"><%=books_data.edition%></td>
+	        <td class="mg-align-center"><%=books_data.cost%></td>
+	        <%
+	        books_category=MgBooksCategory.find(books_data.mg_books_category_id)
+	        %>
+	        <td class="mg-align-center"><%=books_category.category_name%></td>
+	        <%
+	        course_data=MgCourse.find(books_data.mg_course_id)
+	        %>
+	        <td class="mg-align-center"><%=course_data.course_name%></td>
+	        
+</tr>
+<%end%>
+
+</table>
+<%#= will_paginate @data, :container => false %>
+<%else%>
+<%="No Records Are Present"%>
+<%end%>
+</div>
+<%= render  partial: 'schools/school_left_close' %>
+
+
+<script>
+$(document).ready(function () {
+        focusCurrentTab("damagedBooksListAID","damagedBooksListLiID");
+        focusLibrary();
+
+        //focusMasterSettings();
+      });
+
+</script>

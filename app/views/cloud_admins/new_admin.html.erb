@@ -1,0 +1,14 @@
+<%= render partial: 'dashboards/cloud_admin_dashboard_left' %>
+
+<%= render partial: '/employees/new', :locals => {:employee_types => "admin"} %>
+
+<%= render partial: 'application/common_left_close' %>
+
+<script type="text/javascript">
+
+ $(document).ready(function() {
+    focusCurrentTab("viewCloudAdminDashboardAddAdmin","viewCloudAdminDashboardAddAdminLiID");
+    focusDashboards();
+ });
+
+</script>

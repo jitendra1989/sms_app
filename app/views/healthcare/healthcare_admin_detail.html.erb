@@ -1,0 +1,56 @@
+<%=render partial: 'healthcare_left'%>
+<% navigation_add t('healthcare_admin_detail'),'healthcare/user_detail' %>
+<h4 class="mg-h4"><%= t('healthcare_admin_detail') %></h4>
+
+<%if @healthcare_admin.present?%>
+<table  class="batch-tbl mg-tbl-margin">
+  <tr class="subject-table-header">
+    <th><%= t('user_name') %></th>
+    <th><%= t('action') %></th>
+  </tr>
+  <tr>
+    <td><%= @healthcare_admin.user_name %></td>
+    <td>
+      <button title="Change Password" id="<%=raw @healthcare_admin.id %>-showlabBTNID" class="change-healthcare-admin-password-btn mg-icon-btn"><i class="fa fa-exchange"></i></button>
+    </td>
+  </tr>
+ 
+</table>
+<br/>
+<%else%>
+  <h5>No healthcare admin Created </h5>
+<%end%>
+</div>
+
+<div id="healthcareAdminChangePasswordDivId"></div>
+
+<%= render  partial: 'application/common_left_close' %>
+
+
+<script>
+  $( document ).ready(function() {
+    focusCurrentTab("healthcareAdminChangePasswordAID","healthcareAdminChangePasswordLID");
+  });
+
+  $(document).on("click", ".change-healthcare-admin-password-btn", function(e){
+    var myID =$(this).attr('id');
+    var Id=myID.split("-");
+    var urlLink = "/healthcare/change_healthcare_admin_password/"+Id[0];
+    $.ajax({
+      url: urlLink ,
+      cache: false,
+      success: function(html){
+        $('#healthcareAdminChangePasswordDivId').dialog({
+          modal: true,
+          title: "Change healthcare admin Password",
+          open: function (){
+            $(this).html(html);
+          }
+        }); 
+      }
+    });
+  });
+</script>
+
+
+

@@ -1,0 +1,17 @@
+<!-- Sec --> 
+
+		<%  @dep=MgEmployeeCategory.find_by_id( employee_position.mg_employee_category_id)%>
+       
+      <tr>
+        <td><%= @dep.category_name unless @dep.nil? %></td>
+        <td><%= employee_position.position_name %></td>
+        <!-- <td><%#= if employee_position.status then "Inactive" else "Active" end %></td> -->
+
+
+
+        <td>
+           <button title="Edit" class="edit-employee-position mg-icon-btn" id="editEmployeePositionID-<%= employee_position.id%>"><i class="fa fa-pencil-square-o"></i></button>
+           <button title="Delete" class="delete-employee-position mg-icon-btn" id="deleteEmployeePositionID-<%= employee_position.id%>"><i class="fa fa-trash"></i></button>
+        </td>
+
+      </tr>

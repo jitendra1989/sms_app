@@ -1,0 +1,98 @@
+<% navigation_add t('going_out_provision'), :controller=>'hostel_management', :action=>'going_out_provision' %>
+<% navigation_add  t('show_going_out_provision_details'), :controller=>'hostel_management', :action=>'going_out_provision_show',:id=>params[:id] %>
+
+<%= render  partial: 'dashboards/student_dashboard_left' %>
+
+<h4 class="mg-h4"><%= t('show_going_out_provision_details')%></h4>
+
+<table border="1" class="mg-showdata-bg " cellspacing="1" cellpadding="1">
+   
+
+ 
+  <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('from_date')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+      <%= @provision.from_date.strftime(@timeformat.date_format) %>
+     </td>
+   </tr>
+
+   <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('start_time')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+      <%= @provision.start_time.try(:strftime,"%l:%M%P") %>
+     </td>
+   </tr>
+
+
+   <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('to_date')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+      <%= @provision.to_date.strftime(@timeformat.date_format) %>
+     </td>
+   </tr>
+
+   <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('end_time')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+      <%= @provision.end_time.try(:strftime,"%l:%M%P") %>
+     </td>
+   </tr>
+
+   <tr>
+     
+  
+       <td class="mg-td-width-half" valign="top">
+          <label class="mg-label"><%=t('reason')%></label>
+       </td>
+       <td class="mg-td-width-half" valign="top">
+         <div class="text-scroll-for-log-text-cls comments-space">
+            <%= @provision.try(:reason) %>
+          </div>
+       </td>
+
+
+ </tr>
+ 
+
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('status')%></label>
+     </td>
+     <td class="mg-td-width-half mg-capitalize-text" valign="top">
+      <%= @provision.try(:status) %>
+     </td>
+   </tr>
+
+</table>
+
+
+
+
+<br>
+
+ 
+ <table>
+        <tr>
+            <td>
+               <%= link_to t('cancel'), {:controller=>'hostel_management',:action=>'going_out_provision'}, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+            </td>
+        </tr> 
+    </table>
+
+ <%= render  partial: 'application/common_left_close' %>
+
+
+<script type="text/javascript">
+    $( document ).ready(function() {
+        focusCurrentTab("goingOutProvAID","goingOutProvLiID");
+    });
+
+</script>

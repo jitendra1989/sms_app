@@ -1,0 +1,126 @@
+<%=render partial: 'front_office_management_left'%>
+<% navigation_add t('user_detail'),user_detail_path %>
+<h4 class="mg-h4"><%= t('user_detail') %></h4>
+<!-- <button class="assign_store_manager mg-btn-bottom-margin mg-custom-form-btn"><%#= t('add_manager')%></button>
+ -->
+
+<%if @user_detail.length>0%>
+<table  class="batch-tbl mg-tbl-margin">
+  <tr class="subject-table-header">
+    <th><%= t('user_name') %></th>
+    <th><%= t('action') %></th>
+  </tr>
+ 
+  <% @user_detail.each do |f| %>
+    <tr>
+      <td><%= f.user_name %></td>
+      <td>
+        <button title="Change Password" id="<%=raw f.id %>-showlabBTNID" class="change-fom-password-btn mg-icon-btn"><i class="fa fa-exchange"></i></button>
+      </td>
+    </tr>
+  <% end %>
+</table>
+<br/>
+<%else%>
+  <h5>No Front Office management Loging Created </h5>
+<%end%>
+</div>
+
+<div id="changeFrontOfficePasswordID"></div>
+
+<%= render  partial: 'application/common_left_close' %>
+
+
+<script>
+$( document ).ready(function() {
+  focusCurrentTab("changeFOMPasswordAID","changeFOMPasswordLID");
+});
+
+// $(document).on("click", ".assign_store_manager", function(e){
+//   var urlLink = "/inventory/new_store_manager";
+//   $.ajax({
+//       url: urlLink ,
+//       cache: false,
+//       success: function(html){
+//         $('#newAddstoreManagerDIVID').dialog({
+//           modal: true,
+//           title: "Add Store Manager",
+//           open: function () {
+//             $(this).html(html);
+//           }
+//         }); 
+//       }
+//   });
+// });
+
+$(document).on("click", ".change-fom-password-btn", function(e){
+  var myID =$(this).attr('id');
+  var Id=myID.split("-");
+  var urlLink = "/front_office_management/edit_user_detail/"+Id[0];
+  $.ajax({
+    url: urlLink ,
+    cache: false,
+    success: function(html){
+      $('#changeFrontOfficePasswordID').dialog({
+        modal: true,
+        title: "Edit User Password",
+        open: function (){
+          $(this).html(html);
+        }
+      }); 
+    }
+  });
+});
+
+// $(document).on("click", ".delete-store-manager-btn", function(e){
+//   e.preventDefault();
+//   var myID =$(this).attr('id');
+//   var Id=myID.split("-");
+//   var retVal = confirm("Are you sure to delete?");
+//   if(retVal){
+//     var urlLink = "/inventory/delete_store_manager/"+Id[0];
+//     $.ajax({
+//       url: urlLink ,
+//       cache: false,
+//       success: function(html){
+//         window.location.reload();
+//       }
+//     });
+//   }
+//   else{
+//     return false;
+//   }
+// }); 
+
+
+// $(document).on("click", ".show-store-manager-btn", function(e){
+//   var myID =$(this).attr('id');
+//   var Id=myID.split("-");
+//   var urlLink = "/inventory/show_store_manager/"+Id[0];
+//   $.ajax({
+//       url: urlLink ,
+//       cache: false,
+//       data: {"change_store_password":"change_password_by_admin"},
+//       success: function(html){
+//             $('#showstoreManagerkDIVID').dialog({
+//               modal: true,
+//                minHeight: 'auto',
+//               width: 'auto',
+//               title: "Change Password",
+//               open: function () {
+                  
+//                   $(this).html(html);
+//               }
+//           }); 
+         
+//       }
+//   });
+// });
+
+
+
+
+</script>
+
+
+

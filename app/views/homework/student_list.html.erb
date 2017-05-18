@@ -1,0 +1,66 @@
+<%= render  partial: 'homework/homework_left' %>
+<% navigation_add 'Assignments', :controller => 'homework', :action => 'submission' %>
+<h4 class="mg-h4"><%= t('assignments') %></h4>
+
+<div class="mg-scroll-bar">
+
+		<table class="batch-tbl mg-tbl-margin">
+		<tr class="subject-table-header">
+			 <th>
+			 	<%=t('student_name')%>
+			 </th>
+			 <th>
+			 	<%=t('status')%>
+			 </th>
+			 <th>
+			 	<%=t('actions')%>
+			 </th>
+		</tr>
+		<%@assignment_submission.each do |assignment|%>
+			<tr>
+				<%if assignment.mg_student_id.present?%>
+					<td>
+					<%student=MgStudent.find(assignment.mg_student_id)%>
+					<%=student.first_name%>
+					</td>
+					<td>
+
+						<%= select_tag :status, options_for_select([[t("Select"), ""], [t("pending"), "pending"], [t("submitted"), "submitted"], [t("completed"), "completed"]],:selected => assignment.status),{:disabled => true} %>
+					</td>
+
+					<td>
+							<table>
+							<tr>
+								<%= link_to "Select".html_safe, {:controller => "homework", :action => "student_show",:id =>assignment.id} , :method=>'post' ,:title=>"Select" ,:class=>"mg-icon-btn mg-custom-form-btn mg-right-align"%>
+
+								<%#= link_to t('back'), :back, {:class=>"mg-custom-form-btn cancel-form-dialog"} %>
+								</tr>
+								</table>
+					</td>
+					
+				<%end%>
+			</tr>
+		<%end%>
+		
+		</table>
+		</div>
+
+<%= link_to t('back'), :back, {:class=>"mg-custom-form-btn cancel-form-dialog mg-p-mgtop"} %>
+<%= render  partial: 'application/common_left_close' %>
+		
+<script>
+$(document).ready(function(){
+            focusCurrentTab("viewHomeworkSubmissionIndex","viewHomeworkSubmissionLiID");
+	
+})
+</script>
+
+
+		<style>
+.mg-scroll-bar{
+       border: 1px solid #b2b2b2;
+       width: 342px;
+       height: 360px;
+       overflow-y: scroll;
+   }
+</style>

@@ -1,0 +1,728 @@
+<!-- Sec --> 
+
+
+<%= render partial: 'dashboards/student_dashboard_left' %>
+
+<section id="viewStudentID" style="margin: 0 auto;">
+<div>
+    <table class="mg-show-tbl-width">
+        <tr>
+             <td valign="top" width="150px">
+              <aside class="userMenuBoxLeft" style="width: 150px;">
+                <div class="empleftbx">
+                    <div class="empimgbx" style="padding:10px 10px 0;">
+                        <%= image_tag @student.avatar.url(:medium, timestamp: false) ,:class => "mg-img-size" %>
+                        
+                                <div>
+                                <%= @student.first_name %>&nbsp; <%= @student.middle_name %> &nbsp;<%= @student.last_name %>
+                            </div> 
+                    </div>
+                    <div class="clear"></div>
+                    <div class="prof_detail">
+                        <span>
+                        <strong style="padding:14px 0 20px 10px; font-size: 0.9em;"><%= t('course') %> :</strong>
+                        <%@batchs=MgBatch.where(:id=>@student.mg_batch_id).pluck(:name)%>
+                         <%= @batchs[0] %><br/>
+                        </span>
+                        <span>
+                        <strong style="padding:14px 0 20px 10px; font-size: 0.9em;"><%= t('admissionnumber') %> :</strong>
+                        <%= @student.admission_number %><br/>
+                        </span> 
+
+                        <button class="change-password-btn mg-custom-form-btn mg-btn-bottom-margin mg-custom-labels" id="studentChangePasswordID"><%= t('changepassword')%></button>
+                        <br/>
+                        <%= link_to 'Download Profile', {:controller => "students", :action => "pdf_gen",:id =>@student.id },:target=>"_blank",:class=>"mg-custom-form-btn mg-custom-labels" %>
+
+
+                    </div>
+                    <div class="clear"></div>
+                    <div class="clear"></div>
+                </div>
+                </aside>
+            </td>
+            <td valign="top">
+                <h4 class="mg-h4"><%= t('general') %></h4>
+                <table class="mg-show-tbl-width">
+                    <tr>
+                        <td class="mg-td-width-half">
+                            <label class="mg-label" style="width:140px"><%= t('admissionnumber') %></label>
+                            <label><%= @student.admission_number %></label>
+                        </td>
+                        <td class="mg-td-width-half">
+                            <label class="mg-label" style="width:140px"><%= t('admissiondate') %></label>
+                                <% @id = @student.mg_school_id %>  
+                                <% @dateFormat = MgSchool.find_by_id(@id).date_format %>    
+
+                            <%if @student.admission_date.present?%>
+                             <label><%= @student.admission_date.strftime(@dateFormat) %></label>
+                             <%end%>
+                        </td>
+                    </tr>
+                    </table>
+
+                    <h4 class="mg-h4"><%= t('personaldetails') %></h4>
+                    <table class="mg-show-tbl-width">
+                    <tr>
+                        <td class="mg-td-width-half">
+                            <label class="mg-label" style="width:140px"><%= t('firstname') %></label>
+                            <label><%= @student.first_name %></label>
+                        </td>
+
+                        <td class="mg-td-width-half">
+                            <label class="mg-label" style="width:140px"><%= t('middle_name') %></label>
+                            <label><%= @student.middle_name %></label>
+                        </td>
+                        
+                    </tr>
+                    <tr>
+
+                        <td class="mg-td-width-half">
+                            <label class="mg-label" style="width:140px"><%= t('lastname') %></label>
+                            <label><%= @student.last_name %></label>
+                        </td>
+                        <td class="mg-td-width-half">
+                            <label class="mg-label" style="width:140px"><%= t('coursename') %></label>
+                            <%@batch=MgBatch.where(:id=>@student.mg_batch_id).pluck(:name)%>
+                            <label><%= @batch[0] %></label>
+                        </td>
+                        
+                    </tr>
+                    <tr>
+
+                        <td class="mg-td-width-half">
+                            <label class="mg-label mg-rm-text-trans" style="width:140px"><%= t('dateofbirth') %></label>
+                            
+                            <%@id=@student.mg_school_id %>
+                            <%if @student.date_of_birth.present?%>
+                           <label> <%= @student.date_of_birth.strftime(MgSchool.find_by_id(@id).date_format) %></label>
+                           <%end%>
+                        </td>
+                   
+                        <td class="mg-td-width-half">
+                            <label class="mg-label" style="width:140px"><%= t('gender') %></label>
+                            <label class="mg-capitalize-text"><%= @student.gender %></label>
+                        </td>
+                        
+                    </tr>
+                    <tr>
+                        <td class="mg-td-width-half">
+                            <label class="mg-label"  style="width:140px"><%= t('bloodgroup') %></label>
+                            <label><%= @student.blood_group %></label>
+                        </td>
+                   
+                        <td class="mg-td-width-half">
+                            <label class="mg-label" style="width:140px"><%= t('birth_place') %></label>
+                            <label><%= @student.birth_place %></label>
+                        </td>
+                        
+                    </tr>
+                    <tr>
+                        <td class="mg-td-width-half">
+                           <label class="mg-label"  style="width:140px"><%= t('nationality') %></label>
+                            <label><%= @student.nationality %></label>
+                        </td>
+                    
+                        <td class="mg-td-width-half">
+                            <label class="mg-label" style="width:140px"><%= t('mother_tongue') %></label>
+                            <label><%= @student.language %></label>
+                        </td>
+                        
+                    </tr>
+                    <tr>
+
+                        <td class="mg-td-width-half">
+                            <label class="mg-label"  style="width:140px"><%= t('religion') %></label>
+                            <label><%= @student.religion %></label>
+                        </td>
+                   
+                        <td>
+                            <label class="mg-label" style="width:140px"><%= t('category') %></label>
+                            <label>
+                                    <% 
+                                    @stud_category=MgStudentCategory.where(:id =>@student.mg_student_catagory_id)
+                                    %>
+                                    <%=@stud_category[0].name%>
+                            </label>
+                        </td>
+                    </tr>
+                    </table>
+
+                     <table class="mg-tbl-size-width">
+              
+                <%
+                if @stud_category[0].name=="Employee Child"
+                    @empchild=MgEmployeeChild.where(:mg_user_id=>@student.mg_user_id)
+                    if @empchild.present?
+                %>
+                         
+
+                <tr>
+                     <td class="mg-td-width-half">
+                            <label class="mg-label" style="width:140px"><%= t('employee_name') %></label>
+                            <label><%= @empchild[0].employee_name %></label>
+                    
+                      </td>
+                      <td class="mg-td-width-half">
+                            <label class="mg-label" style="width:140px"><%= t('employee_type') %></label>
+                            <label><%= @empchild[0].employee_type %></label>
+                    
+                      </td>
+                    </tr>
+                    <tr>
+                     <td class="mg-td-width-half">
+                            <label class="mg-label" style="width:140px"><%= t('employee_id') %></label>
+                            <label><%= @empchild[0].employee_id %></label>
+                        
+                    
+                      </td>
+                      <td class="mg-td-width-half">
+                            <label class="mg-label" style="width:140px"><%= t('joining_date') %></label>
+                           <label><%= @empchild[0].joining_date %></label>
+                    
+                      </td>
+                    </tr>
+                    
+                    <%end%>
+                    <%end%>
+                    </table>
+
+
+
+ <!-- ==============================Employee Child End======================== -->
+ <!-- ==============================Management Child================================ -->
+
+        <table class="mg-tbl-size-width">
+              
+                <%
+                if @stud_category[0].name=="Management"
+                    @empchild=MgManagementQuota.where(:mg_user_id=>@student.mg_user_id)
+                    if @empchild.present?
+                %>
+                         
+
+                <tr>
+                     <td class="mg-td-width-half">
+                            <label class="mg-label" style="width:140px"><%= t('name') %></label>
+                            <label><%= @empchild[0].name %></label>
+                    
+                      </td>
+                      <td class="mg-td-width-half">
+                            <label class="mg-label" style="width:140px"><%= t('position') %></label>
+                            <label><%= @empchild[0].position %></label>
+                    
+                      </td>
+                    </tr>
+                    <tr>
+                     <td class="mg-td-width-half">
+                            <label class="mg-label" style="width:140px"><%= t('employee_id') %></label>
+                            <label><%= @empchild[0].employee_id %></label>
+                        
+                    
+                      </td>
+                      <td class="mg-td-width-half">
+                            <label class="mg-label" style="width:140px"><%= t('joining_date') %></label>
+                           <label><%= @empchild[0].joining_date %></label>
+                    
+                      </td>
+                    </tr>
+                    
+                    <%end%>
+                    <%end%>
+                    </table>
+
+
+
+ <!-- ==============================Management Child End======================== -->
+
+
+
+ <!-- ==============================Scholarship Child================================ -->
+
+        <table class="mg-tbl-size-width">
+              
+                <%
+                if @stud_category[0].name=="On Scholarship"
+                    @empchild=MgStudentScholarship.where(:mg_user_id=>@student.mg_user_id)
+                    if @empchild.present?
+                %>
+                         
+
+                <tr>
+                     <td class="mg-td-width-half">
+                            <label class="mg-label" style="width:140px"><%= t('name') %></label>
+                            <label><%= @empchild[0].name %></label>
+                    
+                      </td>
+                      <td class="mg-td-width-half">
+                            <label class="mg-label" style="width:140px"><%= t('amount') %></label>
+                                <label><%= @empchild[0].amount %></label>
+                    
+                      </td>
+                </tr>
+                <tr>
+                     <td class="mg-td-width-half">
+                        <label class="mg-label" style="width:140px"><%= t('frequency') %></label>
+                            <label><%= @empchild[0].frequency %></label>
+                        
+                    
+                      </td>
+                      <td class="mg-td-width-half">
+                        <label class="mg-label" style="width:140px"><%= t('start_date') %></label>
+                           <label><%= @empchild[0].start_date %></label>
+                    
+                      </td>
+                      </tr>
+                      <tr>
+                      <td class="mg-td-width-half">
+                        <label class="mg-label" style="width:140px"><%= t('end_date') %></label>
+                           <label><%= @empchild[0].end_date %></label>
+                    
+                      </td>
+                    </tr>
+                    
+                    <%end%>
+                    <%end%>
+                    </table>
+
+
+
+ <!-- ==============================Management Child End======================== -->
+     <!-- ======================================================================================= -->
+     <table class="mg-tbl-size-width">
+              
+                <%
+             
+                @sibling=MgSibling.where(:mg_user_id=>@student.mg_user_id)
+                if @sibling.present?
+
+                    puts @sibling.inspect
+                    puts "8888888888888888"
+                %>
+                         <h4 class="mg-h4"><%= t('sibling') %></h4>
+
+                <tr>
+                     <td class="mg-td-width-half">
+                            <label class="mg-label" style="width:140px"><%= t('name') %></label>
+                            <label><%= @sibling[0].name %></label>
+                    
+                      </td>
+                      <td class="mg-td-width-half">
+                            <label class="mg-label" style="width:140px"><%= t('relationship') %></label>
+                            <label><%= @sibling[0].relation %></label>
+                    
+                      </td>
+                    </tr>
+                    <tr>
+                     <td class="mg-td-width-half">
+                            <label class="mg-label" style="width:140px"><%= t('class') %></label>
+                            <%@temp=MgCourse.where(:id=>@sibling[0].mg_course_id)%>
+                            <% if (!(@temp[0].to_s.empty?))%>
+                            <label><%= @temp[0].course_name %></label>
+                            <%end%>
+                    
+                      </td>
+                      <td class="mg-td-width-half">
+                            <label class="mg-label" style="width:140px"><%= t('section') %></label>
+                            <%temp2=MgBatch.where(:id=>@sibling[0].mg_batch_id)%>
+                            <% if (!(@temp2.to_s.empty?))%>
+
+                            <label><%= @temp2[0].name %></label>
+                            <%end%>
+                    
+                      </td>
+                    </tr>
+                    <tr>
+                     <td class="mg-td-width-half">
+                            <label class="mg-label" style="width:140px"><%= t('roll_number') %></label>
+                           <label><%= @sibling[0].roll_no %></label>
+                    
+                      </td>
+                      <td >
+                            <label class="mg-label" style="width:140px"><%= t('date_of_admission') %></label>
+                            <label><%= @sibling[0].admission_date %></label>
+                    
+                      </td>
+                    </tr>
+                    <tr>
+                     <td class="mg-td-width-half">
+                            <label class="mg-label" style="width:140px"><%= t('adm_reg_number') %></label>
+                            <label><%= @sibling[0].admission_no %></label>
+                    
+                      </td>
+                      
+                    </tr>
+                    <%end%>
+                    </table>
+     <!-- ======================================================================================= -->
+
+
+                    <h4 class="mg-h4"><%= t('correspondanceaddress') %></h4>
+                    <table class="mg-show-tbl-width">
+                    <tr>
+                        <td class="mg-td-width-half">
+                            <label class="mg-label" style="width:140px"><%= t('addressline1') %></label>
+                            <label>
+                            <%if @address[0].present?%>
+                            <%if @address[0].address_line1.present?%>
+                            <%= @address[0].address_line1 %>
+                            <%end%>
+                            <%end%>
+                            </label>
+
+                        </td>
+                        <td class="mg-td-width-half">
+                            <label class="mg-label" style="width:140px"><%= t('addressline2') %></label>
+                            <label>
+                            <%if @address[0].present?%>
+                            <%if @address[0].address_line1.present?%>
+                            <%= @address[0].address_line2 %>
+                            <%end%>
+                            <%end%>
+                            </label>
+                            
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="mg-td-width-half">
+                            <label class="mg-label" style="width:140px"><%= t('street') %></label>
+                            <%if @address[0].present?%>
+                                <%if @address[0].street.present?%>
+                                    <label><%= @address[0].street %></label>
+                                <%else%>
+                                    <label></label>
+                                <%end%>
+                            <%end%>
+
+                        </td>
+                        <td class="mg-td-width-half">
+                            <label class="mg-label" style="width:140px"><%= t('landmark') %></label>
+
+                            <%if @address[0].present?%>
+                            <%if @address[0].landmark.present?%>
+                                <label><%= @address[0].landmark %></label>
+                            <%else%>
+                                <label></label>
+                            <%end%>
+                            <%end%>
+
+                        </td>
+                    </tr>
+
+
+                    <tr>
+                        <td class="mg-td-width-half">
+                            <label class="mg-label" style="width:140px"><%= t('city') %></label>
+                            <label>
+                            <%if @address[0].present?%>
+                            <%= @address[0].city %>
+                            <%end%>
+                            </label>
+                        </td>
+                        <td class="mg-td-width-half">
+                            <label class="mg-label" style="width:140px"><%= t('state') %></label>
+                            <label>
+                            <%if @address[0].present?%>
+                            <%= @address[0].state %>
+                            <%end%>
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="mg-td-width-half">
+                            <label class="mg-label" style="width:140px"><%= t('pincode') %></label>
+                            <label>
+                            <%if @address[0].present?%>
+                            <%= @address[0].pin_code %>
+                            <%end%>
+                            </label>
+                        </td>
+                        <td class="mg-td-width-half"> 
+                            <label class="mg-label" style="width:140px"><%= t('country') %></label>
+                            <label>
+                            <%if @address[0].present?%>
+                            <%= @address[0].country %>
+                            <%end%>
+                            </label>
+                        </td>
+                    </tr>
+                    </table>
+                    <h4 class="mg-h4"><%= t('permanentaddress') %></h4>
+                    <table class="mg-show-tbl-width">
+                    <tr>
+                        <td >
+                            <label class="mg-label" style="width:140px"><%= t('addressline1') %></label>
+                            <label>
+                            <%if @address[1].present?%>
+                            <%= @address[1].address_line1 %>
+                            <%end%>
+                            </label>
+                        </td>
+                        <td>
+                            <label class="mg-label"  style="width:140px"><%= t('addressline2') %></label>
+                            <label>
+                            <%if @address[1].present?%>
+                            <%= @address[1].address_line2 %>
+                            <%end%>
+                            </label>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td >
+                            <label class="mg-label" style="width:140px"><%= t('street') %></label>
+                            <%if @address[1].present?%>
+                            <%if @address[1].street.present?%>
+                                <label><%= @address[1].street %></label>
+                            <%else%>
+                                <label></label>
+                            <%end%>
+                            <%end%>
+
+
+                        </td>
+                        <td>
+                            <label class="mg-label"  style="width:140px"><%= t('landmark') %></label>
+                            <%if @address[1].present?%>
+                            <%if @address[1].landmark.present?%>
+                                <label><%= @address[1].landmark %></label>
+                            <%else%>
+                                <label></label>
+                            <%end%>
+                            <%end%>
+                            
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <label class="mg-label"  style="width:140px"><%= t('city') %></label>
+                            <label>
+                            <%if @address[1].present?%>
+                            <%= @address[1].city %>
+                            <%end%>
+                            </label>
+                        </td>
+                        <td class="mg-td-width-half">
+                            <label class="mg-label" style="width:140px"><%= t('state') %></label>
+                            <label>
+                            <%if @address[1].present?%>
+                            <%= @address[1].state %>
+                            <%end%>
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="mg-td-width-half">
+                            <label class="mg-label" style="width:140px"><%= t('pincode') %></label>
+                            <label>
+                            <%if @address[1].present?%>
+                            <%= @address[1].pin_code %>
+                            <%end%>
+                            </label>
+                        </td>
+                        <td class="mg-td-width-half">
+                            <label class="mg-label" style="width:140px"><%= t('country') %></label>
+                            <label>
+                            <%if @address[1].present?%>
+                            <%= @address[1].country %>
+                            <%end%>
+                            </label>
+                        </td>
+                    </tr>
+                    </table>
+
+                    <h4 class="mg-h4"><%= t('contactdetails') %></h4>
+                    <table class="mg-show-tbl-width">
+                    <tr>
+                        <td class="mg-td-width-half">
+                            <label class="mg-label" style="width:140px"><%= t('phonenumber') %></label>
+                            <label><%= @contact[0].phone_number %></label>
+                        </td>
+                       
+                    </tr>
+                    <tr>
+                          <td class="mg-td-width-half">
+                            <label class="mg-label" style="width:140px"><%= t('mobilenumber') %></label>
+                            <label>+91-<%= @contact[1].phone_number %></label>
+                        </td> 
+                    </tr>
+
+<!-- #================================================phone notification and subscription======================= -->
+                    <tr>
+                        <td class="mg-td-width-half">
+                            <label class="mg-label mg-std-form-width"><%= t('notification') %></label>
+                            <%if @contact[1].notification.present?%>
+                                  <%if @contact[1].notification==true%>
+                                  <label style="margin-left: -5px;"> Yes </label>
+                                  <%else%>
+                                  <label style="margin-left: -5px;"> No </label>
+                                  <%end%>
+                            <%else%>
+                            <label style="margin-left: -5px;"> No </label>
+                            <%end%>
+                            
+                        </td>
+                       <td class="mg-td-width-half">
+                            <label class="mg-label mg-std-form-width"><%= t('subscription') %></label>
+                            <%if @contact[1].subscription.present?%>
+                                  <%if @contact[1].subscription==true%>
+                                  <label style="margin-left: -5px;"> Yes </label>
+                                  <%else%>
+                                  <label style="margin-left: -5px;"> No </label>
+                                  <%end%>
+                            <%else%>
+                            <label style="margin-left: -5px;"> No </label>
+                            <%end%>
+                        </td> 
+                    </tr>
+<!-- #====================================================================================================== -->
+
+
+
+                    </table>
+                    <table class="mg-show-tbl-width">
+                    <tr>
+                        <td >
+                            <label class="mg-label" style="width:140px"><%= t('emailid') %></label>
+                            <label>
+                            <%if @email[0].present?%>
+                            <%= @email[0].mg_email_id %>
+                            <%end%>
+                            </label>
+                        </td>
+                    </tr>
+                    </table>
+  <!-- #====================================email notification and subscription======================= -->
+                    <table class="mg-show-tbl-width">
+                    <tr>
+                        <td class="mg-td-width-half">
+                            <label class="mg-label mg-std-form-width"><%= t('notification') %></label>
+                           <%if @email[0].present?%>
+                            <%if @email[0].notification.present?%>
+                                  <%if @email[0].notification==true%>
+                                  <label style="margin-left: -5px;"> Yes </label>
+                                  <%else%>
+                                  <label style="margin-left: -5px;"> No </label>
+                                  <%end%>
+                            <%else%>
+                            <label style="margin-left: -5px;"> No </label>
+                            <%end%>
+                            <%end%>
+
+
+                            
+                        </td>
+                       <td class="mg-td-width-half">
+                            <label class="mg-label mg-std-form-width"><%= t('subscription') %></label>
+                           <%if @email[0].present?%>
+                            
+                            <%if @email[0].notification.present?%>
+                                    <%if @email[0].subscription==true%>
+                                    <label style="margin-left: -5px;"> Yes </label>
+                                    <%else%>
+                                    <label style="margin-left: -5px;"> No </label>
+                                    <%end%>
+                            <%else%>
+                            <label style="margin-left: -5px;"> No </label>
+                            <%end%>
+                            <%end%>
+                        </td> 
+                    </tr>
+
+
+
+
+  <!-- #========================================================================================================= -->
+                </table>
+                <%if @customData.size>0%>
+                <h4 class="mg-h4"><%= t('Custom Fields') %></h4>
+                <table >
+                <tr>
+                <td width="250px">
+                <% @dbdatas.each do |dbdata| %>
+               
+             <%@customData.each do |custDatas|%>
+
+            <%if dbdata.id.to_s==custDatas.mg_custom_field_id%>
+
+
+              <%custom_data=Array.new%>
+            <% hidden_field_tag 'custom_data[]', dbdata.id%>
+             <%
+
+               @customData.each do |custData| 
+
+               if custData.mg_custom_field_id == dbdata.id.to_s
+                  @custValue = custData.value
+               
+               end
+             end
+              %> 
+
+        <label class="mg-label" style="width:140px"><%= dbdata.name %></label>
+                <label> <%=@custValue%></label>
+                <%end%>
+                <%end%>                 
+                <%end%>
+            </td>
+            </tr>
+            </table>
+            <%end%>
+            </td>
+        </tr>
+    </table>
+</div>
+
+
+<%= render partial: 'application/common_left_close' %>
+
+<div id="studentChangePasswordDialogID"></div>
+
+<script type="text/javascript">
+    
+
+ $(document).ready(function(){
+
+    focusCurrentTab("viewStudentProfile","viewStudentProfileLiID");
+    focusDashboards();
+
+});
+
+
+ $(document).on("click","#studentChangePasswordID",function(){
+                        //alert("setting btn clicked");
+            var urlLink = "/dashboards/student_change_password";
+           // alert(urlLink);
+            $.ajax({
+                url: urlLink ,
+                cache: false,
+                success: function(html){
+                      $('#studentChangePasswordDialogID').dialog({
+                        modal: true,
+                        minHeight: 270,
+                        minWidth:300,
+                        title: "Change Password",
+
+                        open: function () {
+                            $(this).html(html);
+                        }
+                    }); 
+                }
+            });
+    });
+
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

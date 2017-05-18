@@ -1,0 +1,37 @@
+<div class="mg-scroll-employee-bar">
+<table class="batch-tbl">
+<th><%=t('department')%></th>
+  <th><%=t('actions')%>
+  <div class="mg-text-margin">
+        <a class="select-all-department-for-album mg-pop-link"><%=t('all')%></a>&nbsp;<a class="select-none-department-for-album mg-pop-link"><%=t('none')%></a>
+      </div></th>
+  	<%@department_list.each do |dept|%>
+  	<tr>
+  		<td><%=dept.department_name%></td>
+  		<td class="mg-align-center">
+	  		<%if @department_list_checked.present?%>
+		  		<%if @department_list_checked.include? dept.id%>
+		  			<%= check_box_tag 'mg_employee_department_id[]', dept.id, true ,{:class=>"class-albumb-department-committee-class"}%>
+		  		<%else%>
+		  			<%= check_box_tag 'mg_employee_department_id[]', dept.id, false ,{:class=>"class-albumb-department-committee-class"}%>
+		  		<%end%>
+	  		<%else%>
+	  			<%= check_box_tag 'mg_employee_department_id[]', dept.id, false ,{:class=>"class-albumb-department-committee-class"}%>
+	  		<%end%>
+  		</td>
+  	</tr>
+  	<%end%>
+</table>
+</div>
+
+<script>
+	 $(document).on("click", ".select-all-department-for-album", function(e){
+
+    $(".class-albumb-department-committee-class").prop('checked', true);
+        e.preventDefault();
+  });
+   $(document).on("click", ".select-none-department-for-album", function(e){
+    $(".class-albumb-department-committee-class").prop('checked', false);
+        e.preventDefault();
+  });
+</script>

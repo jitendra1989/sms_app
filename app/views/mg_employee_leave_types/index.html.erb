@@ -1,0 +1,30 @@
+<!-- Sec --> 
+
+
+
+<!-- breadcrumbs Work -->
+<% navigation_add 'Employee Leave Types', mg_employee_leave_types_path %>
+<!-- breadcrumbs Work -->
+
+<!-- Render mg_employee_leave_types left -->
+<%= render  partial: 'mg_employee_leave_types_left' %>
+<!-- pie chart -->
+<%#= pie_chart @mg_employee_leave_types.group(:leave_name).sum(:max_leave_count)%>
+
+<!-- Render mg_employee_leave_types index -->
+<%= render  partial: 'index' %>
+<!-- Render mg_employee_leave_types left close-->
+<%= render  partial: 'application/common_left_close' %>
+
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+      $(".content-tab").tabs();
+
+    focusCurrentTab("viewEmployeetList","viewEmployeetListLiID")
+    focusAttendance();
+
+
+    });
+</script >

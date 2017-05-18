@@ -1,0 +1,219 @@
+<%= form_for :inventory, :url=>{:controller=>'inventory',:action=>'item_update',:id=>@inventory.id},:html => {:id => 'inventoryItemUpdateID' , :multipart => true} do |f| %>
+<%= f.hidden_field :is_deleted, :value => 0 %>
+<%= f.hidden_field :mg_school_id, :value => session[:current_user_school_id] %>
+<%= f.hidden_field :updated_by, :value => session[:user_id] %>
+<p>
+    <label class="mg-label" style="width:150px"><%= t('select_item_category') %><span class="required-field">&nbsp;*</span></label>
+    <br/>
+    <%= f.collection_select(:mg_category_id,MgInventoryItemCategory.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]), :id, :name,{:include_blank => t("select")},:id => "inventory_item_new_Id" ,:class => "inventory-item-new-class mg-select-btn")%>
+</p>
+
+<p>
+    <label class="mg-label" style="width:140px"><%= t('item_name') %><span class="required-field">&nbsp;*</span></label>
+    <br/>
+   <%= f.text_field :name,:class=>"mg-text-field" %>
+</p>
+
+
+<p>
+    <label class="mg-label" style="width:140px"><%= t('select_unit') %><span class="required-field">&nbsp;*</span></label>
+    <br/>
+    <%= f.collection_select(:mg_item_unit_id,MgLabUnit.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]), :id, :unit_name,{:include_blank => t("select")},:id => "inventory_item_new_Id" ,:class => "mg-select-btn")%>
+</p>
+
+
+
+<p>
+    <label class="mg-label" style="width:140px"><%= t('item_code') %><span class="required-field">&nbsp;*</span></label>
+    <br/>
+   <%= f.text_field :code,:class=>"mg-text-field",:readonly=>true %>
+</p>
+
+<p>
+    <label class="mg-label" style="width:140px"><%= t('select_item_type') %><span class="required-field">&nbsp;*</span></label>
+    <br/>
+    <%= f.select :item_type, options_for_select([[t("select"), ""], [t("Sale"), "Sale"], [t("Consumption"), "Consumption"]],:selected=>@inventory.item_type), {} ,{:class => "mg-select-btn"} %>
+</p>
+
+<p>
+    <label class="mg-label" style="width:140px"><%= t('prefix') %><span class="required-field">&nbsp;*</span></label>
+    <br/>
+   <%= f.text_field :prefix,:class=>"mg-text-field" %>
+</p>
+
+<p>
+    <label class="mg-label mg-tt-width" style="width:185px"><%=t('minimum_quantity')%></label>
+    <br/>
+    <%=f.text_field :minimum_quantity_required,:class=>"mg-text-field"%>
+</p>
+
+<p>
+    <label class="mg-label" style="width:140px"><%= t('description') %><span class="required-field">&nbsp;</span></label>
+    <br/>
+   <%= f.text_area :description,:class=>"mg-text-field" %>
+</p>
+
+<!-- /////////////////////////////////////////Changes////////////////////////////////////// -->
+
+<p>
+  <label class="mg-label" style="width:140px"><%= t('available_online') %><span class="required-field">&nbsp;</span></label>
+    <!-- <br/> -->
+   <%= f.check_box :available_online,:class=>"available-online-checkbox-class" %>
+</p>
+
+<p class="available-online-class" style="display:none">
+    <label class="mg-label mg-tt-width" style="width:185px"><%=t('reserved_for_offline')%><span class="required-field">&nbsp;*</span></label>
+    <br/>
+    <%=f.text_field :reserved_for_offline,:class=>"mg-text-field"%>
+</p>
+
+
+<!-- ================================================================================================= -->
+
+<p class="available-online-class" style="display:none">
+    <label class="mg-label mg-tt-width" style="width:185px"><%=t('online_price')%><span class="required-field">&nbsp;*</span></label>
+    <br/>
+    <%=f.text_field :online_price,:class=>"mg-text-field"%>
+</p>
+
+<p>
+<%@document=MgDocumentManagement.where(:mg_inventory_item_id=>@inventory.id,:document_type=>"Inventory",:is_deleted=>0,:mg_school_id=>session[:current_user_school_id])
+
+        if @document.length>0
+%>
+
+<label class="mg-label" style="width:140px"><%= t('uploaded_image') %><span class="required-field">&nbsp;</span></label><br/>
+
+<%html_icon='<span title="Download" class="mg-icon-btn show-image-cls"><i class="fa fa-download"></i></span>'
+
+@document.each do |doc|%>
+<p>
+    <%= link_to_if doc.file.url, html_icon.html_safe, doc.file.url , :target=>"_blank",:class=>"show-image-cls",:style=>"display:none;"%>
+
+    <%= image_tag(doc.file.url, :class =>'image-url-cls', :style=>"height: 20px; width: 20px;cursor:pointer") %>
+    <%=doc.file_file_name%>
+
+
+<!-- <button title="Delete" id="<%#=raw doc.id %>-deleteBTNID" class="delete-attachment-btn mg-icon-btn employeefile-upload mg-custom-form-btn mg-icon-btn" style="color: #297ACC; font-size:0.8em; float: right; position: relative; right: 449px; margin-top: 3px;"><i class="fa fa-trash " ></i></button> -->
+</p>
+<%end
+end%>
+</p>
+<!-- ================================================================================================= -->
+
+<p class="available-online-class" style="display:none">
+          <label class="mg-label mg-rm-text-trans" for="upload_file" ><%= t('upload_image') %></label>
+<div  class="available-online-class" style="display:none">
+   <div class="student_file_file_div" id="dueFineDivId" style="float: left; width: 100%;">
+   <span style="float: left;">
+ <%= file_field_tag 'file[]'%>
+</span>
+  <!-- <a class="student_file-upload mg-custom-form-btn mg-icon-btn" style="color: #297ACC; font-size:0.8em; float: left; position: relative; right: 0px; margin-top: 3px;"><i class="fa fa-trash"></i></a> -->
+ </div>
+ <!-- <a id="add_homework_student_uploads" class="mg-label-inner-form mg-custom-form-btn mg-icon-btn" style="color: #297ACC; font-size:0.8em;" ><i class="fa fa-plus">&nbsp;Add File</i></a>  --><br/>
+  </div>
+
+</p>
+
+
+
+<!-- //////////////////////////////////Changes////////////////////////////////////// -->
+
+<p class="mg-p-mgtop">
+    <!-- <%#= f.submit t('save') ,:class=>"mg-small-form-btn"%> -->
+    <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("save")%></a>
+    <%#= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+<a class="mg-small-form-btn cancel-form-dialog"><%=t("cancel")%></a>
+
+</p>
+<% end %>
+
+<%#= render  partial: 'application/common_left_close' %>
+
+<script>
+
+
+$(document).ready(function(){
+    if ($(".available-online-checkbox-class").prop( "checked" ))
+    {
+      $(".available-online-class").show();
+    }
+    else
+    {
+      $(".available-online-class").hide();
+    }
+});
+
+
+$("#inventoryItemUpdateID").validate({
+
+        rules: {        
+        "inventory[name]": {required: true},
+        "inventory[code]": {required: true},
+        "inventory[mg_category_id]": {required: true},
+        "inventory[item_type]": {required: true},
+        "inventory[prefix]": {required: true},
+        "inventory[minimum_quantity_required]": {number:true,min: 0},
+        "inventory[reserved_for_offline]": {required: true,number:true,min: 0},
+        //"file[]": {required: true},
+        "inventory[online_price]": {required: true,number:true,min: 0}
+      }
+    });
+
+  $(document).on("change",".available-online-checkbox-class",function(e){
+    if ($(this).prop( "checked" ))
+    {
+      $(".available-online-class").show();
+    }
+    else
+    {
+      $(".available-online-class").hide();
+    }
+  });
+
+
+  $(document).on("click", "#add_homework_student_uploads", function(e){
+    var lastRepeatingGroup = $('.student_file_file_div').last();
+    var cloned = lastRepeatingGroup.clone();
+    cloned.find('input').val('');
+    cloned.insertAfter( lastRepeatingGroup );
+    return false;
+}); 
+
+
+$(document).on("click", ".student_file-upload", function(e){
+   var total = $('.student_file-upload').length
+   if(total!=1)
+   {
+        $(this).parent('div').remove();
+    }
+});
+
+
+
+$(document).on("click", ".delete-attachment-btn", function(e){
+     e.preventDefault();
+                var myID =$(this).attr('id');
+            var Id=myID.split("-");
+                var retVal = confirm("Are you sure to delete?");
+                if(retVal){
+                  //  alert(retVal);
+                     var urlLink = "/inventory/attachment_delete/"+Id[0];
+
+                      $.ajax({
+                        url: urlLink ,
+                        cache: false,
+                        success: function(html){
+                            window.location=window.location;           
+                        }
+                    });
+
+                }else{
+                   // alert(retVal);     
+                   return false;
+                }
+
+        });
+
+  
+</script>

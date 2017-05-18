@@ -1,0 +1,42 @@
+<%= form_for :booster_doses, :url=>@action=='new' ? 'create_booster_doses' : @booster_doses.try(:id).to_s+'/update_booster_doses', :method=> @action=='new' ? "post" : "patch" , :html => {:id => 'vaccinationsCreateID'} do |f| %>    
+
+<%= f.hidden_field :is_deleted, :value => 0 %>
+<%= f.hidden_field :mg_school_id, :value => session[:current_user_school_id] %>
+<%if @action=='new'%>
+	<%= f.hidden_field :created_by, :value => session[:user_id] %>
+<%end%>
+<%= f.hidden_field :updated_by, :value => session[:user_id] %>
+
+<p>
+	<%= f.label :name, t('name') ,:class=>"mg-label"%><span class="required-field"> *</span><br>
+	<%= f.text_field :name  ,:class => 'mg-select-btn'%><br>
+
+</p>
+<p>
+	<%= f.label :frequency, t("frequency") ,:class=>"mg-label"%><span class="required-field"> *</span><br>
+  	<%= f.text_field :frequency, :class=> 'mg-select-btn' %>
+</p>
+<p>
+	<%= f.label :description, t("description") ,:class=>"mg-label"%><br>
+  	<%= f.text_area :description, :class=> 'mg-select-btn' %>
+</p>
+
+<p class="mg-p-mgtop">
+    <%#= f.submit t('save') ,:class=>"mg-small-form-btn"%>
+    <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("save")%></a>
+      <%#= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+    <a class="mg-small-form-btn cancel-form-dialog"><%=t('cancel')%></a>
+
+</p>
+<% end %>
+<script>
+$(document).ready(function () {
+	$("#vaccinationsCreateID").validate({
+
+		rules: {
+			"booster_doses[name]": {required: true,name_validate: true},
+			"booster_doses[frequency]": {required: true	}
+		}
+	});
+});
+</script>

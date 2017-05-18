@@ -1,0 +1,42 @@
+<%= form_for :event_types, url: event_type_path(@event_types), method: :patch, :html => {
+                            :id => 'eventEditTypesFormID' } do |f| %>
+
+  <p>
+    <%= f.label :name, t('name') ,:class=>"mg-label"%><span class="required-field"> *</span><br>
+    <%= f.text_field :name   %>
+  </p>
+  <p>
+    <%= f.label :event_color, t('eventcolor') ,:class=>"mg-label"%><span class="required-field"> *</span><br>
+    <%= f.text_field :event_color, :id=>"editColourPickerFieldID"  %>
+  </p>
+  <%= f.hidden_field :mg_school_id %> 
+
+  <%= f.hidden_field :updated_by, :value => session[:user_id]%> 
+
+<p>
+  <%#= f.label :is_deleted, t('isactive') %>
+    <%#= f.label :is_deleted,t('yes')%>
+    <%#= f.radio_button :is_deleted, false  , :checked => true %>
+    <%#= f.label :is_deleted,t('no') %>
+    <%#= f.radio_button :is_deleted, true%>
+</p>
+ <%= f.hidden_field :is_deleted, :value => 0%> 
+  <p class="mg-p-mgtop">
+    <%#= f.submit  t('save') ,:class=>"mg-small-form-btn"%>
+    <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("save")%></a>
+     <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+
+  </p>
+<% end %>
+<script>
+$(document).ready(function () {
+  $('#editColourPickerFieldID').colorpicker('show');
+$("#eventEditTypesFormID").validate({
+
+rules: {
+"event_types[name]": {required: true},
+"event_types[event_color]": {required: true}
+}
+});
+});
+</script>

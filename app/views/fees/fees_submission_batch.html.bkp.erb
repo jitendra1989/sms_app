@@ -1,0 +1,457 @@
+ if request.get?
+
+
+
+
+
+
+
+      @studentObj = MgStudent.find(params[:id])
+      @studentScoreArray=MgFinanceTransactionDetail.where(:mg_student_id=>params[:id]).pluck(:paid_amount)
+
+      if !(@studentObj.mg_student_catagory_id.nil?)
+        @studentcategory=MgStudentCategory.find(@studentObj.mg_student_catagory_id)
+      end
+
+      @admissionNumber=@studentObj.admission_number
+      @first_name=@studentObj.first_name
+      @last_name=@studentObj.last_name
+      @full_name="#{@first_name} #{ @last_name}"
+      @studentbatch=MgBatch.find(@studentObj.mg_batch_id)
+      @studentcourse=MgCourse.find(@studentbatch.mg_course_id)
+
+      @batch_name=@studentbatch.name
+      @course_name=@studentcourse.course_name
+      @class_section="#{@course_name}-#{@batch_name}"
+
+      selectFeeCollectionId=params[:fee_collection_id]
+
+
+
+      @mgFeeCollectionObj=MgFeeCollection.find_by_id(selectFeeCollectionId)
+      @feeFineDue=MgFeeFineDue.where(:mg_fee_fine_id=>@mgFeeCollectionObj.mg_fine_id).order('days_after_due_date DESC').pluck(:days_after_due_date, :amount, :mg_fee_fine_id)
+
+      @studentId=params[:id]
+     
+      @checkForFeePaid=MgFinanceFee.where(:student_id=>@studentId,:mg_fee_collection_id=>params[:fee_collection_id] )
+      puts "@checkForFeePaid"
+      puts @checkForFeePaid.inspect
+      puts  @feeFineDue.inspect
+
+
+
+      @collection_particular_list=MgFeeCollectionParticular.where(:mg_student_id=>params[:id], :mg_fee_collection_id=>selectFeeCollectionId)
+     
+      @particular_discount_list=MgFeeCollectionDiscount.select(:mg_discount_name, :mg_discount).where(:mg_fee_collection_id=>selectFeeCollectionId,:mg_discount_type=>"Section", :mg_discount_receiver_id=>@studentObj.mg_batch_id)
+      @particular_discount_list+=MgFeeCollectionDiscount.select(:mg_discount_name, :mg_discount).where(:mg_fee_collection_id=>selectFeeCollectionId,:mg_discount_type=>"Student", :mg_discount_receiver_id=>@studentObj.id)
+      @particular_discount_list+=MgFeeCollectionDiscount.select(:mg_discount_name, :mg_discount).where(:mg_fee_collection_id=>selectFeeCollectionId,:mg_discount_type=>"Student Category", :mg_discount_receiver_id=>@studentObj.mg_student_catagory_id)
+    end
+
+
+
+ if request.post?
+
+
+      @mg_finance_fee_id=MgFinanceFee.where(:student_id=>params[:fees_submission_batch][:student_id],:mg_fee_collection_id=>params[:fees_submission_batch][:fee_collection_id])
+      
+      puts"@mg_finance_fee_id"
+      puts @mg_finance_fee_id.inspect
+      
+      if(@mg_finance_fee_id.size>0)
+        mgFinanceFeeId=@mg_finance_fee_id[0].id
+        #puts"@mg_finance_fee_id"
+        #puts("@mg_finance_fee_id.size")
+        puts(@mg_finance_fee_id.size)
+
+       @particularArray=params[:particularId].inspect
+        
+       #  puts @arrayid
+         
+             
+
+        params[:particularId].each do |particularId|
+         puts params[:totalamount]
+         puts particularId
+       end
+       #logger.inffoxkckjz
+      #else
+       # mgFinanceFeeId=''
+      #end
+      # :finance_fee_id=>@mg_finance_fee_id[0].id,
+      #logger.info " @mg_finance_fee_id"  
+      #logger.info  @mg_finance_fee_id.inspect
+      @mg_finance_transaction=MgFinanceTransaction.new(:amount => params[:fees_submission_batch][:fee_amount], :mg_student_id=> params[:fees_submission_batch][:student_id], :finance_fee_id=>mgFinanceFeeId, :transaction_date=> params[:fees_submission_batch][:transaction_date], :is_deleted=> params[:fees_submission_batch][:is_deleted], :mg_school_id=> session[:current_user_school_id], :fine_included=> params[:fees_submission_batch][:fine_included], :fine_amount=> params[:fees_submission_batch][:fine_amount] )
+
+       if @mg_finance_transaction.save 
+
+        #@mg_finance_fee_id.update_all(:transaction_id=>@mg_finance_transaction.id, :is_paid=>1) 
+
+        params[:particularId].each_with_index do |particularId,i|
+
+        @mg_finance_transaction_details=MgFinanceTransactionDetail.new()
+        @mg_finance_transaction_details.mg_transaction_id=@mg_finance_transaction.id
+        @mg_finance_transaction_details.mg_student_id=params[:fees_submission_batch][:student_id]
+
+        #MgFinanceFee
+        @financeId=@mg_finance_transaction.finance_fee_id
+        @financeFee=MgFinanceFee.find(@financeId)
+        @mg_finance_transaction_details.mg_collection_id=@financeFee.mg_fee_collection_id
+        @mg_finance_transaction_details.mg_fee_particular_id=particularId
+        @mg_finance_transaction_details.paid_amount=params[:amount][i].to_f
+        if params[:fees_submission_batch][:fee_amount].to_f==params[:totalamount][0].to_f
+          @mg_finance_transaction_details.is_partial_payment=false
+          @mg_finance_fee_id.update_all(:transaction_id=>@mg_finance_transaction.id, :is_paid=>1) 
+
+          @mg_finance_transaction_details.save
+        else
+          @mg_finance_transaction_details.is_partial_payment=true
+          @mg_finance_fee_id.update_all(:transaction_id=>@mg_finance_transaction.id, :is_paid=>0) 
+
+          @mg_finance_transaction_details.save
+        end
+       end
+       end   
+
+     end
+      #redirect_to :action=>'fee_collection'  fees_submission_batch/6/28
+      redirectURL='/fees/fees_submission_batch/'+params[:fees_submission_batch][:student_id]+'/'+params[:fees_submission_batch][:fee_collection_id]
+
+      puts"redirectURL"
+      puts redirectURL 
+      redirect_to redirectURL
+      #render :layout => false
+    end
+
+
+<!-- Sec --> 
+<%= render  partial: 'fee_left' %>
+<%= form_for :fees_submission_batch, url: fees_fees_submission_batch_path, method: :post  do |f| %>
+<% if(@collection_particular_list.size>0) %>
+<%="Name:"%>
+<%=@full_name%><br/>
+<%="Admission Number:"%>
+<%=@admissionNumber%><br/>
+<%="Class & Section:"%>
+<%=@class_section%><br/>
+<%if !(@studentcategory.nil?)%>
+<%="Student Category:"%>
+<%=@studentcategory.name%><br/>
+<%end%>
+
+
+<table  class="mg-fees-submission-batch-tbl" cellpadding="0" cellspacing="0"  >
+  <tr class="mg-tbl-tr">
+    <th class="md-tbl-th">Sl no. </th>
+    <th class="md-tbl-th">Particulars</th>
+    <th class="md-tbl-th">Fee</th>
+     <th class="md-tbl-th">Paid</th>
+      <th class="md-tbl-th">Balance</th>
+      <th class="md-tbl-th">Amount</th>
+  </tr>
+ <% i=0 %>
+ <% totalFee=0%>
+ <% totalFine=0%>
+ <% totalDiscount=0%>
+ <tr>
+ 
+
+   <% @collection_particular_list.each_with_index do |particular,j| %>
+    <% totalFee += particular.mg_fee_particular_amount.to_i%>
+      <tr>
+        <td class="mg-tbl-td"><%= i +=1 %></td>
+        <td class="mg-tbl-td">
+          <%= particular.mg_fee_particular_name%>
+          <%=hidden_field_tag 'particularId[]', particular.id%>
+        </td>
+      
+        <td class="mg-tbl-td"><%= particular.mg_fee_particular_amount %></td >
+        <td class="mg-tbl-td"><%= @studentScoreArray[j] %></td>
+        <td class="mg-tbl-td">
+        <%if !(@studentScoreArray.nil?)%>
+        <%#= @collection_particular_list[j].mg_fee_particular_amount.to_f-@studentScoreArray[j] %>
+        <%#= @collection_particular_list[j].mg_fee_particular_amount.to_f%>
+        <%=@studentScoreArray[j] %>
+        <%else%>
+        <%=@studentScoreArray[j] %>
+        <%end%>
+        </td>
+        <td class="mg-tbl-td"><%=text_field_tag 'amount[]' ,particular.mg_fee_particular_amount,:class=>"connect-input-classes"%>
+        </td>
+      </tr>
+   <% end %>
+    <%@total=0%>
+
+   <%#@total+=particular.mg_fee_particular_amount.to_i%>
+
+   
+    
+   
+
+    <% if(@feeFineDue.size>0) 
+     @feeFineDue.each do |fine|
+      
+        #@mgFeeCollectionObj.due_date
+        #@mgFeeCollectionObj.end_date
+        #"Hello"
+        @daysLate = (Date.today - @mgFeeCollectionObj.due_date).to_i
+
+        if(@daysLate >= fine[0].to_i)
+
+      %>
+
+      <tr>
+         <td></td>
+         <td colspan="5" align="center">Fine</td>
+         <td></td>
+       </tr>
+      <tr>
+        <td class="mg-tbl-td"><%= i +=1 %></td>
+
+        <%@feeFine=MgFeeFine.find_by_id(fine[2])%>
+        <%if@feeFine!=nil%>
+            <td class="mg-tbl-td" colspan="4"><%= @feeFine.fine_name %></td>
+        <%else%>
+            <td></td>
+        <%end%>
+        <!-- <td class="mg-tbl-td" colspan="5"><%#= fine[0] %></td> -->
+        <td class="mg-tbl-td"><%= fine[1] %></td>
+      </tr>
+
+    <%
+        totalFee += fine[1].to_i 
+        totalFine= fine[1]
+        break
+      end 
+
+
+    end
+   end %>
+
+   <tr>
+     <td></td>
+     <td colspan="5" align="center">Discount</td>
+     <td></td>
+   </tr>   
+
+  <% if(@particular_discount_list.size>0) %>
+  <td class="discountAmount">
+    <% @particular_discount_list.each do |discount| %>
+      <% totalDiscount += discount.mg_discount.to_i%>
+      <tr>
+        <td class="mg-tbl-td"><%= i +=1 %></td>
+        <td class="mg-tbl-td" colspan="4"><%= discount.mg_discount_name %></td>
+        <td class="mg-tbl-td"><%= discount.mg_discount %>
+        <%=text_field_tag 'discountamount' , discount.mg_discount,:class=>"connectinput"%>
+        </td>
+      </tr>
+    <% end %>
+  <% end %>
+</td>
+  <tr>
+    <td colspan="7"></td>
+  </tr>
+  <tr>
+    <td class="mg-tbl-td"></td>
+    <td colspan="4" class="mg-tbl-td" align="right">Total Discount</td>
+    <td class="mg-tbl-td"><%= totalDiscount %></td>
+  </tr>
+
+  <tr>
+    <td class="mg-tbl-td"></td>
+    <td colspan="4" class="mg-tbl-td" align="right">Total Fees</td>
+    <td class="mg-tbl-td"><%= totalFee-totalDiscount %>
+    <%=hidden_field_tag 'totalamount[]', totalFee-totalDiscount%>
+    
+<%#=text_field_tag 'totalFee' , totalFee-totalDiscount,:class=>"connect-input-clss"%>
+    </td>
+  </tr>
+
+  <tr>
+    <td class="mg-tbl-td"></td>
+    <td colspan="4" class="mg-tbl-td" align="right">Amount to pay</td>
+    <td class="mg-tbl-td"><%#= totalFee-totalDiscount %>
+
+        
+<%#=text_field_tag 'amountToPay' , totalFee-totalDiscount,:class=>"connect-input-clss"%>
+  <%= f.text_field :fee_amount , :readonly => "readonly", value: totalFee-totalDiscount  %>
+    </td>
+  </tr>
+  </div>
+  <tr>
+    <td colspan="7" >
+      <div id="page-yield" align="right">
+      <div class="box">
+        
+          <%= f.hidden_field :is_deleted, :value=> 0%>
+          <%= f.hidden_field :mg_school_id, :value=> session[:current_user_school_id]%>
+          <%= f.hidden_field :student_id, :value=> @studentId%>
+          <%= f.hidden_field :transaction_date, :value=> Date.today%>
+          <%= f.hidden_field :fee_collection_id, :value=> @mgFeeCollectionObj.id%>
+
+          <%
+
+            if totalFine!=0
+              fine_included=1
+            else
+              fine_included=0
+            end
+
+          %>
+
+          <%= f.hidden_field :fine_included, :value=> fine_included%>
+          <%= f.hidden_field :fine_amount, :value=> totalFine%>
+         
+               
+          
+          <%if@checkForFeePaid.size>0%>
+             <%if@checkForFeePaid[0].is_paid%>
+             <label>Fee Paid</label>
+             <%else%>
+               <%= submit_tag 'Submit', id: "savePayFeeID", value: "Pay Fee" %>
+
+             <% end %>
+
+          <% end %>
+        
+      </div>
+    </div>
+
+    </td>
+  </tr>
+  
+   </tr>
+</table>
+<%else%>
+<h5>No Fee Record Found</h5>
+
+<% end %>
+<%end%>
+<%= render  partial: 'application/common_left_close' %>
+
+<script type="text/javascript">
+     $(document).ready(function(){
+
+      $("li").removeClass( "active" );
+      $("a").removeClass( "activeMenu" );
+
+      $("#feeCollectionLiID").addClass("active");
+      $("#feeCollectionID").addClass("activeMenu");
+   });
+// $(".feeDiscountEditFormClass").validate({
+//         rules: 
+//         {
+//             "fee_discount[name]": {required: true},
+//             "fee_discount[course]": {required: true}
+//           }
+//         });
+
+
+           
+
+
+
+
+$(".connect-input-classes").change(function(e){
+  
+     onchange("hello"); 
+
+});
+
+function onchange(arg)
+{
+  
+  var total=0;
+ $(".connect-input-classes").each(function()
+ {
+  
+
+      var maximumMarks=$(this).val();
+      Marks=parseInt(maximumMarks);
+       total += Marks;
+       });
+
+var tot=0
+$(".connectinput").each(function()
+ {
+      
+      var maximumMarks=$(this).val();
+      Marks=parseInt(maximumMarks);
+       tot += Marks;
+     
+ });
+
+if (total>tot)
+ {
+ total-=tot;
+ //$("#totalFee").val(total);
+  $("#amountToPay").val(total);
+  $("#fees_submission_batch_fee_amount").val(total);
+}
+else
+{
+  alert("Discount Is More Than Particular Amount");
+//$("#totalFee").val("");
+  $("#amountToPay").val("");
+ $("#fees_submission_batch_fee_amount").val("");
+}
+
+};
+
+
+
+
+
+
+
+$(".connectinput").change(function(e){
+  
+     onchangefunction("how are you"); 
+
+});
+
+function onchangefunction(arg)
+{
+  
+  var total=0;
+ $(".connect-input-classes").each(function()
+ {
+  
+
+      var maximumMarks=$(this).val();
+      Marks=parseInt(maximumMarks);
+       total += Marks;
+       });
+
+var tot=0
+$(".connectinput").each(function()
+ {
+
+      var maximumMarks=$(this).val();
+      Marks=parseInt(maximumMarks);
+       tot += Marks;
+     
+ });
+
+if (total>tot)
+ {
+ total-=tot;
+ //$("#totalFee").val(total);
+  $("#amountToPay").val(total);
+  $("#fees_submission_batch_fee_amount").val(total);
+}
+else
+{
+  alert("Discount Is More Than Particular Amount");
+  //$("#totalFee").val("");
+  $("#amountToPay").val("");
+ $("#fees_submission_batch_fee_amount").val("");
+
+ 
+}
+ 
+};
+
+
+
+
+</script>

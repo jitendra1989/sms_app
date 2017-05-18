@@ -1,0 +1,45 @@
+<%= render  partial: 'examination_table_left' %>
+
+
+
+<div>
+
+    <% unless flash[:notice].nil? %>
+    <p class="flash-msg"> <%= flash[:notice] %> </p>
+  <% end %>
+<%=form_for :rank_report, :url=>{:action=>'student_subject_rank'} do |f| %>
+<div>
+<%="Select Section"%>
+   <%=select_tag :mg_batch_id,options_from_collection_for_select(@batches,"id","full_name"),:prompt=>"Select",:onchange=>"myrankingFunction(this.value)"%>
+</div>
+
+<div class="subjects">
+</div>
+
+
+<%= f.submit "submit"%>
+<% end %>
+</div>
+
+<%= render  partial: 'examination_table_close' %>
+
+<script>
+function myrankingFunction(batchid){
+    var urlLink = "/examination/list_batch_subjects/";
+      
+  
+        $.ajax({
+            url: urlLink ,
+            data:{"mg_batch_id":batchid},
+            cache: false,
+            success: function(data){
+                //alert("hii")
+            //console.log(html);
+            $(".subjects").empty();
+            $(".subjects").append(data);
+        }
+       
+      }); 
+    }
+
+</script>

@@ -1,0 +1,61 @@
+<% navigation_add t('biometric_attendances'), employee_biometric_attendances_path %>
+<% navigation_add t('import'), employee_biometric_attendances_import_path %>
+
+
+<%= render  partial: 'mg_employee_leave_types/mg_employee_leave_types_left' %>
+
+<h4 class="mg-h4"><%= t('import_biometric_attendances')%></h4>
+<%if flash[:success].present?%>
+<div class="alert alert-info mg-success-msg">
+    <%=flash[:success]%>
+  </div>
+<%end%>
+
+ <% if !flash[:error].blank? %>
+  <div class="alert alert-info mg-error-msg">
+  <%= flash[:error]%>
+  </div>
+<% end %>
+
+
+
+<%= form_for :import, :url=>{:controller=>'employee_biometric_attendances',:action=>'import_data'}, :html=>{:id => 'employeeAttendancesFormID', multipart: true} do %>
+  <%#= file_field_tag :file ,:onchange =>"validateattenFiles(this);"%>
+  <%= file_field t('upload'), 'datafile',:onchange =>"validateattenFiles(this);" %></p>
+  <%= submit_tag 'Import' ,:class=>"mg-small-form-btn mg-tbl-margin"%>
+<% end %>
+<%= render  partial: 'application/common_left_close' %>
+<script>
+
+
+      $(document).ready(function () {
+       
+        $("li").removeClass( "active" );
+        $("a").removeClass( "activeMenu" );
+
+        $("#importEmployeeBiometricAttendanceLiID").addClass( "active" );
+        $("#importEmployeeBiometricAttendance").addClass( "activeMenu" );
+
+        // focusEvent();
+        focusAttendance();
+      });
+
+
+
+
+function validateattenFiles(inputFile) {
+  var maxExceededMessage = "This file exceeds the maximum allowed file size (5 MB)";
+  var extErrorMessage = "Only file with extension: .xls is allowed";
+  var allowedExtension = ["xls"];
+  var extName;
+  var extError = false;
+  $.each(inputFile.files, function() {
+    extName = this.name.split('.').pop();
+    if ($.inArray(extName, allowedExtension) == -1) {extError=true;};
+  });
+  if (extError) {
+   window.alert(extErrorMessage);
+   $(inputFile).val('');
+  };
+}
+</script>

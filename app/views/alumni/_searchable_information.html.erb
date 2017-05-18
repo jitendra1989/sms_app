@@ -1,0 +1,104 @@
+<%#=render partial: 'alumni_left'%>
+<%# navigation_add t('sharable_information'), :action=>'searchable_information' %>
+<!-- <h4 class="mg-h4"><%#= t('sharable_information') %></h4> -->
+<%#= form_for :alumni_data, :url=>{:action=>"searchable_information"} ,method: :post, :html => { :id => "edit_studentFormID" ,:multipart => true } do |f| %>
+  <table class="batch-tbl mg-tbl-margin">
+    <tr>
+      <td class="mg-align-center"><%= t('sharable') %></td>
+      <td class="mg-align-center"> <%=t('select')%><br/>
+        <a  id="seescheckAllCheckBoxalumniParticularId" class="mg-pop-link">All</a>
+        <a  id="seesunCheckAllCheckBoxalumniParticularId" class="mg-pop-link">None</a></td>
+    </tr>
+   <!--  <tr>
+      <td><%#= t('name') %></td>
+      <td class="mg-align-center"> <%#= f.check_box 'is_name_sharable',:class=>"demo1213334"%></td>
+    </tr> -->
+    <tr>
+      <td><%= t('email_id') %></td>
+      <td class="mg-align-center">  <%= f.check_box 'is_email_id_sharable'  ,:class=>"demo1213334"%></td>
+    </tr>
+    <tr>
+      <td class="mg-label-text-transform-none"><%= t('date_of_birth') %></td>
+      <td class="mg-align-center">  <%= f.check_box 'is_date_of_birth_searchable'  ,:class=>"demo1213334"%></td>
+    </tr>
+    <tr>
+      <td><%= t('mobile_no') %></td>
+      <td class="mg-align-center">  <%= f.check_box 'is_mobile_no_sharable'  ,:class=>"demo1213334"%></td>
+    </tr>
+
+    <!-- ===================================Changes==================================== -->
+    <!-- <tr>
+      <td><%#= t('programme') %></td>
+      <td class="mg-align-center">  <%#= f.check_box 'is_programme_searchable'  ,:class=>"demo1213334"%></td>
+    </tr>
+    <tr>
+      <td><%#= t('passing_out') %></td>
+      <td class="mg-align-center">  <%#= f.check_box 'is_passing_out_searchable'  ,:class=>"demo1213334"%></td>
+    </tr>
+    <tr>
+      <td><%#= t('specialization') %></td>
+      <td class="mg-align-center">  <%#= f.check_box 'is_specialization_searchable'  ,:class=>"demo1213334"%></td>
+    </tr> -->
+    <!-- ===================================Changes==================================== -->
+    <tr>
+      <td><%= t('current_location') %></td>
+      <td class="mg-align-center">  <%= f.check_box 'is_current_location_searchable'  ,:class=>"demo1213334"%></td>
+    </tr>
+    <tr>
+      <td><%= t('current_profession') %></td>
+      <td class="mg-align-center">  <%= f.check_box 'is_current_profession_searchable'  ,:class=>"demo1213334"%></td>
+    </tr>
+    <tr>
+      <td><%= t('current_designation') %></td>
+      <td class="mg-align-center">  <%= f.check_box 'is_current_designation_searchable'  ,:class=>"demo1213334"%></td>
+    </tr>
+    <tr>
+      <td><%= t('current_organization') %></td>
+      <td class="mg-align-center">  <%= f.check_box 'is_current_organization_searchabler'  ,:class=>"demo1213334"%></td>
+    </tr>
+  </table>
+  <br/>
+
+  <!-- <p class="mg-p-mgtop"> -->
+    <!-- <a id="accept-class-data-data-alumni" class="mg-custom-labels mg-small-form-btn"><%#=t("save")%></a> -->
+    <%#= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+    <%#=f.submit t("save") ,:id=>"submitalumniFormBtnId" , :style=>"display:none"%>
+  <!-- </p> -->
+<%#end%>
+
+<%#= render  partial: 'application/common_left_close' %>
+
+
+
+
+<script>
+  // $( document ).ready(function() {
+  //   focusCurrentTab("share_informationAID","share_informationLId");
+  // });
+
+  $(document).on("click", "#seescheckAllCheckBoxalumniParticularId", function(e){
+    $(".demo1213334").prop('checked', true);
+    e.preventDefault();
+  });
+
+  $(document).on("click", "#seesunCheckAllCheckBoxalumniParticularId", function(e){
+    $(".demo1213334").prop('checked', false);
+    e.preventDefault();
+  });
+
+  // $(document).on("click", "#accept-class-data-data-alumni", function(e){
+  //   var inputElems=document.getElementsByClassName("demo1213334"),
+  //   count = 0;
+  //   for (var i=0; i<inputElems.length; i++){
+  //     if (inputElems[i].type === "checkbox" && inputElems[i].checked === true){
+  //       count++;
+  //     }
+  //   }
+  //   if (count>0){
+  //     $("#submitalumniFormBtnId").click();
+  //   }else{
+  //     alert("Select any one recored")
+  //   }
+  // });
+
+</script>

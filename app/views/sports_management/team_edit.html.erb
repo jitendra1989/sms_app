@@ -1,0 +1,388 @@
+<%= render  partial: 'sports_left' %>
+<% navigation_add t('team'), :controller=>'sports_management', :action=>'team' %>
+
+  <% navigation_add t('edit_team'),:controller=>'sports_management',:action=>'team_edit' %>
+
+  <h4 class="mg-h4"><%=t('edit_team_details')%></h4>
+
+
+<%= form_for :team , url: @action=="new" ? 'team_create' :
+ '/sports_management/'+@team.try(:id).to_s+'/team_update',:html => {:id => 'teamID' } do |f| %>
+
+  <%= f.hidden_field :primary_id, :value => @team.try(:id)%>
+
+
+  <%= f.hidden_field :mg_school_id, :value => session[:current_user_school_id]%>
+  <%= f.hidden_field :created_by, :value => session[:user_id]%> 
+  <%= f.hidden_field :updated_by, :value => session[:user_id]%> 
+  <%= f.hidden_field :is_deleted, :value => 0%>
+  <%= f.hidden_field :mg_sport_team_id, :value => @team.id%>
+
+
+<p>
+  <%= f.label :game_type, t("activity") ,:class=>"mg-label"%>
+  <span class="required-field"> *</span><br>
+
+  
+      <%=select_tag :game_type,options_for_select([["Indoor", "indoor"],["Outdoor", "outdoor"]],:selected=>@team.game_type),:onchange => 'game();',:prompt=>"Select",:class=>"mg-text-field" %>
+    
+</p>
+
+
+<div id="game-id">
+
+<p>
+    <%= f.label :select_game, t('select_game') ,:class=>"mg-label mg-rm-text-trans"%><span class="required-field"> *</span><br>
+      
+        <%=select_tag :mg_sport_game_id,options_for_select([]),:prompt=>"Select"%>
+     
+</p>
+
+</div>
+
+ <p>
+
+    <%= f.label :team_name, t('team_name') ,:class=>"mg-rm-text-trans mg-label"%><span class="required-field"> *</span><br>
+    
+      <%= f.text_field :team_name ,:class=> 'mg-text-field',:value=>@team.team_name%>
+
+
+  </p>
+
+  <p>
+  <%= f.label :team_of, t("team_of") ,:class=>"mg-label mg-label-text-transform-none"%>
+  <span class="required-field"> *</span><br>
+
+  
+      <%=select_tag :team_of,options_for_select([["Student", "student"],["Employee", "employee"],['Both','both']],:selected=>@team.team_of),:onchange => 'stud_emp();',:prompt=>"Select",:class=>"mg-text-field" %>
+    
+</p>
+
+
+<div id="formStudentDIVID"></div>
+<div id="formEmployeeDIVID"></div>
+
+
+<p class="mg-p-mgtop">
+    <a onclick="$(this).closest('form').submit()" style="display:none" class="mg-small-form-btn submit-btn-data"><%=t("save")%></a>
+    <a   class="mg-small-form-btn submit-btn-data123"><%=t("save")%></a>
+    <%= link_to t('cancel'), {:controller=>'sports_management',:action=>'team'}, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+</p>
+
+<% end %>
+
+<%= render  partial: 'application/common_left_close' %>
+
+<script type="text/javascript">
+
+         
+  $(document).ready(function () {
+
+    $(".submit-btn-data123").click(function(){
+            $(".data14 option").prop('selected',true);
+            $(".data12 option").prop('selected',true);
+          $(".submit-btn-data").click();
+            
+         })
+    
+
+    $("#teamID").validate({
+
+        rules: {
+          "team[team_name]": {required: true},
+          "game_type": {required: true},
+          "mg_sport_game_id":{required: true},
+          "team_of":{required: true},
+          "selected_students[]":{required: true},
+          "selected_employees[]":{required: true}
+
+          }
+      });
+
+
+
+    focusCurrentTab("teamAID","teamLiID");
+
+        var gameValue = $( "#game_type").val();
+        var teamId = $( "#team_mg_sport_team_id").val();
+        var Pid = $( "#team_primary_id").val();
+
+
+       if(gameValue) {
+           var urlLink = "/sports_management/game_data";
+          $.ajax({
+             url: urlLink,
+             cache: false,
+             data: {"game_type":gameValue,"data":"edit","id":teamId,Pid:Pid},
+             success: function(data){
+                    $("#game-id").empty().append(data);
+                }
+         });
+     }
+
+
+ var urlLink = "/sports_management/add_student_to_team";
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            data: {"data":"edit"},
+            success: function(html){
+               // $("#formStudentDIVID").empty();
+               // $("#formEmployeeDIVID").empty();
+                $('#formStudentDIVID').append(html) 
+            }
+        });
+ var urlLink = "/sports_management/add_employee_to_team";
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            data: {"data":"edit"},
+            success: function(html){
+                //$("#formStudentDIVID").empty();
+               // $("#formEmployeeDIVID").empty();
+                $('#formEmployeeDIVID').append(html) 
+            }
+        });
+
+
+        var stu_emp_val = $( "#team_of").val();
+       if(stu_emp_val=="student") {
+           var urlLink = "/sports_management/add_student_to_team";
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            data: {"data":"edit"},
+            success: function(html){
+               $("#formStudentDIVID").show();
+                $("#formEmployeeDIVID").hide();
+               // $('#formStudentDIVID').append(html) 
+            }
+        });
+     }
+     else if(stu_emp_val=="employee"){
+      var urlLink = "/sports_management/add_employee_to_team";
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            data: {"data":"edit"},
+            success: function(html){
+                $("#formStudentDIVID").hide();
+                $("#formEmployeeDIVID").show();
+               // $('#formEmployeeDIVID').append(html) 
+            }
+        });
+     }
+     else if(stu_emp_val=="both"){
+        var urlLink1 = "/sports_management/add_student_to_team";
+        $.ajax({
+            url: urlLink1 ,
+            cache: false,
+            data: {"data":"edit"},
+            success: function(html){
+                             $("#formStudentDIVID").show();
+
+
+               // $("#formStudentDIVID").empty();
+                //$('#formStudentDIVID').append(html) 
+            }
+        });
+
+        var urlLink2 = "/sports_management/add_employee_to_team";
+        $.ajax({
+            url: urlLink2 ,
+            cache: false,
+            data: {"data":"edit"},
+            success: function(html){
+                $("#formEmployeeDIVID").show();
+
+                //$("#formEmployeeDIVID").empty();
+               // $('#formEmployeeDIVID').append(html) 
+            }
+        });
+     }
+     
+
+
+     $.ajax({
+            url: "/sports_management/students_name_data",
+            type: "GET",
+            data: {"data":"suc","data":"edit","team_id":teamId},
+            success: function(html) {
+               $("#studentListLabelID").show();
+               $("#selected_students").html(html.main);
+               $("#selected_students option").prop('selected',true);
+            },
+            error:function(){
+              alert("Something went wrong!");
+            } 
+      });
+
+
+        $.ajax({
+                url: "/sports_management/emp_name_data/",
+                type: "GET",
+                data: {"data":"suc","data":"edit","team_id":teamId},
+                success: function(data) {
+                  $("#selected_employees").html(data.main);
+                  $("#selected_employees option").prop('selected',true);
+                },
+                error:function(){
+                  alert("Something went wrong!");
+                }
+            });
+
+  });
+
+
+function stud_emp(){
+
+        var stu_emp_val = $( "#team_of").val();
+        var teamId = $( "#team_mg_sport_team_id").val();
+       if(stu_emp_val=="student") {
+
+        $.ajax({
+       
+            url: "/sports_management/students_name_data",
+            type: "GET",
+            data: {"data":"suc","data":"edit","team_id":teamId},
+            success: function(html) {
+               $("#formEmployeeDIVID").show();
+               $("#formStudentDIVID").show();
+               if (html.main!=""){
+               $("#selected_students").html(html.main);
+               $("#selected_students option").prop('selected',true);
+             }else{
+
+
+             }
+
+               $("#formEmployeeDIVID").hide();
+
+                
+              },
+            error:function(){
+              alert("Something went wrong!");
+            } 
+        });
+
+     }
+     else if(stu_emp_val=="employee"){
+                        $("#formStudentDIVID").hide();
+
+        $.ajax({
+        
+                url: "/sports_management/emp_name_data/",
+                type: "GET",
+                data: {"data":"suc","data":"edit","team_id":teamId},
+                success: function(data) {
+                  $("#formEmployeeDIVID").show();
+                  //$("#formStudentDIVID").show();
+                  if (html.main!=""){
+                  $("#selected_employees").html(data.main);
+                  $("#selected_employees option").prop('selected',true);
+                  
+                   }
+                 
+                 // $("#formStudentDIVID").hide();
+
+                },
+                error:function(){
+                  alert("Something went wrong!");
+                }
+        });
+// 
+
+    
+     }
+     else if(stu_emp_val=="both"){
+        var urlLink1 = "/sports_management/add_student_to_team";
+        $.ajax({
+            
+            url: "/sports_management/students_name_data",
+            type: "GET",
+            data: {"data":"suc","data":"edit","team_id":teamId},
+            success: function(html) {
+               $("#formEmployeeDIVID").show();
+               $("#formStudentDIVID").show();
+               $("#selected_students").html(html.main);
+               $("#selected_students option").prop('selected',true);
+               
+              },
+            error:function(){
+              alert("Something went wrong!");
+            }
+          });
+
+        var urlLink2 = "/sports_management/add_employee_to_team";
+        $.ajax({
+          
+                url: "/sports_management/emp_name_data/",
+                type: "GET",
+                data: {"data":"suc","data":"edit","team_id":teamId},
+                success: function(data) {
+                  $("#selected_employees").html(data.main);
+                  $("#selected_employees option").prop('selected',true);
+                },
+                error:function(){
+                  alert("Something went wrong!");
+                }
+        });
+     }
+     else{
+
+               $("#formEmployeeDIVID").hide();
+
+                        $("#formStudentDIVID").hide();
+
+
+     }
+    
+   }
+
+
+function game(){
+        var gameValue = $( "#game_type").val();
+       if(gameValue) {
+           var urlLink = "/sports_management/game_data";
+          $.ajax({
+             url: urlLink,
+             cache: false,
+             data: {"game_type":gameValue},
+             success: function(data){
+                    $("#game-id").empty().append(data);
+                }
+         });
+     }
+   }
+  
+
+</script>
+
+
+
+
+
+
+
+
+
+<!-- def sem_data
+      mg_school_id=session[:current_user_school_id]
+        course_list=MgCourse.where(:mg_wing_id=>params[:id],:is_deleted=>0,:mg_school_id=>mg_school_id)
+        course_list_id=MgCourse.where(:mg_wing_id=>params[:id],:is_deleted=>0,:mg_school_id=>mg_school_id).pluck(:id)
+
+        sect_list=MgBatch.where("is_deleted=? and mg_school_id=? and mg_course_id IN (?)",0,session[:current_user_school_id],course_list_id).order("mg_course_id")
+        
+        str=""
+            sect_list.each do |s|
+              course=MgBatch.find_by(s.mg_course_id)
+              str +="<option value='#{s.try(:id)}'>#{s.try(:course_name)} - #{s.try(:name)}</option>"
+            end
+          @object=str
+
+      respond_to do |format|
+              format.json  { render :json => {main: @object, sub: ""} }
+          end 
+
+
+    end -->

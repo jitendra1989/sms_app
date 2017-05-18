@@ -1,0 +1,96 @@
+<%= render partial: 'canteen_management_left' %>
+<% navigation_add t('balance_amount'), :controller=>'canteen_managements', :action=>'balance_amount' %>
+<% navigation_add t('show_bill_history'), :controller=>'canteen_managements', :action=>'show_all_bill_history',:id=>@bill_detail_object.id%>
+
+<h4 class="mg-h4"><%=t("show_bill_history")%></h4>
+
+<%= form_for :pay_balance_amount, :url=>'/canteen_managements/update_balance_amount', :method=> "patch",:html => {:id => 'payBalanceAmountFormID'} do |f| %>
+
+  <label class="mg-label mg-tt-width" style=";"><%= t('select_user') %><span class="required-field">&nbsp;*</span></label>&nbsp;
+  <%= f.select :user_type, options_for_select([[t("Select"), ""],[t("Student"), "student"], [t("Employee"), "employee"]],:selected=>@bill_detail_object.user_type),{},:disabled=>true%>
+  <br/>
+
+  <div id="billDetailStudentDivId" class="studentDivClass" style=";">
+    <label class="mg-label mg-tt-width" style=""><%= t('select') %> <%= t('semester') %><span class="required-field">&nbsp;*</span></label>
+    <%= f.collection_select(:mg_batch_id,MgBatch.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]), :id, :course_batch_name,{:selected=>@bill_detail_object.mg_batch_id,:include_blank => t("select")},:class =>"mg-select-btn",:onchange=>"studentPaymentFunction(this.value)",:disabled=>true)%><br/>
+
+    <label class="mg-label mg-tt-width" style=""><%= t('select_student') %><span class="required-field">&nbsp;*</span></label>
+    <%= f.collection_select(:mg_student_id,MgStudent.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]), "id", "student_full_name",{:selected=>@bill_detail_object.mg_student_id,:include_blank => t("select")},:class =>"mg-select-btn",:onchange=>"studentPaymentDetailFunction(this.value)",:disabled=>true)%><br/>
+  </div>
+
+  <div id="billDetailEmployeeDivId" class="employeeDivClass" style="display:none;">
+    <label class="mg-label mg-tt-width" style=""><%= t('select') %> <%= t('department') %><span class="required-field">&nbsp;*</span></label>
+      <%= f.collection_select(:mg_employee_department_id,MgEmployeeDepartment.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]), :id, :department_name,{:selected=>@bill_detail_object.mg_employee_department_id,:include_blank => t("select")},:class =>"mg-select-btn",:onchange=>"employeePaymentFunction(this.value)",:disabled=>true)%><br/>
+
+    <label class="mg-label mg-tt-width" style=""><%= t('select_employee') %><span class="required-field">&nbsp;*</span></label>
+    <%= f.collection_select(:mg_employee_id,MgEmployee.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]), "id", "employee_full_name_with_number",{:selected=>@bill_detail_object.mg_employee_id,:include_blank => t("select")},:class =>"mg-select-btn",:onchange=>"studentPaymentDetailFunction(this.value)",:disabled=>true)%><br/>
+  </div>
+
+  <div id="showBalanceDetailsList"></div> 
+  <div id="showBillHistoryDiveID"></div> 
+
+
+
+  <p class="mg-p-mgtop">
+    <!-- <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%#=t("save")%></a> -->
+    <!-- <a class="mg-small-form-btn cancel-form-dialog"><%#=t("cancel")%></a> -->
+    <%= link_to t('cancel'), {:controller=>'canteen_managements',:action=>'balance_amount'}, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+  </p>
+<% end %>
+
+<%= render  partial: 'application/common_left_close' %>
+
+
+<script>
+  $(document).ready(function(){
+    focusCurrentTab("canteenBalanceAmountAID","canteenBalanceAmountLID");
+
+    bill_history_user_type=$("#pay_balance_amount_user_type").val();
+
+    if(bill_history_user_type!=""){
+      if(bill_history_user_type=="employee"){
+        $("#billDetailStudentDivId").hide();
+        $("#billDetailEmployeeDivId").show();
+        studentAndEmployeePaymentDetail();
+      }else{
+        $("#billDetailEmployeeDivId").hide();
+        $("#billDetailStudentDivId").show();
+        studentAndEmployeePaymentDetail();
+      }
+    }
+
+    // $("#payBalanceAmountFormID").validate({
+    //   rules: {        
+    //    "pay_balance_amount[user_type]": {required: true},
+    //    "pay_balance_amount[mg_batch_id]": {required: true},
+    //    "pay_balance_amount[mg_student_id]": {required: true},
+    //    "pay_balance_amount[mg_employee_department_id]": {required: true},
+    //    "pay_balance_amount[mg_employee_id]": {required: true}
+    //   }
+    // });
+    // $.validator.addClassRules("total-paid-amount-cls", {required: true, number: true});
+  });
+
+
+  $(document).on("click",".show-all-bill-history-details",function(e){   
+    e.preventDefault();  
+    var showID = $(this).attr('id');
+    var id = showID.split("-"); 
+    var urlLink = "/canteen_managements/show_bill_history/"+id[0];
+    $.ajax({
+      url: urlLink,
+      cache: false,
+      success: function(data){
+        $("#showBillHistoryDiveID").dialog({
+          model: true,
+          height: 'auto',
+          width: 'auto',
+          title: "Bill History",
+          open: function(){
+            $(this).html(data);
+          }
+        })
+      }
+    })
+  });
+</script>

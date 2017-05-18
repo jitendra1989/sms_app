@@ -1,0 +1,3 @@
+<%#=@employee.inspect%>
+<%#=select_tag :employees,options_for_select(@employees[0])%>
+ <%= collection_select(:employees, :ids, @employee, :id, :first_name, {}, {:name => 'employees[]' }) %>

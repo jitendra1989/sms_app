@@ -1,0 +1,23 @@
+<!-- Sec --> 
+<% if @employeeUnderManager.length > 0 %>
+    <h4 class="mg-h4"><%= t('employeeundermanager') %></h4>
+    <table class="batch-tbl mg-tbl-margin">
+        	<tr>
+        		<th><%= t('name') %></th>
+        		<th><%= t('position') %></th>
+        		<th><%= t('category') %></th>
+        		<th><%= t('department') %></th>
+                <th><%= t('remove') %></th>
+        	</tr>
+        	<%@employeeUnderManager.each do |employee|%>
+        	<tr>
+                <td><%=employee[0]%></td>
+                <td><%=MgEmployeePosition.where(:id=>employee[1]).pluck(:position_name).join("")%></td>
+                <td><%=MgEmployeeCategory.where(:id=>employee[2]).pluck(:category_name).join("")%></td>
+                 <td><%=MgEmployeeDepartment.where(:id=>employee[3]).pluck(:department_name).join("")%></td>
+                 <td style="text-align: center;"><button title="Remove" id="<%=raw employee[4] %>" class="removeEmployeeLink"><i class="fa fa-trash"></button></td>
+        	</tr>
+        	<%end%>
+    </table>
+<% end %>
+    

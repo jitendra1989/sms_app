@@ -1,0 +1,143 @@
+
+
+<table border="1" class="mg-showdata-bg" cellspacing="1" cellpadding="1">
+  <tr>
+   <td class="mg-td-width-half" valign="top">
+ 		<label class="mg-label"> <%= t('name')%></label>
+ 	 </td>
+ 	 <td class="mg-td-width-half" valign="top"><%=@student_detail.try(:name)%></td>
+  </tr>
+  
+  <tr>
+   <td class="mg-td-width-half" valign="top">
+    <label class="mg-label"> <%= t('resume_headline')%></label>
+   </td>
+   <td class="mg-td-width-half" valign="top"><%=@student_detail.try(:resume_headline)%></td>
+  </tr>
+
+  <tr>
+   <td class="mg-td-width-half" valign="top">
+    <label class="mg-label"> <%= t('current_position_/designation')%></label>
+   </td>
+   <td class="mg-td-width-half" valign="top"><%=@student_detail.try(:current_position_designation)%></td>
+  </tr>
+
+  <tr>
+   <td class="mg-td-width-half" valign="top">
+    <label class="mg-label"> <%= t('dateofbirth')%></label>
+   </td>
+   <td class="mg-td-width-half" valign="top"><%=@student_detail.try(:date_of_birth).strftime(@school.date_format)%></td>
+  </tr>
+
+  <tr>
+   <td class="mg-td-width-half" valign="top">
+    <label class="mg-label"> <%= t('last_degree')%></label>
+   </td>
+   <td class="mg-td-width-half" valign="top"><%=@student_detail.try(:last_degree)%></td>
+  </tr>
+
+  <tr>
+   <td class="mg-td-width-half" valign="top">
+    <label class="mg-label"> <%= t('year_of_passing')%></label>
+   </td>
+   <td class="mg-td-width-half" valign="top"><%=@student_detail.try(:year_of_passing)%></td>
+  </tr>
+
+  <tr>
+   <td class="mg-td-width-half" valign="top">
+    <label class="mg-label"> <%= t('functional_area')%></label>
+   </td>
+   <td class="mg-td-width-half" valign="top"><%=@student_detail.try(:functional_area)%></td>
+  </tr>
+
+  <tr>
+   <td class="mg-td-width-half" valign="top">
+    <label class="mg-label"> <%= t('educational_qualification')%></label>
+   </td>
+   <td class="mg-td-width-half" valign="top"><%=@student_detail.try(:educational_qualification)%></td>
+  </tr>
+
+  <tr>
+   <td class="mg-td-width-half" valign="top">
+    <label class="mg-label"> <%= t('experience')%></label>
+   </td>
+   <td class="mg-td-width-half" valign="top"><%=@student_detail.try(:experience)%></td>
+  </tr>
+
+  <tr>
+   <td class="mg-td-width-half" valign="top">
+    <label class="mg-label"> <%= t('technical_skills')%></label>
+   </td>
+   <td class="mg-td-width-half" valign="top">
+      <div class="text-scroll-for-log-text-cls comments-space" style="padding: 5px 40 0 10px">
+        <%=@student_detail.try(:technical_skills)%>
+      </div>
+    </td>
+  </tr>
+
+  <tr>
+   <td class="mg-td-width-half" valign="top">
+    <label class="mg-label"> <%= t('soft_skills')%></label>
+   </td>
+   <td class="mg-td-width-half" valign="top">
+      <div class="text-scroll-for-log-text-cls comments-space" style="padding: 5px 40 0 10px">
+        <%=@student_detail.try(:soft_skills)%>
+      </div>
+    </td>
+  </tr>
+
+  <tr>
+   <td class="mg-td-width-half" valign="top">
+    <label class="mg-label"> <%= t('salary_expected')%></label>
+   </td>
+   <td class="mg-td-width-half" valign="top"><%=@student_detail.try(:salary_expected)%></td>
+  </tr>
+
+  <tr>
+   <td class="mg-td-width-half" valign="top">
+    <label class="mg-label"> <%= t('address')%></label>
+   </td>
+   <td class="mg-td-width-half" valign="top">
+    <div class="text-scroll-for-log-text-cls comments-space" style="padding: 5px 40 0 10px">      
+      <%=@student_detail.try(:address)%></td>
+    </div>
+  </tr>
+
+  <tr>
+   <td class="mg-td-width-half" valign="top">
+    <label class="mg-label"> <%= t('contact_number')%></label>
+   </td>
+   <td class="mg-td-width-half" valign="top"><%=@student_detail.try(:contact_number)%></td>
+  </tr>
+  
+  <tr>
+   <td class="mg-td-width-half" valign="top">
+    <label class="mg-label"> <%= t('email_id')%></label>
+   </td>
+   <td class="mg-td-width-half" valign="top"><%=@student_detail.try(:email_id)%></td>
+  </tr>
+
+  <tr>
+   <td class="mg-td-width-half" valign="top">
+    <label class="mg-label"> <%= t('current_location')%></label>
+   </td>
+   <td class="mg-td-width-half" valign="top"><%=@student_detail.try(:current_location)%></td>
+  </tr>
+
+  <tr>
+   <td class="mg-td-width-half" valign="top">
+    <label class="mg-label"> <%= t('preferred_location')%></label>
+   </td>
+   <td class="mg-td-width-half" valign="top"><%=@student_detail.try(:preferred_location)%></td>
+  </tr>
+
+</table>
+</br>
+<a class="mg-small-form-btn cancel-form-dialog"><%=t('cancel')%></a>
+
+<script type="text/javascript">
+$(document).ready(function () {
+  textSeeMoreLess();
+});
+
+</script>

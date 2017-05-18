@@ -1,0 +1,117 @@
+<%# navigation_add t('hostel_issues'),:controller=>'hostel_management', :action=>'hostel_complaint' %>
+
+<%# navigation_add t('hostel issue Details'),:controller=>'hostel_management', :action=>'hostel_complaint_show' %>
+
+<%=render partial: 'exam_management/exam_management_left'%>
+
+<h4 class="mg-h4"><%= t('Disciplinary_reports_details')%></h4>
+
+<%= form_for :hod_actions_show, :url=>{:action=>"hod_disciplinary_action_update",:id=>@discipline_data.id}  do |f| %>
+  <table border="1" class="mg-showdata-bg " cellspacing="1" cellpadding="1">
+
+  <% wing_data=MgWing.find_by(:id=>@discipline_data.mg_wing_id)
+     sem_data=MgCourse.find_by(:id=>@discipline_data.mg_batches_id)%>
+ 
+      <tr>
+         <td class="mg-td-width-half" valign="top">
+          <label class="mg-label"> <%= t('programme')%></label>
+         </td>
+         <td class="mg-td-width-half" valign="top">
+          <%=wing_data.wing_name%>
+         </td>
+      </tr>
+
+      <tr>
+         <td class="mg-td-width-half" valign="top">
+          <label class="mg-label"> <%= t('semester')%></label>
+         </td>
+         <td class="mg-td-width-half" valign="top">
+            <%=sem_data.course_name%>
+         </td>
+      </tr>
+
+
+
+          
+    <tr>
+      <th> <label class="mg-label"> <%= t('student_name')%></label>
+      </th>
+      <th> <label class="mg-label"> <%= t('class_name')%></label>
+      </th>
+     </tr>
+          
+      <%@student_data.each do |item|%>
+      <%
+        student_list=MgStudent.find_by(:id=>item.mg_student_id)
+        batch=MgBatch.find_by(:id=>student_list.mg_batch_id)
+        course=MgCourse.find_by(:id=>batch.mg_course_id)
+      %>
+      <tr>
+        <td class="mg-td-width-half" valign="top">
+        <%=student_list.try(:first_name)%> <%=student_list.try(:last_name)%>
+        </td>
+        <td class="mg-td-width-half" valign="top">
+        <%=batch.try(:name)%>
+        </td>
+      </tr>
+           
+      <%end%>
+
+
+
+   
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label mg-rm-text-trans"> <%= t('remark')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+      <%=@discipline_data.remark %>
+     </td>
+ </tr>
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label mg-rm-text-trans"> <%= t('action_taken')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+      <%= text_area_tag :act_data, @discipline_data.action_taken %>
+     </td>
+ </tr>
+
+               
+ <tr>
+   <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('status')%></label>
+   </td>
+
+    <td class="mg-td-width-half " valign="top">
+      
+      <%= select_tag :status,options_for_select([["Open","Open"],["Closed","Closed"]],:selected=>@discipline_data.status),
+      {:prompt=>"Select"} %><br/>
+
+   </td>
+ </tr>
+         
+
+
+
+
+
+
+</table><br/>
+<p>
+         
+     <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("save")%></a>
+
+    <%=link_to t("cancel"),{:controller => "sports_management", 
+    :action => "hod_disciplinary_action_index"},:class=>"mg-small-form-btn cancel-form-dialog"%>    
+</p>
+
+    <% end %>
+
+<%= render partial: 'application/common_left_close' %>
+ 
+ <script>
+  $( document ).ready(function() {
+    focusCurrentTab("hodDiscpActAID","hodDiscpActLiID");
+  });
+</script>

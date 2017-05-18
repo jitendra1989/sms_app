@@ -1,0 +1,108 @@
+<%#= render :partial => '/dashboards/admin' %>
+<div>
+<button class="mg-h4 btn-admin-dsbrd" style="border: none;">Course <br> <%=@course_count.length%></button>
+<button class="mg-h4 btn-admin-dsbrd" style="border: none;">Batch <br> <%=@batches_count.length%></button>
+<button class="mg-h4 btn-admin-dsbrd" style="border: none;">Student <br> <%=@student_count.length%></button>
+<button class="mg-h4 btn-admin-dsbrd" style="border: none;">Department <br> <%=@department_count.length%></button>
+<button class="mg-h4 btn-admin-dsbrd" style="border: none;">Teaching Staff <br> <%=@teaching_staff_count.length%></button>
+<button class="mg-h4 btn-admin-dsbrd" style="border: none;">Non-Teaching Staff <br> <%=@non_Teaching_staff_count.length%></button>
+</div><br>
+
+<%#= link_to "Course Details", controller: "reports", action: "course_details" %>
+
+
+<a id="courseBatchDetailAID" href='#'>Course Details</a>
+<a id="batchDetailAID" href='#'>Batch Details</a>
+<a id="studentDetailAID" href='#'>Student Details</a>
+<a id="teachingStaffDetailAID" href='#'>Teaching Staff Details</a>
+<a id="nonTeachingStaffDetailAID" href='#'>Non Teaching Staff Details</a>
+<a id="departmentDetailAID" href='#'>Department Details</a>
+<a id="subjectEmployeeDetailAID" href='#'>Subject/Employee</a>
+<div id="courseBatchDetailDivID"></div>
+
+<script>
+$(document).on("click","#courseBatchDetailAID",function(){
+	$.ajax({
+		url:"/reports/course_details/",
+		success:function(html){
+			$("#courseBatchDetailDivID").html(html);
+		},
+		error:function(){
+			alert("Inside Error");
+		}
+	});
+});
+
+$(document).on("click","#batchDetailAID",function(){
+	$.ajax({
+		url:"/reports/batch_details/",
+		success:function(html){
+			$("#courseBatchDetailDivID").html(html);
+		},
+		error:function(){
+			alert("Inside Error");
+		}
+	});
+});
+
+$(document).on("click","#studentDetailAID",function(){
+	$.ajax({
+		url:"/reports/student_details/",
+		success:function(html){
+			$("#courseBatchDetailDivID").html(html);
+		},
+		error:function(){
+			alert("Inside Error");
+		}
+	});
+});
+
+$(document).on("click","#teachingStaffDetailAID",function(){
+	$.ajax({
+		url:"/reports/teaching_staff_details/",
+		success:function(html){
+			$("#courseBatchDetailDivID").html(html);
+		},
+		error:function(){
+			alert("Inside Error");
+		}
+	});
+});
+
+$(document).on("click","#nonTeachingStaffDetailAID",function(){
+	$.ajax({
+		url:"/reports/non_teaching_staff_details/",
+		success:function(html){
+			$("#courseBatchDetailDivID").html(html);
+		},
+		error:function(){
+			alert("Inside Error");
+		}
+	});
+});
+
+$(document).on("click","#subjectEmployeeDetailAID",function(){
+	$.ajax({
+		url:"/reports/subject_employee_details/",
+		success:function(html){
+			$("#courseBatchDetailDivID").html(html);
+		},
+		error:function(){
+			alert("Inside Error");
+		}
+	});
+});
+
+$(document).on("click","#departmentDetailAID",function(){
+	$.ajax({
+		url:"/reports/department_details/",
+		success:function(html){
+			$("#courseBatchDetailDivID").html(html);
+		},
+		error:function(){
+			alert("Inside Error");
+		}
+	});
+});
+
+</script>

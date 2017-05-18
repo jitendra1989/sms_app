@@ -1,0 +1,213 @@
+<% navigation_add t('albums'), albums_path %>
+<% navigation_add t('new'), new_album_path   %>
+
+
+
+<%= render  partial: '/events/events_left' %>
+<h4 class="mg-h4"><%= t('new_album')%></h4>
+ <%= form_for :albums, url: albums_path, method: :post, :html => {
+                            :id => 'albumsFormID' } do |f| %>
+
+    <p>
+    <%= f.label :name, t('name') ,:class=>"mg-label"%><span class="required-field"> *</span><br>
+    <%= f.text_field :name   %>
+  </p>                          
+  <p>
+    <%= f.label :mg_event_id, t('select_event') ,:class=>"mg-label"%><span class="required-field"> *</span><br>
+  <%= f.collection_select(:mg_event_id, MgEvent.where(:is_deleted=>0, :mg_school_id=>session[:current_user_school_id]), :id, :title,{:include_blank => t('select')} ,:class=>"mg-select-btn")  %>
+  </p>
+
+  <p>
+    <%= f.label :description, t('description') ,:class=>"mg-label"%><br>
+    <%= f.text_area :description   %>
+  </p>
+  
+
+ 
+
+  <table>
+    <tr>
+      <td>
+         <p>
+          <%= f.label :accessable_to­_employees, t('accessible_to­_employees') ,:class=>"mg-label mg-tt-width"%>
+          <%= f.check_box :accessable_to­_employees %>
+          </p>
+      </td>
+       <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+      <td>
+        <p>
+          <%= f.label :accessable_to­_employees, t('accessible_to­_teacher') ,:class=>"mg-label mg-tt-width"%>
+          <%= f.check_box :accessable_teacher %>
+          </p>
+      </td>
+    </tr>
+    <tr>
+      <td>
+         <div id="accessableTo­EmployeesHideandShowDIVID" style="display:none">
+            <%=render partial: "department_list"%>
+         </div>
+      </td>
+    <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+
+      <td>
+        <div id="accessableTo­TeacherHideandShowDIVID" style="display:none">
+            <%=render partial: "department_list_tech"%>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <p>
+          <%= f.label :accessable_to­_students, t('accessible_to­_students') ,:class=>"mg-label mg-tt-width"%>
+          <%= f.check_box :accessable_to­_students   %>
+        </p>
+      </td>
+      <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+
+      <td>
+        <p>
+          <%= f.label :accessable_to­_guardians, t('accessible_to­_guardians') ,:class=>"mg-label mg-tt-width"%>
+          <%= f.check_box :accessable_to­_guardians   %>
+        </p>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <div id="accessableTo­StudentsHideandShowDIVID" style="display:none">
+          <%=render partial: "course_batch_list_student"%>
+        </div>
+      </td>
+      <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+
+      <td>
+        <div id="accessableTo­GuardiansHideandShowDIVID" style="display:none">
+          <%=render partial: "course_batch_list_guardian"%>
+        </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+
+ 
+  
+  
+  
+ 
+
+ 
+  
+  
+ 
+
+  <%= f.hidden_field :mg_school_id, :value => session[:current_user_school_id]%>
+
+  <%= f.hidden_field :created_by, :value => session[:user_id]%> 
+  <%= f.hidden_field :updated_by, :value => session[:user_id]%> 
+
+
+  <%= f.hidden_field :is_deleted, :value => 0%> 
+  <%= hidden_field_tag :url_direction%> 
+
+
+ 
+   <p class="mg-p-mgtop">
+   <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("save")%></a>
+    <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+   </p>
+
+  <%=f.submit "abcd",{:id=>"submitFormWithHiddenValueID", :style=>"display:none"}%>
+<% end %>
+<p class="mg-p-mgtop">
+ <a onclick="submitFormWithHiddenValue()" class="mg-small-form-btn"><%=t("save")%> & <%=t("upload_photos")%></a>
+     
+  </p>
+<%= render  partial: 'application/common_left_close' %>
+
+
+
+
+<script>
+$(document).ready(function () {
+
+ focusCurrentTab("viewAlbumsPhotosAID","viewAlbumstosLiID");
+      //focusDashboards();
+ 
+$("#albumsFormID").validate({
+
+rules: {
+"albums[name]": {required: true},
+"albums[mg_event_id]": {required: true}
+}
+});
+});
+
+function submitFormWithHiddenValue(){
+  $("#url_direction").val("index");
+  $("#submitFormWithHiddenValueID").click();
+
+
+}
+
+
+
+
+
+  
+
+
+
+// $(document).on("click","#event_planners_accessable_to­_employees", function(e)}{
+
+// });
+
+
+
+
+$(document).on("click", "#albums_accessable_to­_employees", function(e){
+var is_lock=$("input#albums_accessable_to­_employees").is(':checked');
+if(is_lock){
+	$("#accessableTo­EmployeesHideandShowDIVID").show();
+}else{
+	$("#accessableTo­EmployeesHideandShowDIVID").hide();
+
+}
+});
+// albums_accessable_to­_employees
+$(document).on("click", "#albums_accessable_to­_students", function(e){
+var is_lock=$("input#albums_accessable_to­_students").is(':checked');
+if(is_lock){
+	$("#accessableTo­StudentsHideandShowDIVID").show();
+}else{
+	$("#accessableTo­StudentsHideandShowDIVID").hide();
+
+}
+});
+
+
+$(document).on("click", "#albums_accessable_to­_guardians", function(e){
+var is_lock=$("input#albums_accessable_to­_guardians").is(':checked');
+if(is_lock){
+	$("#accessableTo­GuardiansHideandShowDIVID").show();
+}else{
+	$("#accessableTo­GuardiansHideandShowDIVID").hide();
+
+}
+});
+
+$(document).on("click", "#albums_accessable_teacher", function(e){
+var is_lock=$("input#albums_accessable_teacher").is(':checked');
+if(is_lock){
+  $("#accessableTo­TeacherHideandShowDIVID").show();
+}else{
+  $("#accessableTo­TeacherHideandShowDIVID").hide();
+
+}
+});
+
+
+</script>
+
+
+

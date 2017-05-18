@@ -1,0 +1,42 @@
+<!-- breadcrumbs Work -->
+<% navigation_add 'Examinations', examinations_path %>
+<% navigation_add 'CCE', examination_cce_new_path %>
+<% navigation_add 'Basic Settings', examination_cceBasic_Settings_path %>
+
+<!-- breadcrumbs Work -->
+
+
+
+<%= render  partial: 'examination_table_left' %>
+
+ <%#= link_to image_tag("/images/buttons/back.png",:border => 0), "history.back()" %>
+<h4 class="mg-h4">Basic Settings</h4>
+<div>
+	<table>
+		<tr>
+			<td class="mg-exam-td-width" valign="top">
+				<%=button_to "CCE Grade Sets",{ controller: 'examination',action:"cceBasic_gradeSets"}, {:class=>"mg-exam-btn-width mg-btn-exam"} %> <br/>
+			</td>
+			<td class="mg-exam-td-width" valign="top">			     
+				<%=button_to "Academic Session",{ controller: 'examination',action:"cceExamCategory_index"}, {:class=>"mg-exam-btn-width mg-btn-exam"} %><br/>       
+			</td>
+		</tr>
+		<tr>
+			<td class="mg-exam-td-width" valign="top">
+				<%=button_to "CCE Weightages",{ controller: 'examination',action:"cceWeightages_index"}, {:class=>"mg-exam-btn-width mg-btn-exam"} %><br/> 
+			</td>
+			<td class="mg-exam-td-width" valign="top">
+				<%=button_to "Assign Weightages",{ controller: 'examination',action:"cceAssaignWeightages_index"}, {:class=>"mg-exam-btn-width mg-btn-exam"} %> <br/>        
+			</td>
+		</tr>
+	</table>
+</div>
+<%= render  partial: 'examination_table_close' %>
+
+<script type="text/javascript">
+	$(document).ready(function() {
+        focusCurrentTab("viewStudentListAId","viewStudentListLiId");
+        focusExaminationHeaderBox();
+	});
+
+</script>

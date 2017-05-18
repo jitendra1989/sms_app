@@ -1,0 +1,156 @@
+<% navigation_add t('action_required'), :controller=>'front_office_management',
+        :action=> 'action_required_index'%>
+<%#=render partial: 'front_office_management_left'%>
+<%= render  partial: 'master_settings/master_settings_left' %>
+
+<div id="create_exam_application_form_dialog_box">
+
+<h4 class="mg-h4"><%=t('action_required')%></h4>
+
+<button class="add-action-required-for-fom mg-btn-bottom-margin mg-custom-form-btn"><%= t("add_action_required")%></button>
+
+
+<%if @action_required_data.present?%>
+<table  class="batch-tbl mg-tbl-margin">   <!-- border="2" --> 
+  <tr class="subject-table-header">
+    <th><%= t('action_required') %></th>
+    <th><%= t('description') %></th>
+    <th style="width: 97px;"><%= t('actions') %></th>
+  </tr>
+ 
+  <% @action_required_data.each do |s| %>
+    <tr>
+      <td><%= s.action_required %></td>
+      <td class="mg-desc-text-justify"><%= truncate(s.description.to_s, :length => 25, :separator => ' ') %></td>
+
+      <td>	
+      <button title="Show" id="<%=raw s.id %>-showtype_of_queryFomBTNID" class="show-action_required-fom-btn mg-icon-btn"><i class="fa fa-eye"></i></button>
+
+        <button title="Edit" id="<%=raw s.id %>-edittype_of_queryFomBTNID" class="edit-action-required-fom-btn mg-icon-btn"><i class="fa fa-pencil-square-o"></i></button>
+         <button title="Delete" id="<%=raw s.id %>-deletelabBTNID" class="delete-action-required-index-btn mg-icon-btn"><i class="fa fa-trash"></i></button>
+
+
+      </td>
+    </tr>
+  <% end %>
+</table>
+<br/>
+ <div class="pagination-align" style="position: relative; bottom: 10px;">
+              <%#= will_paginate @type_of_query_data, :container => false %>
+           </div>
+<%else%>
+<h5>No Action required is created </h5>
+<%end%>
+
+
+
+<div id="edit_action_required_fomdata"></div>
+<div id="show_action_required_fomdata"></div>
+<div id="fom_action_required">
+</div>
+
+<%= render  partial: 'application/common_left_close' %>
+
+
+<script>
+$(document).ready(function () {
+          focusCurrentTab("room_requiredAID","actionRequiredLiID");
+      });
+
+$(document).on("click", ".add-action-required-for-fom", function(e){
+        // var myID =$(this).attr('id');
+        // var Id=myID.split("-");
+
+        var urlLink = "/front_office_management/action_required_new";
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(html){
+                  $('#fom_action_required').dialog({
+                    modal: true,
+                    minHeight: 'auto',
+                    title: "New Action Required",
+                    open: function () {
+                      
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+});
+
+$(document).on("click", ".show-action_required-fom-btn", function(e){
+        var myID =$(this).attr('id');
+        var Id=myID.split("-");
+        
+        var urlLink = "/front_office_management/action_required_show";
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            data:{"id":Id[0]},
+            success: function(html){
+                  $('#show_action_required_fomdata').dialog({
+                    modal: true,
+                    minHeight: 'auto',
+                    width: 'auto',
+                    title: "Show Action Required",
+                  
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+});
+$(document).on("click", ".edit-action-required-fom-btn", function(e){
+        var myID =$(this).attr('id');
+         var Id=myID.split("-");
+
+        var urlLink = "/front_office_management/action_required_edit";
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            data:{id:Id[0]},
+            success: function(html){
+                  $('#edit_action_required_fomdata').dialog({
+                    modal: true,
+                    minHeight: 'auto',
+                    width: 'auto',
+                    title: "Edit Action Required",
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+});
+
+$(document).on("click", ".delete-action-required-index-btn", function(e)
+{
+     e.preventDefault();
+    var myID =$(this).attr('id');
+    var Id=myID.split("-");
+    var retVal = confirm("Are you sure to delete?");
+    if(retVal)
+    {
+         var urlLink = "/front_office_management/action_required_delete/"+Id[0];
+
+          $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(html)
+            {
+                window.location.reload();
+            }
+        });
+    }else
+    {
+       return false;
+    }
+}); 
+</script>

@@ -1,0 +1,102 @@
+<!-- Sec --> 
+<%
+@emp=MgEmployee.where(:mg_user_id=>session[:user_id])
+%>
+<%@syllabus=MgSyllabusTracker.where(:is_deleted => '0',:mg_school_id=>session[:current_user_school_id], :mg_employee_id=>@emp[0].id).order(:mg_syllabus_id)%>
+ <h4 class="mg-h4"><%= t('syllabus_progress') %></h4>
+ <div>
+   <%= button_to 'Add Actuals', {:controller => "employees", :action => "syllabus_tracker" } ,:class=>"mg-custom-form-btn mg-button-align" ,:style=>"margin-right: 3px;"%>
+   <%= button_to 'See Progress', {:controller => "employees", :action => "syllabus_track" }  ,:class=>"mg-custom-form-btn mg-button-align"%><br>
+   <div class="mg-scroll-employee-bar mg-tbl-margin">
+<table  class="batch-tbl mg-tbl-layout">   <!-- border="2" --> 
+  <tr class="subject-table-header">
+    <!-- <th>Subject Name</th> -->
+
+  	
+    <th><%=t('syllabus')%></th>
+    <th><%=t('unit')%></th>
+    <th><%=t('topic')%></th>
+    <th><%=t('date_')%></th>
+    <th><%=t('expected_class')%></th>
+    <th><%=t('coursebatch')%></th>
+    <th><%=t('actions')%></th>
+  </tr>
+ 
+  <% @syllabus.each do |curr| %>
+    <tr>
+     <!-- <%#@temp=MgEmployee.find_by_id( curr.mg_employee_id)%>
+     <%#if @temp!=nil%>
+      <td><%#= @temp.first_name %></td>
+      <%#else%>
+      <td></td>
+      <%#end%> -->
+
+      <%@temp=MgSyllabus.find_by_id( curr.mg_syllabus_id)%>
+     <%if @temp!=nil%>
+      <td><%= @temp.name %></td>
+      <%else%>
+      <td></td>
+      <%end%>
+
+      <%@temp=MgUnit.find_by_id( curr.mg_unit_id)%>
+     <%if @temp!=nil%>
+      <td><%= @temp.unit_name %></td>
+      <%else%>
+      <td></td>
+      <%end%>
+
+
+      <%@temp=MgTopic.find_by_id( curr.mg_topic_id)%>
+     <%if @temp!=nil%>
+      <td><%= @temp.topic_name %></td>
+      <%else%>
+      <td></td>
+      <%end%>
+      <%@temp=curr.date%>
+      <%if @temp!=nil%>
+      <% @dateFormat = MgSchool.find_by(session[:current_user_school_id]).date_format %> 
+      <td><%= @temp.strftime(@dateFormat) %></td>
+      <%else%>
+      <td></td>
+      <%end%>
+
+      
+
+      <%@temp=curr.expected_class%>
+      <%if @temp!=nil%>
+      <td><%= @temp %></td>
+      <%else%>
+      <td></td>
+      <%end%>
+
+      <%if curr.mg_batch_id.nil?%>
+            <td></td>
+         <%else%>
+         <%@courseId=MgBatch.where(:id=>curr.mg_batch_id).pluck(:mg_course_id)%>
+         <%@batch=MgBatch.where(:id=>curr.mg_batch_id).pluck(:name)%>
+            <%@course=MgCourse.find(@courseId[0])%>
+            <td><%=@course.course_name%>-<%=@batch[0]%></td>
+         <%end%>
+
+
+    <td>
+      
+      <%= link_to "<i class=\"fa fa-pencil-square-o\"></i>".html_safe, {:controller => "employees", :action => "tracker_edit",:id =>curr.id } ,method: :post,:class=>"mg-icon-btn" ,:title=>"Edit"%>
+      <%= link_to "<i class=\"fa fa-trash\"></i>".html_safe, {:controller => "employees", :action => "tracker_delete",:id =>curr.id } ,method: :post,:class=>"mg-icon-btn" ,:title=>"Delete" ,data: {confirm: "Are you sure to delete?"}%>
+
+      </td>
+
+    </tr>
+  <% end %>
+</table>
+</div>
+</div>
+<script>
+
+$(document).ready(function () {
+
+focusCurrentTab("viewEmployeeSyllabus","viewEmployeesyllabusLiID");
+        focusCurriculum();
+      });
+
+</script>

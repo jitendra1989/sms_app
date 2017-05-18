@@ -1,0 +1,42 @@
+<!-- Sec --> 
+<section id="userBodyContentBox" style="margin: 0 auto;">
+    <table width=100% border="0" cellspacing="0" cellpadding="0"  style="margin-bottom: 0px;">
+        <tr>
+            <td valign="top" class="userBodyContentBox1">
+                <aside class="userMenuBoxLeft" style="width: 210px;">
+                    <ul class="menuListHome">
+                        <li class="myAccountMenu"><%=t("managesubject")%></li>
+                        <li id="viewSubjectListLiID">
+                            <a class="menuItemsActivities" href="/subjects" id="viewSubjectList">
+                                <div class="setMenu"><i class="fa fa-list">&nbsp;&nbsp;</i><%=t("subjectlist")%><!-- <i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i> -->
+                                </div>
+                            </a>
+                        </li>
+                        <li  id="createnNewSubjectLiId" >
+                            <a class="menuItemsActivities" href="/subjects/new" id="createnNewSubject" >
+                                <div class="setMenu"><i class="fa fa-plus-square-o">&nbsp;&nbsp;</i><%=t("createnewsubject")%><!-- <i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i> -->
+                                </div>
+                            </a>
+                        </li>
+                        <li id="batchSubjectAssoLiID">
+                            <a class="menuItemsActivities" href="/subjects/batch_subject_asso" id="batchSubjectAssoID">
+                                <div class="setMenu"><i class="fa fa-link">&nbsp;&nbsp;</i><%=t("batchsubjectassociation")%><!-- <i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i> -->
+                                </div>
+                            </a>
+                        </li>
+                        <li id="empSubjectAssoLiID">
+                            <a class="menuItemsActivities" href="/subjects/emp_subject_asso" id="empSubjectAssoID">
+                                <div class="setMenu"><i class="fa fa-link">&nbsp;&nbsp;</i><%=t("employeesubjectassociation")%><!-- <i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(-33%);"></i> -->
+                                </div>
+                            </a>
+                        </li>
+                    </ul>    
+
+                </aside>
+            </td>
+            <td  valign="top" id="manageStudentCategoryID" class="mg-table-td-main-2">
+<script>
+$(document).ready(function(){
+    focusSubject();
+});
+</script>

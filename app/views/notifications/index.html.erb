@@ -1,0 +1,27 @@
+<!-- jyhasgd-->
+<%= render  partial: 'notification_left' %>
+<% navigation_add t('send_notification'), notifications_path %>
+
+<%user=MgUser.find(session[:user_id])%>
+<%=hidden_field_tag 'user_type', user.user_type%>
+
+<%= render partial: 'notifications/send_notification' %>
+
+<%= render  partial: 'application/common_left_close' %>
+
+<script type="text/javascript">
+     $(document).ready(function(){
+
+     	 focusCurrentTab("viewPrincipleNotification","viewPrincipleNotificationLiID");
+     	 // focusNotification();
+     	 var user_type=$("#user_type").val();
+     	 console.log(user_type);
+     	 if(user_type=="superprincipal" || user_type=="principal"|| user_type=="admin"){
+     	 	focusNotification();
+     	 }
+     	 else{
+     	 	focusDashboards();
+     	 }
+         
+   });
+</script>

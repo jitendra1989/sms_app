@@ -1,0 +1,785 @@
+<!-- Sec --><%
+rlAndPer = session[:roles_permissions_data]
+                 puts rlAndPer.inspect 
+flagDelteCourse = false
+flagEditCourse = false
+
+flagParentBatch = true
+# flagParentBatch = false
+
+
+# flagBatchView = false
+# flagBatchDelete = false
+# flagBatchEdit = false
+# flagBatchUpdate = false
+# flagBatchCreate = false
+
+flagBatchView = true
+flagBatchDelete = true
+flagBatchEdit = true
+flagBatchUpdate = true
+flagBatchCreate = true
+
+index = 0
+%>
+
+
+<% def listData(id) 
+    finalBatch = MgBatch.where(mg_course_id: id )
+   end 
+%>
+
+<% navigation_add t('class'), classes_path %>
+<section id="userBodyContentBox" style="margin: 0 auto;">
+    <table width=100% border="0" cellspacing="0" cellpadding="0">
+        <tr>
+            <td valign="top" class="userBodyContentBox1">
+                <aside class="userMenuBoxLeft">
+                    <ul class="menuListHome">
+                       <li class="myAccountMenu"><%=t('manage_class')%> </li> 
+
+                           <li class="active" id="createDynamicLiID">
+                                                    <a class="menuItemsMailbox activeMenu" href="/classes/index/" id="create_dynamic" >
+                                                        <div class="setMenu"><i class="fa fa-list">&nbsp;&nbsp;</i><%=t('list_class_section')%><!-- <i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i> -->
+                                                        </div>
+                                                    </a>
+                                                </li>
+                    <% rlAndPer.each do   |key|  %>
+           
+                      <% key.each do |kee, valId| %>
+
+                          <% if kee.to_s.eql?("model_id") %>
+                                <% modelData =  MgModel.find(valId)  %>
+                                <% mdlData =  modelData.model_name  %>
+
+                                <% if mdlData.to_s.eql?("CLASSES") %>
+                                <!-- here valId should from action_id key value -->
+                                        <% puts " my key Val is " %>
+                                  <% actionData =  MgAction.find(key["action_id"])  %>
+
+                                        <%if actionData.action_name.to_s.eql?("view") %>
+
+                                        <% puts actionData.action_name.to_s %> 
+                                                <!-- if user are able to view course -->
+                                                
+                                             <!--    <li class="active" id="createDynamicLiID">
+                                                    <a class="menuItemsMailbox activeMenu" href="#" id="create_dynamic" >
+                                                        <div class="setMenu"><i class="fa fa-list">&nbsp;&nbsp;</i><%#=t('list_class_section')%>
+                                                        </div>
+                                                    </a>
+                                                </li> -->
+
+                                        <% end %>  <!-- view if flag close -->
+                                       <%if actionData.action_name.to_s.eql?("create") %>
+
+                                           <!--  if user are able to create course -->
+                                            <li id="createCourseTagLiID">
+                                                <a class="menuItemsActivities" href="/classes/new/" id="createCourseIDgff">
+                                                    <div class="setMenu"><i class="fa fa-book">&nbsp;&nbsp;</i><%=t('create_class')%><!-- <i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i> -->
+                                                    </div>
+                                                </a>
+                                            </li>
+                                        <% end %> <!-- create if flag close -->
+                                        <%if actionData.action_name.to_s.eql?("delete") %>
+                                                <% flagDelteCourse = true %>
+                                        <% end %>   <!-- delete if flag close -->
+                                        <%if actionData.action_name.to_s.eql?("edit") %>
+                                                <% flagEditCourse = true %>
+                                        <% end %> <!-- edit if flag close -->
+
+                                                        
+
+                                <% end %> <!-- COURSES if flag close -->
+
+                                <% if mdlData.to_s.eql?("BATCHES")  %>
+
+                                        <% flagParentBatch = true  %>
+                                        <% puts "Batch Details " %>
+                                        <% puts valId %>
+                                      <!-- Batch action flag should be define here  -->  
+                                      
+                                         <% actionData =  MgAction.find(key["action_id"])  %>
+                                         <% puts actionData.inspect %>
+                                        <%if actionData.action_name.to_s.eql?("view") %>  
+                                               <% flagBatchView = true %> 
+                                        <% end %>
+                                  
+                                         <%if actionData.action_name.to_s.eql?("delete") %>
+
+                                          <% flagBatchDelete = true %>  
+                                        <% end %>
+
+                                        <%if actionData.action_name.to_s.eql?("update") %>  
+                                               <% flagBatchUpdate = true %> 
+                                        <% end %>
+                                  
+                                         <%if actionData.action_name.to_s.eql?("edit") %>
+
+                                          <% flagBatchEdit = true %>  
+                                        <% end %>
+
+                                        <%if actionData.action_name.to_s.eql?("create") %>
+
+                                          <% flagBatchCreate = true %>  
+                                        <% end %>
+
+
+                                       
+
+                                 <% end %> <!-- BATCHES if flag close -->
+
+                          <% end %>
+                        <% end %>  
+                    <% end %>  
+
+                  </ul>
+                </aside>
+            </td>
+         
+            <td id="recent_posts" class="mg-table-td-main-2">
+                <%  
+                        @sql = "Select id,course_name from mg_courses where is_deleted = '0' and mg_school_id=#{session[:current_user_school_id]} "
+                @courses = MgCourse.find_by_sql(@sql)
+               # @courses = MgCourse.all  
+                   %>
+              <%if @courses.length>0%>
+                <%  @courses.each do |c|       %>
+                    
+                 <div class="input-container-data">
+                    
+                    <div class="md-left"><a class="header-text-mod"><%= c.course_name %></a></div>
+                    <div class="md-right">
+
+
+
+                        <%if flagEditCourse %>
+                                                
+                            <div class="row" ><a title="Edit" class="batch-edit mg-icon-btn" id="<%= c.id %>"><i class="fa fa-pencil-square-o"></i></a></div>
+                        <% end %>
+                
+                         
+                        <!-- if user are able to delete course --> 
+                        <%if flagDelteCourse %>
+                                                
+                            <div class="row" ><a title="Delete" class="batch-delete mg-icon-btn mg-icon-btn" style="cursor: pointer; text-decoration: none;" id="del-<%=c.id %>"><i class="fa fa-trash"></i></a></div>
+                        <% end %>
+
+
+                        <% if flagParentBatch %>
+                            <!-- if user are able to add Batch course --> 
+                            <!-- One more condition need here-->
+
+                            
+                            <% if flagBatchCreate %>
+                                <div class="row"> <a title="Add Section" class="batch-add mg-icon-btn" style="cursor: pointer; text-decoration: none;" id="add-<%=c.id %>"><i class="fa fa-plus"></i><!-- &nbsp;<i class="fa fa-th-large"></i> --></a></div>
+                            <% end %>
+                            <!-- if user are able to view batch --> 
+
+
+                            <% if flagBatchView %> 
+                                 <div id="sectionShowBtnID" class="row toggle-btn sectionShowBtnCLASS" data-toggle="#<%=c.id%>" ><a title="View Section" class="plus-btn mg-toggle-course-arrow mg-icon-btn" style="cursor: pointer; text-decoration: none;"><i class="fa fa-caret-down"></i><i class="fa fa-caret-up" style="display: none;"></i></a></div>
+                            <% end %>
+
+                        <% end %>
+                        
+                        
+                    </div>
+                                                           
+                 </div>
+                  <% if flagParentBatch %>
+                <!-- model name is batch--> 
+                 <div class="toggle-data input-container-toggle" id="<%= c.id %>" >
+                            <div class="batch-table" id="batch<%= c.id %>">
+                     
+                            </div>
+                            
+                 </div>
+                  <% end  %>
+                <!-- Dialog Work  courses do finish-->
+         
+                <% end %>  <!-- Dialog Work  courses do finish-->
+                <%else%>
+                  <h5>No Classes Added....</h5>
+                <% end %>
+            </td>
+        </tr>
+    </table>
+</section>
+
+
+<br/>
+<br/>
+<div id="addBatchDiv">
+    
+</div>
+
+<div id="editCourseDialogDivID"></div>
+<div id="addSectionDialogDivID"></div>
+<div id="editBatchDilogDIVID"></div>
+<!-- Dialog will come here -->
+
+<div id="dialog" title="Add Section">
+     <form name="batchEventForm" id="batchEventForm">
+       
+
+        <label class="mg-label" for="name">
+          <span class="translation_missing" title="translation missing: en.name">Name</span><span class="required-field">&nbsp;*</span>
+      </label>
+      <div class="input-container">
+          <input id="batches_name" type="text" name="batches_name" class="mg-text-field"/>
+      </div>
+
+      <label class="mg-label" for="Start date">
+          <span class="translation_missing" title="translation missing: en.Start date">Start Date</span><span class="required-field">&nbsp;*</span>
+      </label>
+
+      <div class="input-container">
+          <input class="Start_date mg-text-field" id="batches_Start_date" type="text" />
+      </div>
+
+      <label class="mg-label" for="End date">
+          <span class="translation_missing" title="translation missing: en.End date">End Date</span><span class="required-field">&nbsp;*</span>
+      </label>
+      <div class="input-container">
+          <input id="End_date" type="text" class="End_date mg-text-field" />
+      </div>
+      </div>
+     </form>  
+</div>
+
+
+<script>
+
+
+$(document).ready(function(){
+
+   //getJsDateFormat
+   
+     dateFormatStr =  getJsDateFormat();
+     //alert("courses ");
+    // alert(dateFormatStr);
+
+       // Adding class 
+    $("#create_dynamic").addClass( "activeMenu" );
+    $("#createDynamicLiID").addClass( "active" );
+    focusCourses();
+    
+    $("#batches_Start_date").datepicker({ changeMonth: true,
+                changeYear: true, dateFormat: dateFormatStr });
+    $("#End_date").datepicker({ changeMonth: true,
+                changeYear: true,dateFormat: dateFormatStr });
+
+
+            $("#dialog").dialog({
+                autoOpen: false,
+                modal: true
+            });
+
+
+
+      $("div.toggle-data").hide();
+ $("#batch_start_date").datepicker({ changeMonth: true,
+                changeYear: true, dateFormat: dateFormatStr });
+  //    $('.Start_date').datepicker({ dateFormat: dateFormatStr });
+ //     $('.End_date').datepicker({ dateFormat: dateFormatStr });
+
+      
+     
+
+// 
+});
+
+// 
+
+$(document).on("click", ".delete-batch-btn", function(e){
+     var myID =$(this).attr('id');
+     var crtBatchID = myID.split("-");
+
+     var confirmFlag  = confirm("Are you sure?");
+
+     if(confirmFlag){
+
+          var urlLink = "/batches/destroy/"+crtBatchID[1];
+        //  alert(urlLink);
+
+         $.ajax({
+              url: urlLink ,
+              cache: false,
+              success: function(data){
+                if(data.length>0){
+                }
+               else{
+                  $("div.batch-table").empty();
+               }
+                
+                 
+              }
+          });
+     }
+});
+
+$(document).on("click", ".update-batch-btn", function(e){
+    var myID =$(this).attr('id');
+    var crtBatchID = myID.split("-");
+   
+
+       var urlLink = "/batches/edit/"+crtBatchID[1];
+       // alert(urlLink);
+
+       $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(html){
+               
+
+                  $('#editCourseDialogDivID').dialog({
+                    modal: true,
+                    title: "Edit Section",
+
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); //end confirm dialog
+               
+            }
+        });
+
+});
+
+$(document).on("click", ".batch-add", function(e){
+       e.preventDefault();
+
+       var myID =$(this).attr('id');
+      
+       var splString = myID.split("-");
+ 
+       $("#dialog").dialog( {buttons: {
+                               Submit: function () {
+                                    // put validations
+                                   //  'batches_name'
+                                   //  $(this).dialog("close");
+                                     addBatchByAjaxUsingCourses(splString[1]);
+                                  
+       
+                               },
+                               Cancel: function () {
+                                  $(this).dialog("close");
+                               }
+                           }});
+       $("#dialog").dialog('open');
+    
+});
+
+
+$(document).on("click", ".batch-add-1", function(e){
+    var myID =$(this).attr('id');
+    var splString = myID.split("-");
+
+                $('#addSectionDialogDivID').dialog({
+                    modal: true,
+                    title: "Add new Section",
+
+                    open: function () {
+                      var apdStr  = '<label class="mg-label" for="name">';
+                          apdStr += '<span class="translation_missing" title="translation missing: en.name">Name</span><span class="required-field">*</span></label>';
+                          apdStr += '<div class="input-container">';
+                          apdStr += '<input id="batches_name"  type="text" /></div>';
+
+                          apdStr += '<label class="mg-label" for="Start date">';
+                          apdStr += '<span class="translation_missing" title="translation missing: en.Start date">Start Date</span><span class="required-field">*</span></label>';
+
+                          apdStr += '<div class="input-container">';
+                          apdStr += '<input class="Start_date" id="batches_Start_date"  type="text" /></div>';
+
+                          apdStr += '<label class="mg-label" for="End date">';
+                          apdStr += '<span class="translation_missing"title="translation missing: en.End date">End Date</span><span class="required-field">*</span></label>';
+                          apdStr += '<div class="input-container"><input id="End_date"  type="text" class="End_date" /></div></div>';
+
+                     //    $(this).html(apdStr);
+                   //  var newHtml = "<%#= j render '/batches/new' %>"
+//                     console.log(newHtml);
+                      $(this).html(apdStr);
+                    },
+                    buttons: {
+                        Ok: function () {
+                             // put validations
+                            //  'batches_name'
+                              
+                              addBatchByAjaxUsingCourses(splString[1]);
+                           
+
+                        },
+                        Close: function () {
+                           $(this).dialog("close");
+                        }
+                    }
+                }); //end confirm dialog
+
+}); 
+
+
+
+
+function addBatchByAjaxUsingCourses(pn_CourseId){
+
+        var batch_name = $("#batches_name").val();
+        var start_date = new Date($.datepicker.parseDate(dateFormatStr,$("#batches_Start_date").val())) ;
+        var end_date = new Date($.datepicker.parseDate(dateFormatStr,$("#End_date").val())) ;
+
+         //alert(batch_name);
+         //alert(start_date);
+         //alert(end_date);
+
+          console.log("batch_name="+batch_name);
+          console.log("end_date="+Date.parse(end_date));
+          console.log("start date="+Date.parse(start_date));
+          
+        if(batch_name.length <= 0 && Date.parse(start_date) <=0 && Date.parse(end_date)<= 0)
+        {
+          alert("Please fill the required field");
+        }
+        else if(batch_name.length <= 0){
+          alert("Please enter batch name");
+          //console.log("start date="+Date.parse(start_date));
+        }else if(Date.parse(start_date) <=0){
+          alert("Please enter start date ");
+        }
+        else if(Date.parse(end_date)<= 0){
+          alert("Please enter end date ");
+        }
+
+
+        else if(!(compareDate( $("#batches_Start_date").val(), $("#End_date").val(), dateFormatStr) ) ){
+        alert("End date should be Greater than Start Date");
+        document.getElementById('End_date').value ="";
+      }
+
+        else{
+          $("#dialog").dialog("close");
+          console.log("start date="+Date.parse(start_date));
+          console.log("start date="+Date.parse(end_date));
+         $.ajax({
+                   
+                    url: "/batches/create", 
+                    type: "POST",
+                    dataType: "json",
+                    data: { mg_course_id: pn_CourseId, name: batch_name , start_date: $.datepicker.formatDate('yy-mm-dd', new Date(start_date)),end_date: $.datepicker.formatDate('yy-mm-dd', new Date(end_date)) }, 
+                    success: function(data) {
+                          //  window.location.reload();
+                          document.getElementById('batches_name').value ="";
+                         document.getElementById('batches_Start_date').value ="";
+                         document.getElementById('End_date').value ="";
+                          },
+                    error: function() {
+                            alert("Ajax error!");
+                          }
+            });
+        }
+
+
+}
+
+$(document).on("click", ".batch-add-my", function(e){
+        var myID =$(this).attr('id');
+
+        var splString = myID.split("-");
+      //  alert(splString[1]);
+        // /courses/:course_id/batches/new
+        var urlLink = "/classes/"+splString[1]+"/batches/new";
+      //  alert(urlLink);
+         $.ajax({
+            url: "/classes/23/batches/new",
+            cache: false,
+            success: function(html){
+               
+
+                
+               
+            },
+            error: function(){
+               
+                alert("Error");
+               
+            }
+        });
+
+
+    }); 
+
+
+$(document).on("click", ".batch-delete", function(e){
+    var myID =$(this).attr('id');
+
+    var splString = myID.split("-");
+    var retVal = confirm("Are you sure to delete class?");
+    if(retVal){
+       // alert(retVal);
+         var urlLink = "/classes/delete/"+splString[1];
+
+          $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(html){
+               window.location.reload();
+            }
+        });
+
+
+
+
+
+    }else{
+       // alert(retVal);     
+       return false;
+    }
+   
+});   
+
+$(document).on("click", ".batch-edit", function(e){
+        var myID =$(this).attr('id');
+        var urlLink = "/classes/edit/"+myID;
+        //alert(urlLink);
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(html){
+               /* $("#dialogID").empty();
+                $("#dialogID").append(html);*/
+
+                  $('#editBatchDilogDIVID').dialog({
+                    modal: true,
+                    title: "Edit Class",
+
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); //end confirm dialog
+               
+            }
+        });
+});
+
+
+
+
+    var innerHTMLValue ="";
+
+    // $(document).on("click", "#createCourseID", function(e){
+          
+    //        $("li").removeClass( "active" );
+    //        $("a").removeClass( "activeMenu" );
+
+    //         $( this ).parent().addClass("active");
+    //         $(this).addClass("activeMenu");
+
+            
+    //         $.ajax({
+    //         url: "/courses/new/",
+    //         cache: false,
+    //         success: function(html){
+
+    //             innerHTMLValue = $("#recent_posts").html();
+    //             $("#recent_posts").empty();
+    //             $("#recent_posts").append(html);
+    //              focusCourses();
+
+    //         },
+    //         error: function(){
+    //            alert("url not exist") ;
+    //         }
+    //     });
+    // }); 
+
+    $(document).on("click", "#create_dynamic", function(e){
+            // location.reload(true);
+          //  alert("hello from java");
+           $("li").removeClass( "active" );
+           $("a").removeClass( "activeMenu" );
+            $( this ).parent().addClass("active");
+            $(this).addClass("activeMenu");
+            $("#recent_posts").empty();
+             $("#recent_posts").append(innerHTMLValue);
+
+
+        focusCourses();
+          
+    }); 
+
+   
+ //$(document).on("click", "#sectionShowBtnID", function(e){
+  
+  $(".sectionShowBtnCLASS").click(function(e) {
+
+              e.preventDefault();  
+              //$("i",this).toggleClass("fa-caret-down fa-caret-up");
+                console.log($(this).attr('data-toggle'));
+
+                            string = $(this).attr('data-toggle');
+                            string = string.replace(/[^a-zA-Z0-9]/g, '');
+                 
+                  var isVisible = $(this).parent().parent().next().is( ":visible" );
+                  //alert("method call - "+ isVisible);
+                  var temp=0;
+
+                    if(!isVisible)
+                    {
+                      //alert(temp);
+                      temp+=1;
+
+                     // alert("!isVisible");
+                     var urlLink = "/batches/batcheList/"+string;  
+                     //  alert(urlLink);
+               
+                   $.ajax({
+               
+                        url: urlLink,
+                        cache: false, 
+                        success: function(data) {
+                       //    alert("data");
+
+                          console.log(data);
+                             if(data.length > 0){
+                              var apdBatchStr = '<table class="batch-tbl data-table-tbl" style="font-family:Calibri;">';
+                                  apdBatchStr +='<tr>';
+                                  apdBatchStr +='  <th>Section Name</th>';
+                                  apdBatchStr +='  <th>Start date</th>';
+                                  apdBatchStr +='  <th>End Date</th>';
+                                  apdBatchStr +='  <th><%=raw t("actions")%></th>';
+                                  apdBatchStr +='</tr>';
+
+                                  window.crtBatchID;
+                                for(var index =0;index<data.length;index++){
+                               //   alert("step--1" +data[index]);
+                                  apdBatchStr +='<tr>';
+                                  
+                                  for(key in data[index]){
+                                       if(key == 'id'){
+                                    
+                                       crtBatchID = data[index][key];
+                                       console.log(crtBatchID);
+                                       }
+                                       else if(key == 'start_date'){
+
+                                        var dateIs = data[index][key];
+                                        var startDate = new Date(dateIs.substring(0,10));
+
+                                          apdBatchStr += "<td>"+$.datepicker.formatDate(dateFormatStr, startDate)+"</td>"
+                                       }
+                                       else if(key == 'end_date'){
+                                               var dateIs = data[index][key];
+                                        var startDate = new Date(dateIs.substring(0,10));
+                    
+                                          apdBatchStr += "<td>"+$.datepicker.formatDate(dateFormatStr, startDate)+"</td>"
+                                       }
+                                    else {
+                                      apdBatchStr += "<td>"+data[index][key]+"</td>"
+                                    }
+                                  }
+                                   apdBatchStr += "<td><button title='Edit' id='update-"+crtBatchID+"' class='update-batch-btn mg-icon-btn'><i class='fa fa-pencil-square-o'></i></button>&nbsp;&nbsp;<button title='Delete' id='delete-"+crtBatchID+"' class='delete-batch-btn mg-icon-btn'><i class='fa fa-trash'></i></button></td>"
+                                apdBatchStr +='</tr>';
+
+                                }
+                              apdBatchStr +='</table>';
+                              console.log("abc");
+                            //  alert(string);
+
+                              $("#batch"+string).empty().append(apdBatchStr);
+
+
+                             }
+                             else{
+
+                              alert("Please add some batch!")
+                             }
+                          },
+                        error: function() {
+                                alert("Ajax error!")
+                              }
+                        });
+                        $("div.toggle-data").hide();
+                        $(this).parent().parent().next().slideToggle(2);
+                    }
+
+                    else{
+                      // alert(temp);
+                      // if (temp==0)
+                      // {
+
+                      //   alert("isVisible");
+
+                        $("div.toggle-data").hide();
+                      //}
+                    }  
+            // temp=0;
+
+          focusCourses();
+});
+
+</script>
+<style>
+    
+
+.toggle-data {
+
+    display: block;
+    padding: 0 0 10px; 
+}
+
+  .ui-datepicker
+    {
+        z-index: 1003 !important; /* must be > than popup editor (1002) */
+    }
+table.data-table-tbl {
+    /*font-family: verdana,arial,sans-serif*/;
+    font-size:11px;
+    color:#000;
+    border-width: 1px;
+    border-color:  #6592b2;
+    border-collapse: collapse;
+    margin-bottom: 15px;
+    margin-left: 20px;
+    margin-top: 15px;
+    float: left;
+}
+table.data-table-tbl th {
+   /* background: linear-gradient(to bottom, #BCBBBA, #ffffff) repeat scroll 0 0 rgba(0, 0, 0, 0);*/
+    border-width: 1px;
+    padding: 8px;
+    border-style: solid;
+    border-color:  #000;
+}
+table.data-table-tbl tr {
+    background-color:white;
+}
+table.data-table-tbl td {
+    border-width: 1px;
+    padding: 8px;
+    border-style: solid;
+    border-color:  #000;
+}
+.anchor-btn{
+
+    text-decoration: none !important;
+}
+
+.batch-table{
+  background-color: red;
+
+}
+
+
+#userBodyContentBox .userMenuBoxLeft ul {
+  left: -40px;
+  list-style: outside none none;
+  position: relative;
+  width: 235px;
+}
+
+ 
+.userMenuBoxLeft ul .setMenu {
+  padding: 13px;
+  width: 195px;
+}
+</style>

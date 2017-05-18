@@ -1,0 +1,133 @@
+<% navigation_add t('query_type'), :controller=>'front_office_management',
+        :action=> 'type_of_query_index'%>
+<%#=render partial: 'front_office_management_left'%>
+<%= render  partial: 'master_settings/master_settings_left' %>
+
+<div id="create_exam_application_form_dialog_box">
+
+<h4 class="mg-h4"><%=t('query_type')%></h4>
+
+<button class="add-type_of_query-for-fom mg-btn-bottom-margin mg-custom-form-btn"><%= t("add_query_type")%></button>
+
+
+<%if @type_of_query_data.present?%>
+<table  class="batch-tbl mg-tbl-margin">   <!-- border="2" --> 
+  <tr class="subject-table-header">
+    <th><%= t('name') %></th>
+    <th><%= t('description') %></th>
+    <th style="width: 97px;"><%= t('actions') %></th>
+  </tr>
+ 
+  <% @type_of_query_data.each do |s| %>
+    <tr>
+      <td><%= s.name %></td>
+      <td class="mg-desc-text-justify"><%= truncate(s.description.to_s, :length => 25, :separator => ' ') %></td>
+
+      <td>	
+      <button title="Show" id="<%=raw s.id %>-showtype_of_queryFomBTNID" class="show-type_of_query-fom-btn mg-icon-btn"><i class="fa fa-eye"></i></button>
+
+        <button title="Edit" id="<%=raw s.id %>-edittype_of_queryFomBTNID" class="edit-type_of_query-fom-btn mg-icon-btn"><i class="fa fa-pencil-square-o"></i></button>
+        <span style="left: -1px; position: relative; float: right; top: 4px;">
+           <%= link_to "<i class=\"fa fa-trash\"></i>".html_safe ,{ action: "type_of_query_delete", id: s.id },data: { confirm: "Are you sure to delete?" } ,:title=>"Delete" ,:class=>"mg-icon-btn"  %>
+        </span>
+
+      </td>
+    </tr>
+  <% end %>
+</table>
+<br/>
+ <div class="pagination-align" style="position: relative; bottom: 10px;">
+              <%#= will_paginate @type_of_query_data, :container => false %>
+           </div>
+<%else%>
+<h5>No records are created </h5>
+<%end%>
+
+
+
+<div id="edittype_of_queryfomdata"></div>
+<div id="showtype_of_queryfomdata"></div>
+<div id="fom_type_of_query">
+</div>
+
+<%= render  partial: 'application/common_left_close' %>
+
+
+<script>
+$(document).ready(function () {
+          focusCurrentTab("type_of_queryAID","type_of_queryLiID");
+      });
+
+$(document).on("click", ".add-type_of_query-for-fom", function(e){
+        // var myID =$(this).attr('id');
+        // var Id=myID.split("-");
+
+        var urlLink = "/front_office_management/type_of_query_new";
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(html){
+                  $('#fom_type_of_query').dialog({
+                    modal: true,
+                    minHeight: 'auto',
+                    title: "New Query Type",
+                    open: function () {
+                      
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+});
+
+$(document).on("click", ".show-type_of_query-fom-btn", function(e){
+        var myID =$(this).attr('id');
+        var Id=myID.split("-");
+        
+        var urlLink = "/front_office_management/type_of_query_show";
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            data:{"id":Id[0]},
+            success: function(html){
+                  $('#showtype_of_queryfomdata').dialog({
+                    modal: true,
+                    minHeight: 'auto',
+                    width: 'auto',
+                    title: "Show Query Type",
+                  
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+});
+$(document).on("click", ".edit-type_of_query-fom-btn", function(e){
+        var myID =$(this).attr('id');
+         var Id=myID.split("-");
+
+        var urlLink = "/front_office_management/type_of_query_edit";
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            data:{id:Id[0]},
+            success: function(html){
+                  $('#edittype_of_queryfomdata').dialog({
+                    modal: true,
+                    minHeight: 'auto',
+                    width: 'auto',
+                    title: "Edit Query Type",
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+});
+</script>

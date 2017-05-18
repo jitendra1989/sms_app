@@ -1,0 +1,193 @@
+<%= render partial: '/dashboards/student_dashboard_left' %>
+<% navigation_add 'Assignment', :controller => 'homework', :action => 'student' %>
+<!-- <%#= render  partial: 'laboratory/laboratry_left' %> -->
+<%if flash[:notice].present?%>
+<div class="alert alert-info mg-success-msg">
+        <%=flash[:notice]%>
+      </div>
+<%end%>
+<h4 class="mg-h4"><%= t('assignment') %></h4>
+ <div>
+<%= form_for :assignment, url:homework_student_update_path(@assignment.mg_assignment_id), :html => {:id => 'StudentAssignmentUpdateID',:multipart => true } do |f| %>
+<%= f.hidden_field :is_deleted, :value => 0 %>
+<%= f.hidden_field :mg_school_id, :value => session[:current_user_school_id] %>
+<%= f.hidden_field :updated_by, :value => session[:user_id] %>
+<p>
+<label class="mg-label" style="width:140px"><%= t('subject_name') %><span class="required-field">&nbsp;*</span></label>
+<br/>
+<%
+  assign=MgAssignment.find(@assignment.mg_assignment_id)
+  subject=MgSubject.find(assign.mg_subject_id)
+%>
+<%= text_field_tag "subject_name",subject.subject_name, :readonly => true, :class => "mg-text-field", :size=>15 %>
+</p>
+
+<p>
+<label class="mg-label" style="width:140px"><%= t('category') %><span class="required-field">&nbsp;*</span></label>
+<br/>
+<%category=MgHomeworkCategory.find_by(:id=>assign.mg_homework_category_id)%>
+<%= text_field_tag "category",category.try(:name), :readonly => true, :class => "mg-text-field", :size=>15 %>
+</p>
+
+
+<p>
+<label class="mg-label" style="width:140px"><%= t('title') %><span class="required-field">&nbsp;*</span></label>
+<br/>
+
+<%= text_field_tag "title",assign.title, :readonly => true, :class => "mg-text-field", :size=>15 %>
+</p>
+<p>
+<label class="mg-label" style="width:140px"><%= t('due_date') %><span class="required-field">&nbsp;*</span></label>
+<br/>
+<% timeformat=MgSchool.find_by_id(@assignment.mg_school_id)%>
+      <% if timeformat.present?%>
+      <% temp=assign.due_date.strftime(timeformat.date_format) %>
+<%= text_field_tag "due_date",temp, :readonly => true, :class => "mg-text-field", :size=>15 %>
+      <%else%>
+<%= text_field_tag "due_date",assign.due_date, :readonly => true, :class => "mg-text-field", :size=>15 %>
+      <%end %>
+
+</p>
+
+
+<p>
+    <label class="mg-label" style="width:140px"><%= t('carry_marks') %><span class="required-field">&nbsp;</span></label>
+      <%=(assign.is_carring_marks)? "Yes" : "No"%>
+   <%#= check_box_tag "carring_marks",assign.is_carring_marks, :disabled => true,:class=>"hmg-text-field" %>
+</p>
+
+<p>
+<label class="mg-label" style="width:140px"><%= t('detail') %><span class="required-field">&nbsp;*</span></label><br/>
+<%
+
+      reg=strip_tags(assign.detail)
+%>
+
+    
+<%= text_area_tag "due_dates",reg, :readonly => true, :class => "mg-text-field", :size=>15 ,:style=>"width: 500px; height: 100px;"%>
+
+     <!--  <textarea style="width: 500px; height: 100px;" value="<%#=  assign.detail.html_safe%>"/> -->
+</p>
+
+<p>
+<%@document=MgAssignmentDocumentation.where(:mg_assignment_id=>@assignment.mg_assignment_id,:user_type=>"employee",:is_deleted=>0,:mg_school_id=>session[:current_user_school_id])
+
+        if @document.length>0
+%>
+
+<label class="mg-label" style="width:140px"><%= t('attachment') %><span class="required-field">&nbsp;*</span></label><br/>
+
+<%html_icon='<span title="Download" class="mg-icon-btn"><i class="fa fa-download"></i></span>'
+
+@document.each do |doc|%>
+    <p>
+    <%= link_to_if doc.file.url, html_icon.html_safe, doc.file.url , :target=>"_blank"%>
+    <%=doc.file_file_name%>
+    </p>
+
+<%end
+end%>
+</p>
+<h4 class="mg-h4"><%= t('submit_assignment') %></h4>
+
+<!-- =================if Student submitted assignment starts============= -->
+<p>
+<%@student_id=MgStudent.where(:mg_user_id=>session[:user_id]).pluck(:id)
+
+@student_document=MgAssignmentDocumentation.where(:mg_assignment_id=>@assignment.mg_assignment_id,:mg_student_id=>@student_id[0],:user_type=>"student",:is_deleted=>0,:mg_school_id=>session[:current_user_school_id])
+
+        if @student_document.length>0
+%>
+
+<label class="mg-label" style="width:140px"><%= t('uploaded_assignment') %><span class="required-field">&nbsp;*</span></label><br/>
+
+<%html_icon='<span title="Download" class="mg-icon-btn"><i class="fa fa-download"></i></span>'
+
+@student_document.each do |doc|%>
+  <p>
+    <%= link_to_if doc.file.url, html_icon.html_safe, doc.file.url , :target=>"_blank"%>
+    <%=doc.file_file_name%>
+
+    <button title="Delete" id="<%=raw doc.id %>-deleteBTNID" class="delete-student-attachment-btn mg-icon-btn employeefile-upload mg-custom-form-btn mg-icon-btn" style="color: #297ACC; font-size:0.8em; float: right; position: relative; right: 449px; margin-top: 3px;"><i class="fa fa-trash " ></i></button>
+    </p>
+<%end
+end%>
+</p>
+<!-- ===============if Student submitted assignment ends================== -->
+
+<p>
+<%if @student_document.length>0%>
+          <label class="mg-label mg-rm-text-trans" for="upload_file" ><%= t('add_attachment') %></label>
+<%else%>
+          <label class="mg-label mg-rm-text-trans" for="upload_file" ><%= t('add_attachment') %></label>
+<%end%>
+<div>
+   <div class="student_file_file_div" id="dueFineDivId" style="float: left; width: 100%;">
+   <span style="float: left;">
+ <%= file_field_tag 'file[]'%>
+</span>
+  <a class="student_file-upload mg-custom-form-btn mg-icon-btn" style="color: #297ACC; font-size:0.8em; float: left; position: relative; right: 0px; margin-top: 3px;"><i class="fa fa-trash"></i></a>
+ </div>
+ <a id="add_homework_student_uploads" class="mg-label-inner-form mg-custom-form-btn mg-icon-btn" style="color: #297ACC; font-size:0.8em;" ><i class="fa fa-plus">&nbsp;Add File</i></a> <br/>
+  </div>
+
+</p>
+
+
+<P>
+    <!-- <%#= f.submit t('save') ,:class=>"mg-small-form-btn"%> -->
+    <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("submit")%></a>
+    <%= link_to t('cancel'), homework_student_path, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+    <%#= link_to 'Cancel',  ,:style=>"font-size: 0.8em; color: #297ACC; text-decoration: none;" ,:class=>"mg-custom-form-btn mg-small-form-btn cancel-form-dialog"%>
+</p>
+<% end %>
+</div>
+<%= render partial: 'application/common_left_close' %>
+<script>
+$( document ).ready(function() {
+    dateFormatStr =  getJsDateFormat();
+
+            focusCurrentTab("viewStudentHomework","viewStudentHomeworkLiID");
+    
+
+$('#due_date').datepicker({ changeMonth: false,
+                changeYear: false,yearRange: "-50:+50",minDate: "0",maxDate: "0",dateFormat: dateFormatStr});
+
+          //  focusCurrentTab("viewLabInventoryIndex","viewLabInventoryLiID");
+          //focusStudentHeaderBox();
+});
+
+
+
+
+$(document).on("click", "#add_homework_student_uploads", function(e){
+    var lastRepeatingGroup = $('.student_file_file_div').last();
+    var cloned = lastRepeatingGroup.clone();
+    cloned.find('input').val('');
+    cloned.insertAfter( lastRepeatingGroup );
+    return false;
+}); 
+
+
+$(document).on("click", ".student_file-upload", function(e){
+   var total = $('.student_file-upload').length
+   if(total!=1)
+   {
+        $(this).parent('div').remove();
+    }
+  
+});
+
+$("#StudentAssignmentUpdateID").validate({
+  rules:{
+    "file[]": {required: true}
+  }
+})
+
+</script>
+<style>
+  .detail_paragraph {
+   /* background-color: yellow;
+    display: block;*/
+} 
+</style>

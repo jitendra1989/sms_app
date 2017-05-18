@@ -1,0 +1,35 @@
+<h4 class="mg-h4">Contacts</h4>
+ <%= form_for :guardian,:html => { :id => 'guardianProfileContactEditFormID'}, url: guardian_profile_contact_edit_path(@guardian[0]), method: :patch do |f| %>
+
+      <%= render :partial => "students/contact_inline" ,:locals => {:phone_types => "phone"} %>
+      <%= render :partial => "students/contact_inline" ,:locals => {:phone_types => "mobile"} %>
+      <%= render :partial => "students/email_inline" %>
+
+            
+	<p class="mg-p-mgtop">
+       <%#= submit_tag t('save'), class: "submit" ,:class=>"mg-small-form-btn mg-inner-tbl-align" %> 
+	   <a onclick="$(this).closest('form').submit()" class="submit mg-small-form-btn mg-inner-tbl-align"><%=t("save")%></a>
+       <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+	</p>
+<% end %>
+
+
+<script>
+	$(document).ready(function(){
+
+			      $("#guardianProfileContactEditFormID").validate({
+	        //debug: true,
+				rules: {
+			                  "phone[phone_number]": {number: true,minlength: 6,maxlength: 11},
+			                  "mobile[phone_number]": {required: true, number: true,minlength: 10,maxlength: 10},
+			                  "email[mg_email_id]": {required: true,  email: "Your email must be in the format of name@domain.com"}
+	              },
+	              messages: {
+				        "mobile[phone_number]": {minlength: "Please enter 10 digits.",maxlength: "Please enter only 10 digits."},
+				        "phone[phone_number]": {minlength: "Please enter 6 digits.",maxlength: "Please enter only 11 digits."}
+          }
+	
+	      });
+	});
+
+</script>

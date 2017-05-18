@@ -1,0 +1,85 @@
+<% navigation_add t('allergy'),"/healthcare/allergy_index" %>
+<%=render partial: "healthcare_left"  %>
+
+<h4 class="mg-h4"><%=t('allergy')%></h4>
+<%=link_to t("add_allergy"),{:controller=>"healthcare",:action=>"allergy_new"},:class=>"mg-custom-form-btn"%>
+
+<%if @allergies.length>0%>
+	<div class="mg_pagination">
+	  <table  class="batch-tbl mg-tbl-margin">
+	    <tr class="subject-table-header">
+	      <th><%= t('allergy') %></th>
+	      <th><%= t('semester')%><%=" / "%><%=t("department")%></th>
+	      <th><%= t('Name') %></th>
+	      <th><%= t('actions') %></th>
+	    </tr>
+	    <% @allergies.each do |allergy| %>
+	      <tr>
+	        <td><%= allergy.try(:allergy_for) %></td>
+	        <%if allergy.try(:allergy_for)=="student"%>
+		        <% batchobj = MgBatch.find_by(:id=>allergy.try(:mg_batch_id),:is_deleted=>0)%>
+	            <%@courseObj = MgCourse.find_by_id(batchobj.mg_course_id)%>
+	        	<td><%= (@courseObj.try(:course_name)) +"-"+ batchobj.try(:name) %></td>
+	        <%else%>
+		        <% dept=MgEmployeeDepartment.find_by(:id=>allergy.try(:mg_employee_department_id),:is_deleted=>0) %>
+		        <td><%= (dept.try(:department_name))%></td>
+	        <%end%>
+
+	        <%if allergy.try(:allergy_for)=="student"%>
+	        	<%stud=MgStudent.find_by(:id=>allergy.try(:mg_student_id))%>
+	        	<td class="mg-capitalize-text"><%=stud.try(:first_name)%><%=" "%><%=stud.try(:last_name)%></td>
+	        <%else%>
+	        	<%emp=MgEmployee.find_by(:id=>allergy.try(:mg_employee_id))%>
+	        	<td class="mg-capitalize-text"><%=emp.try(:first_name)%><%=" "%><%=emp.try(:last_name)%></td>
+	        <%end%>
+	        <td class="mg-align-center">
+			      <button title="Show" id="<%=raw allergy.id %>-showlabBTNID" class="show-allergy-btn mg-icon-btn" style="float: left;"><i class="fa fa-eye"></i></button>
+
+			      <span style="position: relative; float: left; top: -2px;">
+			      	<%= link_to "<i class=\"fa fa-pencil-square-o\"></i>".html_safe, {:controller => "healthcare", :action => "allergy_edit",:id =>allergy.id} ,:title=>"Edit" ,:class=>"mg-icon-btn"%>
+			      </span>
+			      <span style="position: relative; float: right; top: -2px; left: -8px;">
+			      	<%= link_to "<i class=\"fa fa-trash\"></i>".html_safe, {:controller => "healthcare", :action => "allergy_delete",:id =>allergy.id} , :method=>'delete',data: { confirm: 'Are you sure to delete?' },:title=>"delete" ,:class=>"mg-icon-btn"%>
+	        	</span>
+	        </td>
+	      </tr>
+	    <% end %>
+	  </table>
+	  <br/>
+	  <%= will_paginate @allergies, :container => false %>
+	</div>
+<%else%>
+  <h5>No Allergy Created</h5>
+<%end%>
+
+<div id="showAllergyDivId"></div>
+
+<%=render partial: "common_left_close"  %>
+
+<script>
+	$( document ).ready(function() {
+	  focusCurrentTab("allergyAId","allergyLiId");
+	});
+
+	$(document).on("click", ".show-allergy-btn", function(e){
+	  var myID =$(this).attr('id');
+	  var Id=myID.split("-");
+	  var urlLink = "/healthcare/allergy_show/"+Id[0];
+	  $.ajax({
+	      url: urlLink ,
+	      cache: false,
+	      success: function(html){
+	            $('#showAllergyDivId').dialog({
+	              modal: true,
+	              minHeight: 'auto',
+	              width: 'auto',
+	              title: "Show Allergy",
+	              open: function () {
+	                  $(this).html(html);
+	              }
+	          }); 
+	      }
+	  });
+	});
+
+</script>

@@ -1,0 +1,36 @@
+<h1>Listing Files</h1>
+ <table  class="batch-tbl">   <!-- border="2" --> 
+    <tr class="subject-table-header">
+      <th>file Name</th>
+      <th>Employee Name</th>
+      <th>File Name</th>
+      <th>Action</th>
+      <!-- <th>Action</th> -->
+      <!-- <th>Action</th> -->
+
+    </tr>
+ 
+
+  <tbody>
+	<% @document_managements.each do |user| %>
+      <tr>
+        <td><%= user.name %></td>
+        <td><%= user.mg_employee_id%></td>
+		<!-- display the avatar in both the original size and the thumbnail size -->
+		<!-- <td><%#= image_tag user.avatar.url %></td> -->
+		<!-- <td><%#= image_tag user.avatar.url(:thumb) %></td> -->
+    <!-- <td><%#= link_to_if user.resume.url, 'download image', user.avatar.url %></td> -->
+
+		
+		<!-- show the filename for the resume -->
+        <td><%= user.file_file_name %></td>
+        <!-- <td><%#=  user.resume.url %></td> -->
+        <!-- <td><%#=open(user.resume.url).read%></td> -->
+        <td><%= link_to_if user.file.url, 'download', user.file.url %></td>
+       <!--  <th><%#=link_to image_tag(user.avatar.url(:thumb)), user.resume.url(:original), :popup=>['original_file', 'height=700,width=900'] %></th> -->
+       <!-- <th><%#=link_to image_tag(user.avatar.url(:thumb)), user.avatar.url(:original), :popup=>['original_image', 'height=700,width=900'] %></th>
+ -->
+      </tr>
+    <% end %>
+  </tbody>
+</table>

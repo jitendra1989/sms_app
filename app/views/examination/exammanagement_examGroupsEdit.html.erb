@@ -1,0 +1,105 @@
+<%= form_for :ExamsGroups, :url=>{:controller=>'examination',:action=>'exammanagement_examGroupsUpdate',:id=>@ExamsGroups.id},:html => {:id => 'ExamsGroupsEditsCategoryNewFormId', :class => 'elm_class',:style => 'elm_style' } do |f| %>
+
+     <%=hidden_field_tag :category_id,@category_id%>
+  <div style="float:left;"> 
+
+
+  <p>
+    <label class="mg-label" for="select_a_subject"> <%= t('select_subject') %><span class="required-field">&nbsp;*</span></label><br/>
+
+<%=f.select :mg_subject_id, options_for_select(@subject,:selected=>@ExamsGroups.mg_subject_id), {:include_blank=>"Select Subject"},:class=>"mg-select-btn"%><br>
+      </p>
+
+      <p>
+       <label class="mg-label" for="start_time"> <%= t('start_time') %><span class="required-field">&nbsp;*</span></label><br/>
+        <%=f.text_field :start_time,:id=>"",:class=>"sta-dates"%>
+      <p>
+        <label class="mg-label" for="end_time"> <%= t('end_time') %><span class="required-field">&nbsp;*</span></label><br/>
+        <%=f.text_field :end_time,:id=>"",:class=>"en-date"%>
+      </p>
+      <p>
+       <label class="mg-label" for="maximum_marks"> <%= t('maximum_marks') %><span class="required-field">&nbsp;*</span></label><br/>
+        <%= f.text_field :maximum_marks,:class=>"mg-text-field"%>
+      </p>
+      <p>
+        <label class="mg-label" for="pass_marks"> <%= t('pass_marks') %><span class="required-field">&nbsp;*</span></label><br/>
+        <%= f.text_field :minimum_marks,:class=>"mg-text-field"%>
+      </p>
+<div style="display:none;">    
+<p>
+        <label for="is_deleted" class="mg-label "><%=t('status')%></label><br />
+        <label for="is_deleted" class="mg-label-inner-form "><%=t('active')%></label>
+        <%= f.radio_button :is_deleted, false , :checked => true%>
+        <label for="is_deleted" class="mg-label-inner-form "><%=t('inactive')%></label>
+        <%= f.radio_button :is_deleted, true %>
+      </p>
+</div>
+<p class="mg-p-mgtop">
+       <%#= f.submit t('save') ,:class=>"mg-small-form-btn"%>
+       <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("save")%></a>
+        <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %> 
+  </p>
+<%end%>
+
+
+<script type="text/javascript">
+  
+$(document).ready(function(){
+ 
+
+  $("#ExamsGroupsEditsCategoryNewFormId").validate({
+        //debug: true,
+        rules: {
+                  "ExamsGroups[mg_subject_id]": {required: true},
+                  "ExamsGroups[start_time]": {required: true},
+                  "ExamsGroups[end_time]": {required: true},
+                  "ExamsGroups[maximum_marks]": {required: true},
+                  "ExamsGroups[minimum_marks]": {required: true},
+                 
+                      
+        }
+      });
+  
+   dateFormatStr =  getJsDateFormat();
+
+   //alert(dateFormatStr);
+
+
+    $('.sta-dates').datetimepicker(
+      {dateFormat: 'yy-mm-dd hh:mm',formatTime:'h:mm'} );
+    
+     $('.en-date').datetimepicker(
+      {dateFormat: 'yy-mm-dd hh:mm',formatTime:'h:mm'} );
+
+
+
+//$( ".start-date" ).datepicker();
+  //  $( ".stars-dates" ).datepicker({ changeMonth: true,changeYear: true,dateFormat: dateFormatStr});
+
+  var startDate =  $.datetimepicker.dateFormat(dateFormatStr,new Date($('.sta-dates').val()));
+  //   //alert(startDate);
+
+     $('.sta-dates').val(startDate);
+     
+     
+  // //$(".end-date").each(function() {
+
+  //     $( ".ends-date" ).datepicker({ changeMonth: true,changeYear: true,dateFormat: dateFormatStr});
+
+      var endDate = $.datetimepicker.dateFormatStr(dateFormatStr,new Date($('.en-date').val()));
+     //alert(startDate);
+
+    $('.en-date').val(endDate);
+
+    });
+
+
+
+
+
+
+ 
+
+
+
+</script>

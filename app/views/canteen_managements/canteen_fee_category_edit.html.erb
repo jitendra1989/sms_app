@@ -1,0 +1,113 @@
+  <!-- Sec --> 
+
+<h4 class="mg-h4"><%=t('edit_canteen_fee_category')%></h4>
+
+<%= form_for :hostel_fees, :url =>{:controller=>'canteen_managements',:action=>'canteen_fee_category_update',:id=>@hostel_fees.id}, :html => { :id => 'feeCategoryEditFormId', :class => 'elm_class',:style => 'elm_style' } do |f| %>
+
+<%= f.hidden_field :mg_school_id, :value=> session[:current_user_school_id]%>
+     <p>
+        <%= f.label :name ,:class=>"mg-label"%><span class="required-field"> *</span><br>
+        <%= f.text_field :name ,:class=>"mg-text-field"%>
+      </p>
+     
+      <p>
+        <%= f.label :description ,:class=>"mg-label"%><br>
+        <%= f.text_area :description ,:class=>"mg-text-field"%>
+      </p>
+        <p>
+             <%for i in 0...@dueFine.size%>
+                <div class="due-fine-div" id="dueFineDivId">
+                <label class="mg-label" for="particulars"><%= t('particulars') %><span class="required-field"> *</span></label>
+                <%if !(@dueFine.empty?)%>
+                 <%= text_field_tag 'particulars[]',@dueFine[i].particular_name,:class=>"mg-text-field required-field"%>
+                  <%= hidden_field_tag 'particularstype[]' ,@dueFine[i].id,:class=>"mg-text-field required-field"%>
+                 <%else%> 
+                  <%#= text_field_tag 'edit_particulars[]',nil,:class=>"mg-text-field required-field"%>
+                   <%end%>
+                </div>
+              </div>
+               <% end %> 
+                <a  id="editAddDueFineId" class="mg-label-inner-form mg-custom-form-btn" style="color: #297ACC; font-size:0.8em; position: relative; top: 3px;" >Add Particular</a>
+        </p>
+       <div id="delete" style="display:none;">
+     <p>
+        <%= f.label :is_deleted, "Is Active" ,:class=>"mg-label"%><br />
+       <label for="is_deleted" class="mg-label-inner-form "><%=t('active')%></label>
+        <%= f.radio_button :is_deleted, false , :checked => true%>
+<label for="is_deleted" class="mg-label-inner-form "><%=t('inactive')%></label>
+        <%= f.radio_button :is_deleted, true %>
+     </p>
+</div><br>
+      <p>
+      <%=f.submit t('save') ,:class=>"mg-small-form-btn"%>
+       <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+       </p>
+  </div>
+
+
+<div style="display:none;"> 
+  <div style="float:left;width:50%">
+
+      <label class="mg-label"><%=t('select')%> <%=t('coursebatchname')%></label> <br/>
+      <label class="mg-label"><%=t('select')%></label> <a href="#" id="checkAllCheckBoxInFeeCategoryEditId" class="mg-pop-link"><%=t('all')%></a>
+      <a href="#" id="unCheckAllCheckBoxInFeeCategoryEditId" class="mg-pop-link"><%=t('none')%></a>
+      <div class="mg-scroll-bar">
+        <%@mg_batch_list.each do |d|%>
+         <% 
+          checked = false
+          @mg_fee_category_batch_list.each do  |category_batch_obj| 
+            if d[1] == category_batch_obj[0]
+                    checked = true
+                break
+            end 
+              
+          end
+         %> 
+
+          <%= check_box_tag 'selected_batches[]', d[1], checked, {:class =>"auto-checkbox-fee-category-edit-cls"} %>
+          <%@course=MgCourse.select(:course_name).find_by_id(d[2])%>
+          <%if@course!=nil%>
+            <%= @course.course_name %> - <%=d[0]%><br/> 
+          <%else%>
+            <%=d[0]%><br/> 
+          <%end%>
+          <%#=d[0]%>
+        <% end %>
+      <div>
+    <!-- <%#if@temp%> checked <%#end%> -->
+  </div>
+  </div>
+<% end %>
+<%#= link_to 'Back', fees_path %>
+<script>
+  $(document).ready(function(){
+    $("#feeCategoryEditFormId").validate({
+      rules: 
+      {
+          "hostel_fees[name]": {required: true},
+          "particulars[]": {required: true}
+      }
+    });
+  });
+
+
+
+
+
+$(document).on("click", ".remove-fine-due-classses", function(e){
+
+   var total = $('.remove-fine-due-classses').length
+   
+   //if(total!=1)
+  // {
+        $(this).parent('div').remove();
+   // }
+   //alert($(this).val());
+});
+
+
+
+
+</script>
+
+

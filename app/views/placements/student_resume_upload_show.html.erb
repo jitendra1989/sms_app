@@ -1,0 +1,15 @@
+<table border="1" class="mg-showdata-bg" cellspacing="1" cellpadding="1">
+    <tr>
+        <td class="mg-td-width-half" valign="top">
+            <label class="mg-label"><%=t('file_name')%></label>
+        </td>
+        <td class="mg-td-width-half" valign="top">
+            <%= @resume.file_file_name %>
+            <%= link_to_if @resume.try(:file).url,'<i class="fa fa-download"></i>'.html_safe,@resume.try(:file).url,:class=>"mg-icon-btn mg-download-icon-font",:title=>"Download" %><br/>
+        </td>
+    </tr>
+</table>
+<p class="mg-p-mgtop">
+    <a class="mg-small-form-btn cancel-form-dialog"><%=t('cancel')%></a>
+</p>
+

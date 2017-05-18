@@ -1,0 +1,23 @@
+<h4 class="mg-h4">Exam Settings</h4>
+<div>
+	<table>
+		<tr>
+			<td class="mg-exam-td-width" valign="top">
+				<%= button_to 'Set Grading Level', {controller: 'examination',action:'new'}, {:class=>"mg-exam-btn-width mg-btn-exam"} %><br>
+			</td>
+			<!-- <td class="mg-exam-td-width" valign="top">
+				<%#= button_to 'Ranking Level', {controller: 'examination',action:'ranking_new'}, {:class=>"mg-exam-btn-width"} %><br>
+			</td> -->
+		</tr>
+		<tr>
+			<td class="mg-exam-td-width" valign="top">
+				<%= button_to 'Class Designation', {controller: 'examination',action:'designation_new'}, {:class=>"mg-exam-btn-width mg-btn-exam"} %><br>
+			</td>
+		</tr>
+		<tr>	
+			<td class="mg-exam-td-width" valign="top">
+				<%= button_to 'CCE Settings', {controller: 'examination',action:'cce_new'}, {:class=>"mg-exam-btn-width mg-btn-exam"} %>
+			</td>
+		</tr>
+	</table>
+</div>

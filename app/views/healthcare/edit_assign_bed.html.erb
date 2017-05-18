@@ -1,0 +1,4 @@
+<% navigation_add t('bed_assignment'), :controller=>'healthcare' ,:action=> 'assign_bed' %>
+<% navigation_add t('edit_bed_assignment'), :controller=>'healthcare' ,:action=> 'edit_assign_bed',:id=>params[:id] %>
+
+<%=render :partial=>'assign_bed'%>

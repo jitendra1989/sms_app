@@ -1,0 +1,110 @@
+
+<%= render  partial: 'hostel_management_left' %>
+<% navigation_add t('discipline_report'), :controller=>'hostel_management', :action=>'discipline_report_admin' %>
+<% 
+hostel_details=MgHostelDetails.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:name,:id)
+%>
+<p>
+<%=label :select_hostel, "Select Hostel" ,:class=>"mg-label select_hostel"%><span class="required-field prgme">*</span>
+<%= select_tag "mg_hostel_details_data",options_for_select(hostel_details,:selected=>@data),:prompt=>"All",:class => 'prgm2' %>
+</p>
+<h4 class="mg-h4"><%=t('discipline_report')%></h4>
+
+<div class="mg_pagination drop_down_hostel_list">
+
+
+<% if @discipline_report.size>0%>
+<table class="batch-tbl mg-tbl-margin">   <!-- border="2" --> 
+<tr>
+	<th><%=t('hostel_name')%></th>
+	<th class="mg-label-text-transform-none"><%=t('date_of_report')%></th>
+	<th><%=t('reason')%></th>
+	<th><%=t('status')%></th>
+    <th><%=t('action')%></th>
+
+</tr>
+
+		 <% @discipline_report.each do |e| %>
+
+		<tr>
+		<%hostel_details=MgHostelDetails.find_by(:id=>e.mg_hostel_details_id)
+		@date_format=MgSchool.find_by(:id=>session[:current_user_school_id]).date_format
+		%>
+		<td class="mg-capitalize-text"><%=hostel_details.name%></td>
+		<td><%=e.date_of_report.strftime(@date_format)%></td>
+
+		      <td><%=truncate(e.reason.to_s, :length => 25, :separator => ' ')  %></td>
+		      <td class="mg-capitalize-text"><%=e.status%></td>
+
+		<td>
+			    <button title="Show" id="<%=raw e.id %>-showjobUploadBTNID" class="showDisciplanaryReportBTNID mg-icon-btn"><i class="fa fa-eye"></i></button>
+		</td>
+
+		</tr>
+		<%end%>
+</table>
+
+<% else %>
+
+<%= "No Request"%>
+
+<% end %>
+
+</div>
+
+<div id="hostelDisciplanaryDIVID">
+</div>
+
+
+
+
+
+<%= render  partial: 'application/common_left_close' %>
+
+
+
+<script>
+$(document).ready(function () {
+
+        focusCurrentTab("hostel_disciplinary_data_listAID","hostel_disciplinary_data_listLiID");
+        
+    });
+
+$(document).on("click", ".showDisciplanaryReportBTNID", function(e){
+		$("#hostelDisciplanaryDIVID").html("");
+		var id=$(this).attr("id").split("-")[0];
+		
+	        var urlLink = "/hostel_management/discipline_report_admin_show";
+	        $.ajax({
+	            url: urlLink ,
+	            cache: false,
+	            data:{id:id},
+	            success: function(html){
+	                  $('#hostelDisciplanaryDIVID').dialog({
+	                    modal: true,
+	                    minHeight: 'auto',
+              			width: 'auto',
+	                    title: "Show Discipline Report",
+	                    open: function () {
+	                        
+	                        $(this).html(html);
+	                    }
+	                }); 
+	               
+	            }
+	        });
+	});
+
+$(document).on("change","#mg_hostel_details_data",function(){
+          var urlLink = "/hostel_management/filter_hostel_data";
+          var data=$(this).val();
+              $.ajax({
+                  url: urlLink ,
+                  cache: false,
+                  data:{id:data},
+                  success: function(html){
+                       $(".drop_down_hostel_list").empty().append(html);
+                  }
+              });
+    });
+</script>

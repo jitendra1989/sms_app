@@ -1,0 +1,250 @@
+<!-- Sec --> <section id="userBodyContentBox" style="margin: 0 auto;">
+    <table width=100% border="0" cellspacing="0" cellpadding="0"  style="margin-bottom: 0px;">
+        <tr>
+            <td valign="top" class="userBodyContentBox1">
+                <div class="userMenuBoxLeft" style="width: 210px;">
+                    <ul class="menuListHome">
+              <%=hidden_field_tag "user_type",session[:user_type]%>
+                     <li class="myAccountMenu mg-toggle-plus"><%=t('principal')%></li>
+                        <div class="mg-left-sub-menu-title"> 
+                       
+                        <li id="viewMyDashboardLiID">
+
+                            <a class="Employee-Profile" href="/dashboards/principal/" id="viewMyDashboardID">
+                                <div class="setMenu"><i class="fa fa-bar-chart">&nbsp;&nbsp;</i>My Dashboard<!-- <i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i> -->
+                                </div>
+                            </a>
+                        </li>
+<!-- 
+                        <li id="viewPrincipleLiID">
+                            <a class="Employee-Attendances" href="/dashboards/principle_attendance/" id="viewPrinciple">
+                                <div class="setMenu"><i class="fa fa-shield">&nbsp;&nbsp;</i>Attendances<i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i>
+                                </div>
+                            </a>
+                        </li> -->
+                        <li id="viewPrincipleLiID">
+                            <a class="Employee-Attendances" href="/attendances" id="viewPrinciple">
+                                <div class="setMenu"><i class="fa fa-shield">&nbsp;&nbsp;</i>Attendances<!-- <i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i> -->
+                                </div>
+                            </a>
+                        </li>
+              <!--               
+                        <li id="viewAdmissionReportLiID">
+                            <a class="admission-report" href="/dashboards/admission_report_for_principle" id="viewAdmissionReport">
+                                <div class="setMenu"><i class="fa fa-file-text-o">&nbsp;&nbsp;</i>Admission Reports
+                                </div>
+                            </a>
+                        </li>
+                        <li id="createClassTimingsLiID">
+                            <a class="menuItemsActivities" href="/timetable/class_timing_index" id="createClassTimingsAID" >
+                                <div class="setMenu"><i class="fa fa-plus-square-o">&nbsp;&nbsp;</i>Create Class Timings
+                                </div>
+                            </a>
+                        </li>
+                                                <li id="timeTableAssociateLiID">
+                            <a class="menuItemsActivities" href="/timetable/time_table_associate_index" id="timeTableAssociateAID">
+                                <div class="setMenu"><i class="fa fa-chain">&nbsp;&nbsp;</i>Time Table Association
+                                </div>
+                            </a>
+                        </li>
+ -->
+
+                        <li id="viewEmployeeLeaveLiID">
+                            <a class="employee-leave" href="/fees" id="viewEmployeeLeave">
+                                <div class="setMenu"><i class="fa fa-money">&nbsp;&nbsp;</i>Fees<!-- <i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i> -->
+                                </div>
+                            </a>
+                        </li>
+                       <!--  <li id="viewPrincipleEventsLiID">
+
+                            <a class="Employee-Events" href="/dashboards/principle_events/" id="viewPrincipleEvents" >
+                                <div class="setMenu"><i class="fa fa-tasks">&nbsp;&nbsp;</i>Events<i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i> 
+                                </div>
+                            </a>
+                        </li> -->
+                     <!--    <li id="viewPrincipleMessagesLiID">
+                            <a class="Employee-Messages" href="/dashboards/principle_messages/" id="viewPrincipleMessages">
+                                <div class="setMenu"><i class="fa fa-envelope-o">&nbsp;&nbsp;</i>Messages
+                                </div>
+                            </a>
+                        </li>
+                         <li id="viewPrincipleNewsLiID" >
+                            <a class="Employee-News" href="/dashboards/principle_news/" id="viewPrincipleNews">
+                                <div class="setMenu"><i class="fa fa-newspaper-o">&nbsp;&nbsp;</i>News
+                                </div>
+                            </a>
+                        </li>
+
+
+                        <li id="viewPrincipleNotificationLiID">
+
+                            <a class="Principle-Profile" href="/notifications/principal_notifications/" id="viewPrincipleNotification">
+                                <div class="setMenu"><i class="fa fa-comments">&nbsp;&nbsp;</i>Send Notification
+                                </div>
+                            </a>
+                        </li>
+
+                        
+                        <li id="showPrincipleNotificationLiID">
+
+                            <a class="Principle-Profile" href="/notifications/show_notification/" id="showPrincipleNotification">
+                                <div class="setMenu"><i class="fa fa-weixin">&nbsp;&nbsp;</i>Show Notification
+                                </div>
+                            </a>
+                        </li>
+
+ -->
+                        <li id="viewPrincipleProfileLiID">
+
+                            <a class="Principle-Profile" href="/dashboards/principal_profile/" id="viewPrincipleProfile">
+                                <div class="setMenu"><i class="fa fa-user">&nbsp;&nbsp;</i>Profile<!-- <i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i> -->
+                                </div>
+                            </a>
+                        </li>
+
+                         <li id="showPrincipleNotificationLiID">
+                            <a class="Principle-Profile" href="/notifications/show_notification/" id="showPrincipleNotification">
+                                <div class="setMenu"><i class="fa fa-weixin">&nbsp;&nbsp;</i>Show Notification<!-- <i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i> -->
+                                </div>
+                            </a>
+                        </li>
+
+                        <li id="viewEmployeeFileManagmentLiID">
+                            <a class="Employee-FileManagment" href="/document_managements/folder_index/" id="viewEmployeeFileManagment">
+                                <div class="setMenu"><i class="fa fa-upload">&nbsp;&nbsp;</i>Upload files<!-- <i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i> -->
+                                </div>
+                            </a>
+                        </li>
+                        <li id="viewEmployeeQuestionsLiID">
+
+                            <a class="Employee-Questions" href="/my_questions/" id="viewQuestions">
+                                <div class="setMenu"><i class="fa fa-file">&nbsp;&nbsp;</i>My Content<!-- <i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i> -->
+                                </div>
+                            </a>
+                        </li>
+                        <li id="viewStudentHomeworkLiID">
+
+                            <a class="Admission-student-homework-DueDate-class" href="/homework/homeworkStatus/" id="viewstudenthomeworkDuedate">
+                                <div class="setMenu"><i class="fa fa-book">&nbsp;&nbsp;</i>Homework Status<!-- <i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i> -->
+                                </div>
+                            </a>
+                        </li>
+                        <%#if @finance_manager>0%>
+                            <li id="viewItemProposalLiID">
+                                <a class="menuItemsActivities" href="/inventory/proposal_review/" id="viewInventoryItemProposalIndex">
+                                    <div class="setMenu"><i class="fa fa-flask">&nbsp;&nbsp;</i><%=t('inventory')%>
+                                    </div>
+                                </a>
+                            </li>
+                        <%#end%>
+
+                        <li id="dashboards_vehicleLiID">
+
+                            <a class="Admission-student-homework-DueDate-class" href="/dashboards/search_vehicle_status/" id="dashboards_vehicleAID">
+                                <div class="setMenu"><i class="fa fa-book">&nbsp;&nbsp;</i>Search Vehicle<!-- <i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i> -->
+                                </div>
+                            </a>
+                        </li>
+
+                       <!-- <li id="viewSyllabusTrackerLiID">
+
+                            <a class="Principle-Profile" href="/principals/syllabus_track/" id="viewSyllabusTrackerAID">
+                                <div class="setMenu"><i class="fa fa-tachometer">&nbsp;&nbsp;</i>Syllabus Progress<!-- <i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i> 
+                                </div>
+                            </a>
+                        </li>-->
+
+                          <!-- <li id="viewEmployeeAttendancesLiID">
+                            <a class="Employee-Attendances" href="#" id="viewEmployeeAttendances_demo">
+                                <div class="setMenu"><i class="fa fa-shield">&nbsp;&nbsp;</i>Attendances<i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i>
+                                </div>
+                            </a>
+                        </li> -->
+                        </div>
+                         <li class="myAccountMenu mg-toggle-plus"><%=t('Calendar')%></li>
+                        <div class="mg-left-sub-menu-title"> 
+                        
+                            <li id="meeting_plannerLiID">
+                                <a class="menuItemsActivities" href="/front_office_management/meeting_planner" id="meeting_plannerAID">
+                                    <div class="setMenu"><i class="fa fa-paper-plane-o">&nbsp;&nbsp;</i><%=t('my_calendar')%>
+                                    </div>
+                                </a>
+                            </li>
+
+                            <li id="viewPrincipleProfileEmplyeeCalenderLiID">
+                            <a class="Principle-Profile-Employee-Calender" href="/dashboards/principal_employee_calender/" id="viewPrincipleProfileEmployeeCalender">
+                                <div class="setMenu"><i class="fa fa-calendar">&nbsp;&nbsp;</i>Employee Calender<!-- <i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i> -->
+                                </div>
+                            </a>
+                            </li>
+
+                            <li id="viewPrincipleProfileStudentCalenderLiID">
+                                <a class="Principle-Profile-Student-Calender" href="/dashboards/principal_student_calender/" id="viewPrincipleProfileStudentCalender">
+                                    <div class="setMenu"><i class="fa fa-calendar">&nbsp;&nbsp;</i>Student Calender<!-- <i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i> -->
+                                    </div>
+                                </a>
+                            </li>
+
+                            <li id="viewPrincipleProfileGuardianCalenderLiID">
+                                <a class="Principle-Profile-Guardian-Calender" href="/dashboards/principal_guardian_calender/" id="viewPrincipleProfileGuardianCalender">
+                                    <div class="setMenu"><i class="fa fa-calendar">&nbsp;&nbsp;</i>Guardian Calender<!-- <i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i> -->
+                                    </div>
+                                </a>
+                            </li>
+                        </div>
+
+
+                        <li class="myAccountMenu mg-toggle-plus"><%=t('front_office')%></li>
+                        <div class="mg-left-sub-menu-title"> 
+                            <li id="transport_bookingLiID">
+                                <a class="menuItemsActivities" href="/front_office_management/transport_booking_index" id="transport_bookingAID">
+                                    <div class="setMenu"><i class="fa fa-taxi">&nbsp;&nbsp;</i><%=t('transport_booking_review')%>
+                                    </div>
+                                </a>
+                            </li>
+                            <li id="guestRoomBookingLiID">
+                                <a class="menuItemsActivities" href="/front_office_management/guest_room_booking_index" id="guestRoomBookingAID">
+                                    <div class="setMenu"><i class="fa fa-male">&nbsp;&nbsp;</i><%=t('guest_room_review')%>
+                                    </div>
+                                </a>
+                            </li>
+                            
+                            <li id="query_recordLiID">
+                              <a class="menuItemsActivities" href="/front_office_management/query_record_index" id="query_recordAID">
+                                  <div class="setMenu"><i class="fa fa-book">&nbsp;&nbsp;</i><%=t('query_record')%>
+                                  </div>
+                              </a>
+                            </li>
+
+                            <li id="frontOfficeManagerPAFaqViewAdminliId">
+                                <a class="menuItemsActivities" href="/front_office_management/faq_view" id="frontOfficeManagerFaqViewPAFAID">
+                                    <div class="setMenu"><i class="fa fa-question-circle">&nbsp;&nbsp;</i><%=t('faq')%>
+                                    </div>
+                                </a>
+                            </li>
+                        </div>
+                        <!-- ============================================================= -->
+
+                         
+
+                         <%#@employee=MgEmployee.find_by(:mg_user_id=>session[:user_id])
+                            @finance_manager=MgFinanceOfficer.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id],:mg_employee_id=>@employee.id).count%>
+
+                        
+
+                    </ul>    
+
+                </aside>
+            </td>
+            <td  valign="top" id="manageEmployeeCategoryID" class="mg-table-td-main-2">
+              
+
+<script>
+$( document ).ready(function() {
+    var user_type=$("#user_type").val();
+    if (user_type=="principal"){
+        collapseLeftMenu();
+    }
+    //focusheaderBox("FRONT OFFICE");
+});
+</script>

@@ -1,0 +1,30 @@
+<!-- Sec --> 
+<!-- breadcrumbs Work -->
+<% navigation_add t('employees'), employees_path %>
+<% navigation_add t('new'), new_employee_path %>
+
+<!-- breadcrumbs Work -->
+
+<!-- partial left -->
+<%= render partial: 'emp_left' %>
+<!-- partial new -->
+<%= render partial: 'new', :locals => {:employee_types => "employee"} %>
+<!-- partial section close -->
+<%= render partial: 'application/emp_section_close' %>
+
+
+
+<script type="text/javascript">
+     $(document).ready(function(){
+
+     	$("li").removeClass( "active" );
+        $("a").removeClass( "activeMenu" );
+
+     	 $("#createNewLiID").addClass("active");
+         $("#createnNewEmployee").addClass("activeMenu");
+
+           focusEmployee();
+   });
+</script>
+     
+

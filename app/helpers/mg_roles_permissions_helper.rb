@@ -1,0 +1,2 @@
+module MgRolesPermissionsHelper
+end

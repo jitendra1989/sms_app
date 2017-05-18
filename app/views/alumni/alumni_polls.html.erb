@@ -1,0 +1,75 @@
+<% navigation_add t('polls'), :controller=>'alumni' ,:action=> 'alumni_polls' %>
+<%=render partial: 'alumni_left'%>
+<h4 class="mg-h4"><%= t('poll_questions') %></h4>
+<%= form_for :alumni_poll_data, :url=>{:action=>"create_poll_data"}, :html =>{
+:id => 'pollFormID' } do |f| %>
+
+	<%= f.hidden_field :mg_alumni_user_id, :value=> session[:user_id]%>
+	<%= f.hidden_field :mg_school_id, :value=> session[:current_user_school_id]%>
+	<%= f.hidden_field :is_deleted, :value=>0%>
+	<%= f.hidden_field :created_by, :value=> session[:user_id]%>
+	<%= f.hidden_field :updated_by, :value=> session[:user_id]%>
+
+	<table>
+		<tr>
+			<% data= MgPollQuestionAlumni.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]) %>
+			<%polling_value=0%>
+			<% count=0 %>
+			<% @timeformat = MgSchool.find(session[:current_user_school_id]) %>
+			<% j=0 %>
+			<% data.each_with_index do |poll,i| %>
+				<% if poll.due_date >=  Date.today && poll.start_date <= Date.today%>
+					<%polling_value=1%>
+	 				<p style="font-weight: bold;">
+		 				<%j=j+1%>
+						<%= "#{j.to_s}."%><%= poll.try(:question) %> 
+						<%="(Due Date: "%><%= poll.try(:due_date).strftime(@timeformat.date_format)%><%=")"%>
+					</p>
+					<%= hidden_field_tag "mg_question_id[]",poll.id  %>
+
+					<% options= MgPollOptionAlumniParticulars.where(:mg_poll_option_alumni_id=>poll.id,:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]) %>
+					<tr>
+						<%alumni_data=MgAlumni.find_by(:mg_user_id=>session[:user_id])%>
+						<%poll_data=MgPollData.find_by(:mg_alumni_user_id=>alumni_data.id,:mg_question_id=>poll.id)%>
+						<%if poll_data.present?%>
+							<%poll_data_answer=MgPollOptionAlumniParticulars.find(poll_data.answer)%>
+						  <% options.each_with_index do |option,i| %>
+			          <%= radio_button_tag "options_id[#{poll.id}]",option.id,(option.id==poll_data.answer),:class=>'#{poll.id}' ,:disabled=>true%>
+							  <%= option.try(:paticular)%>
+								<br/>
+						  <%end%>
+			      <%else%>
+					    <% options.each_with_index do |option,i| %>
+			      	  <input id="<%="options_id[#{poll.id}]"%>" type="radio" value="<%="#{option.id}"%>" name="<%="options_id[#{poll.id}]"%>" class="<%="#{poll.id}"%>">
+							  <%= option.try(:paticular)%>
+								<br/>
+							<% end %>
+				    <%end%>
+						<% count+=1 %>
+					</tr>
+	   			<br >
+				<%#else%>
+				<% end %>
+			<%end%>
+			<%if polling_value==0%>
+				<%="There is no poll question created"%>
+			<%end%>
+			<%if polling_value==1%>
+				<p class="mg-p-mgtop">
+			    <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("save")%></a>
+			  </p>
+			<%end%>
+		</tr>
+	</table>
+<% end %>
+
+<%= render  partial: 'application/common_left_close' %>
+<script>
+
+        $( document ).ready(function() {
+            focusCurrentTab("pollsAID","pollsLId");
+            });
+
+</script>
+
+

@@ -1,0 +1,46 @@
+
+<%= form_for :my_questions , url: my_questions_path, :html => {
+                            :id => 'myQuestionFormID' } do |f| %>
+  <div>
+    <%= f.label :title ,:class=>"mg-label"%><span class="required-field"> *</span>
+  </div>
+  <div>
+    <%= f.text_field :title %>
+  </div>
+  <div>
+    <%= f.label :content ,:class=>"mg-label"%><span class="required-field"> *</span>
+  </div>
+  <div>
+    <%= f.cktext_area :content, rows: 10 %>
+  </div>
+    <%= f.hidden_field :mg_employee_id, :value=>@employee[0]%>
+    <%= f.hidden_field :is_deleted, :value=>0%>
+    <%= f.hidden_field :mg_school_id, :value=>session[:current_user_school_id]%>
+    <%= f.hidden_field :created_by, :value=>session[:user_id]%>
+    <%= f.hidden_field :updated_by, :value=>session[:user_id]%>
+
+
+    <p>
+  
+</p>
+  <p class="mg-p-mgtop">
+    <%#= f.submit t('submit') ,:class=>"mg-small-form-btn"%>
+    <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("save")%></a>
+    <%= link_to 'Back', :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+  </p>
+<% end %>
+  <%#= button_to "Cancel",my_questions_path, method: :get%>
+
+
+<script type="text/javascript">
+$(document).ready(function(){
+$("#myQuestionFormID").validate({
+
+rules: {
+"my_questions[title]": {required: true},
+"my_questions[content]": {required: true}
+}
+});
+});
+
+</script>

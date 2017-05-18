@@ -1,0 +1,43 @@
+ 
+ <%#@course_list=MgCourse.where(:is_deleted=>0, :mg_school_id=>session[:current_user_school_id])%>
+ <div class="mg-scroll-employee-bar">
+  <table class="batch-tbl mg-tbl-margin">
+  <th><%=t('batch')%></th>
+  <th><%=t('actions')%>
+  <div class="mg-text-margin">
+        <a class="select-all-batch-for-salbum mg-pop-link"><%=t('all')%></a>&nbsp;<a class="select-none-batch-for-salbum mg-pop-link"><%=t('none')%></a>
+      </div></th>
+	  <%@course_list.each do |course|%>
+	  <%batch_list=MgBatch.where(:is_deleted=>0, :mg_school_id=>session[:current_user_school_id], :mg_course_id=>course.id)%>
+		  	<%batch_list.each do |batch|%>
+		  	<tr>
+		  		<td><%=batch.course_batch_name%></td>
+		  		<td class="mg-align-center">
+		  			<%if @batch_std_checked.present?%>
+			  			<%if @batch_std_checked.include? batch.id%>
+			  				<%= check_box_tag 'student_mg_batch_id[]', batch.id, true ,{:class=>"class-albumb-student-committee-class"}%>
+			  			<%else%>
+			  				<%= check_box_tag 'student_mg_batch_id[]', batch.id, false ,{:class=>"class-albumb-student-committee-class"}%>
+			  			<%end%>
+			  		<%else%>
+			  			<%= check_box_tag 'student_mg_batch_id[]', batch.id, false ,{:class=>"class-albumb-student-committee-class"}%>
+		  			<%end%>
+		  		</td>
+		  	</tr>
+		  	<%end%>
+	  <%end%>
+  </table>
+  </div>
+  
+
+<script>
+	 $(document).on("click", ".select-all-batch-for-salbum", function(e){
+
+    $(".class-albumb-student-committee-class").prop('checked', true);
+        e.preventDefault();
+  });
+   $(document).on("click", ".select-none-batch-for-salbum", function(e){
+    $(".class-albumb-student-committee-class").prop('checked', false);
+        e.preventDefault();
+  });
+</script>

@@ -1,0 +1,66 @@
+
+
+<table border="1" class="batch-tbl mg-tbl-layout mg-showdata-bg mg-show-tbl-width" cellspacing="1" cellpadding="1">
+
+<tr>
+<th> <label class="mg-label"> <%= t('item_category')%></label>
+<th> <label class="mg-label"> <%= t('item_name')%></label>
+</th>
+<th> <label class="mg-label"> <%= t('unit_type')%></label>
+</th>
+<th> <label class="mg-label mg-label-text-transform-none"> <%= t('no_of_unit')%></label>
+</th>
+    <th><%=t('select')%>
+        <div class="mg-text-margin">
+              <a class="select-all-payslip-approval mg-pop-link"><%=t('all')%></a>&nbsp;<a class="select-non-payslip-approval mg-pop-link"><%=t('none')%></a>
+          </div>
+    </th>
+</tr>
+<%@item_information_details.each do |info|%>
+<tr>
+
+    <td class="mg-td-width-half" valign="top">
+      <%if info.mg_item_id.present?
+        
+        category_id=MgInventoryItem.where(:id=>info.mg_item_id).pluck(:mg_category_id)
+        item_category=MgInventoryItemCategory.find_by(:id=>category_id[0])
+          %>
+        <%=item_category.try(:name)%>
+      <%else%>
+       <%="No Data"%>
+      <%end%>
+    </td>
+
+     <td class="mg-td-width-half" valign="top">
+     <%if info.mg_item_id.present?
+          item=MgInventoryItem.find_by(:id=>info.mg_item_id)
+          %>
+     <%=item.try(:name)%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+     </td>
+
+     <td class="mg-td-width-half" valign="top">
+     <%if info.mg_unit_type_id.present?
+          unit_item=MgLabUnit.find_by(:id=>info.mg_unit_type_id)
+          %>
+     <%=unit_item.try(:unit_name)%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+     </td>
+
+     <td class="mg-td-width-half" valign="top">
+     <%if info.no_of_unit.present?%>
+     <%=info.try(:no_of_unit)%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+     </td>
+     <td class="mg-td-width-half mg-align-center" valign="top"><%=check_box_tag 'salary_component_deduction[]',info.id,false, {:class=>"payslip-approval-cls inventory-select-check-box-cls"} %></td>
+ </tr>
+
+ <%end%>
+
+</table>

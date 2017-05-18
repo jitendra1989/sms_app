@@ -1,0 +1,61 @@
+<%= render  partial: 'examination_table_left' %>
+<h4 class="mg-h4">Formative Indicator</h4>
+
+<div>
+<button class="Scholastic-indicator-datas mg-custom-form-btn mg-btn-bottom-margin" id='<%=@fa_Criteria.id%>'>New </button><br/>
+<label class="mg-label"><%="Fa Name :"%></label>
+<span class="mg-font-size"><%=@fa_Criteria.fa_name%></span><br/>
+<label class="mg-label"><%="Description :"%></label>
+<span class="mg-font-size"><%=@fa_Criteria.description%></span><br/>
+
+
+
+
+		
+
+<div id="indicator_group_id">
+
+</div>
+<div id="indicator_group_newDatasEdit">
+
+</div>
+
+		
+
+<table class="batch-tbl mg-tbl-margin" cellspacing="0" style="padding:0; border-collapse:collapse;">
+
+<%if  @indicator[0].to_s.empty? %>
+<h5><%="No Records Found"%></h5>
+<%else%>
+
+  <tr>
+    <th>Name</th>
+    <th>Description</th>
+     <th>Total Marks</th>
+    <th><%=t('actions')%></th>
+  </tr>
+  <% @indicator.each do |data| %>
+    <tr>
+      <td><%= data.name %></td>
+      <td style="max-width:400px"><%= data.description %></td>
+      <td><%=data.total_marks%></td>
+
+      <td>
+        <a title="Edit" href="#" id=<%=raw data.id%> class="Scholastics-indicator-edit-class mg-icon-btn"><i class="fa fa-pencil-square-o"></i></a>
+
+        <a href="#" title="Delete" id=<%=raw data.id%> class="Scholastics-indicator-delete-class mg-icon-btn"><i class="fa fa-trash"></i></a>
+      </td>
+    </tr>
+  <% end %>
+  <%end%>
+</table>
+</div>
+<%= render  partial: 'examination_table_close' %><br/>
+
+<script type="text/javascript">
+  $(document).ready(function() {
+        focusCurrentTab("viewStudentListAId","viewStudentListLiId");
+        focusExaminationHeaderBox();
+  });
+
+</script>

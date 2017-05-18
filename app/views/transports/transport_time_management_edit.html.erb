@@ -1,0 +1,81 @@
+
+
+   <%if flash[:error].present?%>
+  <div class="alert alert-info mg-success-msg">
+
+        <%=flash[:error]%>
+  <div class="alert alert-info mg-success-msg">
+        
+   <%end%>
+<h4 class="mg-h4"><%= t('route_details')%></h4>
+<div class="box">
+<%= form_for :transport_time,  :url=>{:controller=>'transports',:action=>'transport_time_management_update',:id=>@transport_time.id}, :html=>{:id=>'edit_route_form_fortransport'} do |f| %>
+
+        <%#= f.hidden_field :is_deleted ,:value=>0%>
+        <%#= f.hidden_field :mg_school_id ,:value=>@school_id%>
+        <%#= f.text_field :vehicle_number ,:class=>"mg-text-field"%>
+        
+<table class="mg-tbl-margin mg-show-tbl-width">
+    <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="selectRoute"><%= t ('select_route') %><span class="required-field">&nbsp;*</span></label><br/>
+        <%
+      transport_data=MgTransport.where(:is_deleted=>0,:mg_school_id=>@school_id).pluck(:route_name,:id)
+        %>
+        <%=f.select :mg_transport_id ,options_for_select(transport_data,:selected=>@transport_time.mg_transport_id),:prompt=>"Select"%><br>
+        <%#= f.text_field :route_name ,:class=>"mg-text-field"%>
+      </td>
+    </tr>
+     <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label"  for="busStopName"><%= t ('bus_stop_name') %><span class="required-field">&nbsp;*</span></label><br/>
+        <%= f.text_field :bus_stop_name ,:class=>"mg-text-field"%>
+      </td>
+    </tr>
+
+    
+     <tr>
+      <td>
+        <label class="mg-label" for="pickUpTime"><%= t ('pick_up_time') %><span class="required-field">&nbsp;*</span></label><br/>
+     <%=f.time_select 'pick_up_time',{:value=>@transport_time.pick_up_time,ampm: true},:class=>"mg-select-time-width"%><br>
+      </td>
+    </tr>
+ <tr>
+      <td>
+        <label class="mg-label" for="dropTime"><%= t ('drop_time') %><span class="required-field">&nbsp;*</span></label><br/>
+     <%=f.time_select 'drop_time',{:value=>@transport_time.drop_time,ampm: true},:class=>"mg-select-time-width"%><br>
+      </td>
+    </tr>
+    
+</table>
+  
+ <br/>
+ <p class="mg-p-mgtop">
+<%= submit_tag t("save"),:class=>"mg-small-form-btn"%>
+ <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+ </p>
+  </div>
+<%end%>
+ 
+<script>
+    $(document).ready(function(){
+
+   
+   
+    
+        
+    $("#edit_route_form_fortransport").validate({
+      rules:{
+        "transport_time[mg_transport_id]":{required:true},
+        "transport_time[bus_stop_name]":{required:true},
+        "pick_up_time[game_time(4i)]":{required:true},
+        "pick_up_time[game_time(5i)]":{required:true},
+        "drop_time[game_time(4i)]":{required:true},
+        "drop_time[game_time(5i)]":{required:true}
+
+        
+      },
+     });
+     });
+
+</script>

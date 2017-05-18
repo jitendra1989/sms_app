@@ -1,0 +1,144 @@
+
+
+
+<h4 class="mg-h4"><%=@items.name%></h4>
+ <%mg_document_management=@items.mg_document_managements.find_by(:is_deleted=>0, :mg_school_id=>session[:current_user_school_id])%>
+ 
+<%= form_for :store, url: cart_update_path, method: :post, :html => {
+                            :id => 'aumniStorItemDetailFormID' } do |f| %>
+  <%= f.hidden_field :mg_inventory_item_id, :value => @items.id%> 
+  <%= f.hidden_field :price, :value => @items.try(:online_price).to_f.round(2)%> 
+  <%= f.hidden_field :mg_user_id, :value => session[:user_id]%> 
+  <%= f.hidden_field :created_by, :value => session[:user_id]%> 
+  <%= f.hidden_field :updated_by, :value => session[:user_id]%> 
+  <%= f.hidden_field :mg_school_id, :value => session[:current_user_school_id]%> 
+  <%= f.hidden_field :is_deleted, :value => 0%> 
+  <%= f.hidden_field :cart_status, :value => true%> 
+  <%= f.hidden_field :status, :value => 'pending'%> 
+
+
+<table>
+	<tr>
+		<td>
+			<img src="<%=mg_document_management.present? ? mg_document_management.file.url : ""%>" alt="Fjords" width="300" height="200">
+		</td>
+		<td width="10px">
+			
+		</td>
+		<td>
+			<%=@items.name%><br>
+      		<i class="fa fa-inr"></i><strong id="onlinePriceCalculationStrongID"> <%=@items.try(:online_price).to_f.round(2)%></strong><br>
+			<table border="1" class="mg-showdata-bg mg-tbl-layout" cellspacing="1" cellpadding="1">
+			   <tr>
+			     <td class="mg-td-width-half" valign="top">
+			   		<label class="mg-label"> <%= t('category')%></label>
+			   	 </td>
+			   	 <td class="mg-td-width-half" valign="top">
+			  		<%= @category.name %>
+			  	 </td>
+			 </tr>
+
+			 <tr>
+			     <td class="mg-td-width-half" valign="top">
+			  		<label class="mg-label"><%=t('item')%></label>
+			  	 </td>
+			  	 <td class="mg-td-width-half" valign="top">
+			  		<%= @items.name %>
+			  	 </td>
+			 </tr>
+			 <tr>
+			     <td class="mg-td-width-half" valign="top">
+			  		<label class="mg-label"><%=t('status')%></label>
+			  	 </td>
+			  	 <td class="mg-td-width-half" valign="top">
+			  		<%if (@total_quantity-@items.try(:reserved_for_offline).to_i)>0%>
+			  		  <font color="green"><%="Available"%></font>
+			  		<%else%>
+			  		  <font  color="red"><%= "out of stock" %></font>
+			  	 	<%end%>
+			  	 </td>
+			 </tr>
+			  <tr>
+			     <td class="mg-td-width-half" valign="top">
+			  		<label class="mg-label"><%=t('quantity_available')%></label>
+			  	 </td>
+			  	 <td class="mg-td-width-half" valign="top">
+			  		<%= (@total_quantity-@items.try(:reserved_for_offline).to_i)> 0 ? (@total_quantity-@items.try(:reserved_for_offline).to_i) : 0%>
+			  	 </td>
+			 </tr>
+			 <tr>
+			     <td class="mg-td-width-half" valign="top">
+			  		<label class="mg-label"><%=t('required_quantity')%></label>
+			  	 </td>
+			  	 <td class="mg-td-width-half" valign="top">
+			  		<%=f.number_field :required_quantity, :value=>((@total_quantity-@items.try(:reserved_for_offline).to_i)>0 ? 1 : 0) ,:readonly=>((@total_quantity-@items.try(:reserved_for_offline).to_i)>0 ? false : true ), :onchange=>"totalPriceCalculationStrong(this.value)"%><br>
+			  	 </td>
+			 </tr>
+			 <tr>
+			 	 <td class="mg-td-width-half" valign="top">
+			  		<!-- <label class="mg-label"><%=t('required_quantity')%></label> -->
+			  	 </td>
+			  	  <td class="mg-td-width-half" valign="top">
+			  		<!-- <label class="mg-label"><%=t('required_quantity')%></label> -->
+			  	 </td>
+			 </tr>
+			  <tr>
+			 	 <td class="mg-td-width-half" valign="top">
+			  		<label class="mg-label"><%=t('Total Price')%></label> 
+			  	 </td>
+			  	  <td class="mg-td-width-half" valign="top">
+			  		<label class="mg-label"><i class="fa fa-inr"></i><strong id="totalPriceCalculationStrongID"><%=@items.try(:online_price).to_f.round(2)%></strong></label> 
+			  	 </td>
+			 </tr>
+
+			</table>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="3" height="20px"></td>
+	</tr>
+	<tr>
+		<td colspan="3">
+			<h4 class="mg-h4">Description</h4><br>
+
+			<div style="text-align:justify;text-justify: inter-word;max-width: 550px">
+			<%=@items.description%>
+			</div>
+		</td>
+	</tr>
+</table>
+ <p class="mg-p-mgtop">
+  	<%if (@total_quantity-@items.try(:reserved_for_offline).to_i)>0%>
+  	  <a class="mg-small-form-btn" onclick="$('#store_cart_status').val(false);$(this).closest('form').submit();"><%=t('add_to_cart')%></a>
+  	  <a  onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t('buy')%></a>
+  	<%end%>
+      <a class="mg-small-form-btn cancel-form-dialog"><%=t('cancel')%></a>
+  </p>
+
+ <%end%>
+
+
+ 
+
+  <script type="text/javascript">
+
+  	$(document).ready(function () {
+		$("#aumniStorItemDetailFormID").validate({
+
+		rules: {
+		"store[required_quantity]": {required: true, number: true, min: 1, max: <%=(@total_quantity-@items.try(:reserved_for_offline).to_i)%>}
+		}
+		});
+	});
+
+	function totalPriceCalculationStrong(no_of_items){
+		var onlinePrice= parseInt($("#onlinePriceCalculationStrongID").html()) ;
+		if (onlinePrice>0 && parseInt(no_of_items)>0){
+			$("#totalPriceCalculationStrongID").html((parseInt(no_of_items)*onlinePrice).toFixed(2));
+		}
+	}
+
+
+
+  </script>
+

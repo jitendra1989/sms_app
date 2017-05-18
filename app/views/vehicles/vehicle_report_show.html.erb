@@ -1,0 +1,222 @@
+<table border="1" class="mg-showdata-bg mg-tbl-layout" cellspacing="1" cellpadding="1">
+
+<tr>
+      <td class="mg-td-width-half" valign="top">
+        <label class="mg-label"><%=t("vehicle_number")%></label>
+      </td>
+      <td class="mg-td-width-half" valign="top">
+      <%if @vehicle_report.mg_vehicle_id.present?%>
+
+     <%  
+     add_report=MgVehicle.find(@vehicle_report.mg_vehicle_id)
+     %>
+        <label class="mg-label-inner-form"><%=add_report.vehicle_number%></label>
+        <%else%>
+      <label class="mg-label-inner-form"><%="No Data"%></label>
+
+     <%end%>
+      </td>
+  </tr>
+  <tr>
+      <td class="mg-td-width-half" valign="top">
+        <label class="mg-label"><%=t("report_type")%></label>
+      </td>
+      <td class="mg-td-width-half" valign="top">
+      <%if @vehicle_report.mg_report_type_id.present?%>
+<%  
+    report_type=MgReportType.find(@vehicle_report.mg_report_type_id)
+     %>
+        <label class="mg-label-inner-form"><%=report_type.report_type_name%></label>
+        <%else%>
+      <label class="mg-label-inner-form"><%="No Data"%></label>
+
+     <%end%>
+      </td>
+  </tr>
+
+  <tr>
+      <td class="mg-td-width-half" valign="top">
+        <label class="mg-label"><%=t("vendor_name")%></label>
+      </td>
+      <td class="mg-td-width-half" valign="top">
+      <%if @vehicle_report.vendor_name.present?%>
+
+        <label class="mg-label-inner-form"><%=@vehicle_report.vendor_name%></label>
+        <%else%>
+      <label class="mg-label-inner-form"><%="No Data"%></label>
+
+     <%end%>
+      </td>
+  </tr>
+
+  <tr>
+      <td class="mg-td-width-half" valign="top">
+        <label class="mg-label"><%=t("valid_from")%></label>
+      </td>
+      <td class="mg-td-width-half" valign="top">
+     <%if @vehicle_report.valid_from.present?%>
+
+     <% school_id = @vehicle_report.mg_school_id %>  
+        <% dateFormat = MgSchool.find(school_id).date_format %>    
+        <% if dateFormat.present?%>
+
+        <label class="mg-label-inner-form"><%= @vehicle_report.valid_from.strftime(dateFormat) %></label>
+        <% end %>
+        <%else%>
+      <label class="mg-label-inner-form"><%="No Data"%></label>
+
+     <%end%>
+      </td>
+  </tr>
+   <tr>
+      <td class="mg-td-width-half" valign="top">
+        <label class="mg-label"><%=t("valid_to")%></label>
+      </td>
+      <td class="mg-td-width-half" valign="top">
+     <%if @vehicle_report.valid_to.present?%>
+      <% school_id = @vehicle_report.mg_school_id %>  
+        <% dateFormat = MgSchool.find(school_id).date_format %>    
+        <% if dateFormat.present?%>
+
+        <label class="mg-label-inner-form"> <%= @vehicle_report.valid_to.strftime(dateFormat) %></label>
+        <% end %>
+        <%else%>
+      <label class="mg-label-inner-form"><%="No Data"%></label>
+
+     <%end%>
+      </td>
+  </tr>
+
+
+  <tr>
+      <td class="mg-td-width-half" valign="top">
+        <label class="mg-label"><%=t("comments")%></label>
+      </td>
+      <td class="mg-td-width-half" valign="top">
+     <%if @vehicle_report.comments.present?%>
+
+        <label class="mg-label-inner-form"><%=@vehicle_report.comments.html_safe%></label>
+        <%else%>
+      <label class="mg-label-inner-form"><%="No Data"%></label>
+
+     <%end%>
+      </td>
+  </tr>
+
+  <tr>
+      <td class="mg-td-width-half" valign="top">
+        <label class="mg-label"><%=t("payment_date")%></label>
+      </td>
+      <td class="mg-td-width-half" valign="top">
+     <%if @vehicle_report.payment_date.present?%>
+
+     <% school_id = @vehicle_report.mg_school_id %>  
+        <% dateFormat = MgSchool.find(school_id).date_format %>    
+        <% if dateFormat.present?%>
+
+        <label class="mg-label-inner-form"><%= @vehicle_report.payment_date.strftime(dateFormat) %></label>
+        <% end %>
+        <%else%>
+      <label class="mg-label-inner-form"><%="No Data"%></label>
+
+     <%end%>
+      </td>
+  </tr>
+  <tr>
+      <td class="mg-td-width-half" valign="top">
+        <label class="mg-label"><%=t("payment_type")%></label>
+      </td>
+      <td class="mg-td-width-half" valign="top">
+      <%if @vehicle_report.mg_payment_type_id.present?%>
+<%  
+    payment_type=MgPaymentType.find(@vehicle_report.mg_payment_type_id)
+     %>
+        <label class="mg-label-inner-form"><%=payment_type.payment_type_name%></label>
+        <%else%>
+      <label class="mg-label-inner-form"><%="No Data"%></label>
+
+     <%end%>
+      </td>
+  </tr>
+  
+<tr>
+      <td class="mg-td-width-half" valign="top">
+        <label class="mg-label"><%=t("amount")%></label>
+      </td>
+      <td class="mg-td-width-half" valign="top">
+     <%if @vehicle_report.amount.present?%>
+
+        <label class="mg-label-inner-form"><%=@vehicle_report.amount%></label>
+        <%else%>
+      <label class="mg-label-inner-form"><%=0.0%></label>
+
+     <%end%>
+      </td>
+  </tr>
+</table>
+<%@document=MgDocumentManagement.where(:mg_add_report_id=>@vehicle_report.id,:document_type=>"Report",:is_deleted=>0,:mg_school_id=>session[:current_user_school_id])%><br>
+<label class="mg-label"> <%=t("file_uploads")%>:</label><br/>
+
+ <%if @document.present?%>
+     
+ <table border="1" class="mg-tbl-layout batch-tbl" cellspacing="1" cellpadding="1">
+<th>File Name</th>
+<th>Downloads</th>
+
+
+<tr>
+
+
+  <%@document.each do |user|%>
+  <td>
+   <%= user.file_file_name %>
+  </td>
+  <td class="mg-align-center">
+   <%= link_to_if user.file.url, '<i class="fa fa-download"></i>'.html_safe, user.file.url ,:class=>"mg-icon-btn mg-download-icon-font" ,:title=>"Download"%><br/>
+  </td>
+  </tr>
+ <%end%>
+</table>
+
+ <%else%>
+ <h5><%="No Data"%></h5>
+ <%end%>
+
+<%@document=MgDocumentManagement.where(:mg_add_report_id=>@vehicle_report.id,:document_type=>"Payment",:is_deleted=>0,:mg_school_id=>session[:current_user_school_id])%><br>
+<label class="mg-label"> <%=t("upload_bills")%>:</label><br/>
+
+ <%if @document.present?%>
+     
+ <table border="1" class="mg-tbl-layout batch-tbl" cellspacing="1" cellpadding="1">
+<th>File Name</th>
+<th>Downloads</th>
+
+
+<tr>
+
+
+  <%@document.each do |user|%>
+  <td>
+   <%= user.file_file_name %>
+  </td>
+  <td class="mg-align-center">
+   <%= link_to_if user.file.url, '<i class="fa fa-download"></i>'.html_safe, user.file.url ,:class=>"mg-icon-btn mg-download-icon-font" ,:title=>"Download"%><br/>
+  </td>
+  </tr>
+ <%end%>
+</table>
+
+ <%else%>
+ <h5><%="No Data"%></h5>
+ <%end%>
+
+<br/>
+<%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+    
+    
+
+    
+    
+
+
+    

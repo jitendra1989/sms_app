@@ -1,0 +1,143 @@
+<%if flash[:error].present?%>
+<%=flash[:error]%>
+<%end%>
+
+
+
+<table border="1" class="mg-showdata-bg mg-show-tbl-width" cellspacing="1" cellpadding="1">
+
+
+
+
+ <tr>
+      <td class="mg-td-width-half" valign="top">
+       <label class="mg-label" for="bookName"><%= t ('book_name') %></label>
+      </td>
+      <td class="mg-td-width-half" valign="top">
+        <label class="mg-label-inner-form"><%=@inventory_data.book_name%></label>
+      </td>
+  </tr>
+
+   <tr>
+      <td class="mg-td-width-half" valign="top">
+       <label class="mg-label" for="author"><%= t ('author') %></label>
+      </td>
+      <td class="mg-td-width-half" valign="top">
+        <label class="mg-label-inner-form"><%=@inventory_data.author%></label>
+      </td>
+  </tr>
+
+  <tr>
+      <td class="mg-td-width-half" valign="top">
+       <label class="mg-label" for="publisher"><%= t ('publisher') %></label>
+      </td>
+      <td class="mg-td-width-half" valign="top">
+        <label class="mg-label-inner-form"> <%=@inventory_data.publisher%></label>
+      </td>
+  </tr>  
+<tr>
+      <td class="mg-td-width-half" valign="top">
+       <label class="mg-label" for="publisher"><%= t ('edition') %></label>
+      </td>
+      <td class="mg-td-width-half" valign="top">
+        <label class="mg-label-inner-form"> <%=@inventory_data.edition%></label>
+      </td>
+  </tr>  
+  <tr>
+      <td class="mg-td-width-half" valign="top">
+       <label class="mg-label" for="publisher"><%= t ('cost') %></label>
+      </td>
+      <td class="mg-td-width-half" valign="top">
+        <label class="mg-label-inner-form"> <%=@inventory_data.cost%></label>
+      </td>
+  </tr>  
+    </tr>
+
+  <tr>
+      <td class="mg-td-width-half" valign="top">
+       <label class="mg-label" for="bookNo"><%= t ('isbn_number') %></label>
+      </td>
+      <td class="mg-td-width-half" valign="top">
+        <label class="mg-label-inner-form"> <%=@inventory_data.book_no%></label>
+      </td>
+  </tr>
+  <tr>
+      <td class="mg-td-width-half" valign="top">
+       <label class="mg-label" for="publisher"><%= t ('category_name') %></label>
+      </td>
+      <%
+          books_category=MgBooksCategory.find(@inventory_data.mg_books_category_id)
+          %>
+      <td class="mg-td-width-half" valign="top">
+        <label class="mg-label-inner-form"> <%=books_category.category_name%></label>
+      </td>
+  </tr>  
+  <tr>
+      <td class="mg-td-width-half" valign="top">
+       <label class="mg-label" for="publisher"><%= t ('class') %></label>
+      </td>
+      <%
+          course_data=MgCourse.find(@inventory_data.mg_course_id)
+          %>
+      <td class="mg-td-width-half" valign="top">
+        <label class="mg-label-inner-form"> <%=course_data.course_name%></label>
+      </td>
+  </tr>  
+  <tr>
+      <td class="mg-td-width-half" valign="top">
+       <label class="mg-label" for="publisher"><%= t ('non_issuable') %></label>
+      </td>
+      <%data=@inventory_data.non_issuable%>
+          <%if data==true%>
+      <td class="mg-td-width-half" valign="top">
+        <label class="mg-label-inner-form"> <%= "Yes"%></label>
+      </td>
+      <%else%>
+          <td class="mg-td-width-half" valign="top">
+        <label class="mg-label-inner-form"> <%= "No"%></label></td>
+          <%end%>
+  </tr>  
+  <tr>
+      <td class="mg-td-width-half" valign="top">
+       <label class="mg-label" for="publisher"><%= t ('is_damaged') %></label>
+      </td>
+      <%issuable_data=@inventory_data.is_damaged%>
+          <%if issuable_data==true%>
+      <td class="mg-td-width-half" valign="top">
+        <label class="mg-label-inner-form"> <%= "Yes"%></label>
+      </td>
+      <%else%>
+          <td class="mg-td-width-half" valign="top">
+        <label class="mg-label-inner-form"> <%= "No"%></label></td>
+          <%end%>
+  </tr>  
+  <tr>
+      <td class="mg-td-width-half" valign="top">
+       <label class="mg-label" for="publisher"><%= t ('is_lost') %></label>
+      </td>
+      <%lost_data=@inventory_data.is_lost%>
+          <%if lost_data==true%>
+      <td class="mg-td-width-half" valign="top">
+        <label class="mg-label-inner-form"> <%= "Yes"%></label>
+      </td>
+      <%else%>
+          <td class="mg-td-width-half" valign="top">
+        <label class="mg-label-inner-form"> <%= "No"%></label></td>
+          <%end%>
+  </tr>  
+  <tr>
+      <td class="mg-td-width-half" valign="top">
+       <label class="mg-label" for="publisher"><%= t ('status') %></label>
+      </td>
+      <td class="mg-td-width-half" valign="top">
+        <label class="mg-label-inner-form"> <%=@inventory_data.status %></label>
+      </td>
+  </tr>  
+
+
+
+
+</table>
+
+      <br/>
+      <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>

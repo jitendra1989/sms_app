@@ -1,0 +1,107 @@
+
+
+<!-- Sec --> 
+ <%= form_for @subjects, url: subjects_path, :html => {
+                            :id => 'newSubjectID', :class => 'elm_class',
+                            :style => 'elm_style' } do |f| %>
+
+ <% if @subjects.errors.any? %>
+  <div id="error_explanation">
+    <h2><%= pluralize(@subjects.errors.count, "error") %>
+      </h2>
+    <ul>
+    <% @subjects.errors.full_messages.each do |msg| %>
+      <li><%= msg %></li>
+    <% end %>
+    </ul>
+  </div>
+  <% end %>
+<%= f.hidden_field :mg_school_id,:value => session[:current_user_school_id] %>
+
+
+<h4 class="mg-h4"><%= t('newsubject') %></h4>
+  <div>
+  <p>
+    <label class="mg-label " for="subject_name"><%= t('select') %> <%= t('course') %><span class="required-field">&nbsp;*</span></label><br>
+    <%= f.select :mg_course_id,options_for_select(@class),:prompt=>t('select') %>
+  </p>
+
+ <p>
+    <label class="mg-label " for="subject_name"><%= t('subjectname') %><span class="required-field">&nbsp;*</span></label><br>
+    <%= f.text_field :subject_name ,:class=>"mg-text-field"%>
+  </p>
+ 
+  <p>
+    <label class="mg-label " for="subject_code"><%= t('subjectcode') %><span class="required-field">&nbsp;*</span></label><br>
+    <%= f.text_field :subject_code ,:class=>"mg-text-field" %>
+  </p>
+  
+ <p>
+    <label class="mg-label " for="max_weekly_class"><%= t('maxweeklyclass') %><span class="required-field">&nbsp;*</span></label><br>
+    <%= f.text_field :max_weekly_class ,:class=>"mg-text-field", :onkeyup=>"checkMaxWeeklyClass(this,event);" %>
+  </p>
+
+  <p>
+    <label class="mg-label " for="is_core_subject"><%= t('is_core_subject') %><span class="required-field">&nbsp;</span></label>
+    <%= f.check_box :is_core  %>
+  </p>
+
+  <p>
+    <label class="mg-label " for="is_lab"><%= t('is_lab') %><span class="required-field">&nbsp;</span></label>
+    <%= f.check_box :is_lab,:onClick=>"fnEnableNoOfClassText(this);"  %>
+  </p>
+
+  <p>
+    <label class="mg-label mg-rm-text-trans" for="no_of_classes">No of Classes <span class="required-field">&nbsp;*</span></label><br>
+    <%= f.text_field :no_of_classes, :id=>'noOfClassesTextId', :class=>"mg-text-field", :disabled=>true %>
+  </p>
+
+
+
+<%=f.hidden_field :mg_school_id, :value=>session[:current_user_school_id]%>
+<div style="display:none;">
+<p>
+  <label class="mg-label " for="status"><%= t('status') %></label><br>
+    <%= f.label :is_deleted, t("active") ,:class=>"mg-label-inner-form" %>
+    <%= f.radio_button :is_deleted, false , :checked => true%>
+    <%= f.label :is_deleted, t("inactive"),:class=>"mg-label-inner-form" %>
+    <%= f.radio_button :is_deleted, true %>
+</p>
+</div>
+  <p>
+    <%#= f.submit t('save'),:class=>"mg-small-form-btn"%>
+    <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("save")%></a>
+     <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+  </p>
+<% end %>
+
+<script>
+$(document).ready(function () {
+  $("#newSubjectID").validate({
+
+    rules: {
+    "mg_subject[subject_name]": {required: true},
+    "mg_subject[subject_code]": {required: true},
+    "mg_subject[mg_course_id]": {required: true},
+    "mg_subject[max_weekly_class]": {required: true, number: true,min: 0, max: 54},
+    "mg_subject[no_of_classes]": {required: true,number: true, min: 1}
+    }
+  });
+});
+function checkMaxWeeklyClass(that, e){
+
+  if( ( (e.keyCode>=48 && e.keyCode<=57 ) || (e.keyCode>=96 && e.keyCode<=105) ) && parseInt( $(that).val() )>6 ){
+
+    alert("Same subject will be taught more than once in a day.");
+  }
+}
+
+function fnEnableNoOfClassText(that){
+  var lb_checkboxValue=$(that).is(':checked');
+  $("#noOfClassesTextId").prop('disabled', true);
+  if(lb_checkboxValue) {
+    $("#noOfClassesTextId").prop('disabled', false);
+  }
+}
+
+</script>

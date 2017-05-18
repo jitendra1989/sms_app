@@ -1,0 +1,6 @@
+<div id="monthlyPayoutForFacultiesBYNameDIVID" style="display:none">
+	<label class="mg-label mg-label-width "><%=t('select_department')%><span class="required-field">*</span></label>
+	<%=select_tag :mg_employee_department, options_for_select(@department),:prompt=>t('select'),:class=>"mg-select-btn"%><br>
+	<label class="mg-label mg-label-width "><%=t('select_employee')%><span class="required-field">*</span></label>
+	<%=select_tag :mg_employee_id_for_payslip,:class=>"mg-select-btn"%><br>
+</div><br>

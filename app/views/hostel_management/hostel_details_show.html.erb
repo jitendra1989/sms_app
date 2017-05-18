@@ -1,0 +1,192 @@
+<% navigation_add t('hostel'), :controller=>'hostel_management', :action=>'hostel_details' %>
+<% navigation_add  t('show_hostel_details'), :controller=>'hostel_management', :action=>'hostel_details_show',:id=>params[:id] %>
+
+<%#= render  partial: 'hostel_management_left' %>
+<%if session[:user_type]=="admin"%>
+<%= render  partial: 'master_settings/master_settings_left' %>
+<%else%>
+<%= render  partial: 'hostel_management_left' %>
+<%end%>
+<%#= render  partial: 'master_settings/master_settings_left' %>
+
+<h4 class="mg-h4"><%= t('show_hostel')%></h4>
+
+<table border="1" class="mg-showdata-bg " cellspacing="1" cellpadding="1">
+   <tr>
+     <td class="mg-td-width-half" valign="top">
+        <label class="mg-label"> <%= t('name')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+        <%= @hostel_data.try(:name) %>
+     </td>
+ </tr>
+
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+        <label class="mg-label"><%=t('description')%></label>
+     </td>
+     <td class="mg-td-width-half " valign="top">
+            <%= @hostel_data.try(:description) %>
+     </td>
+ </tr>
+  <tr>
+     <td class="mg-td-width-half" valign="top">
+        <label class="mg-label"> <%= t('category')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+        <%= @hostel_data.try(:category) %>
+     </td>
+ </tr>
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+        <label class="mg-label"> <%= t('total')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+     
+        <%= @hostel_data.try(:total) %>
+     </td>
+ </tr>
+
+
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+        <label class="mg-label"> <%= t('occupancy')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+     
+        <%= @hostel_data.try(:occupancy) %>
+     </td>
+ </tr>
+
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+        <label class="mg-label"> <%= t('availability')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+     
+        <%= @hostel_data.try(:availability) %>
+     </td>
+ </tr>
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+        <label class="mg-label"> <%= t('visible_to_student')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+     <%if @hostel_data.try(:visible_to_student)==true%>
+            <%="Yes"%>
+     <%else%>
+            <%="No"%>
+     <%end%>
+        <%#= @hostel_data.try(:visible_to_student) %>
+     </td>
+ </tr>
+
+
+
+
+
+
+
+
+
+
+</table>
+<br/>
+<h4 class="mg-h4"><%= t('programme_wise_quota')%></h4>
+
+<% programme_data= MgHostelProgrammeQuota.where(:is_deleted=>0,:mg_hostel_details_id=>@hostel_data.id)%>
+
+<table border="1" class="mg-showdata-bg " cellspacing="1" cellpadding="1">
+ <tr>
+    
+     <td class="mg-td-width-half" valign="top">
+        <label class="mg-label"> <%= t('programme_list')%></label>
+     </td>
+
+    <td class="mg-td-width-half" valign="top">
+        <label class="mg-label"> <%= t('maximum_occupancy_list')%></label>
+     </td>
+
+     
+ </tr>
+
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+        <% programme_data.each do |prgm| %>
+           <% prgm_name=MgWing.find_by(:is_deleted=>0,:id=>prgm.programme).try(:wing_name) %>  
+           <%= prgm_name %>
+            <br>
+        <% end %>
+     </td>
+
+     <td class="mg-td-width-half" valign="top">
+        <% programme_data.each do |prgm| %>
+
+            <%= prgm.try(:max_occupancy) %>
+            <br>
+        <% end %>
+     </td>
+ </tr>
+</table>
+<br/>
+<h4 class="mg-h4"><%= t('rules')%></h4>
+
+    <%rule_data= MgHostelRule.where(:is_deleted=>0,:mg_hostel_details_id=>@hostel_data.id)%>
+<table border="1" class="mg-showdata-bg " cellspacing="1" cellpadding="1">   
+    <tr>
+        
+         <td class="mg-td-width-half" valign="top">
+            <label class="mg-label"> <%= t('name_list')%></label>
+         </td>
+
+         <td class="mg-td-width-half" valign="top">
+            <label class="mg-label"> <%= t('description_list')%></label>
+         </td>
+
+         
+     </tr>
+
+     <tr>
+
+        <td class="mg-td-width-half" valign="top">
+
+            <% rule_data.each do |rule| %>
+                <%= rule.try(:name) %>
+
+                <br>
+            <% end %>
+         </td>
+         
+         <td class="mg-td-width-half" valign="top">
+            <% rule_data.each do |rule| %>
+                <%= rule.try(:description) %>
+                <br>
+            <% end %>
+         </td>
+     </tr>
+
+</table> 
+
+
+<br>
+
+ 
+ <table>
+        <tr>
+            <td>
+               <%= link_to t('cancel'), {:controller=>'hostel_management',:action=>'hostel_details'}, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+            </td>
+        </tr> 
+    </table>
+
+ <%= render  partial: 'application/common_left_close' %>
+
+
+<script type="text/javascript">
+
+$( document ).ready(function() {
+        focusCurrentTab("HostelDetailsAID","HostelDetailsLiID");
+
+  });
+
+</script>

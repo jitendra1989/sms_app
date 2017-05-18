@@ -1,0 +1,137 @@
+<table border="1" class="mg-showdata-bg" cellspacing="1" cellpadding="1" style="width: 440px;">
+  <%@dateFormat = MgSchool.find_by(:id=>session[:current_user_school_id]).date_format %>
+
+  <%if @canteen_bill_details.user_type=="student"%>
+    <%student_detail=MgStudent.find_by(:id=>@canteen_bill_details.mg_student_id)%>
+    <%student_or_employee_name=student_detail.try(:first_name) +" "+student_detail.try(:last_name)%>
+    <%student_or_employee_number=student_detail.try(:admission_number)%>
+    <%betch_obj=MgBatch.find_by(:id=>@canteen_bill_details.mg_batch_id)%>
+    <%programme_or_department_name=betch_obj.try(:course_batch_name)%>
+  <%else%>
+    <%employee_detail=MgEmployee.find_by(:id=>@canteen_bill_details.mg_employee_id)%>
+    <%student_or_employee_name=employee_detail.try(:first_name) +" "+employee_detail.try(:last_name)%>
+    <%student_or_employee_number=employee_detail.try(:employee_number)%>
+    <%dept_object=MgEmployeeDepartment.find_by(:id=>@canteen_bill_details.mg_employee_department_id)%>
+    <%programme_or_department_name=dept_object.try(:department_name)%>
+  <%end%>
+
+  <tr>
+    <td valign="top">
+      <label class="mg-label"> <%= t('name')%></label>
+    </td>
+    <td valign="top">
+       <%=student_or_employee_name%>
+    </td>
+  </tr>
+
+  <tr>
+    <td valign="top">
+      <label class="mg-label"> <%= t('Admission/Employee Number')%></label>
+    </td>
+    <td valign="top">
+       <%=student_or_employee_number%>
+    </td>
+  </tr>
+
+  <tr>
+    <td valign="top">
+      <label class="mg-label"> <%= t('Semester/Department')%></label>
+    </td>
+    <td valign="top">
+       <%=programme_or_department_name%>
+    </td>
+  </tr>
+</table>
+<br/>
+
+
+<table class="mg-show-tbl-width batch-tbl mg-adjust-padding width-set-for-balance-paid"> 
+  <tr>
+    <th style="width: 100px;"><label class="mg-label mg-tt-width" style="width:;"><%= t('bill_date') %></label></th>
+    <th style="width: 100px;"><label class="mg-label mg-tt-width" style="width:;"><%= t('total_amount') %></label></th>
+    <th style="width: 100px;"><label class="mg-label mg-tt-width" style="width:;"><%= t('purchase_paid_amount') %></label></th>
+    <th><label class="mg-label custome-mg-tt-width"><%= t('balance_amount') %></label></th>
+  </tr>
+  <tr class="">
+    <td class="mg-align-center">
+      <%= @canteen_bill_details.created_at.try(:strftime, @dateFormat)%><br/>
+    </td>
+    <td class="mg-align-center">
+      <%= @canteen_bill_details.try(:total_amount)%><br/>
+    </td>
+    <td class="mg-align-center">
+      <%= @canteen_bill_details.try(:paid_amount)%><br/>
+    </td>
+    <td class="mg-align-center">
+      <%= @canteen_bill_details.try(:balance_amount)%><br/>
+    </td>
+  </tr>
+</table>
+
+
+
+<br/>
+<%if @balance_paid_detail.size>0%>
+  <div class="balance-paid-scroll-bar">
+    <%="Balance Paid History"%>
+    <table class="mg-show-tbl-width batch-tbl mg-adjust-padding width-set-for-balance-paid"> 
+      <tr>
+        <th><label class="mg-label custome-mg-tt-width"><%= t('sl_no') %></label></th>
+        <th style="width: 120px;"><label class="mg-label mg-tt-width" style="width:;"><%= t('paid_amount') %></label></th>
+        <th style="width: 120px;"><label class="mg-label mg-tt-width" style="width:;"><%= t('time') %></label></th>
+        <th style="width: 120px;"><label class="mg-label mg-tt-width" style="width:;"><%= t('date') %></label></th>
+      </tr>
+      <%count=0%>
+      <%@balance_paid_detail.each do |payment_detail|%>
+        <%count=count+1%>
+        <tr class="bill-detail-row-div-id">
+          <td class="mg-align-center"><%=count%></td>
+          <td class="mg-align-center">
+            <%= payment_detail.try(:paid_amount)%><br/>
+          </td>
+          <td class="mg-align-center quantites-cls">
+            <%= payment_detail.created_at.localtime.strftime("%l:%M%P")%><br/>
+          </td>
+          <td class="mg-align-center total-price-cls">
+            <%= payment_detail.created_at.try(:strftime, @dateFormat)%><br/>
+          </td>
+        </tr>
+      <%end%>
+      <!-- <tr>
+        <td colspan="2" class="mg-align-center"><b><%#="Paid Amount"%></b>&nbsp;<%#="="%>&nbsp;<%#=@canteen_bill_details.try(:paid_amount)%></td>
+        <td colspan="2" class="mg-align-center"><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%#="Total Amount"%></b>&nbsp;<%#="="%>&nbsp;<%#=@canteen_bill_details.try(:total_amount)%></td>
+      </tr>  -->
+    </table>
+  </div>
+<%else%>
+  <%="Balance amount not paid"%>
+<%end%>
+
+  <p class="mg-p-mgtop">
+    <a class="mg-small-form-btn cancel-form-dialog"><%=t("cancel")%></a>
+    <%#= link_to t('cancel'), {:controller=>'canteen_managements',:action=>'bill_detail'}, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+  </p>
+
+<%= render  partial: 'application/common_left_close' %>
+
+
+<script>
+  // $(document).ready(function(){
+  //   focusCurrentTab("canteenBillGenerateAID","canteenBillGenerateLID");
+  // });
+</script>
+
+<style>
+  .width-set-for-balance-paid {
+    max-width: 42em !important;
+  }
+
+  .balance-paid-scroll-bar {
+    border: 1px solid #b2b2b2;
+    display: inline-block;
+    max-height: 280px;
+    max-width: 735px;
+    overflow-y: scroll;
+    width: auto;
+}
+</style>

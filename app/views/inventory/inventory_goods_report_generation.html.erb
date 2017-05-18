@@ -1,0 +1,110 @@
+<br/>
+<br/>
+
+<%if @inventory_proposal.present?%>
+<table border="1" class="mg-table-nowrap mg-showdata-bg mg-show-tbl-width" cellspacing="1" cellpadding="1">
+ 
+<tr>
+    <th> <label class="mg-label"> <%= t('store_name')%></label>
+</th>
+    <th> <label class="mg-label"> <%= t('manager_name')%></label>
+</th>
+    
+    <th> <label class="mg-label"> <%= t('requisition_name')%></label>
+</th>
+<th> <label class="mg-label"> <%= t('date')%></label>
+</th>
+    <th> <label class="mg-label"> <%= t('action')%></label>
+</th>
+
+
+<%@inventory_proposal.each do |info|%>
+<tr>
+     <td class="mg-td-width-half" valign="top">
+     <%store_data=MgInventoryStoreManagement.find_by(:id=>info.mg_store_id)%>
+     <%if store_data.store_name.present?
+          
+          %>
+     <%=store_data.store_name%>
+     <%else%>
+     <h5><%="No Data"%></h5>
+     <%end%>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+     <%if info.mg_employee_id.present?
+          employee=MgEmployee.find_by(:id=>info.mg_employee_id)
+          %>
+     <%="#{employee.first_name} #{employee.last_name}"%>
+     <%else%>
+     <h5><%="No Data"%></h5>
+     <%end%>
+     </td>
+
+
+     <td class="mg-td-width-half" valign="top">
+     <%if info.requisition_name.present?%>
+     <%=info.requisition_name%>
+     <%else%>
+     <h5><%="No Data"%></h5>
+     <%end%>
+     </td>
+
+
+     <td class="mg-td-width-half" valign="top">
+     <%if info.date.present?%>
+     <%@dateFormat = MgSchool.find_by(:id=>session[:current_user_school_id]).date_format %>
+     <%=info.date.present? ? info.date.strftime(@dateFormat) : ""%>
+     <%else%>
+     <h5><%="No Data"%></h5>
+     <%end%>
+     </td>
+
+
+
+     
+          <td>
+        <button title="Show" id="<%=raw info.id %>-showproposalBTNID" class="show-inventory-proposal-btn mg-icon-btn"><i class="fa fa-eye"></i></button>
+     </td>
+ 
+     
+     
+     
+     
+ </tr>
+
+
+
+ <%end%>
+
+</table>
+
+
+
+<%else%>
+<h5>No records to show</h5>
+<%end%>
+
+<script>
+     $(document).on("click", ".show-inventory-proposal-btn", function(e){
+        var myID =$(this).attr('id');
+        var Id=myID.split("-");
+        var urlLink = "/inventory/proposal_report_show/"+Id[0];
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(html){
+                  $('#showInventoryProposalDIVID').dialog({
+                    modal: true,
+                    minHeight: 'auto',
+                    width: 'auto',
+                    title: "Item Proposal",
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+});
+</script>

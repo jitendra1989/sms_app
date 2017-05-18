@@ -1,0 +1,247 @@
+<section id="userBodyContentBox" >
+    <table width=100% border="0" cellspacing="0" cellpadding="0">
+        <tr>
+            <td valign="top" class="userBodyContentBox1">
+                <div class="userMenuBoxLeft" style="width: 210px;">
+                    <ul class="menuListHome">
+                     <%=hidden_field_tag "user_type",session[:user_type]%>
+                     <%if session[:user_type]=="admin"%>
+                       <li class="myAccountMenu mg-toggle-plus"><%=t('alumni_management')%></li>
+                            <div class="mg-left-sub-menu-title">
+                            <!-- <li id="alumni_registration_formId"> -->
+                                <!-- <a class="menuItemsActivities" href="/alumni/alumni_registration_form_new" id="alumni_registration_formAID">
+                                    <div class="setMenu"><i class="fa fa-sign-in">&nbsp;&nbsp;</i><%#=t('registration_form')%>
+                                    </div>
+                                </a> -->
+                            <!-- </li> -->
+                      
+
+                            <li id="alumni_registration_formIndexId">
+                                <a class="menuItemsActivities" href="/alumni/alumni_registration_form" id="alumni_registration_formIndexAID">
+                                    <div class="setMenu"><i class="fa fa-list">&nbsp;&nbsp;</i><%=t('alumni_list')%>
+                                    </div>
+                                </a>
+                            </li>
+                            
+                            
+                            </div>
+                        <li class="myAccountMenu mg-toggle-plus"><%=t('polling')%></li>
+                            <div class="mg-left-sub-menu-title">
+
+                            <!-- <li id="getTopollingliId">
+                                <a class="menuItemsActivities" href="/alumni/polling" id="getTopollingAID">
+                                    <div class="setMenu"><i class="fa fa-plus">&nbsp;&nbsp;</i><%#=t('poll_question')%>
+                                    </div>
+                                </a>
+                            </li> -->
+                             <li id="getpoll_optionsliId">
+                                <a class="menuItemsActivities" href="/alumni/polling_options" id="getpoll_optionsAID">
+                                    <div class="setMenu"><i class="fa fa-question-circle">&nbsp;&nbsp;</i><%=t('poll_questions')%>
+                                    </div>
+                                </a>
+                            </li>
+
+<!-- 
+                             <li id="poll_resultliId">
+                                <a class="menuItemsActivities" href="/alumni/polling_result" id="poll_resultAID">
+                                    <div class="setMenu"><i class="fa fa-check-square-o">&nbsp;&nbsp;</i><%#=t('poll_result')%>
+                                    </div>
+                                </a>
+                            </li>
+ -->                            </div>
+
+                        <li class="myAccountMenu mg-toggle-plus">Payment</li>
+                         <div class="mg-left-sub-menu-title">
+
+                            <li id="paymenttypeAIDLId">
+                                <a class="menuItemsActivities" href="/alumni/payment_index" id="paymenttypeAID">
+                                    <div class="setMenu"><i class="fa fa-bars">&nbsp;&nbsp;</i><%=t('payment_type')%>
+                                    </div>
+                                </a>
+                            </li>
+
+                            <li id="paymentAIDLId">
+                                <a class="menuItemsActivities" href="/alumni/fee_payment" id="paymentAID">
+                                    <div class="setMenu"><i class="fa fa-money">&nbsp;&nbsp;</i><%=t('payment')%>
+                                    </div>
+                                </a>
+                            </li>
+                            </div>
+
+							<!-- ========================================================================== -->
+                            <li class="myAccountMenu mg-toggle-plus">Online store</li>
+                            <div class="mg-left-sub-menu-title">
+                            <li id="orderedlistAIDLId">
+                                <a class="menuItemsActivities" href="/alumni/ordered_list" id="orderedlistAID">
+                                    <div class="setMenu"><i class="fa fa-plus">&nbsp;&nbsp;</i><%=t('ordered_list')%>
+                                    </div>
+                                </a>
+                            </li>
+                            </div>
+
+                            <li class="myAccountMenu mg-toggle-plus">Photo Gallery</li>
+                            <div class="mg-left-sub-menu-title">
+                              <li id="PhotoGalleryLiID">
+                                  <a class="menuItemsActivities" href="/alumni/photo_gallery" id="PhotoGalleryAID">
+                                  <div class="setMenu"><i class="fa fa-upload">&nbsp;&nbsp;</i><%=t('uploaded_gallery')%>
+                                  </div>
+                                  </a>
+                              </li>
+                            </div>
+                            <!-- ========================================================================= -->
+                            
+                            <%end%>
+                             <%if session[:user_type]=="Alumni"%>
+                                <li class="myAccountMenu"><%=t('alumni')%></li>
+                                <li id="change_password_formIndexId">
+                                <a class="menuItemsActivities" href="/alumni/alumni_login" id="change_password_alumni_registration_formIndexAID">
+                                    <div class="setMenu"><i class="fa fa-key">&nbsp;&nbsp;</i><%=t('change_password')%>
+                                    </div>
+                                </a>
+                            </li>
+
+
+
+
+<!-- ==================================================================================== -->
+
+                        <!-- <li class="myAccountMenu mg-toggle-plus">Search</li> -->
+                        <!-- <div class="mg-left-sub-menu-title"> -->
+                            <li id="alumniSearchAIDLId">
+                                <a class="menuItemsActivities" href="/alumni/alumni_search" id="alumniSearchAID">
+                                    <div class="setMenu"><i class="fa fa-search">&nbsp;&nbsp;</i><%=t('alumni_search')%>
+                                    </div>
+                                </a>
+                            </li>
+                        <!-- </div> -->
+<!-- ====================================================================================== -->
+
+
+                            <!-- <li class="myAccountMenu"><%#=t('photo_gallery')%></li> -->
+                                  <li id="PhotoGalleryLiID">
+                                    <a class="menuItemsActivities" href="/alumni/photo_gallery" id="PhotoGalleryAID">
+                                        <div class="setMenu"><i class="fa fa-upload">&nbsp;&nbsp;</i><%=t('my_gallery')%>
+                                        </div>
+                                    </a>
+                                </li>
+
+                                <li id="videoGalleryListLID">
+                                  <a class="menuItemsActivities" href="/alumni/gallery_list" id="videoGalleryListAID">
+                                    <div class="setMenu"><i class="fa fa-upload">&nbsp;&nbsp;</i><%=t('alumni_gallery')%>
+                                    </div>
+                                  </a>
+                                </li>
+
+
+                            <li id="alumni_update_profileLId">
+                                <a class="menuItemsActivities" href="/alumni/alumni_update_profile" id="alumni_update_profileAID">
+                                    <div class="setMenu"><i class="fa fa-exchange">&nbsp;&nbsp;</i><%=t('update_profile')%>
+                                    </div>
+                                </a>
+                            </li>
+
+
+                             <!-- ========================================================================= -->
+                       
+                            <li id="getTogethersliId">
+                                <a class="menuItemsActivities" href="/alumni" id="getTogethersAID">
+                                    <div class="setMenu"><i class="fa fa-users">&nbsp;&nbsp;</i><%=t('get_togethers')%>
+                                    </div>
+                                </a>
+                            </li>
+
+                       <!-- ========================================================================= -->
+
+                            <li id="alumniJobPostingLiId">
+                              <a class="menuItemsActivities" href="/alumni/alumni_job_posting_index" id="alumniJobPostingAId">
+                                <div class="setMenu"><i class="fa fa-plus-square">&nbsp;&nbsp;</i><%=t('alumni_job_posting')%></div>
+                              </a>
+                            </li>
+
+                            
+                          <!--   <li id="share_informationLId">
+                                <a class="menuItemsActivities" href="/alumni/searchable_information" id="share_informationAID">
+                                    <div class="setMenu"><i class="fa fa-search">&nbsp;&nbsp;</i><%#=t('searchable_information')%>
+                                    </div>
+                                </a>
+                            </li> -->
+                            <li id="eventAlumniLIID">
+                                <a class="menuItemsActivities" href="/alumni/events" id="eventsAlumniAID">
+                                    <div class="setMenu"><i class="fa fa-plus">&nbsp;&nbsp;</i><%=t('events')%>
+                                    </div>
+                                </a>
+                            </li>
+                            <li id="share_eventsLId">
+                                <!-- <a class="menuItemsActivities" href="/posts/index" id="share_eventsAID">
+                                    <div class="setMenu"><i class="fa fa-comments">&nbsp;&nbsp;</i><%#=t('Forum')%>
+                                    </div>
+                                </a> -->
+                            </li>
+
+                            <li id="pollsLId">
+                                <a class="menuItemsActivities" href="/alumni/alumni_polls" id="pollsAID">
+                                    <div class="setMenu"><i class="fa fa-comment-o">&nbsp;&nbsp;</i><%=t('polls')%>
+                                    </div>
+                                </a>
+                            </li>
+                            <li id="alumniOnlineStoreLId">
+                                <a class="menuItemsActivities" href="/alumni/online_store" id="alumniOnlineStoreAID">
+                                    <div class="setMenu"><i class="fa fa-plus">&nbsp;&nbsp;</i><%=t('online_store')%>
+                                    </div>
+                                </a>
+                            </li>
+
+                             <%end%>
+
+            <!-- ================================================================================== -->
+                            <%if session[:user_type]==""%>
+                                <li class="myAccountMenu"><%=t('alumni_registration')%></li>
+                                <!-- <li id="change_password_formIndexId">
+                                <a class="menuItemsActivities" href="/alumni/alumni_login" id="change_password_alumni_registration_formIndexAID">
+                                    <div class="setMenu"><i class="fa fa-key">&nbsp;&nbsp;</i><%#=t('change_password')%>
+                                    </div>
+                                </a>
+                                </li> -->
+                            <!-- ================================================== -->
+                            <li id="alumniRegistrationLID">
+                                <a class="menuItemsActivities" href="/alumni/alumni_registration_form_new" id="alumniRegistrationAID">
+                                  <div class="setMenu"><i class="fa fa-list">&nbsp;&nbsp;</i><%=t('alumni_registration_form_new')%>
+                                  </div>
+                                </a>
+                            </li>
+                            <!-- ========================================================== -->
+
+                     
+
+                             <%end%>
+
+            <!-- ================================================================================== -->              
+            </ul>
+        </div>
+    </td>
+<td  valign="top" id="manageAdminCategoryID" class="mg-table-td-main-2">
+             
+<%=render partial: 'layouts/messages'%>
+
+<script>
+$( document ).ready(function() {
+    var user_type=$("#user_type").val();
+    if ((user_type=="admin")||(user_type=="principal"))
+    {
+        collapseLeftMenu();
+    }
+    focusheaderBox("ALUMNI");
+});
+</script>
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,93 @@
+<%= form_for :exams, :url=>{:controller=>'examination',:action=>'exammanagement_saveCoScholasticGradeEntry'},:html => {
+                            :id => 'exammanagementCategoryNewFormId', :class => 'elm_class',
+                            :style => 'elm_style' } do |f| %>
+
+
+<%246%>
+
+<%=f.hidden_field :mg_student_id, :value=>"", :id=>"mgStudentID"%>
+
+
+<table width="100%">
+  <tr>
+    <td class="div-left" valign="top" width="35%">
+      <label class="mg-label" style="font-size: 0.85em"><%="Student List in the Section"%></label><br/>
+      <ul class="mg-rep-align">
+      <% @student_list.each do |datas| %>
+      
+      <li>
+        <a href="#" id='<%=@eid%>-<%=@batch_id%>-<%=datas.id%>' class="exam-student-name-cls"><%=datas.first_name%></a><br/>
+      </li>
+      
+    <%end%>
+    </ul>
+  </td>
+
+ <td class="div-right" width="50%" valign="top"> 
+<div id="studentNameDivId" class="mg-font-italic"></div>
+<table class="batch-tbl mg-tbl-margin" valign="top" cellspacing="0" style="padding:0; border-collapse:collapse;">
+
+  <tr>
+
+    <th>Descriptive Indicator</th>
+    <th>Grade</th>
+   
+  </tr>
+  <%@observationDatas.each do |data| %>
+<%@id=data.id%>
+
+  <% @indicators=MgDescriptiveIndicator.where(:describable_id=>data.id,:is_deleted=>0,:describable_type=>"Observation",:mg_school_id=>session[:current_user_school_id])%>
+  <%if @indicators.present?%>
+    
+        <tr>   
+      <%= hidden_field_tag :'assaignData[]',@indicators[0].id%>
+
+      <%= f.hidden_field :mg_batch_id,:value=>@batch_id%>
+
+<td><table><tr><%=data.name%></tr><br/><tr><%=@indicators[0].name%></tr></table></td>
+
+
+    <%
+
+              @assessmentScoreObj=MgAssessmentScore.where(:mg_student_id=>@student_id,:mg_batch_id=>@batch_id,:mg_descriptive_indicator_id=>@indicators[0].id,:is_deleted=>0,:mg_school_id=>session[:current_user_school_id])
+
+              if @assessmentScoreObj.size>0
+              @gradeAutoPopulate=@assessmentScoreObj[0].marks_obtained
+              else
+                 @gradeAutoPopulate=""
+              end
+              %>
+
+           
+
+        <%@grade=MgCceGrade.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:name,:grade_point)%>
+        <!-- <td><%#=text_field_tag 'mg_grade_id[]',@gradeAutoPopulate%></td> -->
+      <td><%=select_tag 'mg_grade_id[]', options_for_select(@grade,:selected=>@gradeAutoPopulate),:prompt=>"Select"%></td> 
+      </tr>
+       <%end%>
+    <% end %>
+
+  </table> 
+<p class="mg-tbl-margin">
+  <%#=f.submit t('save') ,:class=>"mg-small-form-btn"%>
+  <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("save")%></a>
+  <%= link_to t('cancel'), {:controller=>'examination',:action=>'exammanagement_index'}, {:class=>"mg-small-form-btn cancel-form-dialog"} %>       
+</p>
+  </td>
+</tr>
+</table>
+
+<%end%>
+<script>
+
+  // $(".exam-student-name-cls").click(function(){
+  //     var studentID=$(this).attr('id');
+      
+  //     $("#mgStudentID").val(studentID);
+  //   $("#studentNameDivId").empty();
+  //   var studentName=$(this).text();
+  //   $("#studentNameDivId").append(studentName);
+  //   return false;
+  // });
+
+</script>

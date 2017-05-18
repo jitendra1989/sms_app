@@ -1,0 +1,136 @@
+<!-- Sec --><section id="userBodyContentBox" >
+    <table width=100% border="0" cellspacing="0" cellpadding="0">
+        <tr>
+            <td valign="top" class="userBodyContentBox1">
+                <aside class="userMenuBoxLeft" style="width: 210px;">
+                    <ul class="menuListHome">
+                        <li class="myAccountMenu"><%=t('laboratory')%></li>
+
+                        <%
+                        @@inchargeAccess=0
+                        @@assInchargeAccess=0
+                        if session[:user_type]=="admin" || session[:user_type]=="principal"
+                        else
+                                employee=MgEmployee.find_by(:mg_user_id=>session[:user_id])
+                                @incharge=MgLaboratoryIncharge.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id],:mg_employee_id=>employee.id,:incharge_type=>"Incharge").count
+
+
+                                @assIncharge=MgLaboratoryIncharge.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id],:mg_employee_id=>employee.id,:incharge_type=>"Assistant Incharge").count
+                            #end
+
+
+                                if @assIncharge.to_s.empty?
+                                    @@assInchargeAccess=0
+                                end
+
+
+                                if @incharge.to_s.empty?
+                                    @@inchargeAccess=0
+                                end
+
+
+
+
+                                if @incharge>0
+                                    @@inchargeAccess=1
+                                end
+                                if @assIncharge>0
+                                    @@assInchargeAccess=1
+
+                                end
+                    end
+                        %>
+                   <%if session[:user_type]=="admin" || session[:user_type]=="principal"%>
+                        <li id="viewlaboratorysubjectLiID">
+                            <a class="menuItemsActivities" href="/laboratory/subject/" id="viewlaboratorysubject">
+                                <div class="setMenu"><i class="fa fa-book">&nbsp;&nbsp;</i><%=t('manage_subject')%><!-- <i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i> -->
+                                </div>
+                            </a>
+                        </li>
+
+
+                   
+                        <li id="viewlaboratoryLiID">
+                            <a class="menuItemsActivities" href="/laboratory" id="viewlaboratory">
+                                <div class="setMenu"><i class="fa fa-wrench">&nbsp;&nbsp;</i><%=t('manage_labs')%><!-- <i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i> -->
+                                </div>
+                            </a>
+                        </li>
+
+                        
+
+                        <li id="viewLabInventoryItemLiID">
+                            <a class="menuItemsActivities" href="/laboratory/item/" id="viewLabInventoryItemIndex">
+                                <div class="setMenu"><i class="fa fa-bars">&nbsp;&nbsp;</i><%=t('manage_item_type')%><!-- <i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i> -->
+                                </div>
+                            </a>
+                        </li>
+
+
+
+                        <li id="viewLabInventoryLiID">
+                            <a class="menuItemsActivities" href="/laboratory/inventory/" id="viewLabInventoryIndex">
+                                <div class="setMenu"><i class="fa fa-sitemap">&nbsp;&nbsp;</i><%=t('lab_inventory_category')%><!-- <i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i> -->
+                                </div>
+                            </a>
+                        </li>
+                        <li id="viewLabItemUnitLiID">
+                            <a class="menuItemsActivities" href="/laboratory/unit/" id="viewLabItemUnitIndex">
+                                <div class="setMenu"><i class="fa fa-eyedropper">&nbsp;&nbsp;</i><%=t('item_unit')%><!-- <i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i> -->
+                                </div>
+                            </a>
+                        </li>
+                       <%end%>
+                       <%if session[:user_type]=="admin" || @@inchargeAccess==1 || session[:user_type]=="principal"%>
+                        <li id="viewLabItemPurchaseLiID">
+                            <a class="menuItemsActivities" href="/laboratory/purchase/" id="viewLabPurchaseIndex">
+                                <div class="setMenu"><i class="fa fa-credit-card">&nbsp;&nbsp;</i><%=t('item_purchase')%><!-- <i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i> -->
+                                </div>
+                            </a>
+                        </li>
+                         <li id="viewLabInventryManagementLiID">
+                            <a class="menuItemsActivities" href="/laboratory/management/" id="viewLabInventryManagementIndex">
+                                <div class="setMenu"><i class="fa fa-cogs">&nbsp;&nbsp;</i><%=t('inventory_management')%><!-- <i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i> -->
+                                </div>
+                            </a>
+                        </li>
+                        <%end%>
+                       <%if session[:user_type]=="admin" || @@inchargeAccess==1 || @@assInchargeAccess==1 || session[:user_type]=="principal"%>
+                        <li id="viewLabItemConsumptionLiID">
+                            <a class="menuItemsActivities" href="/laboratory/consumption/" id="viewLabConsumptionIndex">
+                                <div class="setMenu"><i class="fa fa-flask">&nbsp;&nbsp;</i><%=t('item_consumption')%><!-- <i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i> -->
+                                </div>
+                            </a>
+                        </li>
+                        <%end%>
+                        <%if session[:user_type]=="admin" || session[:user_type]=="principal"%>
+                        <li id="viewLabGenerateFineLiID">
+                            <a class="menuItemsActivities" href="/laboratory/generate_fine/" id="viewLabGenerateFine">
+                                <div class="setMenu"><i class="fa fa-money">&nbsp;&nbsp;</i><%=t('generate_fine')%><!-- <i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i> -->
+                                </div>
+                            </a>
+                        </li>
+                        <%end%>
+                        <%if @@inchargeAccess==1 || @@assInchargeAccess==1 %>
+                        <li id="viewSearchLaboratoryLiID">
+                            <a class="menuItemsActivities" href="/laboratory/laboratory_search/" id="viewSearchLaboratory">
+                                <div class="setMenu"><i class="fa fa-search">&nbsp;&nbsp;</i><%=t('laboratory_search')%><!-- <i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i> -->
+                                </div>
+                            </a>
+                        </li>
+                        <%end%>
+                        
+                    </ul>    
+
+                </aside>
+            </td>
+            <td  valign="top" id="manageAdminCategoryID" class="mg-table-td-main-2">
+              
+<%=render partial: 'layouts/messages'%>
+
+<script>
+$( document ).ready(function() {
+    
+    focusLaboratory();
+});
+</script>

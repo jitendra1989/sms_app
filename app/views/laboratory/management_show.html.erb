@@ -1,0 +1,153 @@
+<table border="1" class="mg-showdata-bg mg-tbl-layout" cellspacing="1" cellpadding="1">
+
+     <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('subject_name')%></label>
+      </td>
+      <td class="mg-td-width-half" valign="top">
+      <%if @laboratry.mg_laboratory_subject_id.present?%>
+      <%subject=MgLaboratorySubject.find_by(:id=>@laboratry.mg_laboratory_subject_id)%>
+     <%=subject.name%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+      </td>
+ </tr>
+   <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('laboratory_name')%></label>
+      </td>
+      <td class="mg-td-width-half" valign="top">
+      <%if @laboratry.mg_lab_id.present?%>
+      <%lab=MgLab.find(@laboratry.mg_lab_id)%>
+     <%=lab.lab_name%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+      </td>
+ </tr>
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('room_no')%></label>
+      </td>
+      <td class="mg-td-width-half" valign="top">
+      <%if @laboratry.mg_laboratory_room_id.present?%>
+      <%room=MgLab.find_by(:id=>@laboratry.mg_laboratory_room_id)%>
+     <%=room.room_no%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+      </td>
+ </tr>
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('category_name')%></label>
+      </td>
+      <td class="mg-td-width-half" valign="top">
+       <%if @laboratry.mg_category_id.present?%>
+      <%labcat=MgLabInventory.find(@laboratry.mg_category_id)%>
+     <%=labcat.category_name%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+      </td>
+ </tr>
+
+
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('item_number')%></label>
+      </td>
+      <td class="mg-td-width-half" valign="top">
+       <%if @laboratry.item_identification_number.present?%>
+     <%=@laboratry.item_identification_number%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+      </td>
+ </tr>
+
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('item_name')%></label>
+      </td>
+      <td class="mg-td-width-half" valign="top">
+      <%if @laboratry.item_name.present?%>
+     <%=@laboratry.item_name%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+      </td>
+ </tr>
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('item_description')%></label>
+      </td>
+      <td class="mg-td-width-half" valign="top">
+      <%if @laboratry.item_description.present?%>
+     <%=@laboratry.item_description%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+      </td>
+ </tr>
+
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('valid_upto')%></label>
+      </td>
+      <td class="mg-td-width-half" valign="top">
+      <%if @laboratry.valid_upto.present?%>
+        <% @dateFormat = MgSchool.find_by(:id=>session[:current_user_school_id]).date_format %>
+        <%= @laboratry.valid_upto.strftime(@dateFormat) %>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+      </td>
+ </tr>
+
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('quantity')%></label>
+      </td>
+      <td class="mg-td-width-half" valign="top">
+      <%if @laboratry.quantity.present?%>
+     <%=@laboratry.quantity%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+      </td>
+ </tr>
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('unit_name')%></label>
+      </td>
+      <td class="mg-td-width-half" valign="top">
+      <%if @laboratry.mg_unit_id.present?%>
+      <%labunit=MgLabUnit.find(@laboratry.mg_unit_id)%>
+     <%=labunit.unit_name%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+      </td>
+ </tr>
+
+
+
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('item_location')%></label>
+      </td>
+      <td class="mg-td-width-half" valign="top">
+       <%if @laboratry.item_location.present?%>
+     <%=@laboratry.item_location%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+      </td>
+ </tr>
+
+</table>
+<br/>
+<%= link_to 'Cancel', laboratory_management_path ,:style=>"font-size: 0.8em; color: #297ACC; text-decoration: none;" ,:class=>"mg-custom-form-btn"%>
+

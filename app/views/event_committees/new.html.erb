@@ -1,0 +1,33 @@
+ <%= form_for :event_committees, url: event_committees_path, method: :post, :html => {
+                            :id => 'eventCommitteesFormID' } do |f| %>
+
+  <p>
+    <%= f.label :committee_name, t('committee_name') ,:class=>"mg-label"%><span class="required-field"> *</span><br>
+    <%= f.text_field :committee_name   %>
+  </p>
+  
+
+  <%= f.hidden_field :is_deleted, :value => 0%> 
+  <%= f.hidden_field :created_by, :value => session[:user_id]%> 
+  <%= f.hidden_field :updated_by, :value => session[:user_id]%> 
+  <%= f.hidden_field :mg_school_id, :value => session[:current_user_school_id]%> 
+
+
+  <p class="mg-p-mgtop">
+    <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("save")%></a>
+      <%#= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+      <a  class="mg-small-form-btn cancel-form-dialog"><%=t("cancel")%></a>
+  </p>
+<% end %>
+
+<script>
+$(document).ready(function () {
+  
+$("#eventCommitteesFormID").validate({
+
+rules: {
+"event_committees[committee_name]": {required: true}
+}
+});
+});
+</script>

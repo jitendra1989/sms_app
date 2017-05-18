@@ -1,0 +1,54 @@
+<div class="mg-custom-labels">
+  <%= form_for :incharge, :url=>{:controller=>'accounts',:action=>'update',:id=>@incharge.id},:html => {:id => 'inchargeUpdateID' } do |f| %>
+    <%= f.hidden_field :is_deleted, :value => 0 %>
+    <%= f.hidden_field :mg_school_id, :value => session[:current_user_school_id] %>
+    <%= f.hidden_field :updated_by, :value => session[:user_id] %>
+      <p>
+        <label class="mg-label" style="width:140px"><%= t('user_name') %><span class="required-field">&nbsp;*</span></label><br/>
+        <%school=MgSchool.find_by(:id=>session[:current_user_school_id])%>
+        <%user_name=@incharge.user_name.sub(school.subdomain,"")%>
+        <%=school.subdomain%><%= f.text_field :user_name,:value=>user_name,:class=>"mg-text-field" %>
+      </p>
+      <p class="mg-p-mgtop">
+        <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("save")%></a>
+        <a class="mg-small-form-btn cancel-form-dialog"><%=t("cancel")%></a>
+      </p>
+  <% end %>
+</div>
+
+<script>
+$("#inchargeUpdateID").validate({
+  rules: {        
+    "incharge[user_name]": {required: true}
+  }
+});
+
+
+$(".department-wise-employee-class").change(function(){
+      var departmentId = $(this).val();
+      var apdStr = '<option value="">Choose Department</option>';
+      $("#mg_employee_id").empty().append(apdStr);
+      if(departmentId > 0) {
+           var urlLink = "/accounts/employee_list/"+departmentId;
+           $.ajax({ 
+               url: urlLink,
+               cache: false,
+               success: function(data){
+                 // console.log();
+                  if(data.length > 0){
+                      var apdStr = '<option value="">Select</option>';
+                     for(key in data){
+                        apdStr += '<option value="'+data[key].id+'">'+data[key].first_name+" "+data[key].last_name+'</option>'
+                      }
+                      $("#mg_employee_id").empty().append(apdStr);
+                  }
+               }
+           });
+    }else{
+      var apdStr = '<option value="">Choose Department</option>';
+      $("#mg_employee_id").empty().append(apdStr);
+      // alert("Please select category");
+    }
+  });
+
+</script>

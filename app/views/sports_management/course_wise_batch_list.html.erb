@@ -1,0 +1,9 @@
+<p>
+	
+	<% if params[:mg_wing_id].present?%>
+		<%=select_tag :mg_wing_id,options_for_select(@course,:selected=>@course_data.id),:prompt=>"Select",:onchange=>"studentprogChangeFunction()"%>
+	<%else%>
+		<%=select_tag :mg_wing_id,options_for_select(@course),{include_blank: false,:prompt=>"Select",:onchange => 'progChangeFunction();',:class=> 'mg-text-field'}%>
+	<%end%>
+
+</p>

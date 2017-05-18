@@ -1,0 +1,12 @@
+<% navigation_add t('registration'), :controller=>'placements', :action=>'placements_registration' %>
+<% navigation_add t('new_registration'), :controller=>'placements', :action=>'placements_registration_new' %>
+<%= render  partial: 'placements_left' %>
+<h4 class="mg-h4"><%= t('registration_form')%></h4>
+<%= render  partial: 'placements_registration' %>
+
+<%= render  partial: 'application/common_left_close' %>
+<script>
+  $( document ).ready(function() {
+    focusCurrentTab("placementsRegistrationAID","placementsRegistrationLiID");
+  });
+</script>

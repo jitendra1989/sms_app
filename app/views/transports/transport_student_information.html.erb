@@ -1,0 +1,60 @@
+<%= render  partial: 'transport_left' %>
+
+<% navigation_add 'Student Status', transports_student_status_data_path %>
+<h4 class="mg-h4"><%= t('Students List')%></h4>
+ <%if @student_info_data.length >0%>    
+ <table class="batch-tbl mg-tbl-margin" cellspacing="0" style="padding:0; border-collapse:collapse;">   <!-- border="2" --> 
+      <tr >
+        <th><%=t('student_name')%></th>
+        <th><%=t('class_section')%></th>
+        <th><%=t('pickup/drop_point')%></th>
+        <th><%=t('status')%></th>
+       </tr>
+
+    <%@student_info_data.each_with_index do |data| %>
+        <tr>
+          <td><%="#{data.first_name} #{data.last_name}"%></td>
+         
+       <%
+           batch_data=MgBatch.find(data.mg_batch_id)
+           course_data=MgCourse.find(batch_data.mg_course_id)
+          %>
+
+          <td><%="#{course_data.course_name}/#{batch_data.name}"%></td>
+         
+          <%
+           student_data=MgGuardianTransportRequisition.find_by(:mg_student_id=>data.id,:is_deleted=>0,:mg_school_id=>session[:current_user_school_id])
+           drop_point_datas=MgTransportTimeManagement.find(student_data.mg_transport_time_management_id)
+         
+
+           
+          %>
+
+          <td><%=drop_point_datas.bus_stop_name%></td>
+          
+          <%
+          absent_student_data=MgStudentAttendance.where(:is_deleted=>0, :mg_school_id=>session[:current_user_school_id], :absent_date=>@vehicle_id[1], :mg_student_id=>data.id).pluck(:mg_student_id).uniq
+         %>
+         
+        
+         <%if @data.include?(absent_student_data[0])%>
+           <td><%="Absent"%></td>
+      <%else%>
+     <td> <%="Present"%></td>
+      <%end%>
+        </tr>
+
+     <% end %>
+  </table><br/>
+  <%else%>
+    <h5>No Student Added...</h5>
+  <%end%>
+<%= link_to t('back'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+<%=render partial: 'transport_left_close'%>
+
+<script>
+$(document).ready(function(){
+
+  focusCurrentTab("studentstatustransportAID","studentstatustransportLiID");
+});
+</script>

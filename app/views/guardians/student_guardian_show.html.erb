@@ -1,0 +1,66 @@
+<div id="studentGuardianShowDivID">
+<%= render  partial: 'students/student_left' %>
+
+<% navigation_add t('students'),students_path %>
+<% navigation_add 'Guardians of Student',"/guardians/student_guardian_show/#{@student.id}" %>
+ <% if flash[:notice] %>
+    <div id="notice" class="alert alert-info mg-success-msg"><%= flash[:notice] %></div>
+  <% end %>
+
+<h4 class="mg-h4 mg-rm-text-trans">Guardians of <%=@student.first_name%> <%=@student.middle_name%> <%=@student.last_name%> </h4>
+<div>
+<button class="add-student-parent mg-custom-form-btn" id="addStudentParentID-<%= @student.id%>">Add Guardian</button> 
+<%if @student_guardian.length >0%>
+<%=form_for :student_guardian,url: {controller: "guardians", action: "login_access"} do |f| %>
+
+	<%= f.hidden_field :student_id, :value => @student.id%>
+	<%#=hidden_field_tag :student_id,:value=>@student.id %>
+	<p>
+	<table class="batch-tbl mg-tbl-margin">
+		<tr>
+			<th>Name</th>
+			<th>User Name</th>
+			<th>Relation</th>
+			<th>Mobile Number</th>
+			<th>Login Access</th>
+		</tr>
+		<%@student_guardian.each do |guardian|%>
+		<tr>
+			<td><%=guardian.first_name%> <%=guardian.middle_name%> <%=guardian.last_name%></td>
+			<%user=MgUser.find(guardian.mg_user_id)%>
+			<td><%=user.user_name%></td>
+			<td><%=guardian.relation%></td>
+			<%mobile_number=MgPhone.where(:mg_user_id=>guardian.mg_user_id,:phone_type=>"mobile")%>
+			<td><%=mobile_number[0].phone_number%></td>
+			<%student_guardian=MgStudentGuardian.where(:mg_guardians_id=>guardian.id,:mg_student_id=>@student.id) %>
+			<%if student_guardian[0].has_login_access %>
+				<td class="mg-align-center"><%=radio_button_tag :guardian_id, guardian.id, true,:onclick=>"btnEnable()"%></td>
+				<%else%>
+					<td class="mg-align-center"><%=radio_button_tag :guardian_id, guardian.id,false,:onclick=>"btnEnable()"%></td>
+			<%end%>
+		</tr>
+		<%end%>
+	</table>
+	</p>
+	<div> 
+	 	<%#= submit_tag 'Change Login Access', id:"changeLoginAccessSaveID",class: "submit mg-small-form-btn",:disabled=>"true" %>
+	 	<a onclick="$(this).closest('form').submit()" id="changeLoginAccessSaveID" class="mg-small-form-btn mg-disable-a"><%=t("change_login_access")%></a>
+	 	<%= link_to 'Back', {controller: "students", action: "index"} ,:class=>"mg-small-form-btn" %>
+	</div>
+<%end%>
+
+<%else%>
+	<h5>No guardian added</h5>
+<%end%>
+
+<div class="fancybox-outer"  id="addParentDialogID" style="padding: 2px; width: auto; height: auto; overflow-x: inherit;"></div>
+
+<%= render  partial: 'application/common_left_close' %>
+</div>
+
+<script>
+$(document).ready(function(){
+	focusCurrentTab("viewStudentListAId","viewStudentListLiId");
+  	focusStudentHeaderBox();
+});
+</script>

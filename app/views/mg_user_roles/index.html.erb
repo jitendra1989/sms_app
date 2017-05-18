@@ -1,0 +1,26 @@
+<!-- Sec --> 
+<%= render  partial: 'settings/setting_left' %>
+<input type="button" value="Add New User Role" id= "addUserRoleBtn" />
+<div class="mg_pagination">
+    <h4 class="mg-h4">Listing User Role</h4>
+
+    <table class="batch-tbl" id='people_table'>
+        <tr>
+          <th>User Name</th>
+          <th>Role Name</th>
+          <th><%=t("actions")%></th>
+        </tr>
+
+        <% @mg_user_roles.each do |mg_user_role| %>
+          <%= render partial: 'table_row', locals: {mg_user_role: mg_user_role} %>
+        <% end %>
+    </table>
+        <br/>
+    <div class="pagination-align">
+          <%= will_paginate @mg_user_roles, :container => false %>
+    </div>
+    <br/>
+    
+</div>
+<%= render  partial: 'application/common_left_close' %>
+

@@ -1,0 +1,126 @@
+<%if session[:user_type]=="guardian"%>
+  <%= render partial: 'dashboards/guardian_dashboard_left' %>
+<%else%>
+  <%=render partial: 'healthcare_left'%>
+<%end%>
+<%#=render partial: 'healthcare_left'%>
+<%# navigation_add t('checkup_type'),:controller=>'healthcare',:action=>'index' %>
+<% navigation_add t('booster_doses'),:controller=>'healthcare',:action=>'immunization_booster_doses' %>
+
+
+<h4 class="mg-h4"><%= t('booster_doses_list') %></h4>
+
+<!-- onclick="window.location='/healthcare/new_vaccinations'"  -->
+<button onclick="window.location='/healthcare/new_immunization_booster_doses'"class= 'mg-custom-form-btn'><%=t('add_booster_doses')%></button>
+<%if @student.present?%>
+<div class="mg_pagination">
+<table class="batch-tbl mg-tbl-margin">   <!-- border="2" --> 
+ <tr >
+    <th><%=t('name')%></th>
+    <th> <%=t('admission_number')%></th>
+    <th> <%=t('semester')%></th>
+     <th><%=t('actions')%></th>
+  </tr>
+  <% @student.each do |e| %>
+    <tr>
+      <td><%= e.try(:first_name).try(:capitalize) %> <%= e.try(:last_name).try(:capitalize) %></td>
+      <td><%= e.admission_number %></td>
+      <td><%=e.course_batch_name_student%></td>
+      <td>
+        <button title="Show" id="<%=raw e.id %>-showVaccinationsBTNID" class="show-booster-doses-details-btn mg-icon-btn"><i class="fa fa-eye"></i></button>
+        <button title="Edit" id="<%=raw e.id %>-editVaccinationsBTNID" onclick="window.location='/healthcare/<%=e.id%>/edit_immunization_booster_doses'" class="edit-booster-doses-btn mg-icon-btn"><i class="fa fa-pencil-square-o"></i></button>
+        <button onclick="confirm('Are you sure to delete?') ? window.location='/healthcare/<%=e.id%>/delete_immunization_booster_doses/' : '' " title="Delete" id="<%=raw e.id %>-deleteVaccinationsBTNID" class="delete-booster-doses-btn mg-icon-btn"><i class="fa fa-trash"></i></button>
+      </td>
+    </tr>
+  <% end %>
+</table>
+ <%= will_paginate @student, :container => false %>
+  </div>
+<%else%>
+<br>
+<p></p>
+<br>
+    <p>Please add some booster doses details</p>
+<%end%>
+
+<div id="newBoosterDosesDIVID"></div>
+<%= render  partial: 'application/common_left_close' %>
+
+<script>
+  $( document ).ready(function() {
+      focusCurrentTab("boosterDosesListAID","boosterDosesListliId");    
+  });
+
+//   $(document).on("click", "#newBoosterDosesBTNID", function(e){
+//         // var myID =$(this).attr('id');
+//         // var Id=myID.split("-");
+
+//         var urlLink = "/healthcare/new_booster_doses";
+//         $.ajax({
+//             url: urlLink ,
+//             cache: false,
+//             success: function(html){
+//                   $('#newBoosterDosesDIVID').dialog({
+//                     modal: true,
+//                     minHeight: 'auto',
+//                     title: "Booster Doses Details",
+//                     open: function () {
+                        
+//                         $(this).html(html);
+//                     }
+//                 }); 
+               
+//             }
+//         });
+// });
+
+// $(document).on("click", ".edit-booster-doses-btn", function(e){
+//         var myID =$(this).attr('id');
+//         var Id=myID.split("-");
+
+
+//         var urlLink = "/healthcare/"+Id[0]+"/edit_booster_doses/";
+//         $.ajax({
+//             url: urlLink ,
+//             cache: false,
+//             success: function(html){
+//                   $('#newBoosterDosesDIVID').dialog({
+//                     modal: true,
+//                     minHeight: 'auto',
+//                     title: "Booster Doses Details",
+//                     open: function () {
+                        
+//                         $(this).html(html);
+//                     }
+//                 }); 
+               
+//             }
+//         });
+// });
+
+$(document).on("click", ".show-booster-doses-details-btn", function(e){
+        var myID =$(this).attr('id');
+        var Id=myID.split("-");
+        var urlLink = "/healthcare/show_immunization_booster_doses/"+Id[0];
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(html){
+                  $('#newBoosterDosesDIVID').dialog({
+                    modal: true,
+                    minHeight: 'auto',
+                    width: 'auto',
+                    title: "Booster Doses Details",
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+});
+
+
+
+  </script>

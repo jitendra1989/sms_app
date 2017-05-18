@@ -1,0 +1,63 @@
+<!-- Sec --> 
+<%= form_for :student_custom_field,  :url=>{:controller=> "students", :action=> "custom_fields_update", :id=>@student_custom_field.id} ,:html => { :id => "editStudentCustomFieldsFormID" ,:multipart => true } do |f| %>
+    <div class="field1">
+
+      <%= f.hidden_field :mg_school_id, :value => session[:current_user_school_id]%>
+     
+      <%= f.hidden_field :model_name, :value => "student"%>
+    </div>
+
+    <p class="field">
+      <label class="mg-label"><%=t('fieldname')%><span class="required-field "> *</span></label>
+      <%= f.text_field :name ,:class=>"mg-text-field"%>
+    </p>
+
+    <p id="field2">
+  <label class="mg-label"><%=t('fieldtype')%><span class="required-field "> *</span></label><br>
+  <%= f.select :data_type, options_for_select([["Check Box","check_box"], ["Radio Button","radio_button"],["Input Text","input_type"],["Drop Down","drop_down"]],:selected => @student_custom_field[:data_type]), {:include_blank => 'Select'} ,:class=>"mg-select-btn"%>
+ </p>
+
+  
+  <p id="field4">
+  <label for="Default Value" class="mg-label"><%=t('defaultvalue')%></label><br/>
+    <%= f.text_area :text_data ,:class=>"mg-text-field"%>
+    </p>
+
+  
+  
+ <p id="field3">
+  </p>
+
+<div style="display:none">
+  <p>
+    <label for="is_deleted" class="mg-label"><%=t('status')%></label><br>
+    <label for="is_deleted" class="mg-label-inner-form "><%=t('active')%></label>
+    <%= f.radio_button :is_deleted, false , :checked => true%>
+    <label for="is_deleted" class="mg-label-inner-form"><%=t('inactive')%></label>
+    <%= f.radio_button :is_deleted, true %>
+</p>
+</div>
+  <p class="actions">
+    <%#= f.submit t('save') ,:class=>"mg-small-form-btn"%>
+    <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("save")%></a>
+    <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+    </p>
+<% end %>
+
+<!-- <span class="mg-cncl-btn-align">
+  <button class="cancel-form-dialog btn btn-cancel"><%#= t('cancel') %></button>
+</span> -->
+
+<!-- <button class="cancel-form-dialog"><%#= t('cancel') %></button> -->
+
+<script>
+  $(document).ready(function(){
+    $("#editStudentCustomFieldsFormID").validate({
+      rules:{
+        "student_custom_field[name]":{required:true},
+        "student_custom_field[data_type]":{required:true}
+      }
+    });
+
+  });
+</script>

@@ -1,0 +1,2 @@
+module MgPermissionsHelper
+end

@@ -1,0 +1,54 @@
+<!-- breadcrumbs Work -->
+<% navigation_add 'Examinations', examinations_path %>
+<% navigation_add 'Exam Management', examination_exammanagement_index_path %>
+<% id = params[:id]  %>
+<%# navigation_add 'Result Entry', exammanagement_coScholasticResultEntry_path(id) %>
+<!-- breadcrumbs Work -->
+
+
+<%= render  partial: 'examination_table_left' %>
+<h4 class="mg-h4">Select Criteria</h4>
+
+<div>
+  <%= form_for :coScholasticobservation, :url=>{:controller=>'examination',:action=>'ScholasticFaGroups_create'},:html => {
+                              :id => 'rankingCategoryCreateFormId', :class => 'elm_class',
+   
+                              :style => 'elm_style' } do |f| %>
+
+
+
+  <p>
+
+
+          <%@observations.each do |data|%>
+
+
+            <%@data1=data.name%>                  
+           <% @datas=data.header_name %>
+        
+      <a href="#" id="<%=raw data.id%>-<%=raw @id%>" class="examinations-grade-class mg-table-heading"><%="#{@datas}-#{@data1}"%></a><br/>
+   
+          <%end%>
+        </p>
+
+  <%end%>
+
+
+  <div id="coscholastic_data_entry">
+  </div>
+</div>
+<p class="mg-p-mgtop">
+  <%= link_to t('back'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+</p>
+
+<%= render  partial: 'examination_table_close' %>
+
+
+
+<script type="text/javascript">
+  $(document).ready(function() {
+        focusCurrentTab("createNewStudentAID","createNewStudentLiID");
+        focusExaminationHeaderBox();
+  });
+
+</script>

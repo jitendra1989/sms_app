@@ -1,0 +1,49 @@
+
+
+ <table border="1" class="mg-showdata-bg mg-tbl-layout" cellspacing="1" cellpadding="1">
+   <tr>
+     <td class="mg-td-width-half" valign="top">
+   		<label class="mg-label"> <%= t('lab_name')%></label>
+   	 </td>
+   	 <td class="mg-td-width-half" valign="top">
+  		<%if @laboratary.lab_name.present?%>
+ 	 <%@lab=MgLab.find(@laboratary.id)%>
+     <%=@lab.lab_name%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+  	 </td>
+ </tr>
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('subject_name')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+      <%if @laboratary.mg_laboratory_subject_id.present?%>
+   <%subject=MgLaboratorySubject.find(@laboratary.mg_laboratory_subject_id)%>
+     <%=subject.name%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+     </td>
+ </tr>
+
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('room_number')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+      <%if @laboratary.room_no.present?%>
+     <%=@laboratary.try(:room_no)%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+     </td>
+ </tr>
+
+</table>
+<br/>
+<a class="mg-small-form-btn cancel-form-dialog"><%=t("cancel")%></a>
+<%#= link_to 'Cancel', :back ,:style=>"font-size: 0.8em; color: #297ACC; text-decoration: none;" ,:class=>"mg-custom-form-btn"%>
+
+ 

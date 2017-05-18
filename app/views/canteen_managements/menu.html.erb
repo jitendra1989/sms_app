@@ -1,0 +1,93 @@
+<% navigation_add t('menu'), :controller=>'canteen_managements', :action=>'menu' %>
+<%= render  partial: 'canteen_managements/canteen_management_left' %>
+<h4 class="mg-h4"><%= t('menu') %></h4>
+<%if session[:user_type] !="principal"%>
+  <%= button_to 'Add Menu', {:controller => "canteen_managements", :action => "new_menu" } ,:class=>"mg-custom-form-btn"%>
+<%end%>
+<div class="mg_pagination">
+<%if @canteen.length>0%>
+<table  class="batch-tbl mg-tbl-margin">   <!-- border="2" --> 
+  <tr class="subject-table-header">
+    <th><%= t('name') %></th>
+    <th id="canteen_end_date_td"><%= t('start_date') %></th>
+    <th><%= t('end_date') %></th>
+
+    <th style="width: 92px;"><%= t('actions') %></th>
+  </tr>
+ 
+  <% @canteen.each do |canteen| %>
+    <tr>
+      <td><%= canteen.try(:name) %></td>
+      <td><%= canteen.try(:start_date).strftime(date_format(session[:current_user_school_id])) %></td>
+      <td><%= canteen.try(:end_date).strftime(date_format(session[:current_user_school_id])) %></td>
+      <td>
+    <button title="Show" id="<%=raw canteen.id %>-showlabBTNID" class="show-canteen-btn mg-icon-btn"><i class="fa fa-eye"></i></button>
+
+    <button title="Edit" id="<%=raw canteen.id %>-editCanteenBTNID" class="edit-canteen-btn mg-icon-btn"><i class="fa fa-pencil-square-o"></i></button>
+    
+    <% if session[:user_type] !="principal"%>
+      <button title="Delete" id="<%=raw canteen.id %>-deletelabBTNID" class="delete-canteen-btn mg-icon-btn"><i class="fa fa-trash"></i></button>
+    <%end%>
+    </td>
+    </tr>
+  <% end %>
+</table>
+<br/>
+ <div class="pagination-align" style="position: relative; bottom: 10px;">
+              <%= will_paginate @canteen, :container => false %>
+           </div>
+<%else%>
+<h5>No Menu to show</h5>
+<%end%>
+</div>
+
+
+
+
+
+<%= render  partial: 'application/common_left_close' %>
+
+<script>
+
+
+$( document ).ready(function() {
+            focusCurrentTab("canteenMenuDetailsAID","canteenMenuDetailsLID");
+});
+
+
+$(document).on("click", ".edit-canteen-btn", function(e){
+        var myID =$(this).attr('id');
+        var Id=myID.split("-");
+        var urlLink = "/canteen_managements/edit_menu/"+Id[0];
+        window.location=urlLink;
+});
+
+
+$(document).on("click", ".show-canteen-btn", function(e){
+        var myID =$(this).attr('id');
+        var Id=myID.split("-");
+        var urlLink = "/canteen_managements/show_menu/"+Id[0];
+        window.location=urlLink;
+});
+
+
+$(document).on("click", ".delete-canteen-btn", function(e){
+    var myID =$(this).attr('id');
+    myID=myID.split('-');
+    var retVal = confirm("Are you sure to delete?");
+    if(retVal){
+        var urlLink = "/canteen_managements/delete_menu/"+myID[0];
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(html){
+                window.location.reload();
+     	    }
+        });
+        }else{
+   	         return false;
+        }
+}); 
+
+
+</script>

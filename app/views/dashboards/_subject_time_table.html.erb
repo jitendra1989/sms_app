@@ -1,0 +1,105 @@
+<%if @big_weekday.present? && @timetable.present?%>
+<div class="mg-scroll-page-inner mg-tbl-border" >
+	<%period_counter=0%>
+	<table class="batch-tbl mg-tbl-layout mg-left-align-nil" id="employeeTimeTableTBLID">
+	<tr id="abcd">
+		<th><%=t('weekday')%></th>
+		<%for i in 0...@big_weekday.to_i%>
+			<th><%='time'%>-<%=period_counter+=1%></th>
+			<%end%>
+		</tr>
+		<%@timetable.each do |key, value|%>
+		<%if 'all'==@day.to_s%>
+		<tr class="time-table-body-tr-cls" id="efgh">
+			<td><%=key%></td>
+			<%period_counter_loop=0%>
+			<%value.each do |key1, value1|%>
+			<%period_counter_loop+=1%>
+				<td class="mg-table-heading mg-tbl-bg-color-<%=value1['employee_name']%> mg-align-center" colspan="1" id="<%=value1['employee_name']%>-<%=value1['batch_name']%>-<%=value1['employee_number']%>" time="<%=value1['time']%>">
+					
+						<p><%=value1['time']%></p>
+					<span class='mg-tbl-font-weight'>
+						<%=value1['employee_name']%><br>
+						<%=value1['batch_name']%>
+					</span>
+				</td>
+			<%end%>
+			<%if @big_weekday.to_i>period_counter_loop%>
+				<%for i in 0...@big_weekday.to_i-period_counter_loop%>
+					<td></td>
+				<%end%>
+			<%end%>
+		</tr>
+		<%elsif key.to_s==@day.to_s%>
+			<tr class="time-table-body-tr-cls" id="efgh">
+				<td><%=key%></td>
+				<%period_counter_loop=0%>
+				<%value.each do |key1, value1|%>
+				<%period_counter_loop+=1%>
+					<td class="mg-table-heading mg-tbl-bg-color-<%=value1['employee_name']%> mg-align-center" colspan="1" id="<%=value1['employee_name']%>-<%=value1['batch_name']%>-<%=value1['employee_number']%>" time="<%=value1['time']%>">
+						
+							<p><%=value1['time']%></p>
+						<span class='mg-tbl-font-weight'>
+							<%=value1['employee_name']%><br>
+							<%=value1['batch_name']%>
+						</span>
+					</td>
+				<%end%>
+				<%if @big_weekday.to_i>period_counter_loop%>
+					<%for i in 0...@big_weekday.to_i-period_counter_loop%>
+						<td></td>
+					<%end%>
+				<%end%>
+			</tr>
+		<%end%>
+		<%end%>
+
+	</table>
+</div>
+<%else%>
+<h5>No data for time table.</h5>
+<%end%>
+
+
+
+
+<script type="text/javascript">
+$(document).ready(function(){
+	$('table#employeeTimeTableTBLID tr.time-table-body-tr-cls').each(
+	    function(){
+			var td_id_out_side_loop="";
+			var this_obj_out_side_loop;
+			
+			var time_outside_loop=""
+			$('td',this ).each(function() {
+				var condition=true;
+				var td_id=$(this).attr('id');
+				var this_obj=$(this);
+				var time=$(this).attr("time");
+				// console.log("time--->"+time+" "+"td_id-->"+td_id);
+				if (td_id){
+					var colspan=parseInt($(this_obj_out_side_loop).attr('colspan'));
+					if (td_id==td_id_out_side_loop){
+						colspan =colspan+1;
+						$(this_obj_out_side_loop).attr('colspan', colspan);
+						time_outside_loop =time_outside_loop+" , " + $(this).attr('time');
+						$(this_obj_out_side_loop).find("p").html(time_outside_loop);
+						$(this).remove();
+						condition=false;
+					}
+				}
+				if(condition){
+					td_id_out_side_loop=td_id;
+				    this_obj_out_side_loop=this_obj
+				    time_outside_loop=time
+				    condition=true;
+				}
+				// alert();	
+			});
+	    });
+	});
+
+
+
+</script>
+

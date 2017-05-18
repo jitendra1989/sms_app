@@ -1,0 +1,91 @@
+<% navigation_add t('photo_gallery'), photo_gallery_path %>
+<% navigation_add t('show'),:controller=>'alumni',:action=>'show_phot_gallery',:id=>params[:id] %>
+
+<table border="1" class="mg-showdata-bg" cellspacing="1" cellpadding="1">
+  <tr>
+   <td class="mg-td-width-half" valign="top">
+   <label class="mg-label"> <%= t('name')%></label>
+   </td>
+   <td class="mg-td-width-half mg-capitalize-text" valign="top">
+      <%= @photo_gallery.try(:name) %>
+   </td>
+  </tr>
+
+  <tr>
+   <td class="mg-td-width-half" valign="top">
+   <label class="mg-label"> <%= t('description')%></label>
+   </td>
+   <td class="mg-td-width-half" valign="top">
+    <div class="text-scroll-for-log-text-cls comments-space">
+      <%= @photo_gallery.try(:description) %>
+    </div>
+   </td>
+  </tr>
+
+  <!-- <tr>
+   <td class="mg-td-width-half" valign="top">
+   <label class="mg-label"> <%#= t('share_to_all_alumni')%></label>
+   </td>
+   <td class="mg-td-width-half" valign="top">
+      <%#if @photo_gallery.is_shareable_to_alumni==true%>
+        <%#= "Yes" %>
+      <%#else%>
+        <%#= "No"%>
+      <%#end%>
+   </td>
+  </tr> -->
+
+  <%#if @photo_gallery.is_shareable_to_alumni==true %>
+    <%# wing = MgWing.where(@photo_gallery.mg_wing_id)%>
+    <%# course = MgCourse.where(@photo_gallery.mg_course_id)%>
+
+   <!--  <tr>
+     <td class="mg-td-width-half" valign="top">
+     <label class="mg-label"> <%#= t('select_programme')%></label>
+     </td>
+     <td class="mg-td-width-half mg-capitalize-text" valign="top">
+        <%#= wing[0].try(:wing_name) %>
+     </td>
+    </tr>
+
+    <tr>
+     <td class="mg-td-width-half" valign="top">
+     <label class="mg-label"> <%#= t('select_course')%></label>
+     </td>
+     <td class="mg-td-width-half mg-capitalize-text" valign="top">
+        <%#= course[0].try(:course_name)%>
+     </td>
+    </tr>
+
+     <tr>
+     <td class="mg-td-width-half" valign="top">
+     <label class="mg-label"> <%#= t('select_year')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+        <%#= @photo_gallery.try(:year) %>
+     </td>
+    </tr>
+
+    <tr>
+     <td class="mg-td-width-half" valign="top">
+     <label class="mg-label"> <%#= t('status')%></label>
+     </td>
+     <td class="mg-td-width-half mg-capitalize-text" valign="top">
+        <%#= @photo_gallery.admin_status %>
+     </td>
+    </tr>
+  <%#end%> -->
+</table>
+ <p class="mg-p-mgtop">
+  <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+ </p>
+
+
+
+<script>
+  $(document).ready(function () {
+    focusCurrentTab("PhotoGalleryAID","PhotoGalleryLiID");
+    textSeeMoreLess();
+  });
+
+</script>

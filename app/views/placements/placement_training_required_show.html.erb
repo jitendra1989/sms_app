@@ -1,0 +1,47 @@
+<table border="1" class="mg-showdata-bg " cellspacing="1" cellpadding="1">
+   <tr>
+     <td class="mg-td-width-half" valign="top">
+   		<label class="mg-label mg-rm-text-trans"> <%= t('area_of_training_required')%></label>
+   	 </td>
+   	 <td class="mg-td-width-half" valign="top">
+  		<%= @training_required.area_of_training_required %>
+  	 </td>
+ </tr>
+
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+   		<label class="mg-label"> <%= t('description')%></label>
+   	 </td>
+   	 <td class="mg-td-width-half" valign="top">
+        <div class="text-scroll-for-log-text-cls comments-space"> 
+            <%= @training_required.try(:description) %> 
+        </div>
+  	 </td>
+ </tr>
+
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+   		<label class="mg-label"> <%= t('status')%></label>
+   	 </td>
+   	 <td class="mg-td-width-half" valign="top">
+  		<%= @training_required.status %>
+  	 </td>
+ </tr>
+ </table>
+ 
+ <p class="mg-p-mgtop">
+  <%= link_to t('cancel'),placement_training_required_index_path ,
+  {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+ </p>
+
+
+
+
+ <script>
+
+$(document).ready(function () {
+textSeeMoreLess();
+});
+
+
+ </script>

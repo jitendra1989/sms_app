@@ -1,0 +1,88 @@
+<%= render partial: 'entrance_exam_left' %>
+<% navigation_add t('entrance_exam_details'), :controller=>'entrance_exam_details', :action=>'index' %>
+<h4 class="mg-h4"><%= t('entrance_exam_details') %></h4>
+<button class="add_exam_details mg-btn-bottom-margin mg-custom-form-btn"><%= t('add_exam_details')%></button>
+<%@school = MgSchool.where(:id=>session[:current_user_school_id],:is_deleted=>0)%>
+
+<div class="mg_pagination">
+	<table class="batch-tbl mg-tbl-margin table-batchs-tbl">
+		<tr class="subject-table-header">
+			<th><%= t('semester_name') %></th>
+			<th><%= t('select_exam_date') %></th>
+			<th><%= t('start_time') %></th>
+			<th><%= t('end_time') %></th>
+			<th><%= t('venue') %></th>
+			<th><%= t('actions') %></th>	
+		</tr>
+		<% @exam_detail.each do |f| %>	
+		<tr>
+			<% exm_detail_id = f.mg_course_id %>
+			<% @course = MgCourse.find_by(:id=>exm_detail_id) %>
+			<% if @course.present? %>
+				<td><%= @course.course_name %></td>
+			<% end %>
+			<%@dateFormat = MgSchool.find_by(:id=>session[:current_user_school_id]).date_format %>
+			<td class="mg-align-center"><%= f.try(:start_date).try(:strftime, @dateFormat) %> </td>
+			<td class="mg-align-center"><%= f.try(:start_time).try(:strftime,"%l:%M%P") %></td>		
+			<td class="mg-align-center"><%= f.try(:end_time).try(:strftime,"%l:%M%P") %></td>
+			<td class="mg-desc-text-justify">
+				<%if @school[0].is_test_center==true%>
+	      	<% @vanue_name=MgEntranceExamVenue.where(:id=>f.mg_entrance_exam_venue_id,:is_deleted=>0)%>
+
+		      <%if @vanue_name.present?%>
+	  	    	<%vanue_full_name=@vanue_name[0].try(:institute_name).to_s+','+@vanue_name[0].try(:exam_venue).to_s%>
+						<%= truncate(vanue_full_name.to_s, :length => 25, :separator => ' ') %>
+					<%else%>
+						<%= truncate(f.try(:exam_venue).to_s, :length => 25, :separator => ' ') %>
+					<%end%>
+
+				<%elsif @school[0].is_test_center==false%>
+					<%vanue_full_name=@school[0].try(:address_line1).to_s+','+@school[0].try(:address_line2).to_s+','+@school[0].try(:street).to_s+','+@school[0].try(:landmark).to_s+','+@school[0].try(:city).to_s+','+@school[0].try(:state).to_s+','+@school[0].try(:pin_code).to_s%>
+
+	        <%= truncate(vanue_full_name.to_s, :length => 25, :separator => ' ') %>
+	      <%end%>
+    </td>
+
+			<td style="width: 103px;">
+				<span style="margin-right: -8px;">
+					<button title="<%=t('show')%>" id="<%= raw f.id %>-showexmBTNID" class="show-exam-details mg-icon-btn"><i class="fa fa-eye"></i></button>
+				</span>
+				<span style="margin-right: -8px;">
+					<button title="<%= t('edit') %>" id="<%= raw f.id %>-editexmBTNID" class="edit-exam-details mg-icon-btn"><i class="fa fa-pencil-square-o"></i></button>
+				</span>
+				<span>
+					<button title="<%= t('delete') %>" id="<%= raw f.id %>-deleteexmBTNID" class="delete-exam-details mg-icon-btn"><i class="fa fa-trash"></i></button>
+					 <%#= link_to "<i class=\"fa fa-trash\"></i>".html_safe,entrance_exam_detail_path(f),
+              method: :delete,data: { confirm: 'Are you sure to delete?' },:class=>"mg-icon-btn" %>
+				</span>
+			</td>
+		</tr> 
+		<% end %>
+	</table>
+	<div class="pagination-align" style="position: relative; bottom: 00px;">
+		<%= will_paginate @exam_detail, :container => false %>
+	</div>
+</div>
+<div id="exam_detail_show"></div>
+
+<%= render  partial: 'application/common_left_close' %>
+
+
+<script>
+	$(document).ready(function(){		
+		focusCurrentTab("viewEXMDetailLID","viewEXMDetailID");
+	});
+
+	$(document).on("click",".add_exam_details",function(e){		
+		e.preventDefault();		
+		var urlLink = "/entrance_exam_details/new";
+		window.location = urlLink;
+
+});
+$(document).on("click",".edit-exam-details",function(){
+	var editID = $(this).attr('id');
+	var id = editID.split("-");
+	var urlLink = "/entrance_exam_details/"+id[0]+"/edit";
+	window.location = urlLink;
+	});	
+</script>

@@ -1,0 +1,31 @@
+<%if @weekDayForSelectedBatch.length>0%>
+	<%=hidden_field :batch_id,:value=>@batchId%>
+	<table class="batch-tbl">
+		<tr>
+			<th>WeekDay</th>
+			<th>08.30am-09.30am</th>
+		</tr>
+		<%@weekDayForSelectedBatch.each do|weekday|%>
+		  <% if weekday.day_of_week==0%>
+        	<% @day="Sunday"%>
+	      <% elsif weekday.day_of_week==1%>
+	        <% @day="Monday"%>
+	      <% elsif weekday.day_of_week==2%>
+	       <%  @day="Tuesday"%>
+	      <% elsif weekday.day_of_week==3%>
+	       <%  @day="Wednesday"%>
+	      <% elsif weekday.day_of_week==4%>
+	        <% @day="Thursday"%>
+	      <% elsif weekday.day_of_week==5%>
+	       <%  @day="Friday"%>
+	      <% else%>
+	       <%  @day="Saturday"%>
+	      <% end%>
+		<tr>
+			<td id="weekDayTdID"><%= @day%></td>
+			<td></td>
+		</tr>
+		<%end%>
+	</table>
+<%end%>
+

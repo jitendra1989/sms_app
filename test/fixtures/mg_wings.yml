@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  wing_name: MyString
+  is_deleted: 1
+  mg_school_id: 1
+  created_by: 1
+  updated_by: 1
+
+two:
+  wing_name: MyString
+  is_deleted: 1
+  mg_school_id: 1
+  created_by: 1
+  updated_by: 1

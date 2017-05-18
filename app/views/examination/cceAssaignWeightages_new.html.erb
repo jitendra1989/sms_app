@@ -1,0 +1,76 @@
+<%if @id==""%>
+
+<%else%>
+<%= form_for :rankings, :html => {
+                            :id => 'rankingCategoryCreateFormId', :class => 'elm_class', :style => 'elm_style' } do |f| %>
+    <%= f.hidden_field :mg_school_id ,:value=> session[:current_user_school_id]%>
+    <table class="mg-checkbox-spacing">
+        <tr>
+            <td id="checkedTdID">
+                <%@info.each do |value|%>
+                    <%= check_box_tag "weekdays[#{value}]", 1,  @cceID.include?(value) ? true : false ,:style=>"position: relative; top: 0px;"%><br/>
+                 <%end%>
+            </td>
+            <td class="mg-cce-weightage-spacing">
+               <%@weightages.each do |data|%>
+                   <%=data.weightages%>
+                   <%@data=data.criteria_type%>
+                   <%="(#{@data})"%><br/>
+                <%end%> 
+            </td>
+        </tr>
+    </table>
+<div style="display:none;">
+    <p>
+        <label for="is_deleted" class="mg-label "><%=t('status')%></label><br />
+        <label for="is_deleted" class="mg-label-inner-form "><%=t('active')%></label>
+        <%= f.radio_button :is_deleted, false , :checked => true%>
+        <label for="is_deleted" class="mg-label-inner-form "><%=t('inactive')%></label>
+        <%= f.radio_button :is_deleted, true %>
+      </p>
+</div>
+<p>
+    <button id="save" class="btn btn-delete">Submit</button>
+    <%= link_to t('back') ,'/examination/cceBasic_Settings', {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+</p>
+<%end%>
+
+<%end%>
+
+<script>
+    $(document).on("click","#save",function(e){
+        e.preventDefault();
+        //alert("Clicked Save");
+        var courseId=$("#mg_course_id").val();
+        var checkedvalue="";
+        var uncheckedvalue="";
+        $("#checkedTdID > input").each(function(index) {
+                 var currentInputID = $(this).attr("id");
+                 var checked=$("input#"+currentInputID).is(':checked');
+                 if(checked){
+                    checkedvalue+=currentInputID.split("_")[1]+","; 
+
+                 }
+                 else{
+                    uncheckedvalue+=currentInputID.split("_")[1]+",";
+                    
+                 }
+                
+          });
+        
+                
+        jQuery.ajax({
+            url: "/examination/cceAssaignWeightages_create/",
+            type: "GET",
+            data: {"mg_course_id" :courseId,"checked":checkedvalue,
+            "unchecked":uncheckedvalue},
+            dataType: "html",
+            success: function(data) {
+                //alert("successfully saved")
+            },
+            error:function(){
+               // alert("Something went wrong!");
+            }
+        });
+    });
+    </script>

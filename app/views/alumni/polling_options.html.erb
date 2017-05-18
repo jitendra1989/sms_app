@@ -1,0 +1,203 @@
+<% navigation_add t('poll_questions'), alumni_polling_options_path %>
+<%=render partial: 'alumni_left'%>
+
+<h4 class="mg-h4"><%= t('poll_questions') %></h4>
+
+<button class="new-add-polling-options mg-btn-bottom-margin mg-custom-form-btn"><%= t('create_polling_question')%></button>
+
+
+<%if @polling.length>0%>
+<table  class="batch-tbl mg-tbl-margin">   
+  <tr class="subject-table-header">
+    <th><%= t('questions') %></th>
+      
+    <th style="width: 125px;"><%= t('actions') %></th>
+  </tr>
+ 
+  <% @polling.each do |pol| %>
+    <tr>
+      <td><%= pol.try(:question) %></td>
+     
+      <td>
+
+      <button title="Show" id="<%=raw pol.id %>-showlabBTNID" class="show-polling-alumni-btn mg-icon-btn"><i class="fa fa-eye"></i></button>
+
+        <button title="Edit" id="<%=raw pol.id %>-editlabBTNID" class="edit-polling-options-btn mg-icon-btn"><i class="fa fa-pencil-square-o"></i></button>
+
+        <button title="Delete" id="<%=raw pol.id %>-deletelabBTNID" class="delete-polling-options-btn mg-icon-btn"><i class="fa fa-trash"></i></button>
+
+        <!-- <button title="Result" id="<%=raw pol.id %>-editlabBTNID" class="graph-polling-options-btn mg-icon-btn"><i class="fa fa-pie-chart"></i></button> -->
+
+        <button title="Result" onclick="window.location='/alumni/polling_options_graph/<%=pol.id%>'" class="mg-icon-btn"><i class="fa fa-pie-chart"></i></button>
+
+      </td>
+
+    </tr>
+  <% end %>
+</table>
+<br/>
+ <div class="pagination-align" style="position: relative; bottom: 10px;">
+              <%= will_paginate @polling, :container => false %>
+           </div>
+<%else%>
+<h5>No records are created </h5>
+<%end%>
+
+<div id="new_Add_Polling_options_DIVID"></div>
+<div id="edit_polling_options_DIVID"></div>
+<div id="delete_polling_options_DIVID"></div>
+<div id="show_polling_alumni_data"></div>
+
+
+<%= render  partial: 'application/common_left_close' %>
+
+<script>
+$( document ).ready(function() {
+            focusCurrentTab("getpoll_optionsAID","getpoll_optionsliId");
+});
+
+
+
+$(document).on("click", ".delete-polling-options-btn", function(e){
+     e.preventDefault();
+      var myID =$(this).attr('id');
+      var Id=myID.split("-");
+                var retVal = confirm("Are you sure to delete?");
+                if(retVal){
+                     var urlLink = "/alumni/polling_options_delete";
+                      $.ajax({
+                        url: urlLink ,
+                        cache: false,
+                        data:{id:Id[0]},
+                        success: function(html){
+                            window.location.reload();
+                        }
+                    });
+
+                }else{
+                   return false;
+                }
+        }); 
+
+
+
+
+
+
+$(document).on("click", ".show-polling-alumni-btn", function(e){
+        var myID =$(this).attr('id');
+        var Id=myID.split("-");
+
+        var urlLink = "/alumni/polling_options_show";
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+             data:{id:Id[0]},
+            success: function(html){
+                  $('#show_polling_alumni_data').dialog({
+                    modal: true,
+                     minHeight: '200px',
+                    width: 'auto',
+                    title: "Show Polling Question Details",
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+});
+
+
+$(document).on("click", ".edit-polling-options-btn", function(e){
+        var myID =$(this).attr('id');
+        var Id=myID.split("-");
+        var urlLink = "/alumni/polling_options_edit";
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            data:{id:Id[0]},
+            success: function(html){
+                  $('#edit_polling_options_DIVID').dialog({
+                    modal: true,
+                     minHeight: 'auto',
+                    minWidth: '250px',
+                    title: "Edit Polling Question Details",
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+});
+
+
+// =============================================================================
+$(document).on("click", ".graph-polling-options-btn", function(e){
+        var myID =$(this).attr('id');
+        var Id=myID.split("-");
+        var urlLink = "/alumni/polling_options_graph";
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            data:{id:Id[0]},
+            // window.location="/albums/upload_photos/"+Id[0];
+            // window.location.reload();
+            // success: function(html){
+            //       $('#graph_polling_options_DIVID').dialog({
+            //         modal: true,
+            //          minHeight: 'auto',
+            //         minWidth: '250px',
+            //         title: "Delete Polling Question Details",
+            //         open: function () {
+                        
+            //             $(this).html(html);
+            //         }
+            //     }); 
+               
+            // }
+        });
+});
+// ==============================================================================
+
+$(document).on("click", ".new-add-polling-options", function(e){
+        var urlLink = "/alumni/polling_options_new";
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(html){
+                  $('#new_Add_Polling_options_DIVID').dialog({
+                    modal: true,
+                     minHeight: 'auto',
+                    minWidth: '250px',
+                    title: "Create Polling",
+                    open: function () {
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+});
+</script>
+<style>
+
+
+.table-batchs-tbl {
+   /* font-family: verdana,arial,sans-serif;*/
+    font-size:13px;
+    color:#363131;
+    border-width: 1px;
+    border-color:  #363131;
+    border-collapse: collapse;
+    padding: 12px ;
+    font-size: 0.8em;
+    width: 261px !important;
+    /* margin-left: 2px; */
+}
+</style>
+
+

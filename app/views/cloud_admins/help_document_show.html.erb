@@ -1,0 +1,70 @@
+<%= render partial: 'dashboards/cloud_admin_dashboard_left' %>
+
+
+<%@help_document=MgHelpDocument.where(:is_deleted => '0')%>
+
+
+<h4 class="mg-h4"><%= t('help_document') %></h4>
+<div class="mg-custom-labels">
+<%= button_to 'Add Document', {:controller => "cloud_admins", :action => "help_document_new" },:class=>"mg-custom-form-btn" %>
+
+
+
+<table  class="batch-tbl mg-tbl-margin">   <!-- border="2" --> 
+  <tr class="subject-table-header">
+  	<!-- <th>Subject Id</th> -->
+    <th><%= t('school') %></th>
+    <th><%= t('user_type') %></th>
+    <th><%= t('name') %></th>
+    <!-- <th><%#= t('document') %></th> -->
+    <th><%= t('action') %></th>
+  </tr>
+ 
+  <% @help_document.each do |doc| %>
+    <tr>
+
+      <!-- <td><#%= curr.mg_subject_id %></td> -->
+      <td><%school=MgSchool.where(:id=>doc.mg_school_id)%>
+          <%=school[0].school_name%></td>
+      <td><%= doc.user_type %></td>
+      <td><%= doc.name %></td>
+     
+      <td>
+         <%= link_to "<i class=\"fa fa-pencil-square-o\"></i>".html_safe, {:controller => "cloud_admins", :action => "help_document_edit",:id =>doc.id} , :method=>'post' ,:title=>"Edit" ,:class=>"mg-icon-btn"%>
+      <%= link_to "<i class=\"fa fa-trash\"></i>".html_safe, {:controller => "cloud_admins", :action => "help_document_delete",:id =>doc.id }, :method=>'post' ,:title=>"Delete" ,:class=>"mg-icon-btn" ,data: { confirm: 'Are you sure to delete?' } %>
+
+      </td>
+
+    </tr>
+  <% end %>
+</table>
+</div>
+<%= render partial: 'application/common_left_close' %>
+
+
+<script type="text/javascript">
+
+ $(document).ready(function() {
+     focusCurrentTab("viewCloudAdminDashboardAddHelpDocument","viewCloudAdminDashboardAddHelpDocumentLiID");
+    focusDashboards();
+ });
+
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<%= render partial: 'application/common_left_close' %>

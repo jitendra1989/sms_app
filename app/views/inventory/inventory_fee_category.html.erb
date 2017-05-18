@@ -1,0 +1,134 @@
+<!-- Sec --> 
+<%= render  partial: 'inventory_left' %>
+<% navigation_add 'Inventory  Fees', inventory_inventory_fee_category_path %>
+
+<div id="Inventory_Fee_Category">
+<h4 class="mg-h4"><%= t('inventory_fee_category') %></h4>
+<div>
+
+<button id='createInventoryNewFeeCategoryID'  class="mg-custom-form-btn">Create Inventory Fee Category </button>
+<% if @fees_category.length > 0 %>
+
+    <table class="batch-tbl mg-tbl-margin mg-tbl-layout" >   <!-- border="2" --> 
+      <tr >
+        <th>Name</th>
+        <th>Category</th>
+
+            
+        <th align="center"><%=t("actions")%></th>
+
+      </tr>
+      <% @fees_category.each_with_index do |sub| %>
+      <tr>
+
+        <td><%= sub.name %></td>
+        <td><%= sub.item_category_name %></td>
+          
+                   
+
+        <td>
+            <button title="Show" id='<%=sub.id %>' class="show_class mg-icon-btn"><i class="fa fa-eye"></i></button> 
+            <button title="Edit" id='<%=sub.id %>' class="inventory1_edit1_class mg-icon-btn"><i class="fa fa-pencil-square-o"></i></button>
+            
+            <span >
+            <%= link_to "<i class=\"fa fa-trash\"></i>".html_safe,{ action: "inventory_delete_fee_category", id: sub.id }, data: { confirm: "Are you sure?" } ,:title=>"Delete" ,:class=>"mg-icon-btn-link"%> 
+            </span>
+            <span >
+            <%= link_to "<i class=\"fa fa-wrench\"></i>".html_safe, { controller: "Inventory",action: "inventory_finance_fee", id: sub.id } ,:title=>"Manage Particulars" ,:class=>"mg-icon-btn-link"%>                     
+            </span>
+        </td>
+            
+
+                    
+      </tr>
+      <% end %>
+    </table>
+
+<% else %>
+  <h5>Please create some Fee Category... </h5>
+
+<% end %>
+
+<div id="createInventoryFeeCategoryDivID"></div>
+<div id="editFeeCaregoryDivID"></div>
+</div>
+</div>
+<%= render  partial: 'application/common_left_close' %>
+
+<script type="text/javascript">
+      
+
+      $(document).ready(function () {
+          $(".content-tab").tabs();
+
+
+            // Removing class from Li
+        // $("li").removeClass( "active" );
+        // $("a").removeClass( "activeMenu" );
+
+        //     // Adding class 
+        // $("#viewFeeListLiID").addClass( "active" );
+        // $("#viewFeeList").addClass( "activeMenu" );
+
+        // focusFees();
+    focusCurrentTab("inventory_feesAid","inventory_feesLiID");
+
+
+    });
+
+      $(document).on("click", "#createInventoryNewFeeCategoryID", function(e){
+        e.preventDefault();
+        var urlLink = "/inventory/inventory_fee_category_new/";
+      //  alert("createNewFeeCategoryID is clicked");
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(html){
+
+
+                  $('#createInventoryFeeCategoryDivID').dialog({
+                    modal: true,
+                    title: "Create Inventory Fee Category",
+                    minWidth: 515,
+                    minHeight: 350,
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+});
+$(document).on("click", ".inventory1_edit1_class", function(e){
+       e.preventDefault();
+   //    alert("Work on progress");
+
+        var FeeCategoryID =$(this).attr('id');
+     //    alert(FeeCategoryID);
+        //var urlLink = "/student_categories/"+studentCategoryID+"/edit";
+        var urlLink = "/inventory/inventory_fee_edit/";
+       // alert(urlLink);
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            data:{"id":FeeCategoryID},
+            success: function(html){
+                  $('#editFeeCaregoryDivID').dialog({
+                    modal: true,
+                    title: "Edit Inventory Fee Category",
+                    minWidth: 512,
+                    minHeight: 350,
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+});
+
+
+</script>
+

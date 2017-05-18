@@ -1,0 +1,166 @@
+<!-- Sec -->  <section id="userBodyContentBox" style="margin: 0 auto;">
+    <table width=100% border="0" cellspacing="0" cellpadding="0"  style="margin-bottom: 0px;">
+        <tr>
+            <td valign="top" class="userBodyContentBox1">
+                <aside class="userMenuBoxLeft" style="width: 210px;">
+                    <ul class="menuListHome">
+
+                        <li class="myAccountMenu">Student </li>
+                        <li id="viewStudentDashboardLiID">
+
+                            <a class="Student-Profile" href="/dashboards/student/" id="viewStudentDashboard" >
+                                <div class="setMenu"><i class="fa fa-bar-chart">&nbsp;&nbsp;</i>My dashboard<!-- <i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i> -->
+                                </div>
+                            </a>
+                        </li>
+
+
+                        <li id="ViewStudentAttendenceLiID">
+                            <a class="Student-attendence" href="/attendances/student/" id="ViewStudentAttendence">
+                                <div class="setMenu"><i class="fa fa-shield">&nbsp;&nbsp;</i>Attendances<!-- <i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i> -->
+                                </div>
+                            </a>
+                        </li>
+
+                        <li id="showPrincipleNotificationLiID">
+
+                            <a class="Principle-Profile" href="/notifications/show_notification/" id="showPrincipleNotification">
+                                <div class="setMenu"><i class="fa fa-weixin">&nbsp;&nbsp;</i>Show Notification<!-- <i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i> -->
+                                </div>
+                            </a>
+                        </li>
+
+                        <!-- <li id="ViewStudentNewsLiID">
+                            <a class="Student-News" href="/dashboards/student_news/" id="ViewStudentNews">
+                                <div class="setMenu"><i class="fa fa-newspaper-o">&nbsp;&nbsp;</i>News --><!-- <i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i> -->
+                                <!-- </div>
+                            </a>
+                        </li> -->
+
+                        <li id="viewStudentEventsLiID">
+
+                            <a class="Student-Events" href="/dashboards/student_event/" id="viewStudentEvents" >
+                                <div class="setMenu"><i class="fa fa-tasks">&nbsp;&nbsp;</i>Events<!-- <i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i> -->
+                                </div>
+                            </a>
+                        </li>
+<!--                         <li id="ViewStudentMessagesLiID">
+                            <a class="Student-Messages" href="#" id="ViewStudentMessages">
+                                <div class="setMenu"><i class="fa fa-envelope">&nbsp;&nbsp;</i>Messages<i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i>
+                                </div>
+                            </a>
+                        </li> -->
+
+                        <li id="viewStudentProfileLiID">
+
+                            <a class="Student-Profile" href="/dashboards/show/" id="viewStudentProfile" >
+                                <div class="setMenu"><i class="fa fa-user">&nbsp;&nbsp;</i>Profile<!-- <i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i> -->
+                                </div>
+                            </a>
+                        </li>
+
+                        <li id="viewStudentTimetableLiID">
+
+                            <a class="Student-Profile" href="/dashboards/student_timetable/" id="viewStudentTimetableAID" >
+                                <div class="setMenu"><i class="fa fa-table">&nbsp;&nbsp;</i>View Timetable</div>
+                            </a>
+                        </li>
+                         <li id="viewStudentDocumentsLiID">
+
+                            <a class="Student-Documents" href="/document_managements/files_for_student/" id="viewStudentDocumentsAID" >
+                                <div class="setMenu"><i class="fa fa-file-text-o">&nbsp;&nbsp;</i>Documents</div>
+                            </a>
+                        </li>
+                        <!--  <li id="ReservebooksLiID">
+
+                            <a class="Student-Documents" href="/dashboards/reserve_books_index/" id="ReservebooksAID" >
+                                <div class="setMenu"><i class="fa fa-file-text-o">&nbsp;&nbsp;</i>Reserve Books</div>
+                            </a>
+                        </li> -->
+                        <li id="searchReservebooksLiID">
+
+                            <a class="Student-Documents" href="/dashboards/search_reserve_books_index/" id="searchReservebooksAID" >
+                                <div class="setMenu"><i class="fa fa-file-text-o">&nbsp;&nbsp;</i>Search Reserved Books</div>
+                            </a>
+                        </li>
+
+                        <%
+                            user=MgUser.find(session[:user_id])
+                            student_mg_user_id=user.id
+                            @id=MgStudent.where(:mg_user_id=>student_mg_user_id,:mg_school_id=>session[:current_user_school_id],:is_deleted=>0).pluck(:id)
+                        %>
+                        <li id="viewResultLiID">
+                            <a class="guardian-profile" href='/cce_reports/make_scholastic_report/<%=@id[0]%>' id="viewResultAID">
+                                <div class="setMenu"><i class="fa fa-file-text">&nbsp;&nbsp;</i>Result<!-- <i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i> -->
+                                </div>
+                            </a>
+                        </li>
+                        <li id="viewStudentHomeworkLiID">
+
+                            <a class="Student-Homework" href="/homework/student/" id="viewStudentHomework" >
+                                <div class="setMenu"><i class="fa fa-book">&nbsp;&nbsp;</i>Homework<!-- <i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i> -->
+                                </div>
+                            </a>
+                        </li>
+						<li id="viewStudentAlbumLiID">
+                            <a class="guardian-profile" href='/albums/student_albums/' id="viewStudentAlbumAID">
+                                <div class="setMenu"><i class="fa fa-picture-o">&nbsp;&nbsp;</i><%=t('albums')%><!-- <i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i> -->
+                                </div>
+                            </a>
+                        </li>
+
+						<li id="hostel_applicationLiID">
+                          <a class="menuItemsActivities" href="/hostel_management/hostel_application_form_index" id="hostel_applicationAID">
+                            <div class="setMenu"><i class="fa fa-envelope-o">&nbsp;&nbsp;</i><%="Hostel Application Form"%>
+                            </div>
+                          </a>
+                        </li>
+
+                        <li id="hostel_particular_applicationLiID">
+                          <a class="menuItemsActivities" href="/hostel_management/students_particular_hostel_details" id="hostel_particular_applicationAID">
+                            <div class="setMenu"><i class="fa fa-building-o">&nbsp;&nbsp;</i><%="Hostel Details"%>
+                            </div>
+                          </a>
+                        </li>
+                        
+                        <li id="complain_hostelLiID">
+                          <a class="menuItemsActivities" href="/hostel_management/complain_hostel_index" 
+                          id="complain_hostelAID">
+                            <div class="setMenu"><i class="fa fa-crosshairs">&nbsp;&nbsp;</i><%="Hostel Issues"%>
+                            </div>
+                          </a>
+                        </li>
+                         <!-- <li id="hostel_applicationLiID">
+                          <a class="menuItemsActivities" href="/hostel_management/hostel_application_form_index" id="hostel_applicationAID">
+                            <div class="setMenu"><i class="fa fa-link">&nbsp;&nbsp;</i><%#="Hostel Application Form"%>
+                            </div>
+                          </a>
+                        </li>-->
+
+                        <li id="room_reallotment_requestLiID">
+                          <a class="menuItemsActivities" href="/hostel_management/room_reallotment_request" id="room_reallotment_requestAID">
+                            <div class="setMenu"><i class="fa fa-building">&nbsp;&nbsp;</i><%="Room ReAllotment Request"%>
+                            </div>
+                          </a>
+                        </li> 
+                       
+			<li id="alumniSearchAIDLId">
+                                <a class="menuItemsActivities" href="/alumni/alumni_search" id="alumniSearchAID">
+                                    <div class="setMenu"><i class="fa fa-search">&nbsp;&nbsp;</i><%=t('alumni_search')%>
+                                    </div>
+                                </a>
+                        </li> 
+
+                        
+
+                        <li id="goingOutProvLiID">
+                          <a class="menuItemsActivities" href="/hostel_management/going_out_provision" id="goingOutProvAID">
+                            <div class="setMenu"><i class="fa fa-taxi">&nbsp;&nbsp;</i><%="Going Out Provision"%>
+                            </div>
+                          </a>
+                        </li>
+                    </ul>    
+
+                </aside>
+            </td>
+            <td  valign="top" id="manageStudentCategoryID" class="mg-table-td-main-2">

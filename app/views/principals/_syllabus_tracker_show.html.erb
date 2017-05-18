@@ -1,0 +1,64 @@
+<%= render partial: 'dashboards/principle_dashboard_left' %>
+
+<!-- Sec --> 
+<%@syllabus=MgSyllabusTracker.where(:is_deleted => '0',:mg_school_id=>session[:current_user_school_id])%>
+ <h4 class="mg-h4"><%= t('syllabustracker') %></h4>
+ <%= button_to 'Add Tracks', {:controller => "employees", :action => "syllabus_tracker" } %>
+ <%= button_to 'See Tracks', {:controller => "employees", :action => "syllabus_track" } %>
+<table  class="batch-tbl">   <!-- border="2" --> 
+  <tr class="subject-table-header">
+    <!-- <th>Subject Name</th> -->
+
+  	<th><%=t('employee_id')%></th>
+    <th><%=t('syllabus')%></th>
+    <th><%=t('unit')%></th>
+    <th><%=t('topic')%></th>
+    
+     <th colspan="2"><%=t('actions')%></th>
+  </tr>
+ 
+  <% @syllabus.each do |curr| %>
+    <tr>
+     <%@temp=MgEmployee.find_by_id( curr.mg_employee_id)%>
+     <%if @temp!=nil%>
+      <td><%= @temp.first_name %></td>
+      <%else%>
+      <td></td>
+      <%end%>
+
+      <%@temp=MgSyllabus.find_by_id( curr.mg_syllabus_id)%>
+     <%if @temp!=nil%>
+      <td><%= @temp.name %></td>
+      <%else%>
+      <td></td>
+      <%end%>
+
+      <%@temp=MgUnit.find_by_id( curr.mg_unit_id)%>
+     <%if @temp!=nil%>
+      <td><%= @temp.unit_name %></td>
+      <%else%>
+      <td></td>
+      <%end%>
+
+
+      <%@temp=MgTopic.find_by_id( curr.mg_topic_id)%>
+     <%if @temp!=nil%>
+      <td><%= @temp.topic_name %></td>
+      <%else%>
+      <td></td>
+      <%end%>
+
+
+    <td>
+      
+      <%= button_to 'edit', {:controller => "employees", :action => "tracker_edit",:id =>curr.id } %>
+      <%= button_to 'delete', {:controller => "employees", :action => "tracker_delete",:id =>curr.id } %>
+
+      </td>
+
+    </tr>
+  <% end %>
+</table>
+
+
+<%= render partial: 'application/common_left_close' %>

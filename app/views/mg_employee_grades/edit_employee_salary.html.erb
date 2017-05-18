@@ -1,0 +1,70 @@
+
+<% navigation_add t('employees'), employees_path %>
+<% navigation_add t('edit_employee_salary'), edit_employee_salary_path %>
+
+<%= render partial: 'employees/emp_left' %>
+ <h4 class="mg-h4"><%= t("edit_employee_salary") %></h4>
+<div class="mg_pagination">
+	<table class="batch-tbl">
+	<tr>
+		<th><%=t('employee_name')%></th>
+		<th><%=t('employee_number')%></th>
+		<th><%=t('actions')%></th>
+	</tr>
+	<%@employee.each do |employee|%>
+	<tr>
+        <td class="mg-capitalize-text"><%=employee.employee_name%></td>
+		<td><%=employee.employee_number%></td>
+		<td><button title="<%=t('edit')%>" id="<%=raw employee.id %>-editEmployeeeSalaryGradeWiseBTNID" class="edit-employee-salary-grade-wise-btn mg-icon-btn"><i class="fa fa-pencil-square-o"></i></button></td>
+
+	</tr>
+
+	<%end%>
+	</table>
+
+	<%= will_paginate @employee, :container => false %>
+</div>
+<div id="editEmployeeeSalaryGradeWiseDIVID"></div>
+
+
+<%= render partial: 'application/emp_section_close' %>
+<script>
+
+     $(document).ready(function(){
+
+        $("li").removeClass( "active" );
+        $("a").removeClass( "activeMenu" );
+
+        $("#editEmployeeSalaryComponrntLiID").addClass("active");
+        $("#EmployeeSalaryComponrntAID").addClass("activeMenu");
+        focusEmployee();
+     });
+$(document).on("click", ".edit-employee-salary-grade-wise-btn", function(e){
+    e.preventDefault();
+        var myID =$(this).attr('id');
+        var Id=myID.split("-");
+
+        var urlLink = "/mg_employee_grades/edit_employee_salary_by_grade/"+Id[0];
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(html){
+                  $('#editEmployeeeSalaryGradeWiseDIVID').dialog({
+                    modal: true,
+                    height: 'auto',
+                    width: 'auto',
+                    title: "Edit Employee Salary",
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+});
+
+
+
+
+</script>

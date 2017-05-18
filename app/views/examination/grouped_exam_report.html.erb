@@ -1,0 +1,54 @@
+<%= render  partial: 'examination_table_left' %>
+
+<div id="page-yield">
+  <% unless flash[:notice].nil? %>
+    <h5 class="flash-msg"> <%= flash[:notice] %> </h5>
+  <% end %>
+
+  <div class="box">
+
+    <%= form_for :report, :url=>{:action=>'generated_report3'} do |f| %>
+      <div class="label-field-pair">
+        <label><%="select_a_batch:"%></label> 
+          
+       
+        <div>
+       
+
+   <%=select_tag :mg_batch_id,options_from_collection_for_select(@batches,"id","full_name"),:prompt=>"All Batches",:onchange=>"mygroupedreportFunction(this.value)"%>
+</div>
+
+      <div id="report_type"></div>
+      <%= f.submit t('save') ,:class=>"mg-small-form-btn" %>
+     
+
+    <% end %>
+    <div class="extender"></div>
+  </div>
+</div>
+
+
+
+
+
+<%= render  partial: 'examination_table_close' %>
+
+<script>
+function mygroupedreportFunction(batchid){
+    var urlLink = "/examination/final_report_type/";
+      alert(batchid);
+  
+        $.ajax({
+            url: urlLink ,
+            data:{"mg_batch_id":batchid},
+            cache: false,
+            success: function(data){
+                //alert("hii")
+            //console.log(html);
+            $(".extender").empty();
+            $(".extender").append(data);
+        }
+       
+      }); 
+    }
+</script>

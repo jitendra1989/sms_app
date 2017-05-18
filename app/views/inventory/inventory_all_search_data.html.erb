@@ -1,0 +1,246 @@
+<%if @code_present!="code_for_supplier_name"%>
+  <%
+  @@reqcode=""
+  if @search.present?
+  @items=MgInventoryItem.where("id IN (?)",@item)
+        tempItem=""
+        @items.each do |item|
+          tempItemName=MgInventoryItem.find_by(:id=>item.id)
+          tempItem+=tempItemName.try(:name)
+          tempItem+=", "
+        end
+        strlength=tempItem.length
+        reqStr=tempItem.slice(0,strlength-2)
+
+  #if @code_present=="yes"
+  @items_code=MgInventoryItem.where("id IN (?)",@item)
+        tempItems=""
+        @items_code.each do |item|
+          tempItemName=MgInventoryItem.find_by(:id=>item.id)
+          tempItems+=tempItemName.try(:code)
+          tempItems+=", "
+        end
+
+        strlengths=tempItems.length
+        reqStrs=tempItems.slice(0,strlengths-2)
+        @@reqcode=reqStrs
+    #end
+  %>
+
+
+
+  <h4 class="mg-h4">Result for Name:- <%=reqStr%></h4>
+
+  <%#if @code_present=="yes"%>
+  <!--   <h4 class="mg-h4">Result for Code:- <%#=reqStrs%></h4> -->
+  <%#end%>
+
+
+  <div class="mg-scroll-employee-bar">
+  <table border="1" class="mg-showdata-bg mg-homework-tbl" cellspacing="1" cellpadding="1">
+  <tr>
+    <th>
+      <label class="mg-label mg-td-width-halfs" valign="top"> <%= t('item_code')%></label>    
+    </th>
+    <th>
+      <label class="mg-label mg-td-width-halfs" valign="top"> <%= t('supplier_code')%></label>
+    </th>
+    <th>
+      <label class="mg-label mg-td-width-halfs" valign="top"> <%= t('units_ordered')%></label>
+    </th>
+    <th style="width: 130px;">
+      <label class="mg-label mg-td-width-halfs" valign="top"> <%= t('units_supplied')%></label>
+    </th>
+
+    </tr>
+    <%
+    @search.each do |search|
+    %>
+    <tr>
+      <td class="mg-td-width-half" valign="top"><%=@@reqcode%>
+      </td>
+      <td class="mg-td-width-half" valign="top"><a id="<%=raw search.id %>-showinventoryBTNID" class="show-vendor-btns icon-padding-labels mg-icon-btnss"><%=search.try(:vendor_code)%></a></td>
+      <%
+        inventory_proposal_accepted_ids=MgInventoryProposal.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:id)#,:status=>"accepted"
+
+        inventory_items=MgInventoryProposalItem.where("is_deleted=? and mg_school_id=? and mg_inventory_proposal_id IN (?) and mg_inventory_vendor_id=? and mg_item_id IN (?)",0,session[:current_user_school_id],inventory_proposal_accepted_ids,search.id,@item)
+
+        unit_count=0
+        inventory_items.each do |item|
+            if item.no_of_unit.present?
+              unit_count=unit_count+item.try(:no_of_unit)
+            end
+        end
+      %>
+      <td class="mg-td-width-half" valign="top"><%=unit_count%></td>
+      <%
+        inventory_proposal_accepted_ids=MgInventoryProposal.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id],:status=>"accepted").pluck(:id)#
+
+        inventory_items=MgInventoryProposalItem.where("is_deleted=? and mg_school_id=? and mg_inventory_proposal_id IN (?) and mg_inventory_vendor_id=? and mg_item_id IN (?)",0,session[:current_user_school_id],inventory_proposal_accepted_ids,search.id,@item)
+
+        unit_supplied=0
+        inventory_items.each do |item|
+          unit_supplied=unit_supplied+item.try(:no_of_unit)
+        end
+
+      %>
+      <td class="mg-td-width-half" valign="top"><%=unit_supplied%></td>
+
+  </tr>
+    <%end%>
+  </table>
+  </div>
+  <br/>
+  <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+  <%else%>
+  <br/>
+  <h4>No Results found<h4>
+  <%end%>
+<%else
+# ==============================Code for Order numbrer starts here=================
+  @@reqcode=""
+  if @code_order_number_present=="yes"
+      @items=MgInventoryProposal.where("id IN (?)",@proposal_id)
+        tempItem=""
+        @items.each do |item|
+          tempItemName=MgInventoryProposal.find_by(:id=>item.id)
+          tempItem+=tempItemName.try(:code)
+          tempItem+=", "
+        end
+        strlength=tempItem.length
+        reqStr=tempItem.slice(0,strlength-2)
+  else
+        @items=MgInventoryVendor.where("id IN (?)",@vendor_id)
+        tempItem=""
+        @items.each do |item|
+          tempItemName=MgInventoryVendor.find_by(:id=>item.id)
+          tempItem+=tempItemName.try(:name)
+          tempItem+=", "
+        end
+        strlength=tempItem.length
+        reqStr=tempItem.slice(0,strlength-2)
+
+  @items_code=MgInventoryVendor.where("id IN (?)",@vendor_id)
+        tempItems=""
+        @items_code.each do |item|
+          tempItemName=MgInventoryVendor.find_by(:id=>item.id)
+          tempItems+=tempItemName.try(:vendor_code)
+          tempItems+=", "
+        end
+
+        strlengths=tempItems.length
+        reqStrs=tempItems.slice(0,strlengths-2)
+        @@reqcode=reqStrs
+  end
+%>
+<!-- #=======================Code for Order number ends here================================ -->
+<%if @inventory_proposal_item.present?%>
+<%if @code_order_number_present=="yes"%>
+ <h4 class="mg-h4">Result for Order Number:- <%=reqStr%></h4>
+<%else%>
+ <h4 class="mg-h4">Result for Name:- <%=reqStr%></h4>
+<%end%>
+  <div class="mg-scroll-employee-bar">
+  <table border="1" class="mg-showdata-bg mg-homework-tbl" cellspacing="1" cellpadding="1">
+  <tr>
+    <th style="width: 90px">
+      <label class="mg-label mg-td-width-halfs" valign="top" > <%= t('order_number')%></label>    
+    </th>
+    <th style="width: 90px">
+      <label class="mg-label mg-td-width-halfs" valign="top"> <%= t('item_code')%></label>
+    </th>
+    <th>
+      <label class="mg-label mg-td-width-halfs" valign="top"> <%= t('item_name')%></label>
+    </th>
+    <th style="width: 90px;">
+      <label class="mg-label mg-td-width-halfs" valign="top"> <%= t('supplier_code')%></label>
+    </th>
+    <th style="width: 90px;">
+      <label class="mg-label mg-td-width-halfs" valign="top"> <%= t('units_ordered')%></label>
+    </th>
+        <th style="width: 130px;">
+      <label class="mg-label mg-td-width-halfs" valign="top"> <%= t('expected_date')%></label>
+    </th>
+    <th style="width: 130px;">
+      <label class="mg-label mg-td-width-halfs" valign="top"> <%= t('status')%></label>
+    </th>
+
+    </tr>
+    <%
+    @inventory_proposal_item.each do |search|
+    %>
+    <tr>
+    <%proposal=MgInventoryProposal.find_by(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id],:id=>search.mg_inventory_proposal_id)%>
+      <td class="mg-td-width-half" valign="top"><%=proposal.try(:code)%></td>
+      <%proposalItem=MgInventoryItem.find_by(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id],:id=>search.mg_item_id)%>
+      <td class="mg-td-width-half" valign="top"><%=proposalItem.try(:code)%></td>
+      <td class="mg-td-width-half" valign="top"><%=proposalItem.try(:name)%></td>
+      <%
+        vendordetails=MgInventoryVendor.find_by(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id],:id=>search.mg_inventory_vendor_id)
+      %>
+
+      
+
+      <td class="mg-td-width-half" valign="top"><a id="<%=raw search.mg_inventory_vendor_id %>-showinventoryBTNID" class="show-vendor-btns icon-padding-labels mg-icon-btnss"><%=vendordetails.try(:vendor_code)%></a></td>
+      <td class="mg-td-width-half" valign="top"><%=search.try(:no_of_unit)%></td>
+      <%@dateFormat = MgSchool.find_by(:id=>session[:current_user_school_id]).date_format %>
+       <td class="mg-td-width-half" valign="top">
+       <%if proposal.date.present?%>
+          <%=proposal.date.strftime(@dateFormat)%>
+       <%end%></td>
+     
+      <td class="mg-td-width-half" valign="top">
+      <%if search.status=="AFP"%><%=t("supplied")%>
+      <%else%><%=t("awaited")%>
+      <%end%></td>
+
+  </tr>
+    <%end%>
+  </table>
+  </div>
+  <br/>
+  <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+  <%else%>
+  <br/>
+  <h4>No Results found<h4>
+  <%end%>
+<%end%>
+
+<script>
+$(".show-vendor-btns").click(function(){
+        var myID =$(this).attr('id');
+        var Id=myID.split("-");
+        var urlLink = "/inventory/vendor_show/"+Id[0];
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(html){
+                  $('#showVendorDIVID').dialog({
+                    modal: true,
+                    minHeight: 'auto',
+                    minWidth: '500',
+                    title: "Vendor Detail",
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+            }
+        });
+});
+
+
+
+</script>
+<style>
+.icon-padding-label
+{
+  background: -moz-linear-gradient(center top , #DBE8F7, #92AECD) repeat scroll 0 0 rgba(0, 0, 0, 0) !important;
+    border: 1px solid #5F7A92 !important;
+    border-radius: 4px;
+    color: #1D212A !important;
+    cursor: pointer;
+    font-size: 1.1em;
+    padding: 1.2px 5px !important;
+}
+</style>

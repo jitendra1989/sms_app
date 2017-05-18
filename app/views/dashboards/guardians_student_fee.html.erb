@@ -1,0 +1,22 @@
+
+<% navigation_add 'Fees', guardians_student_fee_path %>
+<!-- Sec --> 
+<!-- Partial left content -->
+<%= render partial: 'guardian_dashboard_left' %>
+<!-- Partial Index -->
+<%= render partial: 'guardians_student_fee' %>
+<!-- Partial Section close-->
+<%= render partial: 'guardian_dashboard_close' %>
+
+
+<script type="text/javascript">
+    
+
+ $(document).ready(function(){
+
+    focusCurrentTab("viewGuardianFees","viewGuardianFeesLiID");
+    focusDashboards();
+
+});
+
+</script>

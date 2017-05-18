@@ -1,0 +1,207 @@
+<%= render partial: 'front_office_management_left' %>
+<% navigation_add t('postal_records'), :controller=>'front_office_management', :action=>'index' %>
+<% navigation_add t('show_postal_record'), :controller=>'front_office_management', :action=>'show_postal_record',:id=>params[:id] %>
+<h4 class="mg-h4"><%= t('show_postal_record') %></h4>
+<table border="1" class="mg-showdata-bg " cellspacing="1" cellpadding="1">
+
+    <tr>
+     <td class="mg-td-width-half" valign="top">
+     <label class="mg-label"> <%= t('transaction_flow')%></label>
+     </td>
+     <td class="mg-td-width-half mg-capitalize-text" valign="top">
+      <%= @postal_record.try(:transaction_flow) %>
+     </td>
+   </tr>
+   <!-- ===================================================================== -->
+
+   <%if @postal_record.try(:transaction_flow)=="inbound"%>
+
+       <tr>
+         <td class="mg-td-width-half" valign="top">
+         <label class="mg-label"> <%= t('name')%></label>
+         </td>
+         <td class="mg-td-width-half mg-capitalize-text" valign="top">
+            <%= @postal_record.try(:recipient_name) %>
+         </td>
+       </tr>
+       <tr>
+         <td class="mg-td-width-half" valign="top">
+         <label class="mg-label"> <%= t('address')%></label>
+         </td>
+         <td class="mg-td-width-half" valign="top">
+          <!-- <div class="text-scroll-for-log-text-cls comments-space"> -->
+            <%= @postal_record.try(:address) %>
+          <!-- </div> -->
+         </td>
+       </tr>
+       <%if @postal_record.try(:user_type)=="student"%>
+          <tr>
+           <td class="mg-td-width-half" valign="top">
+           <label class="mg-label"> <%= t('semester')%></label>
+           </td>
+           <td class="mg-td-width-half" valign="top">
+            <% batchobj = MgBatch.find_by(:id=>@postal_record.try(:mg_batch_id),:is_deleted=>0)%>
+            <%@courseObj = MgCourse.find_by_id(batchobj.mg_course_id)%>
+            <%= (@courseObj.try(:course_name)) +"-"+ batchobj.try(:name) %>
+           </td>
+          </tr>
+
+          <tr>
+           <td class="mg-td-width-half" valign="top">
+           <label class="mg-label"> <%= t('student_name')%></label>
+           </td>
+           <td class="mg-td-width-half" valign="top">
+           <%stud_name=MgStudent.find_by(:id=>@postal_record.try(:mg_student_id))%>
+              <%= stud_name.try(:first_name) %><%=" "%><%=stud_name.try(:last_name)%>
+           </td>
+          </tr>
+       <%elsif @postal_record.try(:user_type)=="employee"%>
+       <tr>
+           <td class="mg-td-width-half" valign="top">
+           <label class="mg-label"> <%= t('employee_department')%></label>
+           </td>
+           <td class="mg-td-width-half" valign="top">
+            <% emp_dept = MgEmployeeDepartment.find_by(:id=>@postal_record.try(:mg_employee_department_id),:is_deleted=>0)%>
+            <%= emp_dept.try(:department_name) %>
+           </td>
+          </tr>
+
+          <tr>
+           <td class="mg-td-width-half" valign="top">
+           <label class="mg-label"> <%= t('employee_name')%></label>
+           </td>
+           <td class="mg-td-width-half" valign="top">
+           <%emp_name=MgEmployee.find_by(:id=>@postal_record.try(:mg_employee_id))%>
+              <%= emp_name.try(:first_name) %><%=" "%><%=emp_name.try(:last_name)%>
+           </td>
+          </tr>
+       <%end%>
+   <!-- ===================================================================== -->
+   <%elsif @postal_record.try(:transaction_flow)=="outbound"%>
+           <%if @postal_record.try(:user_type)=="student"%>
+          <tr>
+           <td class="mg-td-width-half" valign="top">
+           <label class="mg-label"> <%= t('semester')%></label>
+           </td>
+           <td class="mg-td-width-half" valign="top">
+            <% batchobj = MgBatch.find_by(:id=>@postal_record.try(:mg_batch_id),:is_deleted=>0)%>
+            <%@courseObj = MgCourse.find_by_id(batchobj.mg_course_id)%>
+            <%= (@courseObj.try(:course_name)) +"-"+ batchobj.try(:name) %>
+           </td>
+          </tr>
+
+          <tr>
+           <td class="mg-td-width-half" valign="top">
+           <label class="mg-label"> <%= t('student_name')%></label>
+           </td>
+           <td class="mg-td-width-half" valign="top">
+           <%stud_name=MgStudent.find_by(:id=>@postal_record.try(:mg_student_id))%>
+              <%= stud_name.try(:first_name) %><%=" "%><%=stud_name.try(:last_name)%>
+           </td>
+          </tr>
+       <%elsif @postal_record.try(:user_type)=="employee"%>
+       <tr>
+           <td class="mg-td-width-half" valign="top">
+           <label class="mg-label"> <%= t('employee_department')%></label>
+           </td>
+           <td class="mg-td-width-half" valign="top">
+            <% emp_dept = MgEmployeeDepartment.find_by(:id=>@postal_record.try(:mg_employee_department_id),:is_deleted=>0)%>
+            <%= emp_dept.try(:department_name) %>
+           </td>
+          </tr>
+
+          <tr>
+           <td class="mg-td-width-half" valign="top">
+           <label class="mg-label"> <%= t('employee_name')%></label>
+           </td>
+           <td class="mg-td-width-half" valign="top">
+           <%emp_name=MgEmployee.find_by(:id=>@postal_record.try(:mg_employee_id))%>
+              <%= emp_name.try(:first_name) %><%=" "%><%=emp_name.try(:last_name)%>
+           </td>
+          </tr>
+       <%end%>
+
+       <tr>
+         <td class="mg-td-width-half" valign="top">
+         <label class="mg-label"> <%= t('name')%></label>
+         </td>
+         <td class="mg-td-width-half mg-capitalize-text" valign="top">
+            <%= @postal_record.try(:recipient_name) %>
+         </td>
+       </tr>
+       <tr>
+         <td class="mg-td-width-half" valign="top">
+         <label class="mg-label"> <%= t('address')%></label>
+         </td>
+         <td class="mg-td-width-half" valign="top">
+            <%= @postal_record.try(:address) %>
+         </td>
+       </tr>
+
+        <tr>
+         <td class="mg-td-width-half" valign="top">
+         <label class="mg-label"> <%= t('is_chargeable')%></label>
+         </td>
+         <td class="mg-td-width-half" valign="top">
+            <%= "Yes" %>
+         </td>
+       </tr>
+
+<!-- ============================================================================================= -->
+
+   <%end%>
+   
+
+   <tr>
+     <td class="mg-td-width-half" valign="top">
+     <label class="mg-label"> <%= t('dispatch_number')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+      <%= @postal_record.try(:dispatch_number) %>
+     </td>
+   </tr>
+   
+   <tr>
+    <%@dateFormat = MgSchool.find_by(:id=>session[:current_user_school_id]).date_format %>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('received_date')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+      <%= @postal_record.try(:received_date).try(:strftime, @dateFormat) %>
+     </td>
+   </tr>
+   <tr>
+     <td class="mg-td-width-half" valign="top">
+     <label class="mg-label mg-label-text-transform-none"> <%= t('mode_of_dispatch')%></label>
+     </td>
+     <td class="mg-td-width-half mg-capitalize-text" valign="top">
+      <%= @postal_record.try(:mode_of_dispatch) %>
+     </td>
+   </tr>
+   <tr>
+     <td class="mg-td-width-half" valign="top">
+     <label class="mg-label"> <%= t('category')%></label>
+     </td>
+     <td class="mg-td-width-half mg-capitalize-text" valign="top">
+      <%= @postal_record.try(:category) %>
+     </td>
+   </tr>
+   <tr>
+     <td class="mg-td-width-half" valign="top">
+     <label class="mg-label"> <%= t('dispatcher')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+      <%= @postal_record.try(:dispatcher) %>
+     </td>
+   </tr>
+</table>
+<p class="mg-p-mgtop">
+  <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+</p>
+<%= render  partial: 'application/common_left_close' %>
+
+<script>
+  $(document).ready(function () {
+    focusCurrentTab("postalRecordAID","postalRecordLID");
+  });
+</script>

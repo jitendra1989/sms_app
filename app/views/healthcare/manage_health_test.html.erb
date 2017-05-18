@@ -1,0 +1,266 @@
+<% navigation_add t('schedule'), :controller=>'healthcare' ,:action=> 'health_test' %>
+<% navigation_add t('add_health_test'), :controller=>'healthcare' ,:action=> 'manage_health_test',:id=>params[:id] %>
+<%=render partial: 'healthcare_left'%>
+<%= form_for :health_test, url: create_health_test_path,:html=>{:id=>"manageHealthTestForm", :multipart=>true} do |f| %>
+  <%=hidden_field_tag "mg_check_up_schedule_id",@health_test.try(:id)%>
+  <h4 class="mg-h4"><%= t('add_health_test') %></h4>
+  <%= f.hidden_field :created_by, :value => session[:user_id]%> 
+  <%= f.hidden_field :mg_school_id , :value=> session[:current_user_school_id]%>
+  <%= f.hidden_field :updated_by, :value => session[:user_id]%> 
+  <%= f.hidden_field :is_deleted, :value => 0%> 
+  <%= f.hidden_field :checkup_for, :value => params[:id]%> 
+
+  <p>
+    <%= f.label :checkup_for , t('user_type'), :class=> "mg-label"%> <span class="required-field"> *</span><br/>
+    <%= f.radio_button :checkup_for, 'student',:checked=>true,:class=>''%> 
+    <%= f.label :checkup_for , t('student'), :class=> "mg-label"%> 
+    <%= f.radio_button :checkup_for, 'employee',:class=>''%>
+    <%= f.label :checkup_for , t('employee'), :class=> "mg-label"%> 
+  </p>
+
+  <p>
+   <%= f.label :date , t('date'), :class=> "mg-label"%> <span class="required-field"> *</span><br>
+   <%= f.text_field :date,:class=>"mg-text-field",:readonly=>true %>
+  </p>
+
+  <p>
+    <%= f.label :mg_check_up_type_id , t('checkup_type'), :class=> "mg-label"%> <span
+      class="required-field"> *</span><br>
+    <%=f.hidden_field :mg_check_up_type_id,:value=>@health_test.mg_check_up_type_id%>
+    <%=select_tag 'mg_check_up_type_id', options_from_collection_for_select(MgCheckupType.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]), 'id', 'name',:selected=>@health_test.mg_check_up_type_id),:prompt=>"Select",:onchange=>"studentFunction(this.value)"%>
+  </p>
+
+  <% if @health_test.checkup_for=='student' %>
+    <p>
+      <% 
+        @batchList = MgBatch.where("is_deleted=? and mg_school_id=? and ID IN(?)",0,session[:current_user_school_id],@batch_id)
+         @batchList.each do |batchObj|
+            @courseObj = MgCourse.find_by_id(batchObj.mg_course_id)
+            batchObj.name =  (@courseObj.course_name) +"-"+ batchObj.name
+         end 
+      %>
+    </p>
+    <p>
+      <%= f.label :date , t('select_semester'), :class=> "mg-label"%> <span class="required-field"> *</span><br>
+      <%=select_tag 'mg_batch_id', options_from_collection_for_select(@batchList, 'id', 'name',:selected=>params[:batch_id]),:prompt=>"Select",:onchange=>"studentFunction(this.value)"%>
+    </p>
+    <p>
+      <%= f.label :date , t('select_student'), :class=> "mg-label"%> <span class="required-field"> *</span><br>
+      <%=select_tag 'mg_student_id',options_for_select([]),:prompt=>"Select",:onchange=>"studentSectionFrom(this.value)"%>
+    </p>
+    <p>
+      <label class= "mg-label"%><%=t('checkup_particulars')%><span class="required-field"> *</span></label><br/>
+      <div id="sectionFormDivID"></div>
+    </p>
+
+    <div id="helatestHistoryShowId"  style="display:none;">
+      <h4 class="mg-h4"><%= t('previous_health_record') %></h4>
+        <div id="healthTestHistoryDivID"></div>
+    </div>
+  <%else%>
+    <p>
+      <%= f.label :date , t('select_department'), :class=> "mg-label"%> <span class="required-field"> *</span><br>
+      <% employee_department = MgEmployeeDepartment.where("is_deleted=? and mg_school_id=? and ID IN(?)",0,session[:current_user_school_id],@emp_department_id).pluck(:department_name,:id)%>
+
+      <%=select_tag :mg_employee_department_id,options_for_select(employee_department,:selected=>params[:emp_deparment_id]),:prompt=>"Select",:onchange=>"employeeFunction(this.value)"%>
+    </p>
+    <p>
+      <%= f.label :date , t('select_employee'), :class=> "mg-label"%> <span class="required-field"> *</span><br>
+      <%=select_tag 'mg_employee_id',options_for_select([]),:prompt=>"Select",:onchange=>"employeeSectionFrom(this.value)"%>
+    </p>
+    <p>
+      <label class= "mg-label"%><%=t('checkup_particulars')%><span class="required-field"> *</span></label><br>
+      <div id="sectionFormDivID"></div>
+    </p>
+
+    <div id="helatestHistoryShowId"  style="display:none;">
+      <h4 class="mg-h4"><%= t('previous_health_record') %></h4>
+        <div id="healthTestHistoryDivID"></div>
+    </div>
+  <%end%>
+
+  <p class="mg-p-mgtop">
+    <a onclick="healTestHistoryFunction()" class="mg-small-form-btn"> <%= t('history') %></a>
+    <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"> <%= t('save') %></a>
+    <%= link_to t('cancel'), {:controller=>'healthcare',:action=>'show_health_test',:id=>params[:id]}, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+  </p>
+<% end %>
+
+<%= render  partial: 'application/common_left_close' %>
+
+
+
+<script>
+  $(document).ready(function () {
+    dateFormatStr =  getJsDateFormat();
+    focusCurrentTab("healthTestAID","healthTestLID");
+
+    $("#" ).datepicker({changeMonth: true,changeYear: true,yearRange: "-0:+50",minDate: "0",dateFormat: dateFormatStr});
+    var date =  $.datepicker.formatDate(dateFormatStr,new Date($('#health_test_date').val()));
+    $("#health_test_date" ).val(date);
+
+    $("#mg_check_up_type_id").attr("disabled","disabled");
+    $("#health_test_checkup_for_student").attr("disabled","disabled");
+    $("#health_test_checkup_for_employee").attr("disabled","disabled");
+
+
+    $(function () {
+      $.validator.addMethod('dateFormat',
+      function (value, element) {
+        dateFormatStr =  getJsDateFormat();
+        if (this.optional(element)) {
+            return true;
+        }
+        var ok = true;
+        try {
+            $.datepicker.parseDate(dateFormatStr, value);
+        }
+        catch (err) {
+            ok = false;
+        }
+        return ok;
+      },
+        "Please enter a date in the format "+ getDateFormat(dateFormatStr) +".");
+      dateFormatStr =  getJsDateFormat();
+
+      $(".datefield").datepicker({ dateFormat: dateFormatStr, changeYear: true });
+    });
+
+   $("#manageHealthTestForm").validate({
+      rules: {     
+        "mg_batch_id": {required: true},
+        "mg_student_id": {required: true},
+        "mg_employee_department_id": {required: true},
+        "mg_employee_id": {required: true}
+      }
+    });
+
+   var batch_id = $("#mg_batch_id").val();
+   var emp_department_id = $("#mg_employee_department_id").val();
+   if(batch_id!=''){
+      var urlLink = "/healthcare/student_employe_list";
+      var empty_otion = '<option value="">Select</option>';
+      if(batch_id!=''){
+        $.ajax({
+          url: urlLink ,
+          cache: false,
+          data:{batch_id:batch_id},
+          success: function(data){
+            $('#sectionFormDivID').empty();
+            $('#mg_student_id').html(data)
+          }
+        });
+      }else{
+        $('#sectionFormDivID').empty();
+        $('#mg_student_id').empty().append(empty_otion);
+      }
+   }
+   var urlLink = "/healthcare/student_employe_list";
+   var empty_otion = '<option value="">Select</option>';
+   if(emp_department_id!=''){
+      if(emp_department_id!=''){
+        $.ajax({
+          url: urlLink ,
+          cache: false,
+          data:{"emp_department_id":emp_department_id},
+          success: function(data){
+            $('#sectionFormDivID').empty();
+            $('#mg_employee_id').html(data)
+          }
+        });
+      }else{
+        $('#sectionFormDivID').empty();
+        $('#mg_employee_id').empty().append(empty_otion);
+      }
+    }
+  });
+
+  function studentFunction(batch_id){
+    var urlLink = "/healthcare/student_employe_list";
+    var empty_otion = '<option value="">Select</option>';
+    $('#healthTestHistoryDivID').empty();
+    $("#helatestHistoryShowId").hide();
+    
+    if(batch_id!=''){
+      $.ajax({
+        url: urlLink ,
+        cache: false,
+        data:{batch_id:batch_id},
+        success: function(data){
+          $('#sectionFormDivID').empty();
+          $('#mg_student_id').html(data)
+        }
+      });
+    }else{
+      $('#sectionFormDivID').empty();
+      $('#mg_student_id').empty().append(empty_otion);
+    }
+  }
+
+  function employeeFunction(emp_department_id){
+    var urlLink = "/healthcare/student_employe_list";
+    var empty_otion = '<option value="">Select</option>';
+    $('#healthTestHistoryDivID').empty();
+    $("#helatestHistoryShowId").hide();
+    if(emp_department_id!=''){
+      $.ajax({
+        url: urlLink ,
+        cache: false,
+        data:{"emp_department_id":emp_department_id},
+        success: function(data){
+          $('#sectionFormDivID').empty();
+          $('#mg_employee_id').html(data)
+        }
+      });
+    }else{
+      $('#sectionFormDivID').empty();
+      $('#mg_employee_id').empty().append(empty_otion);
+    }
+  }  
+
+  function studentSectionFrom(student_id){
+    $('#healthTestHistoryDivID').empty();
+    $("#helatestHistoryShowId").hide();
+    
+    var checkup_schedule_id = $("#mg_check_up_schedule_id").val();
+    var check_type_id = $("#health_test_mg_check_up_type_id").val();
+    var batch_id = $("#mg_batch_id").val();
+    var urlLink = "/healthcare/section_form";
+    if(student_id!=''){
+      $.ajax({
+        url: urlLink,
+        cache: false,
+        data: {check_type_id:check_type_id,mg_batch_id:batch_id,mg_student_id:student_id,mg_check_up_schedule_id:checkup_schedule_id},
+        success: function(data){
+          $('#sectionFormDivID').html(data)
+        }
+      })
+    }else{
+      $('#sectionFormDivID').empty();
+    }
+  }
+
+  function employeeSectionFrom(employee_id){
+    var checkup_schedule_id = $("#mg_check_up_schedule_id").val();
+    var check_type_id = $("#health_test_mg_check_up_type_id").val();
+    var emp_deptartment_id = $("#mg_employee_department_id").val();
+    var urlLink = "/healthcare/section_form";
+    $('#healthTestHistoryDivID').empty();
+    $("#helatestHistoryShowId").hide();
+    if(employee_id!=''){
+      $.ajax({
+        url: urlLink,
+        cache: false,
+        data: {check_type_id:check_type_id,mg_employee_department_id:emp_deptartment_id,mg_employee_id:employee_id,mg_check_up_schedule_id:checkup_schedule_id},
+        success: function(data){
+          $('#sectionFormDivID').html(data)
+        }
+      })
+    }else{
+      $('#sectionFormDivID').empty();
+    }
+  }
+
+  
+</script>
+

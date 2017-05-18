@@ -1,0 +1,56 @@
+<div class="mg-custom-labels">
+<%= form_for :store_manager, :url=>{:controller=>'inventory',:action=>'assaign_financial_officer_create'}, :html => {
+                            :id => 'assai_Fina_offi_validati' } do |f| %>
+
+<p>
+    <label class="mg-label" style="width:140px"><%= t('select_department') %><span class="required-field">&nbsp;*</span></label>
+    <br/>
+   <%department_data=MgEmployeeDepartment.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:department_name,:id)%>
+   <%= select_tag :mg_employee_department_id,options_for_select(department_data),:prompt=>"Select",:class=>"mg-text-field" ,:onchange=>"selectFinanceEmployeeFunction(this.value)"%>
+</p>
+<p>
+    <label class="mg-label" style="width:140px"><%= t('select_employee') %><span class="required-field">&nbsp;*</span></label>
+    <br/>
+   <div id="employeee_data">
+   <%= select_tag :mg_employee_id,options_for_select([[]]),:prompt=>"Select",:class=>"mg-text-field" %>
+   </div>
+</p>
+
+
+<p class="mg-p-mgtop">
+    <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("save")%></a>
+    <!-- <%#= f.submit t('save') ,:class=>"mg-small-form-btn"%> -->
+    <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+</p>
+<% end %>
+</div>
+<!-- <%#= render  partial: 'application/common_left_close' %> -->
+<script>
+$( document ).ready(function() {
+          //focusStudentHeaderBox();
+
+$("#assai_Fina_offi_validati").validate({
+        rules: {        
+        "mg_employee_department_id": {required: true},
+        "mg_employee_id": {required: true},
+        
+      }
+    });
+});
+
+function selectFinanceEmployeeFunction(data){
+var urlLink = "/inventory/select_finance_officer/";
+   $.ajax({
+            url: urlLink ,
+            cache: false,
+            data:{"id":data},
+            success: function(html){
+                  $("#employeee_data").empty();
+                  $("#employeee_data").append(html);
+
+               
+            }
+        });
+
+}
+</script>

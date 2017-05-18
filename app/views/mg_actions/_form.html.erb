@@ -1,0 +1,28 @@
+<!-- Sec --> 
+<%= form_for(@mg_action ) do |f| %>
+  <% if @mg_action.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@mg_action.errors.count, "error") %> prohibited this mg_action from being saved:</h2>
+
+      <ul>
+      <% @mg_action.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :action_name ,:class=>"mg-label"%><br>
+    <%= f.text_field :action_name ,:class="mg-text-field"%>
+  </div>
+  <div class="field">
+    <%= f.label :description ,:class=>"mg-label"%><br>
+    <%= f.text_area :description ,:class="mg-text-field"%>
+  </div>
+  <br/>
+  <div class="actions">
+    <%= f.submit "Submit" ,:class=>"mg-small-form-btn"%>
+    <%= link_to t('cancel'), :back, {:class=>"btn btn-default cancel-form-dialog"} %>
+  </div>
+<% end %>

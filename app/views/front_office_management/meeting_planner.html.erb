@@ -1,0 +1,174 @@
+
+<%if session[:user_type]=="principal"%>
+  <% navigation_add t('my_calendar'), front_office_management_meeting_planner_path %>
+  <%= render partial: 'dashboards/principle_dashboard_left' %>
+<%else%>
+  <% navigation_add t('meeting_calendar'), front_office_management_meeting_planner_path %>
+  <%=render partial: 'front_office_management_left'%>
+<%end%>
+
+<h4 class="mg-h4"><%= t('meeting_calendar') %>
+
+</h4>
+
+<!-- <button class="new-add-exam-type mg-btn-bottom-margin mg-custom-form-btn"><%#= t('add_address_book')%></button>
+ -->
+ <%#if session[:user_type]=="front_office_manager"%>
+<!-- <button class="mg-btn-bottom-margin mg-custom-form-btn" onclick="window.location.href='/front_office_management/meeting_planner_new'">Add Meeting</button> -->
+<%#end%>
+
+<!-- <div class="mg_pagination"> -->
+<%#if @meeting_planner_data.present?%>
+<!-- <table  class="batch-tbl mg-tbl-margin">  -->  <!-- border="2" --> 
+  <!-- <tr class="subject-table-header"> -->
+    <!-- <th><%#= t('meeting_with') %></th> -->
+    <!-- <th class="mg-label-text-transform-none"><%#= t('date_of_meeting') %></th> -->
+   <!--  <th class="mg-label-text-transform-none"><%#= t('end_date') %></th> -->
+    <!-- <th class="mg-label-text-transform-none"><%#= t('end_date_of_meeting') %></th>
+    <th class="mg-label-text-transform-none"><%#= t('end_date_of_meeting') %></th> -->
+    <!-- <th><%#= t('status') %></th> -->
+    <!-- <th colspan="3"><%#= t('actions') %></th> -->
+  <!-- </tr> -->
+ 
+  <%# @meeting_planner_data.each do |s| %>
+    <!-- <tr> -->
+      <!-- <td class="mg-capitalize-text"><%#= s.try(:meeting_with) %></td> -->
+      <%#@dateFormat = MgSchool.find_by(:id=>session[:current_user_school_id]).date_format 
+      date_time_format=@dateFormat +"     " + "%k:%M%p"%>
+      <!-- <td><%#=s.try(:date_of_meeting).try(:strftime, @dateFormat)%></td> -->
+      <!-- <td><%#=s.try(:start_date_of_meeting).try(:strftime, @dateFormat)%></td>
+      <td><%#=s.try(:end_date_of_meeting).try(:strftime, @dateFormat)%></td> -->
+      <!-- <td><%#= s.try(:status) %></td> -->
+      <!-- <td> -->
+        <!-- <button title="Show" id="" class=" mg-icon-btn" onclick="window.location.href='/front_office_management/<%#=s.id%>/meeting_planner_show'"><i class="fa fa-eye" ></i></button> -->
+
+
+        <!-- <button title="Edit" id="" class=" mg-icon-btn" onclick="window.location.href='/front_office_management/<%#=s.id%>/meeting_planner_edit'"><i class="fa fa-pencil-square-o" ></i></button> -->
+        <%#if session[:user_type]=="front_office_manager"%>
+          <!-- <span style="left: -2px; position: relative; float: right; top:-2px;">  -->
+          <!-- <%#= link_to "<i class=\"fa fa-trash\"></i>".html_safe,{ action: "meeting_planner_delete", id: s.id },data: { confirm: "Are you sure?" } ,:title=> "Delete" ,:class=>"mg-icon-btn"%>  -->
+          <!-- </span> -->
+        <%#end%>
+      <!-- </td> -->
+    <!-- </tr> -->
+  <%# end %>
+<!-- </table> -->
+<!-- <br/> -->
+ <!-- <div class="pagination-align" style="position: relative; bottom: 10px;"> -->
+              <%#= will_paginate @exam_types, :container => false %>
+  <!-- </div> -->
+<%#else%>
+<!-- <h5>No Records are present </h5> -->
+<%#end%>
+<!-- </div> -->
+
+<div id="newExamTypeDIVID"></div>
+<div id="editExamTypeDIVID"></div>
+<div id="showAddressFomDIVID"></div>
+
+<div id="calendarID"></div>
+<div id="newMeetingPlannerCalenderDIVID"></div>
+
+
+
+<%= render  partial: 'application/common_left_close' %>
+
+<script>
+$(document).ready(function () {
+    focusCurrentTab("meeting_plannerAID","meeting_plannerLiID");
+     $('#calendarID').fullCalendar({
+      header: {
+            left:   'today prev,next',
+            center: 'title',
+            right:  'year,month,agendaWeek,agendaDay',
+          },
+        weekends:true,
+      defaultView: 'month',
+        // hiddenDays: [ 0,1],        
+        businessHours:true,
+        minTime: "8:00:00",
+        maxTime: '18:00:00',
+        startParam: "10:00:00",
+        slotDuration:'00:20:00',
+        //slotMinutes: 20,
+        allDaySlot: false,
+         lazyFetching: true,
+
+ eventSources: [
+
+        // your event source
+        {
+        url: '/front_office_management/meeting_planner_data',
+        error:function(){alert('Error');},
+        // color: 'yellow',
+        textColor: 'black',
+        editable: false
+        }
+
+    ],
+   
+eventClick: function(event, element, current_event_id) {
+
+        // event.title = "CLICKED!";
+        var eventID=event.id;
+        var urlLink = "/front_office_management/"+eventID+"/meeting_planner_edit";
+        $.ajax({
+        url: urlLink,
+        cache: false,
+        success: function(html) {
+             $('#newMeetingPlannerCalenderDIVID').dialog({
+                    modal: true,
+                    width: 435,
+                    top: 155,
+                    title: "Edit Meeting Planner",
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+        }
+
+    });
+
+        $('#calendar').fullCalendar('updateEvent', event);
+
+    },
+
+  
+    
+     dayClick: function(date, allDay, jsEvent, view) {
+                console.log($(this));
+                var urlLink = "/front_office_management/meeting_planner_new/";
+                var clickDate=date.format();
+                $.ajax({
+                url: urlLink,
+                cache: false,
+                data:{
+                    currentDate: clickDate, abc:"abc"
+                },
+                success: function(html) {
+                     $('#newMeetingPlannerCalenderDIVID').dialog({
+                            modal: true,
+                            width: 435,
+                            title: "New Meeting Planner",
+                            open: function () {
+                                
+                                $(this).html(html);
+                            }
+                        }); 
+                       
+                }
+
+            });
+
+
+                // $(this).css('background-color', 'red');
+
+         },
+    
+          
+    });
+});
+
+</script>

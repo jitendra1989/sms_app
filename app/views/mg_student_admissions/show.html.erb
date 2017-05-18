@@ -1,0 +1,351 @@
+<!-- Sec --> 
+<% navigation_add t('about_student'),{:controller=>'mg_student_admissions',:action=>'index'}  %>
+<% navigation_add t('student_details'),{:controller=>'mg_student_admissions',:action=>'show'}  %>
+<%=render :partial=>'entrance_exam_details/entrance_exam_left' %>
+<h4 class="mg-detail-heading"><%= t('student_profile') %></h4>
+<section id="viewStudentID" style="margin: 0 auto;">
+  <div>
+    <table class="mg-show-tbl-width">
+      <tr>
+        <div class="mg-back-btn-align">
+          <%= link_to t('back'), {:controller=>'mg_student_admissions',:action=>'index'}, {:class=>"mg-custom-form-btn cancel-form-dialog"} %>
+        </div>
+        <td valign="top" class="mg-show-tbl-width">
+          <h4 class="mg-h4"><%= t('general') %></h4>
+          <table class="mg-tbl-size-width">
+            <tr>
+              <td class="mg-td-width-half">
+                <label class="mg-label mg-std-form-width"><%= t('student_temporary_id') %></label>
+                <label><%= @student.student_temporary_id %></label>
+              </td>
+              <td class="mg-td-width-half">
+              </td>
+            </tr>
+          </table>
+          <h4 class="mg-h4"><%= t('personaldetails') %></h4>
+          <table class="mg-tbl-size-width">
+            <tr>
+              <td class="mg-td-width-half mg-capitalize-text">
+                <label class="mg-label mg-std-form-width"><%= t('firstname') %></label>
+                <label><%= @student.first_name %></label>
+              </td>
+              <td class="mg-td-width-half mg-capitalize-text">
+                <label class="mg-label mg-std-form-width"><%= t('middle_name') %></label>
+                <%if @student.middle_name.nil? %>
+                <label></label>
+                <%else%>
+                <label><%= @student.middle_name %></label>
+                <%end%>
+              </td>                        
+            </tr>
+            <tr>
+              <td class="mg-td-width-half mg-capitalize-text">
+                <label class="mg-label mg-std-form-width"><%= t('lastname') %></label>
+                <label><%= @student.last_name %></label>
+              </td>
+              <td class="mg-td-width-half">
+                <label class="mg-label mg-std-form-width"><%= t('coursename') %></label>
+                <%#@batch=MgBatch.where(:id=>@student.mg_batch_id).pluck(:name)%>
+                <%@class=MgCourse.find(@student.mg_course_id)%>
+                <label><%= @class.course_name %></label>
+              </td>                      
+            </tr>
+            <tr>
+              <td class="mg-td-width-half">
+                <label class="mg-label mg-std-form-width mg-rm-text-trans"><%= t('dateofbirth') %></label>
+                
+                <% @id=@student.mg_school_id %>
+                <%if @student.date_of_birth.nil? %>
+                  <label>--</label>
+                <%else%>
+                  <label> <%= @student.date_of_birth.strftime(MgSchool.find_by_id(session[:current_user_school_id]).date_format) %></label>
+                <%end%>
+              </td>
+              <td class="mg-td-width-half">
+                <label class="mg-label mg-std-form-width"><%= t('gender') %></label>
+                <label class="mg-capitalize-text"><%= @student.gender %></label>
+              </td>                      
+            </tr>
+            <tr>
+              <td class="mg-td-width-half">
+                <label class="mg-label mg-std-form-width" ><%= t('bloodgroup') %></label>
+                <label><%= @student.blood_group %></label>
+              </td>
+              <td class="mg-td-width-half">
+                <label class="mg-label mg-std-form-width"><%= t('birth_place') %></label>
+                <label><%= @student.birth_place %></label>
+              </td>                        
+            </tr>
+            <tr>
+              <td class="mg-td-width-half">
+                <label class="mg-label mg-std-form-width" ><%= t('nationality') %></label>
+                <label><%= @student.nationality %></label>
+              </td>
+              <td class="mg-td-width-half">
+                <label class="mg-label mg-std-form-width"><%= t('mother_tongue') %></label>
+                <label><%= @student.language %></label>
+              </td>                        
+            </tr>
+            <tr>
+              <td class="mg-td-width-half">
+                <label class="mg-label mg-std-form-width" ><%= t('religion') %></label>
+                <label><%= @student.religion %></label>
+              </td>
+              <td class="mg-td-width-half">
+                <label class="mg-label mg-std-form-width" ><%= t('guardian') %></label>
+                <label><%= @student.guardian_name %></label>
+              </td>
+            </tr>
+            <tr>
+              <td class="mg-td-width-half">
+                <label class="mg-label mg-std-form-width" ><%= t('category') %></label>
+                <label><%= @student.mg_student_category_id %></label>
+              </td>              
+            </tr>
+          </table>
+          <%if @student.is_sibling%>
+          	<h4 class="mg-h4"><%= t('sibling') %></h4>
+          	<table class="mg-tbl-size-width">
+          	  <tr>
+             	  <td class="mg-td-width-half">
+                  <label class="mg-label mg-std-form-width"><%= t('name') %></label>
+                  <label><%= @student.sibling_name %></label>                  
+              	</td>
+              	<td class="mg-td-width-half">
+                  <label class="mg-label mg-std-form-width"><%= t('relationship') %></label>
+                  <label><%= @student.relation %></label>
+              	</td>
+              </tr>
+              <tr>
+                <td class="mg-td-width-half">
+                  <label class="mg-label mg-std-form-width"><%= t('class') %></label>
+                  <%course=MgCourse.find(@student.sibling_course_id)%>
+                  <% if (course.present?)%>
+                  	<label><%= course.course_name %></label>
+                  <%end%>
+                </td>
+                	<td class="mg-td-width-half">
+                    <label class="mg-label mg-std-form-width"><%= t('section') %></label>
+                    <% if @student.sibling_batch_id.nil?%>
+                      <%batch=MgBatch.find(@student.sibling_batch_id)%>
+                      <% if (batch.present?)%>
+                      	<label><%= batch.name %></label>
+                      <%end%>
+                    <%end%>
+                	</td>
+             		</tr>
+             		<tr>
+               		<td class="mg-td-width-half">
+                  	<label class="mg-label mg-std-form-width"><%= t('roll_number') %></label>
+                 		<label><%= @student.sibling_roll_no %></label>
+                	</td>
+              		<td>
+                  	<label class="mg-label mg-std-form-width mg-rm-text-trans"><%= t('date_of_admission') %></label>
+                  	<% if @student.sibling_admission_date.present?%>
+                  		<label><%= @student.sibling_admission_date.strftime(MgSchool.find_by_id(session[:current_user_school_id]).date_format) %></label>
+                  	<%end%>
+              		</td>
+              	</tr>
+              	<tr>
+               		<td class="mg-td-width-half">
+                  	<label class="mg-label mg-std-form-width"><%= t('adm_reg_number') %></label>
+                  	<label><%= @student.sibling_admission_no %></label>
+                	</td>
+              	</tr>
+            </table>
+          <%end%>
+          <h4 class="mg-h4"><%= t('correspondanceaddress') %></h4>
+          <table class="mg-tbl-size-width">
+            <tr>
+              <td class="mg-td-width-half">
+                <label class="mg-label mg-std-form-width"><%= t('addressline1') %></label>
+                <label><%= @student.mg_c_address_line1 %></label>
+              </td>
+              <td class="mg-td-width-half">
+                <label class="mg-label mg-std-form-width"><%= t('addressline2') %></label>
+                <label><%= @student.mg_c_address_line2 %></label>
+              </td>
+            </tr>
+            <tr>
+              <td class="mg-td-width-half">
+                <label class="mg-label mg-std-form-width"><%= t('street') %></label>
+                <%if @student.mg_c_street.nil? %>
+                  <label>--</label>
+                <%else%>
+                  <label><%= @student.mg_c_street %></label>
+                <%end%>
+              </td>
+              <td class="mg-td-width-half">
+                <label class="mg-label mg-std-form-width"><%= t('landmark') %></label>
+                <%if @student.mg_c_landmark.present?%>
+                  <label><%= @student.mg_c_landmark %></label>
+                <%else%>
+                  <label></label>
+                <%end%>
+              </td>                    
+            </tr>
+            <tr>
+              <td class="mg-td-width-half">
+                <label class="mg-label mg-std-form-width"><%= t('city') %></label>
+                <label><%= @student.mg_c_city %></label>
+              </td>
+              <td class="mg-td-width-half">
+                <label class="mg-label mg-std-form-width"><%= t('state') %></label>
+                <label><%= @student.mg_c_state %></label>
+              </td>                   
+            </tr>
+            <tr>
+              <td class="mg-td-width-half">
+                <label class="mg-label mg-std-form-width"><%= t('pincode') %></label>
+                <label><%= @student.mg_c_pin_code %></label>
+              </td>
+              <td class="mg-td-width-half"> 
+                <label class="mg-label mg-std-form-width"><%= t('country') %></label>
+                <label><%= @student.mg_c_country %></label>
+              </td>
+            </tr>
+          </table>
+          <h4 class="mg-h4"><%= t('permanentaddress') %></h4>
+          <table class="mg-tbl-size-width">
+            <tr>
+              <td >
+                <label class="mg-label mg-std-form-width"><%= t('addressline1') %></label>
+                <label><%= @student.mg_p_address_line1 %></label>
+              </td>
+              <td>
+                <label class="mg-label mg-std-form-width" ><%= t('addressline2') %></label>
+                <label><%= @student.mg_p_address_line2 %></label>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <label class="mg-label mg-std-form-width" ><%= t('street') %></label>
+                <%if @student.mg_p_street.nil? %>
+                  <label>--</label>
+                <%else%>
+                  <label><%= @student.mg_p_street %></label>
+                <%end%>
+              </td>
+              <td class="mg-td-width-half">
+                <label class="mg-label mg-std-form-width"><%= t('landmark') %></label>
+                <%if @student.mg_p_landmark.present?%>
+                  <label><%= @student.mg_p_landmark %></label>
+                <%else%>
+                  <label></label>
+                <%end%>
+              </td>                         
+            </tr>
+            <tr>
+              <td class="mg-td-width-half">
+                <label class="mg-label mg-std-form-width" ><%= t('city') %></label>
+                <label><%= @student.mg_p_city %></label>
+              </td>
+              <td class="mg-td-width-half">
+                <label class="mg-label mg-std-form-width"><%= t('state') %></label>
+                <label><%= @student.mg_p_state %></label>
+              </td>                   
+            </tr>
+            <tr>
+              <td class="mg-td-width-half">
+                <label class="mg-label mg-std-form-width"><%= t('pincode') %></label>
+                <label><%= @student.mg_p_pin_code %></label>
+              </td>
+              <td class="mg-td-width-half">
+                <label class="mg-label mg-std-form-width"><%= t('country') %></label>
+                <label><%= @student.mg_p_country %></label>
+              </td>
+            </tr>
+            <tr>
+            </tr>
+          </table>
+          <h4 class="mg-h4"><%= t('contactdetails') %></h4>
+          <table class="mg-tbl-size-width">
+            <tr>
+              <td class="mg-td-width-half">
+                <label class="mg-label mg-std-form-width"><%= t('phonenumber') %></label>
+                <label><%= @student.phone_number %></label>
+              </td>
+            </tr>
+            <tr>
+             <td class="mg-td-width-half">
+                <label class="mg-label mg-std-form-width"><%= t('mobilenumber') %></label>
+                <label>+91-<%= @student.mobile_number %></label>
+              </td> 
+            </tr>
+          </table>
+          <table class="mg-tbl-size-width">
+            <tr>
+              <td class="mg-email-form-width">
+                <label class="mg-label mg-std-form-width"><%= t('emailid') %></label>
+                <label><%= @student.mg_email_id %></label>
+              </td>
+            </tr>
+          </table>           	
+        	<h4 class="mg-h4"><%= t('previousedcuation') %></h4>
+        	<table class="mg-tbl-size-width">
+        	  <tr>
+              <td class="mg-td-width-half">
+                <label class="mg-label mg-std-form-width" for="school_name"><%= t('schoolname') %></label>
+                <label><%= @student.school_name %></label>
+              </td>
+              <td class="mg-td-width-half">
+                <label class="mg-label mg-std-form-width" for="course"><%= t('course') %></label>
+                <label><%= @student.course %></label>
+              </td>
+            </tr>
+            <tr>
+              <td class="mg-td-width-half">
+                <label class="mg-label mg-std-form-width" for="year"><%= t('year') %></label>
+                <label><%= @student.year %></label>
+              </td>
+              <td class="mg-td-width-half">
+                <label class="mg-label mg-std-form-width" for="marks_obtained"><%= t('marks_obtained') %></label>
+                <label><%= @student.marks_obtained %></label>
+              </td>
+            </tr>
+            <tr>
+              <td class="mg-td-width-half">
+                <label class="mg-label mg-std-form-width" for="total_marks"><%= t('total_marks') %></label>
+                <label><%= @student.total_marks %></label>
+              </td>
+              <td class="mg-td-width-half">
+                <label class="mg-label mg-std-form-width" for="grade"><%= t('gradepercentage') %></label>
+                <label><%= @student.grade %></label>
+              </td> 
+            </tr>
+        	</table>
+          <h4 class="mg-h4"><%= t('selection') %></h4>
+          <table class="mg-tbl-size-width">
+            <tr>
+              <td class="mg-td-width-half">
+                <label class="mg-label mg-std-form-width" for="selection_index"><%= t('selection_index') %></label>
+                <label><%= @student.selection_index %></label>
+              </td>
+              <td class="mg-td-width-half mg-capitalize-text">
+                <label class="mg-label mg-std-form-width" for="entrance_test"><%= t('entrance_test') %></label>
+                <label><%= @student.is_selected_for_entrance_test %></label>
+              </td> 
+            </tr>
+            <tr>
+              <td class="mg-td-width-half mg-capitalize-text">
+                <label class="mg-label mg-std-form-width" for="shortlisted_for_admission"><%= t('shortlisted_for_admission') %></label>
+                <label><%= @student.is_shortlisted_for_admission %></label>
+              </td>
+              <td class="mg-td-width-half">
+                <label class="mg-label mg-std-form-width" for="grade"></label>
+                <label></label>
+              </td> 
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </div>
+</section>
+<%=render partial:"common_left_close"%>
+
+<script>
+  $(document).ready(function(){
+    focusCurrentTab("manageStudentLID","manageStudentID");   
+  });
+</script>

@@ -1,0 +1,268 @@
+
+<%= render partial: 'dashboards/employee_left' %>
+ <h4 class="mg-h4">File Management</h4>
+
+
+
+
+
+  
+  <ul class="tree">
+    <li>
+      <label for="folder1">
+        <button id="hideAndShowLinkForEmployeeFolderBTNID" class="hide-and-show-link-for-employee-file-BTNID">+</button>
+        <button id="<%=count%>-hideAndShowLinkForEmployeeFileBTNID" class="hide-and-show-link-for-employee-file-BTNID">
+          <i class="fa fa-folder-open">&nbsp;My Folder</i>
+        </button>
+
+      </label>
+      <div id="hideAndShowLinkForEmployeeFileDivID" style="display:none">
+          <button id="createFolderForEmployeeBTNID"><label for="subfolder1">+folder</label></button> 
+      </div>
+  </ul>
+
+<%= render partial: 'application/common_left_close' %>
+
+  
+
+
+  <script type="text/javascript">
+
+
+    $(document).on("click", ".hide-and-show-sub_folder-Ol", function(e){
+     e.preventDefault();
+        var myID =$(this).attr('id');
+       var splString = myID.split("-");
+        var urlLink = "/document_managements/view_file_in_sub_folder_list/";
+        $.ajax({
+            url: urlLink ,
+            data:{
+
+            },
+            cache: false,
+            success: function(html){
+              
+            }
+        });
+});
+
+
+
+    $(document).on("click", ".create-new-chaild-folder-BTN", function(e){
+       e.preventDefault();
+        var myID =$(this).attr('id');
+       var splString = myID.split("-");
+
+
+        var urlLink = "/document_managements/folder_new/";
+        $.ajax({
+            url: urlLink ,
+            data:{
+              mg_employee_folder_id: splString[0]
+            },
+            cache: false,
+            success: function(html){
+                // $("#createNewFileForEmployeeDIVID").empty();
+                // $("#createNewFileForEmployeeDIVID").append(html);
+                $("#createNewFolderForEmployeeDIVID").dialog({
+                    modal: true,
+                    minHeight: 'auto',
+                    title: "New Sub Folder",
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+});
+
+     $(document).on("click", "#createFolderForEmployeeBTNID", function(e){
+       e.preventDefault();
+       //  var myID =$(this).attr('id');
+       // var splString = myID.split("-");
+
+
+        var urlLink = "/document_managements/folder_new/";
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(html){
+                // $("#createNewFileForEmployeeDIVID").empty();
+                // $("#createNewFileForEmployeeDIVID").append(html);
+                $("#createNewFolderForEmployeeDIVID").dialog({
+                    modal: true,
+                    minHeight: 360,
+                    title: "New Folder",
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+});
+
+  $(document).on("click", ".show-file-in-folder-div", function(e){
+     e.preventDefault();
+        var myID =$(this).attr('id');
+       var splString = myID.split("-");
+       // folderPlusID
+       $("#"+splString[1]+"filDivID").toggle();
+       $("#"+splString[1]+"hideAndShowCreateChaildFolderDivID").toggle();
+       $("#"+splString[1]+"hideAndShowSubFolderDIVID").toggle();
+       $("#"+splString[1]+"hideAndShowSubFolderFileDIVID").toggle();
+
+
+        var urlLink = "/document_managements/view_file_in_list/"+splString[0];
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(html){
+                $("#"+splString[1]+"filDivID").empty();
+                $("#"+splString[1]+"filDivID").append(html);
+
+              // $("#hideAndShowLinkForEmployeeFileDivID").toggle();
+               var value=  $("#"+splString[0]+'-'+splString[1]+'-'+"folderPlusID").html();
+               // alert("value :"+value)
+               // alert("#"+splString[0]+'-'+splString[1]+'-'+"folderPlusID");
+               
+                if(value=='<i class="fa fa-caret-down"></i>'){
+                  $("#"+splString[0]+'-'+splString[1]+'-'+"folderPlusID").empty();
+                  $("#"+splString[0]+'-'+splString[1]+'-'+"folderPlusID").append('<i class="fa fa-caret-right"></i>');
+                }else{
+                  $("#"+splString[0]+'-'+splString[1]+'-'+"folderPlusID").empty();
+                $("#"+splString[0]+'-'+splString[1]+'-'+"folderPlusID").append('<i class="fa fa-caret-down"></i>');
+                }
+   
+               
+            }
+        });
+});
+
+
+// sub-folder-show-BTN
+
+  $(document).on("click", ".add-file-to-folder-BTN", function(e){
+     e.preventDefault();
+        var myID =$(this).attr('id');
+       var splString = myID.split("-");
+
+
+        var urlLink = "/document_managements/new/";
+        $.ajax({
+            url: urlLink ,
+            data:{
+              mg_employee_folder_id: splString[0]
+            },
+            cache: false,
+            success: function(html){
+                // $("#createNewFileForEmployeeDIVID").empty();
+                // $("#createNewFileForEmployeeDIVID").append(html);
+                $("#createNewFileForEmployeeDIVID").dialog({
+                    modal: true,
+                    minHeight: 360,
+                    title: "New File",
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+});
+
+function toggleAll()
+{
+ $("#whatever").toggle();
+ $(".no-of-days-attendence").toggle();
+}
+
+$(document).on("click", ".hide-and-show-link-for-employee-file-BTNID", function(e){
+   e.preventDefault();
+  //  var myID =$(this).attr('id');
+  // var splString = myID.split("-");
+       
+  $("#hideAndShowLinkForEmployeeFileDivID").toggle();
+   var value=  $("#hideAndShowLinkForEmployeeFolderBTNID").html();
+    if(value=='+'){
+      $("#hideAndShowLinkForEmployeeFolderBTNID").empty();
+      $("#hideAndShowLinkForEmployeeFolderBTNID").append('-');
+    }else{
+      $("#hideAndShowLinkForEmployeeFolderBTNID").empty();
+    $("#hideAndShowLinkForEmployeeFolderBTNID").append('+');
+    }
+   
+
+ 
+
+
+        
+});
+
+
+          $(document).on("click", ".delete-file-for-employee-BTNID", function(e){
+             e.preventDefault();
+                var myID =$(this).attr('id');
+                var splString = myID.split("-");
+                var retVal = confirm("Are you sure to delete?");
+                if(retVal){
+                     var urlLink = "/document_managements/delete_file/"+splString[0];
+                      $.ajax({
+                        url: urlLink ,
+                        cache: false,
+                        success: function(html){
+                           window.location.reload();
+                        }
+                    });
+
+                }else{    
+                   return false;
+                }
+
+        }); 
+                $(document).on("click", ".delete-file-from-folder-BTN", function(e){
+                   e.preventDefault();
+                var myID =$(this).attr('id');
+                var splString = myID.split("-");
+                var retVal = confirm("Are you sure to delete?");
+                if(retVal){
+                     var urlLink = "/document_managements/delete_folder/"+splString[0];
+
+                      $.ajax({
+                        url: urlLink ,
+                        cache: false,
+                        success: function(html){
+                        }
+                    });
+
+                }else{   
+                   return false;
+                }
+
+        }); 
+
+
+      // $(document.getElementById(#hide-and-show-link-for-employee-file-BTNID)).html('<i class="fa fa-circle"> </i>');
+      //         }else{
+      //             var absent_date=$("#attendances_absent_date").val();
+                
+      //           var spldate = absent_date.split("-");
+      //           var dayNum = spldate[0] ;
+      //           for(var i = 0;i<no_of_days;i++){
+      //            var checkDate=spldate[1]+'/'+dayNum+'/'+spldate[2];
+      //                 x = new Date(checkDate).getDay();
+      //                 if(x==0){
+      //                   dayNum++;
+      //                   var tableData =dayNum+","+student_id;
+      //                   $(document.getElementById(tableData)).html('<i class="fa fa-circle"> </i>');
+      //                 }else{
+      //                 var tableData =dayNum+","+student_id;
+      //                 $(document.getElementById(tableData)).html('<i class="fa fa-circle"> </i>');
+      //                 }
+      //              dayNum++;   
+
+  </script>

@@ -1,0 +1,156 @@
+
+
+<%= render  partial: 'library/library_left' %>
+<% navigation_add 'Stack Management', stack_management_path %>
+
+<h4 class="mg-h4"><%= t('stack_management_list') %></h4>
+
+<button class="new-stack-create mg-btn-bottom-margin mg-custom-form-btn"><%= t('add_stack')%></button>
+
+
+<div class="mg_pagination">
+<%if @stack_management_data.length>0%>
+<table  class="batch-tbl mg-tbl-margin">   <!-- border="2" --> 
+  <tr class="subject-table-header">
+    <!-- <th>Subject Id</th> -->
+    <th><%= t('room_no') %></th>
+    <th><%= t('rack_no') %></th>
+
+    <th> <label class="mg-label-text-transform-none" style="width:140px"><%= t('first_letter_of_title') %></label></th>
+
+    <th><%= t('action') %></th>
+
+  </tr>
+ 
+  <% @stack_management_data.each do |category| %>
+    <tr>
+      <td><%= category.room_no %></td>
+      <td><%= category.rack_no %></td>
+      <td><%= category.first_letter_of_title %></td>
+
+      <td>
+        
+      <button title="Show" id="<%=raw category.id %>-showlibrBTNID" class="show-library-stack-management mg-icon-btn"><i class="fa fa-eye"></i></button>
+
+        <button title="Edit" id="<%=raw category.id %>-editlibriBTNID" class="edit-library-stack-management mg-icon-btn"><i class="fa fa-pencil-square-o"></i></button>
+
+        <!-- <button title="Delete" id="<%#=raw category.id %>-deletelibrBTNID" class="delete-library-stack-management mg-icon-btn"><i class="fa fa-trash"></i></button> -->
+        <span style="left: -2px; position: relative; float: right; top: -2px;">
+        <%= link_to "<i class=\"fa fa-trash\"></i>".html_safe, {:controller => "library", :action => "stack_management_delete",:id =>category.id },:title=>"Delete" ,:class=>"mg-icon-btn",data: { confirm: 'Are you sure to delete?' } %>
+        </span>
+      </td>
+
+    </tr>
+  <% end %>
+</table>
+<br/>
+ <div class="pagination-align" style="position: relative; bottom: 10px;">
+              <%#= will_paginate @category, :container => false %>
+           </div>
+<%else%>
+<h5>No stack is created </h5>
+<%end%>
+</div>
+<div id="showdataaalibrarystackmanagementDIVID"></div>
+<div id="editsslibrarystackmanagementDIVID"></div>
+
+
+<div id="showlibrarystackmanagementDIVID"></div>
+<%= render  partial: 'application/common_left_close' %>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+$( document ).ready(function() {
+            focusCurrentTab("stackManagementAID","stackManagementLiID");
+          //focusStudentHeaderBox();
+});
+
+$(document).on("click",".new-stack-create",function(){
+
+var urlLink = "/library/stack_management_new/";
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(html){
+                  $('#showlibrarystackmanagementDIVID').dialog({
+                    modal: true,
+                     minHeight: 'auto',
+                    maxWidth: '600',
+                    title: "Create Stack Management",
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+
+});
+$(document).on("click",".show-library-stack-management",function(){
+var myID =$(this).attr('id');
+        var Id=myID.split("-");
+
+        var datas=Id[0];
+var urlLink = "/library/stack_management_show/";
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            data:{"id":datas},
+            success: function(html){
+                  $('#showlibrarystackmanagementDIVID').dialog({
+                    modal: true,
+                     minHeight: 'auto',
+                    maxWidth: '600',
+                    title: "Show Stack Management",
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+
+});
+$(document).on("click",".edit-library-stack-management",function(){
+var myID =$(this).attr('id');
+        var Id=myID.split("-");
+
+        var datas=Id[0];
+var urlLink = "/library/stack_management_edit/";
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+             data:{"id":datas},
+            success: function(html){
+                  $('#editsslibrarystackmanagementDIVID').dialog({
+                    modal: true,
+                     minHeight: 'auto',
+                    maxWidth: '600',
+                    title: "Edit Stack Management",
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+
+});
+
+
+</script>

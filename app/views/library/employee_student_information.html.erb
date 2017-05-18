@@ -1,0 +1,208 @@
+<%if @user_data.user_type=="student"%>
+<%@student_lib_inforamtion=MgResourceInventory.where("issued_to=? AND user_type=? ",@student_data.id,"student")%>
+
+<h4 class="mg-h4"><%= t('student_information') %></h4>
+
+<table border="1" class="mg-showdata-bg mg-tbl-layout" cellspacing="1" cellpadding="1">
+
+   <tr>
+     <td class="mg-td-width-half" valign="top">
+        <label class="mg-label"> <%= t('name')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+       
+     <%="#{@student_data.first_name} #{@student_data.last_name}"%>
+     
+     </td>
+ </tr>
+  <tr>
+     <td class="mg-td-width-half" valign="top">
+        <label class="mg-label"> <%= t('class&section')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+       <%
+       batch_data=MgBatch.find(@student_data.mg_batch_id)
+       course_data=MgCourse.find(batch_data.mg_course_id)
+       %>
+     <%="#{course_data.course_name}-#{batch_data.name}"%>
+     
+     </td>
+ </tr>
+ 
+
+</table><br/>
+<%if @student_lib_inforamtion.length>0%>
+<h4 class="mg-h4"><%= t('student_books_information') %></h4>
+<div class="mg-scroll-employee-bar mg-tbl-margin">
+<table  class="mg-show-tbl-width mg-table-nowrap batch-tbl mg-adjust-padding">
+<tr>
+ <th><%=t('resource_category')%></th>
+  <th><%=t('resource_type')%></th>
+  <th><%=t('resource_number')%></th>
+  <th><%=t('name/title')%></th>
+  <th><%=t('author')%></th>
+  <th><%=t('volume/edition')%></th>
+  <th><%=t('year')%></th>
+  <th><%=t('publication/company')%></th>
+  <th><%=t('isbn')%></th>
+  <th><%=t('class')%></th>
+  <th><%=t('subjectes')%></th>
+  <th><%=t('status')%></th>
+
+
+
+
+</tr>
+<%@student_lib_inforamtion.each do |student_data|%>
+<tr>
+<%
+resource_category=MgResourceCategory.find(student_data.mg_resource_category_id)
+resource_type=MgResourceType.find(student_data.mg_resource_type_id)
+course=MgCourse.find(student_data.mg_course_id)
+subject=MgManageSubject.find(student_data.mg_subject_id)
+
+%>
+  <td><%=resource_category.name%></td>
+  <td><%=resource_type.name%></td>
+  <td><%=student_data.resource_number%></td>
+  <td><%=student_data.name%></td>
+  <td><%=student_data.author%></td>
+  <td><%=student_data.volume%></td>
+  <td><%=student_data.year%></td>
+  <td><%=student_data.publication%></td>
+  <td><%=student_data.isbn%></td>
+  <td><%=course.course_name%></td>
+  <td><%=student_data.name%></td>
+  <td><%=student_data.status%></td>
+</tr>
+<%end%>
+</table>
+
+</div>
+<%else%>
+<%#="No Data for this Student"%><br/>
+<%end%>
+<%if @student_lib_inforamtion.size<=@resource_id.max_issuable_count-1%>
+<button id="<%=@resource_category_id%>-<%=@resource_type_id%>-<%=@student_data.id%>" class="issuestudent_button_for_library btn btn-default">Issue</button>
+<%else%>
+   <input type="submit" value="Issue" id="maxCountsubmitlibraryFormBtnId" class="mg-small-form-btn" /><br/>
+
+<%end%>
+
+<%elsif @user_data.user_type=="employee"%>
+
+<%@employee_lib_inforamtion=MgResourceInventory.where("issued_to=? AND user_type=?",@employee_data.id,"employee")%>
+
+<h4 class="mg-h4"><%= t('employee_information') %></h4>
+
+
+<table border="1" class="mg-showdata-bg mg-tbl-layout" cellspacing="1" cellpadding="1">
+   <tr>
+     <td class="mg-td-width-half" valign="top">
+        <label class="mg-label"> <%= t('name')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+      
+     <%="#{@employee_data.first_name} #{@employee_data.last_name}"%>
+     
+     </td>
+ </tr>
+  <tr>
+     <td class="mg-td-width-half" valign="top">
+        <label class="mg-label"> <%= t('employee_category')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+       <%
+       category_data=MgEmployeeCategory.find(@employee_data.mg_employee_category_id)
+       
+       %>
+     <%="#{category_data.category_name}"%>
+     
+     </td>
+ </tr>
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+        <label class="mg-label"> <%= t('employee_department')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+       <%
+       department_data=MgEmployeeDepartment.find(@employee_data.mg_employee_department_id)
+       
+       %>
+     <%="#{department_data.department_name}"%>
+     
+     </td>
+ </tr>
+   <tr>
+     <td class="mg-td-width-half" valign="top">
+        <label class="mg-label"> <%= t('employee_position')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+       <%
+       position_data=MgEmployeePosition.find(@employee_data.mg_employee_position_id)
+       
+       %>
+     <%="#{position_data.position_name}"%>
+     
+     </td>
+ </tr>
+
+</table><br/>
+
+<h4 class="mg-h4"><%= t('employee_books_information') %></h4>
+<%if @employee_lib_inforamtion.length>0%>
+
+<div class="mg-scroll-employee-bar mg-tbl-margin">
+<table  class="mg-show-tbl-width mg-table-nowrap batch-tbl mg-adjust-padding">
+<tr>
+  <th><%=t('resource_category')%></th>
+  <th><%=t('resource_type')%></th>
+  <th><%=t('resource_number')%></th>
+  <th><%=t('name/title')%></th>
+  <th><%=t('author')%></th>
+  <th><%=t('volume/edition')%></th>
+  <th><%=t('year')%></th>
+  <th><%=t('publication/company')%></th>
+  <th><%=t('isbn')%></th>
+  <th><%=t('class')%></th>
+  <th><%=t('subjectes')%></th>
+  <th><%=t('status')%></th>
+
+
+
+</tr>
+<%@employee_lib_inforamtion.each do |student_data|%>
+<tr>
+<%
+resource_category=MgResourceCategory.find(student_data.mg_resource_category_id)
+resource_type=MgResourceType.find(student_data.mg_resource_type_id)
+course=MgCourse.find(student_data.mg_course_id)
+subject=MgManageSubject.find(student_data.mg_subject_id)
+
+%>
+  <td><%=resource_category.name%></td>
+  <td><%=resource_type.name%></td>
+  <td><%=student_data.resource_number%></td>
+  <td><%=student_data.name%></td>
+  <td><%=student_data.author%></td>
+  <td><%=student_data.volume%></td>
+  <td><%=student_data.year%></td>
+  <td><%=student_data.publication%></td>
+  <td><%=student_data.isbn%></td>
+  <td><%=course.course_name%></td>
+  <td><%=student_data.name%></td>
+  <td><%=student_data.status%></td>
+</tr>
+<%end%>
+</table>
+</div>
+<%else%>
+<%#="No Data for this Employee"%><br/>
+<%end%>
+<%if @employee_lib_inforamtion.size<=@resource_id.max_issuable_count-1%>
+<button id="<%=@resource_category_id%>-<%=@resource_type_id%>-<%=@employee_data.id%>" class="issueemployee_button_for_library btn btn-default">Issue</button>
+<%else%>
+   <input type="submit" value="Issue" id="maxCountsubmitlibraryFormBtnId" class="mg-small-form-btn" /><br/>
+
+<%end%>
+<%end%>

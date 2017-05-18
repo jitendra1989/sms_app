@@ -1,0 +1,29 @@
+
+
+<!-- Sec --> 
+<%= render partial: 'principle_dashboard_left' %>
+
+
+<%= column_chart MgStudent.group_by_month(:admission_date,format: "%b").count %>
+
+<%#= column_chart MgStudent.group_by_day(:admission_date,format: "%d",range: 2.weeks.ago.midnight..Time.now ).count%>
+
+<% currDate = Time.now.day %>
+<%#= currDate %>
+
+<%= column_chart MgStudent.group_by_day(:admission_date,format: "%d",last: currDate).count %>
+<%#= column_chart MgStudent.group_by_day_of_month(:admission_date,format: "%d").count %>
+
+<%= render partial: 'application/common_left_close' %>
+
+<script type="text/javascript">
+    
+
+ $(document).ready(function(){
+
+    focusCurrentTab("viewAdmissionReport","viewAdmissionReportLiID");
+    focusDashboards();
+
+});
+
+</script>

@@ -1,0 +1,149 @@
+<%= form_for :exams, :url=>{:controller=>'examination',:action=>'exammanagement_resultEntryCreate',:id=>@sub_id},:html => {
+                            :id => 'exammanagementCategoryNewFormId', :class => 'elm_class',
+                            :style => 'elm_style' } do |f| %>
+
+
+
+
+<%=f.hidden_field :mg_student_id, :value=>"", :id=>"mgFaStudentID"%>
+
+<%=f.hidden_field :mg_exam_id, :value=>@exam_id%>
+
+<%=hidden_field_tag :category_id, @category_id%>
+
+<table class="mg-show-tbl-width">
+  <tr>
+    <td class="div-left" valign="top" width="35%">
+      <label class="mg-label" style="font-size: 0.85em"><%="Student List In The Batch"%></label><br>
+      <% @studentdata.each do |datas| %>
+
+
+      <a href="#" id='<%=@faGroupid%>-<%=@exam_id%>-<%=@sub_id%>-<%=@category_id%>-<%=datas.id%>' class="exam-Fa-student-name-cls"><%=datas.first_name%></a><br>
+
+      <%end%>
+    </td>
+    <td class="div-right" valign="top" width="55%">
+        <div id="studentFaNameDivId" class="mg-font-italic"></div>
+        <table class="batch-tbl mg-tbl-margin" valign="top" cellspacing="0" style="padding:0; border-collapse:collapse;">
+
+          <tr>
+
+            <th>Descriptive Indicator</th>
+            <th>Total Marks</th>
+            <th>Marks Obtained</th>
+           
+          </tr>
+          <% @faGroupData.each do |data| %>
+
+          <% @indicators=MgDescriptiveIndicator.where(:mg_fa_criteria_id=> data.id,:is_deleted=>0,:mg_school_id=>session[:current_user_school_id],:describable_type=>"FaCriteria")%>
+         
+
+          <%@indicators.each_with_index do |indicator,i|%>
+                <tr>   
+              <%= hidden_field_tag :'assaignData[]',indicator.id%>
+
+              <%= f.hidden_field :mg_batch_id,:value=> @batchID%>
+
+                  <td><table><tr><%=data.fa_name%></tr><br/><tr><%=indicator.name%></tr></table></td>
+
+
+
+                  <td><%=text_field_tag 'total_marks[]',indicator.total_marks,:readonly=> "readonly",:class=>"total-marks mg-marks-width"%></td>
+
+              <%@grade=MgCceGrade.pluck(:name,:grade_point)%>
+
+              <%
+
+              @assessmentScoreObj=MgAssessmentScore.where(:mg_student_id=>@studentId,:mg_batch_id=>@batchID,:mg_descriptive_indicator_id=>indicator.id,:is_deleted=>0,:mg_school_id=>session[:current_user_school_id])
+             
+
+              if @assessmentScoreObj.size>0
+              @gradeAutoPopulate=@assessmentScoreObj[0].marks_obtained
+              else
+                 @gradeAutoPopulate=""
+              end
+              %>
+          
+              <td><%=text_field_tag 'mg_grade_id[]',@gradeAutoPopulate,:class=>"obtained-marks mg-marks-width"%></td>
+             <!-- <td><%#=select_tag 'mg_grade_id[]', options_for_select(@grade,:selected=>@gradeAutoPopulate
+               ),:prompt=>"Select A Grade"%></td> -->
+            </tr>
+            <%end%>
+          <% end %>
+
+        </table> 
+        <%#=f.submit t('save') ,:class=>"mg-small-form-btn"%>
+        <p class="mg-p-mgtop">
+          <a onclick="$(this).closest('form').submit()" id="" class="submit mg-small-form-btn"><%=t("save")%></a> 
+          <%= link_to t('cancel'), {:controller=>'examination',:action=>'exammanagement_index'}, {:class=>"mg-small-form-btn cancel-form-dialog"} %>       
+        </p>
+
+    </td>
+  </tr>
+</table>
+
+<%end%>
+<script>
+
+$(".obtained-marks").change(function(e){
+
+onchange("hello"); 
+
+
+
+
+});
+function onchange(arg)
+{
+  
+  var obtainedMarks=0;
+ $(".obtained-marks").each(function()
+ {
+  
+
+       obtainedMarks=$(this).val();
+     
+       });
+ 
+ var totalMarks=0;
+ $(".total-marks").each(function()
+ {
+  
+
+         totalMarks=$(this).val();
+     
+       });
+ if(obtainedMarks>totalMarks){
+alert("Marks Obtained should be less than TotalMarks");
+$(".obtained-marks").val("");
+
+ }
+};
+// $(document).ready(function(){
+
+// var studentID=$(this).attr('id');
+//       //alert(studentID);
+//       $("#mgFaStudentID").val(studentID);
+//     $("#studentFaNameDivId").empty();
+//     var studentName=$(this).text();
+
+//     var stu=$(".exam-Fa-student-name-cls").val();
+//     alert("")
+//     $("#studentFaNameDivId").append(studentName);
+//     return false;
+
+
+//   });
+
+  // $(".exam-Fa-student-name-cls").click(function(){
+  //     var studentID=$(this).attr('id');
+  //     //alert(studentID);
+  //     $("#mgFaStudentID").val(studentID);
+  //   $("#studentFaNameDivId").empty();
+  //   var studentName=$(this).text();
+  //   $("#studentFaNameDivId").append(studentName);
+  //   return false;
+  // });
+
+</script>
+

@@ -1,0 +1,158 @@
+<% navigation_add 'About Incharge', :controller => 'accounts', :action => 'index' %>
+<%= render  partial: 'accounts/accounts_left' %>
+<h4 class="mg-h4"><%= t('about_incharge') %></h4>
+<%if @incharge_count>0%>
+<%else%>
+  <button class="new-add-accounts-incharge mg-btn-bottom-margin mg-custom-form-btn"><%= t('add_incharge')%></button>
+<%end%>
+<%if @account_incharge.length>0%>
+  <table  class="batch-tbl mg-tbl-margin">   <!-- border="2" --> 
+    <tr class="subject-table-header">
+      <th><%= t('incharge_name') %></th>
+      <th style="width: 92px;"><%= t('actions') %></th>
+    </tr>
+   
+    <% @account_incharge.each do |incharge| %>
+      <tr>
+        <td><%= incharge.try(:user_name) %></td>
+        <td>
+          <button title="Change Password" id="<%=raw incharge.id %>-showlabBTNID" class="change-password-btn mg-icon-btn"><i class="fa fa-exchange"></i></button>
+
+          <button title="Edit" id="<%=raw incharge.id %>-editaccountBTNID" class="edit-account-incharge-btn mg-icon-btn"><i class="fa fa-pencil-square-o"></i></button>
+
+          <button title="Delete" id="<%=raw incharge.id %>-deletelabBTNID" class="delete-account-incharge-btn mg-icon-btn"><i class="fa fa-trash"></i></button>
+        </td>
+      </tr>
+    <% end %>
+  </table>
+  <br/>
+<%else%>
+  <h5>No Incharge is created </h5>
+<%end%>
+<div id="newAddAccountsInchargeDIVID"></div>
+<div id="editAccountsInchargeDIVID"></div>
+<div id="changePasswordInchargeDIVID"></div>
+
+
+<div id="showLabDIVID"></div>
+
+
+<%= render  partial: 'application/common_left_close' %>
+
+<script>
+$( document ).ready(function() {
+  focusCurrentTab("viewaccountsInchargeId","viewaccountsInchargeLiID");
+});
+
+
+
+$(document).on("click", ".delete-account-incharge-btn", function(e)
+{
+     e.preventDefault();
+    var myID =$(this).attr('id');
+    var Id=myID.split("-");
+    var retVal = confirm("Are you sure to delete?");
+    if(retVal)
+    {
+         var urlLink = "/accounts/delete/"+Id[0];
+
+          $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(html)
+            {
+                window.location.reload();
+            }
+        });
+    }else
+    {
+       return false;
+    }
+}); 
+$(document).on("click", ".show-lab-btn", function(e){
+        var myID =$(this).attr('id');
+        var Id=myID.split("-");
+        var urlLink = "/laboratory/show/"+Id[0];
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(html){
+                  $('#showLabDIVID').dialog({
+                    modal: true,
+                     minHeight: '200px',
+                    width: 'auto',
+                    title: "Show Laboratory",
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+});
+
+
+$(document).on("click", ".edit-account-incharge-btn", function(e){
+        var myID =$(this).attr('id');
+        var Id=myID.split("-");
+        var urlLink = "/accounts/edit/"+Id[0];
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(html){
+                  $('#editAccountsInchargeDIVID').dialog({
+                    modal: true,
+                     minHeight: 'auto',
+                    minWidth: '250px',
+                    title: "Edit Incharge",
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+});
+
+$(document).on("click", ".new-add-accounts-incharge", function(e){
+        var urlLink = "/accounts/new";
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(html){
+                  $('#newAddAccountsInchargeDIVID').dialog({
+                    modal: true,
+                     minHeight: 'auto',
+                    minWidth: '250px',
+                    
+                    title: "Add Incharge",
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+});
+</script>
+<style>
+
+
+.table-batchs-tbl {
+   /* font-family: verdana,arial,sans-serif;*/
+    font-size:13px;
+    color:#363131;
+    border-width: 1px;
+    border-color:  #363131;
+    border-collapse: collapse;
+    padding: 12px ;
+    font-size: 0.8em;
+    width: 261px !important;
+    /* margin-left: 2px; */
+}
+</style>
+
+

@@ -1,0 +1,44 @@
+<%= render partial: 'dashboards/principle_dashboard_left' %>
+
+<h4 class="mg-h4"><%= t('homework_status') %></h4>
+<% navigation_add 'Homework', :controller=> 'homework', :action=>'homeworkStatus'  %>
+
+<p>
+    <label class="mg-label" style="width:140px"><%= t('select_date') %><span class="required-field">&nbsp;*</span></label>
+    <br/>
+     <%= text_field_tag 'assignment_created_date' ,nil,:class=>"mg-text-field select-student-homework-duedate-class",:onchange=>"addStudentHomeworkDuedate()"%>
+     <%#=select_tag :employee_id, options_for_select(employee_array),:prompt=>"Select",:class=>"mg-select-btn select-student-homework-class",:onchange=>"addStudentHomework()" %>
+</p>
+
+<div id="homework_principal_created_date_status_ID"></div>
+<%= render  partial: 'application/common_left_close' %>
+
+<script>
+$(document).ready(function(){
+	focusCurrentTab("viewstudenthomeworkDuedate","viewStudentHomeworkLiID");
+  dateFormatStr =  getJsDateFormat();
+  $('#assignment_created_date').datepicker({ changeMonth: true,
+                changeYear: true,yearRange: "-50:+0",maxDate: "0",dateFormat: dateFormatStr});
+})
+
+
+
+
+function addStudentHomeworkDuedate(){
+	var created_date=$(".select-student-homework-duedate-class").val();
+	var urlLink = "/homework/homework_status_date_wise/";
+           $.ajax({ 
+               url: urlLink,
+               cache: false,
+               data:
+            {
+                 created_date:created_date
+             },
+               success: function(html){
+                  $("#homework_principal_created_date_status_ID").empty();
+                  $("#homework_principal_created_date_status_ID").append(html);
+               }  
+           });
+}
+
+</script>

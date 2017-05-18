@@ -1,0 +1,192 @@
+<!-- Sec --> 
+<div id="page-yield">
+	<div class="box">
+		<%= form_for :fee_schedule, :url=>{:controller=>'fees',:id=>@fee_schedule.id, :action=>'update_fee_schedule'}, method: :patch,:html => {
+                            :id => 'editFeeParticularCreateFormId', :class => 'elm_class',
+                            :style => 'elm_style' } do |f| %>
+			
+
+			<div class="fee-schedule-content">
+          		<div class="fee-schedule-inner">
+            		<table width="100%" cellspacing="0" cellpadding="0" border="0" class="fee-schedule-table-cls mg-table-spacing">
+              			<tbody>
+              				<tr>
+			                  	<td style="width:220px;">
+			                    	<label class="mg-label" for="fee_category"><%= t('Fee Category') %></label>
+			                    </td>
+
+			                  	<%
+
+			                  		@feeCategory=MgFeeCategory.find_by_id(@fee_schedule.mg_fee_category_id)
+			                  	%>
+
+			                  	<% if @feeCategory!=nil%>
+			                  	<td>
+			                  		
+			                  		<%= f.text_field :mg_fee_category_id, :value=>@feeCategory.name, :disabled=>true ,:class=>"mg-text-field"%>
+			                  	</td>
+			                  	<%else%>
+			                  	<td><%= text_field_tag :mg_fee_category_id, nil,:disabled=>true ,:class=>"mg-text-field"%>
+			                  	</td>
+			                  	<%end%>
+		                  	</tr>
+
+		                  	<tr>
+			                  	<td>
+			                    	<label class="mg-label" ffor="fee_category_batch"><%= t('semester') %></label>
+			                    </td>
+			                    
+			                   
+			                    	<%
+
+			                    	@mgBatch=MgBatch.find_by_id(@fee_schedule.mg_batch_id)
+
+			                    	@course=MgCourse.select(:course_name).find_by_id(@mgBatch.mg_course_id)
+			                    	 
+			                    	%>
+
+					                <%if@course!=nil%>
+
+					                	<%@course_batch=@course.course_name+'-'+ @mgBatch.name%>
+					                 
+					                  <td><%= f.text_field :mg_batch_id, :value=>@course_batch, :disabled=>true ,:class=>"mg-text-field"%></td>
+					                <%else%>
+					                  <td></td> 
+					                <%end%>	
+
+			                  	
+		                  	</tr>
+
+		                  	<tr>
+			                  	<td>
+			                  		<label class="mg-label" ffor="fee_collection_name"><%= t('Fee Collection Name') %></label>
+			                  	</td>
+			                  	<td>
+			                    	<%= f.text_field :name ,:class=>"mg-text-field"%>
+			                  	</td>
+		                  	</tr>
+
+
+		                  	<tr>
+			                  	<td>
+			                  		<label class="mg-label" for="fee_collection_start_date"><%= t('Start Date') %><span class="required-field"> *</span></label>
+			                  	</td>
+			                  	<td>
+			                    	<%= text_field_tag :start_date_data,@fee_schedule.start_date, :class=>"fee-collection-start-dates-edit-classess mg-text-field" %>
+			                  	</td>
+		                  	</tr>
+
+		                  	<tr>
+			                  	<td>
+			                  		<label class="mg-label" for="fee_collection_end-date"><%= t('End Date') %><span class="required-field"> *</span></label>
+			                  	</td>
+			                  	<td>
+			                    	<%= text_field_tag :end_date_data,@fee_schedule.end_date, :class=>"fee-collection-end-dates-edit-classes mg-text-field" %>
+			                  	</td>
+		                  	</tr>
+
+		                  	<tr>
+			                  	<td>
+			                  		<label class="mg-label" for="fee_collection_due_date"><%= t('Due Date') %><span class="required-field"> *</span></label>
+			                  	</td>
+			                  	<td>
+			                    	<%= text_field_tag :due_date_data,@fee_schedule.due_date, :class=>"fee-collection-due-date-edit-class mg-text-field" %>
+			                  	</td>
+		                  	</tr>
+		                  	<tr>
+			                  	<td>
+			                  		<%#= submit_tag 'Submit', id: "saveFeeScheduleID" ,:class=>"mg-small-form-btn"%>
+			                  		<a onclick="$(this).closest('form').submit()" class="mg-small-form-btn" id="saveFeeScheduleID"><%=t("save")%></a>
+			                  		 <a class="mg-small-form-btn cancel-form-dialog"><%=t('cancel')%></a>
+
+			                  	</td>
+		                  	</tr>
+
+              			</tbody>
+              		</table>
+              	</div>
+            </div>
+        <% end %>
+	</div>
+</div>
+
+<script type="text/javascript">
+dateFormatStr =  getJsDateFormat();
+   	  //alert(dateFormatStr);
+
+
+	  // $(".fee-collection-start-dates-edit-classess").datepicker({ changeMonth: true,changeYear: true,dateFormat: dateFormatStr});
+	  // $(".fee-collection-end-dates-edit-classes").datepicker({ changeMonth: true,changeYear: true,dateFormat: dateFormatStr});
+	  // $(".fee-collection-due-date-edit-class").datepicker({ changeMonth: true,changeYear: true,dateFormat: dateFormatStr});
+
+$('.fee-collection-start-dates-edit-classess').datepicker({ changeMonth: true,
+                changeYear: true,yearRange: "-100:+0",maxDate: "1000",dateFormat: dateFormatStr});
+
+$('.fee-collection-end-dates-edit-classes').datepicker({ changeMonth: true,
+                changeYear: true,yearRange: "-100:+0",maxDate: "1000",dateFormat: dateFormatStr});
+$('.fee-collection-due-date-edit-class').datepicker({ changeMonth: true,
+                changeYear: true,yearRange: "-100:+0",maxDate: "1000",dateFormat: dateFormatStr});
+
+	 
+
+
+	  var startDate =  $.datepicker.formatDate(dateFormatStr,new Date($('.fee-collection-start-dates-edit-classess').val()));
+	  //alert(startDate);
+
+
+	  $('.fee-collection-start-dates-edit-classess').val(startDate);
+	  //alert($('.fee-collection-start-date-class').val());
+
+	  var endDate =  $.datepicker.formatDate(dateFormatStr,new Date($('.fee-collection-end-dates-edit-classes').val()));
+	  $('.fee-collection-end-dates-edit-classes').val(endDate);
+	  var dueDate =  $.datepicker.formatDate(dateFormatStr,new Date($('.fee-collection-due-date-edit-class').val()));
+	  //alert(dueDate);
+	  $('.fee-collection-due-date-edit-class').val(dueDate);
+
+
+
+
+// var joiningDate =  $.datepicker.formatDate(dateFormatStr,new Date($('#employee_joining_date').val()));
+// var dobDate =  $.datepicker.formatDate(dateFormatStr,new Date($('#employee_date_of_birth').val()));
+// if($('#employee_last_working_day').val()){
+// var last_working_day =  $.datepicker.formatDate(dateFormatStr,new Date($('#employee_last_working_day').val()));
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+   $(document).ready(function(){
+
+   	  
+
+
+	  $("#editFeeParticularCreateFormId").validate({
+	      rules: 
+	      {
+	          "fee_schedule[fee_category_id]": {required: true},
+	          "selected_batch[]": {required: true},
+	          "fee_schedule[name]": {required: true},
+	          
+	          "fee_schedule[start_date]": {required: true},
+	          "fee_schedule[end_date]": {required: true},
+	          "fee_schedule[due_date]": {required: true}
+	      }
+    });
+
+
+
+   });
+
+
+
+
+</script>

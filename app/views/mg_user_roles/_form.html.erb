@@ -1,0 +1,28 @@
+<!-- Sec --> 
+<%= form_for(@mg_user_role) do |f| %>
+  <% if @mg_user_role.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@mg_user_role.errors.count, "error") %> prohibited this mg_user_role from being saved:</h2>
+
+      <ul>
+      <% @mg_user_role.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :mg_user_id ,:class=>"mg-label"%><br>
+    <%= f.collection_select(:mg_user_id,MgUser.all, :id, :user_name,{:include_blank => 'Please Select'})%>
+   <!-- <#%= f.number_field :mg_user_id %>-->
+  </div>
+  <div class="field">
+    <%= f.label :mg_role_id ,:class=>"mg-label"%><br>
+    <%= f.collection_select(:mg_role_id,MgRole.all, :id, :role_name,{:include_blank => 'Please Select'})%>
+  <!--  <#%= f.number_field :mg_role_id %>-->
+  </div><br/>
+  <div class="actions">
+    <%= f.submit "Submit" ,:class=>"mg-small-form-btn"%>
+  </div>
+<% end %>

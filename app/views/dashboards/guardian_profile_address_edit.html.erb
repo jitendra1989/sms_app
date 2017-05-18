@@ -1,0 +1,33 @@
+ <h4 class="mg-h4">Address</h4>
+ <%= form_for :guardian,:html => { :id => 'guardianProfileAddressEditFormID'}, url: address_update_by_guardian_path(@guardian[0]), method: :patch do |f| %>
+
+       <%=render :partial => 'students/address_with_street' , :locals => {:addresstype => "Permanent"}%>
+
+     
+<p class="mg-p-mgtop">
+        <%#= submit_tag t('save'), class: "submit" ,:class=>"mg-small-form-btn mg-inner-tbl-align" %>
+        <a onclick="$(this).closest('form').submit()" class="submit mg-small-form-btn mg-inner-tbl-align"><%=t("save")%></a>
+        <%= link_to t('cancel'), :back, {:class=>"btn btn-default cancel-form-dialog"} %>
+</p>
+<% end %>
+
+<script>
+	$(document).ready(function(){
+
+			      $("#guardianProfileAddressEditFormID").validate({
+	        //debug: true,
+				rules: {
+	                  "Permanent[address_line1]": {required: true},
+	                  "Permanent[state]": {required: true}, 
+	                  "Permanent[country]": {required: true},
+	                  "Permanent[city]": {required: true}, 
+	                  "Permanent[pin_code]": {required: true, number: true,minlength: 6,maxlength: 6}
+	              },
+	              messages: {
+        			"Permanent[pin_code]": {minlength: "Please enter 6 digits.",maxlength: "Please enter only  6 digits"}
+    			}
+	
+	      });
+	});
+
+</script>

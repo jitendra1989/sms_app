@@ -1,0 +1,188 @@
+<% navigation_add 'Payment Type', :controller => 'alumni', :action => 'payment_index' %>
+
+
+<% if !params[:notice].blank? %>
+  <div class="alert alert-info mg-danger-msg">
+   <%= params[:notice] %>
+  </div>
+<% end %>
+
+<%= render  partial: 'alumni/alumni_left' %>
+
+<h4 class="mg-h4"><%= t('payment_type_list') %></h4>
+
+<button class="new-add-alumni-type mg-btn-bottom-margin mg-custom-form-btn"><%= t('add_payment_type')%></button>
+
+<div class="mg_pagination">
+<%if @itemCategory.present?%>
+<table  class="batch-tbl mg-tbl-margin">   <!-- border="2" --> 
+  <tr class="subject-table-header">
+    <!-- <th>Subject Id</th> -->
+    <th><%= t('name') %></th>
+    <th><%= t('description') %></th>
+    <th style="width: 102px;"><%= t('actions') %></th>
+
+  </tr>
+ 
+  <% @itemCategory.each do |category| %>
+    <tr>
+      <td class="mg-capitalize-text"><%= category.name %></td>
+      <td class="mg-desc-text-justify"><%= truncate(category.description.to_s, :length => 25, :separator => ' ') %></td>
+      <td>
+      	
+      <button title="Show" id="<%=raw category.id %>-showlabBTNID" class="show-alumni-payment-btn mg-icon-btn"><i class="fa fa-eye"></i></button>
+
+        <button title="Edit" id="<%=raw category.id %>-editlabBTNID" class="edit-alumni-payment-btn mg-icon-btn"><i class="fa fa-pencil-square-o"></i></button>
+
+        <button title="Delete" id="<%=raw category.id %>-deletelabBTNID" class="delete-alumni-payment-btn mg-icon-btn"><i class="fa fa-trash"></i></button>
+
+      </td>
+    </tr>
+  <% end %>
+</table>
+<br/>
+ <div class="pagination-align" style="position: relative; bottom: 10px;">
+              <%= will_paginate @itemCategory, :container => false %>
+           </div>
+<%else%>
+<h5>No payment type is created </h5>
+<%end%>
+</div>
+<div id="newAddAlumniPaymentDIVID"></div>
+<div id="editalumnipaymenttypeId"></div>
+
+
+<div id="showalumnipaymentshowDIVID"></div>
+
+
+<%= render  partial: 'application/common_left_close' %>
+
+<script>
+$( document ).ready(function() {
+            focusCurrentTab("paymenttypeAID","paymenttypeAIDLId");
+          //focusStudentHeaderBox();
+});
+
+
+$(document).on("click", ".show-alumni-payment-btn", function(e){
+        var myID =$(this).attr('id');
+        var Id=myID.split("-");
+        var urlLink = "/alumni/payment_show/"+Id[0];
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(html){
+                  $('#showalumnipaymentshowDIVID').dialog({
+                    modal: true,
+                     minHeight: 'auto',
+                     width: 'auto',
+                     title: "Show Payment Type",
+                     open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+});
+
+
+$(document).on("click", ".edit-alumni-payment-btn", function(e){
+        var myID =$(this).attr('id');
+        var Id=myID.split("-");
+        var urlLink = "/alumni/payment_edit/"+Id[0];
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(html){
+                  $('#editalumnipaymenttypeId').dialog({
+                    modal: true,
+                     minHeight: 'auto',
+                    minWidth: 260,
+                    title: "Edit Payment Type",
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+});
+
+$(document).on("click", ".new-add-alumni-type", function(e){
+        var urlLink = "/alumni/payment_new";
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(html){
+                  $('#newAddAlumniPaymentDIVID').dialog({
+                    modal: true,
+                     minHeight: 'auto',
+                    minWidth: 260,
+                    title: "Add Payment Type",
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+});
+
+// ============================================================================
+
+$(document).on("click", ".delete-alumni-payment-btn", function(e){
+    var myID =$(this).attr('id');
+    var Id=myID.split("-");
+    var urlLink = "/alumni/payment_delete/"+Id[0];
+    var retVal = confirm("Are you sure to delete?");
+    if (retVal)
+    {
+      $.ajax({
+          url: urlLink ,
+          cache: false,
+          success: function(html){
+                  window.location.reload();
+          }
+      });
+    }
+    else
+    {
+        return false;
+    }
+});
+
+// ============================================================================
+
+
+
+
+
+
+
+
+
+
+
+</script>
+<style>
+
+
+.table-batchs-tbl {
+   /* font-family: verdana,arial,sans-serif;*/
+    font-size:13px;
+    color:#363131;
+    border-width: 1px;
+    border-color:  #363131;
+    border-collapse: collapse;
+    padding: 12px ;
+    font-size: 0.8em;
+    width: 261px !important;
+    /* margin-left: 2px; */
+}
+</style>
+
+

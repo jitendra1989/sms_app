@@ -1,0 +1,82 @@
+    <%= render  partial: 'library_left' %>
+<% navigation_add 'Class by Class Report', libraries_class_by_class_report_path %>
+
+<h4 class="mg-h4"><%= "Class by class Report"%></h4>
+
+<table class="mg-tbl-margin mg-show-tbl-width">
+<tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="selectCourse"><%= t ('select_course') %><span class="required-field">&nbsp;*</span></label><br/>
+
+   <%course_data=MgCourse.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:course_name,:id)%>
+<%=select_tag :"library_report_course",options_for_select(course_data),:prompt=>"Select",:class=>"mg-text-field"%><%#:onchange=>"library_report_data(this.value)%>
+
+</td>
+</tr>
+<tr>
+<td>
+	 <label class="mg-label" for="from_date"><%= t ('from_date') %><span class="required-field">&nbsp;*</span></label><br/>
+	 <%=text_field_tag :library_from_date,nil,:class=>"mg-text-field"%>
+
+</td>
+</tr>
+<tr>
+<td>
+	 <label class="mg-label" for="to_date"><%= t ('to_date') %><span class="required-field">&nbsp;*</span></label><br/>
+	 <%=text_field_tag :library_to_date,nil,:class=>"mg-text-field"%>
+</td>
+</tr>
+    
+
+</table>
+ <%=submit_tag 'Generate Report', :class=> "submit  library_report_data mg-small-form-btn mg-custom-labels" %>
+
+ 
+<div id="library_report_generation_data">
+</div>
+<%= render  partial: 'schools/school_left_close' %>
+<script>
+$(document).ready(function(){
+focusCurrentTab("classbookReportAID","classbookReportLiID");
+        focusLibrary();
+
+        //focusMasterSettings();
+
+
+
+dateFormatStr =  getJsDateFormat();
+
+$('#library_from_date').datepicker({ changeMonth: true,
+                changeYear: true,yearRange: "-100:+0",maxDate: "0",dateFormat: dateFormatStr});
+
+$('#library_to_date').datepicker({ changeMonth: true,
+                changeYear: true,yearRange: "-100:+0",maxDate: "0",dateFormat: dateFormatStr});
+
+});
+$(document).on("click",".library_report_data",function(){
+					var course_id=$("#library_report_course").val();
+			var from_date=$("#library_from_date").val();
+			var to_date=$("#library_to_date").val();
+var urlLink="/libraries/library_report_generation"
+$.ajax({
+	url:urlLink,
+	cache:false,
+	data:{"class_id":course_id,"from_date":from_date,"to_date":to_date},
+	success: function(html){
+		$("#library_report_generation_data").empty();
+		$("#library_report_generation_data").append(html);
+
+
+
+	}
+
+});
+});
+</script>
+
+
+
+
+
+
+

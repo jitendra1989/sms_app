@@ -1,0 +1,12 @@
+<% navigation_add t('job_apply'), :controller=>'placements', :action=>'job_apply' %>
+<% navigation_add t('new'), :controller=>'placements', :action=>'job_apply_new' %>
+<%= render  partial: 'dashboards/student_dashboard_left' %>
+
+<h4 class="mg-h4"><%= t('apply_for_job')%></h4>
+<%= render  partial: 'job_apply_new' %>
+
+<%= render  partial: 'application/common_left_close' %>
+<script>
+  $( document ).ready(function() {
+  });
+</script>

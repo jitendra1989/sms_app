@@ -1,0 +1,129 @@
+<%= render partial: 'canteen_management_left' %>
+<% navigation_add t('food_item'), :controller=>'canteen_managements', :action=>'index' %>
+<h4 class="mg-h4"><%= t('food_item') %></h4>
+<button class="add-food-item-cls mg-btn-bottom-margin mg-custom-form-btn"><%= t('add_food_item')%></button></br>
+<%if @food_item_details.present? %>
+  <div class="mg_pagination">
+    <table class="batch-tbl mg-tbl-margin table-batchs-tbl">
+      <tr class="subject-table-header">
+        <th><%= t('name') %></th>
+        <th><%= t('type') %></th>
+        <th><%= t('price') %></th>
+        <th><%= t('description') %></th>
+        <th><%= t('actions') %></th>  
+      </tr>
+      <% @food_item_details.each do |f| %>  
+      <tr>
+        <td class="mg-capitalize-text mg-align-center"><%= f.try(:item_name)%> </td>
+        <td class="mg-capitalize-text"><%= f.try(:category) %></td>
+        <td class="mg-align-center"><%= f.try(:price) %></td>   
+        <td class="mg-desc-text-justify"><%= truncate(f.description.to_s, :length => 25, :separator => ' ') %></td>
+        
+        <td style="width: ;">
+          <button title="show" id="<%= raw f.id %>-showexmBTNID" class="show-food-item mg-icon-btn"><i class="fa fa-eye"></i></button>
+          <button title="Edit" id="<%= raw f.id %>-editexmBTNID" class="edit-food-item mg-icon-btn"><i class="fa fa-pencil-square-o"></i></button>
+          <button title="<%= t('delete') %>" id="<%= raw f.id %>-deleteexmBTNID" class="delete-food-item mg-icon-btn"><i class="fa fa-trash"></i></button>
+        </td>
+      </tr> 
+      <% end %>
+    </table>
+    <div class="pagination-align" style="position: relative; bottom: 00px;">
+      <%= will_paginate @food_item_details, :container => false %>
+    </div>
+  </div>
+<%else%>
+  <%="No Food item created please create some food item"%>
+<%end%>
+
+<div id="newFoodItemDivID"></div>
+<div id="showFoodItemDivID"></div>
+<div id="editFoodItemDivID"></div>
+
+<%= render  partial: 'application/common_left_close' %>
+
+
+<script>
+  $(document).ready(function(){   
+    focusCurrentTab("foodItemDetailsAID","foodItemDetailsLID");
+  });
+
+  $(document).on("click",".add-food-item-cls",function(e){   
+    e.preventDefault();   
+    var urlLink = "/canteen_managements/new";
+    $.ajax({
+      url: urlLink,
+      cache: false,
+
+      success: function(data){
+        $("#newFoodItemDivID").dialog({
+          model: true,
+          minHeight: 'auto',
+          minWidth: 260,
+          title: "Add Food Item",
+          open: function(){
+            $(this).html(data);
+          }
+        })
+      }
+    })
+  });
+
+
+  $(document).on("click",".show-food-item",function(e){   
+    e.preventDefault();  
+    var showID = $(this).attr('id');
+    var id = showID.split("-"); 
+    var urlLink = "/canteen_managements/show/"+id[0];
+    $.ajax({
+      url: urlLink,
+      cache: false,
+
+      success: function(data){
+        $("#showFoodItemDivID").dialog({
+          model: true,
+          height: 'auto',
+          width: 'auto',
+          title: "Show Food Item",
+          open: function(){
+            $(this).html(data);
+          }
+        })
+      }
+    })
+  });
+
+  $(document).on("click",".edit-food-item",function(e){   
+    e.preventDefault();  
+    var showID = $(this).attr('id');
+    var id = showID.split("-"); 
+    var urlLink = "/canteen_managements/"+id[0]+"/edit";
+    $.ajax({
+      url: urlLink,
+      cache: false,
+
+      success: function(data){
+        $("#editFoodItemDivID").dialog({
+          model: true,
+          minHeight: 'auto',
+          minWidth: 'auto',
+          title: "Edit Food Item",
+          open: function(){
+            $(this).html(data);
+          }
+        })
+      }
+    })
+  });
+
+
+
+  $(document).on("click",".delete-food-item",function(){
+    var delteID = $(this).attr('id');
+    var id = delteID.split("-");
+    var urlLink = "/canteen_managements/delete/"+id[0];
+    var result=confirm("Are you sure to delete?");
+    if(result){
+      window.location = urlLink;
+    }
+  }); 
+</script>

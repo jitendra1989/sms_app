@@ -1,0 +1,134 @@
+<!--com -->
+    <h4 class="mg-h4"><%=t('assign_class_teacher_to_section')%></h4>
+    <div>
+
+    <%= form_for :cls_teacher, url: assign_class_teacher_to_batch_create_path , :html => { :id => "assignClassTeacherFormID" } do |f| %>
+
+                     <% 
+                          @batchList =   MgBatch.where(:is_deleted => 0,:mg_school_id=>session[:current_user_school_id]).order('mg_course_id')
+                          %>
+                          <%#= @batchList.inspect %>
+                      <%                             
+                        @batchList.each do |batchObj|
+
+                            @courseObj = MgCourse.find_by_id(batchObj.mg_course_id)
+                            batchObj.name = (@courseObj.course_name) +"-"+ batchObj.name
+
+                        end
+                     %>
+                     <%#= @batchList.inspect %>
+                     <label class="mg-label mg-lbl-width"><%=t('course')%>-<%=t('batch')%></label>
+                     <%=f.collection_select(:mg_batch_id, @batchList , :id, :name, {:include_blank => 'Select'} ,:class=>"mg-select-btn") %><br>
+					
+					<label class="mg-label mg-lbl-width"><%=t('employeedepartment')%></label>
+				    <%=f.collection_select(:mg_department_id, MgEmployeeDepartment.where(:is_deleted => 0,:mg_school_id=>session[:current_user_school_id]) , :id, :department_name, {:include_blank => 'Select'} ,:class=>"mg-select-assign-department-btn" ,:id => "assignClassTeacherCategorySelectID") %>
+
+                     <%  @employees = MgEmployee.where(:is_deleted => 0,:mg_school_id=>session[:current_user_school_id],:mg_employee_category_id=>140).pluck(:first_name,:last_name,:id)  %>
+					<%#= @employees.inspect %>
+
+					<br/>
+					<div id="classteacherName"></div>
+					<div id="assignTeacherTblID">
+					</div><br>	
+			<p>
+           <!-- <input type="submit" id="classTeacherSubmitbtn" class="assign-class-teacher-btn mg-small-form-btn" value=<%#= t("save")%> disabled> -->
+			<a onclick="$(this).closest('form').submit()" id="classTeacherSubmitbtn" class="assign-class-teacher-btn mg-small-form-btn mg-disable-a" ><%=t("save")%></a> 
+              <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+              </p>
+         </div>
+	<% end %>
+
+
+	<script type="text/javascript">
+	
+         $(document).on("change",".mg-select-assign-department-btn",function(){
+         	var empCategoryID = $( "#assignClassTeacherCategorySelectID" ).val();
+         	var batchId=$("#cls_teacher_mg_batch_id").val();
+         	//alert(empCategoryID);
+         	if(empCategoryID > 0){
+
+         		     var urlLink = "/employees/employee_list_according_to_category/"+empCategoryID;
+			         $.ajax({
+			           //  data : {'mg_employee_category_id':empCategoryID}, 
+			             url: urlLink,
+			             cache: false,
+			             data:{"mg_batch_id":batchId},
+			             success: function(data){
+			             	console.log(data.length);
+
+			                console.log(data);
+			                if(data.length > 0){
+
+					                	var apdStr ='<label class="mg-label">Select Class Teacher</label><br>';
+		                                    apdStr += '<table  cellspacing="0" cellpadding="0" border="0"  style="margin-left:0px;" class ="batch-tbl mg-tbl-margin">';
+
+			                			var classTeacherName=data[1];
+			                			// var teacherName='<label>The Class Teacher is '+classTeacherName+'</label>';
+
+			                			 console.log(classTeacherName);
+					                	var apdStr ='<label class="mg-label">Select Class Teacher</label><br>';
+
+		                                    apdStr += '<div class="mg-scroll-subject-bar"><table  cellspacing="0" cellpadding="0" border="0"  style="margin-left:0px;" class ="batch-tbl mg-tbl-layout">';
+
+			                                apdStr +='<tr><th>Employee Id</th><th>Name</th><th>Actions </th></tr>';
+
+			                                for(key in data[1]){	
+							             	     if(data[1]=="Not Assigned"){
+								             	    }
+								             	    else{
+								             	    	
+								             	    	apdStr += '<tr><td>'+data[1][key].employee_number+'</td>';	
+							             	    		apdStr += '<td class="mg-table-normal-whitespace mg-capitalize-text">'+data[1][key].first_name+" "+data[1][key].middle_name+" "+data[1][key].last_name+'</td>';	
+							             	    		apdStr += '<td class="assign-teach-cls mg-align-center"><input type="checkbox" id="classTeacherId" class="checkSingle user-check-box" name="cls_teacher[emp_id]" value="'+data[1][key].id+'" checked></td></tr>';
+								             	    }	
+						             		}
+
+					             	    for(key in data[0]){
+						             	    apdStr += '<tr><td>'+data[0][key].employee_number+'</td>';	
+						             	    apdStr += '<td class="mg-table-normal-whitespace">'+data[0][key].first_name+' '+data[0][key].middle_name+' '+data[0][key].last_name+'</td>';	
+						             	    apdStr += '<td class="assign-teach-cls mg-align-center"><input type="checkbox" class="checkSingle user-check-box" name="cls_teacher[emp_id][]" value="'+data[0][key].id+'" onclick="btnEnable()"></td></tr>';
+					             	    } 
+		                            apdStr += '</table></div>'
+		                            
+		                            // $("#classteacherName").html(teacherName);
+		                            $("#assignTeacherTblID").html(apdStr);
+			              
+			                     }else{
+			                     	alert("nodate");
+			                     }
+			             }
+			                
+			         });
+
+         	}else{
+         		alert("Please select different category");
+         	}	
+         });	
+
+         $(document).on("change",".assign-teach-cls > :checkbox",function(){
+			if ($(this).is(":checked")){
+				$(".assign-teach-cls > :checkbox").prop('disabled',true);
+				$(this).prop('disabled',false);
+		    }
+		    else {
+		    	$(".assign-teach-cls > :checkbox").prop('disabled',false);
+		    }
+
+        });
+
+         function btnEnable(){
+         	$("#classTeacherId").removeAttr("checked");
+         	$("#classTeacherSubmitbtn").removeClass("mg-disable-a");
+         	$("#classTeacherSubmitbtn").removeAttr("disabled");	
+         }
+
+		// function myFunction() {
+		//     document.getElementById("myLink").disabled = true;
+		// }
+
+		$('#myLink').click(function(e){
+		    e.preventDefault();
+		    $("#classTeacherSubmitbtn").removeAttr("disabled");
+		});
+
+	</script>

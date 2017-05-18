@@ -1,0 +1,357 @@
+<h4 class="mg-h4" style="width: 739px;">Send Notification</h4>
+<div class="container" style="width: 739px; margin-left: -15px;">
+
+	<%= form_for @notification,  url: notifications_path , :html => { :class => 'form-horizontal' } do |f| %>
+
+
+	    <%= f.hidden_field :from_user_id, :value => session[:user_id] %>
+        <%= f.hidden_field :is_deleted, :value => 0 %>
+        <%= f.hidden_field :status, :value => 0 %>
+        <%= f.hidden_field :mg_school_id, :value => session[:current_user_school_id] %>
+
+        <%#=f.chseck_box :mg_school_id, {:multiple => true}, true, false %>
+
+        <%#if @user_type == "principal"%>
+			<table>
+				<tr>
+					<td>
+						<label class="mg-label mg-long-form-width" for="groupSelectDDID">Send To </label>
+					</td>
+					<td>
+		<!-- 	<label >*</label> -->
+						<select name="Group" id="groupSelectDDID">
+							<option value="All">All</option>
+							<%if @user_type == "employee"%>
+								<option value="Principal">Principal</option>
+							<%end%>
+							<option value="Parent">Parent</option>
+							<option value="Student">Student</option>
+							<option value="Teacher">Teacher</option>
+							<option value="Employee">Employee</option>
+						</select>
+					</td>
+				</tr>
+			</table>
+		<%#else%>
+			<!-- <table>
+				<tr>
+					<td>
+						<label class="mg-label mg-long-form-width" for="groupSelectDDID">Send To </label>
+					</td>
+					<td>
+		<label >*</label>
+						<select name="Group" id="groupSelectDDID">
+							<option value="All">All</option>
+							<option value="Principal">Principal</option>
+							<option value="Parent">Parent</option>
+							<option value="Student">Student</option>
+							<option value="Employee">Employee</option>
+						</select>
+					</td>
+				</tr>
+			</table> -->
+		<%#end%>
+
+		<!-- Parent dd work start-->
+
+		<div class="notify-div Parent display-none">
+			
+
+		</div>
+		<!-- Parent dd work finsh-->
+
+		<!-- Student dd work start-->
+		<div class="notify-div Student display-none mg-label-top-margin">
+			<table>
+				<tr>
+					<td>
+						<label class="mg-label mg-long-form-width" for="mg_notification_to_user_id"><%=t('coursebatch')%></label>
+					</td>
+					<td>
+					    <% 
+				          @batchList =   MgBatch.where(:is_deleted => 0,:mg_school_id=>session[:current_user_school_id])
+				                                                     
+				          @batchList.each do |batchObj|
+
+				              @courseObj = MgCourse.find_by_id(batchObj.mg_course_id)
+				              batchObj.name = (@courseObj.course_name) +"-"+ batchObj.name
+				          end
+				        %>
+				                     <%#= @batchList.inspect %>
+				        <%= f.collection_select(:to_user_id, @batchList , :id, :name, {:include_blank => 'Select'} ,:class=>"mg-student-notification-list-dd") %>
+				    </td>
+				</tr>
+			</table>
+		</div>
+		<!-- Student dd work finish-->
+
+		<!-- Teacher dd work start-->
+		<div class="notify-div Employee display-none mg-label-top-margin">
+			<table>
+				<tr>
+					<td>
+						<label class="mg-label mg-long-form-width" for="mg_notification_to_user_id">Select department *</label>
+					</td>
+					<td>						 
+						<%= f.collection_select(:to_user_id,MgEmployeeDepartment.where(:is_deleted => '0',:mg_school_id=>session[:current_user_school_id]), :id, :department_name,{:include_blank => t("select")},:class => "mg-student-notification-list-dd")%>
+					</td>
+				</tr>
+			</table>
+
+		</div>
+		<!-- employee dd work finish-->
+
+		<!-- Teacher dd Work start Bindhu -->
+		<div class="notify-div Teacher display-none mg-label-top-margin">
+			<table>
+				<tr>
+					<td>
+						<label class="mg-label mg-long-form-width" for="mg_notification_to_user_id">Select department *</label>
+					</td>
+					<td>						 
+						<%= f.collection_select(:to_user_id,MgEmployeeDepartment.where(:is_deleted => '0',:mg_school_id=>session[:current_user_school_id]), :id, :department_name,{:include_blank => t("select")},:class => "mg-student-notification-list-dd")%>
+					</td>
+				</tr>
+			</table>
+
+		</div>
+		<!-- Teacher dd Work end Bindhu -->
+		
+		<!-- Parent dd work start -->
+		<div class="notify-div Parent display-none mg-label-top-margin">
+			<table>
+				<tr>
+					<td>
+						<label class="mg-label mg-long-form-width" for="mg_notification_to_user_id"><%=t('coursebatch')%></label>
+					</td>
+					<td>
+			  			<%= f.collection_select(:to_user_id, @batchList , :id, :name, {:include_blank => 'Select'} ,:class=>"mg-student-notification-list-dd") %>
+			  		</td>
+			  	</tr>
+			</table>
+		</div>
+
+		<!-- Parent dd work start -->
+
+		<!-- Principal dd work start -->
+		<div class="notify-div Principal display-none mg-label-top-margin">
+		<%if @principal_noti.length>0%>
+			<%if @principal_noti[0].present?%>
+				<%= f.hidden_field :to_user_id, :value => @principal_noti[0][3] %>
+			<%else%>
+			<%end%>
+		<%end%>
+
+		</div>
+		<!-- Principal dd work end -->
+
+		<table>
+			<tr>
+				<td></td>
+				<td>
+					<div  id="usersNotificationListID" >
+						
+					</div>
+				</td>
+			</tr>
+		</table>
+
+		<div  id="usersNotificationListID"  >
+			
+		</div>
+
+		<table cellspacing="0" cellpadding="0" border="0"  class="mg-tbl-spacing" style="margin-left:0px;">
+	        <tbody>
+                    <% 
+                      @userList =   MgUser.where(:is_deleted => 0,:mg_school_id=>session[:current_user_school_id])
+                    %>
+	        	<tr>
+
+	        		<td><%#=f.label :To%>
+	        		 <%#=f.collection_select(:to_user_id, @userList , :id, :first_name, {:include_blank => 'Select'} ,:class=>"mg-select-btn") %>
+                    </td>
+
+	        	</tr>
+	            <tr> 
+	            	<td valign="top">
+						<label class="mg-label mg-long-form-width"><%=f.label :subject%>
+						<span>*</span></label>
+					</td>
+					<td></td>
+					<td>					
+	            		<%=f.text_field :subject ,:class=>"mg-text-field"%>
+	            	</td>
+	            </tr>
+	            <tr>
+	            	<td valign="top">
+						<label class="mg-label mg-long-form-width"><%=f.label :message %>
+						<span>*</span></label>
+					</td>
+					<td></td>
+					<td>
+	            		<%=f.text_area :description ,:class=>"mg-text-field"%>
+	            	</td>
+	            </tr>
+	          </table><br/>
+	            <p>
+						<%#= f.submit t('save') ,:class => "mg-small-form-btn" %>
+						<a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("save")%></a>
+						<%= link_to t('cancel'), '', {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+	            </p>
+		
+
+	<% end %>
+</div>
+
+<script type="text/javascript">
+	$(document).ready(function(){
+
+		      $("#new_mg_notification").validate({
+          //debug: true,
+            rules: {
+                      "mg_notification[to_user_id]": {required: true},
+                      "mg_notification[subject]": {required: true},
+                      "mg_notification[description]": {required: true}, 
+                      "mg_notification[user_check][]": {required: true}, 
+                      // "student[date_of_birth]": {required: true},
+                      // "student[mg_batch_id]": {required: true},
+
+              }
+        });
+
+
+
+
+		$(document).on("change","#groupSelectDDID",function(){
+				$("#usersNotificationListID").empty();
+			    $(".notify-div").addClass("display-none");
+			    $(".notify-div").removeClass("display-block");
+			    	var ddvalue = this.value;
+				    $(".notify-div").each(function(index) {
+				        var flag = $(this).hasClass(ddvalue);
+				        if (flag) {
+					            $(this).removeClass("display-none");
+					            $(this).addClass("display-block");
+				        }
+				    });
+
+		});
+
+		$(document).on("click","#selectAllUserListBtnID",function(){
+			alert("Hello");
+
+			// user-check-box
+		});
+
+
+
+		$(document).on("change","#mg_notification_to_user_id",function(){
+
+			var currentID = this.value;
+	        var urlLink = "/notifications/get_data_list/"+currentID;
+	        var strUser = $("#groupSelectDDID").find('option:selected').attr('value');
+	        
+	        console.log(strUser) ;
+	        
+
+	        $.ajax({
+	            url: urlLink ,
+	            data: {'id': currentID,'user_type': strUser},
+
+	            cache: false,
+	            success: function(json_Data){
+	            	console.log("JSON DATA");
+	            	console.log(json_Data);
+
+	                 if(json_Data.length > 0){
+	                 	
+	                var tblStr = '<br/><input type="checkbox" name="checkedAll" id="checkedAll">&nbsp;Select All</input><br/><div class="mg-scroll-height mg-tbl-margin"><table cellspacing="0" cellpadding="0" border="0"  style="margin-left:0px;" class ="batch-tbl"> <tbody>';
+
+	                    tblStr += '<tr class="student-table-header"> <td>Name</td> <td>User ID</td><td>Actions</td> </tr>' ;
+
+
+	                   for (i in json_Data) {
+					//json[i] is your current object inside the array, {"DisplayName":"Answer Number 1","Value":"Answer1","Option":"True"}
+					     tblStr += '<tr>';
+					      if(strUser == "Parent"){
+							tblStr +=  '<td>'+json_Data[i]['first_name']+' '+json_Data[i]['middle_name']+' '+json_Data[i]['last_name']+'</td>'
+							tblStr +=  '<td>'+json_Data[i]['mg_user_id']+'</td>'
+					        }
+					      else{
+					      	tblStr +=  '<td>'+json_Data[i][0]+' '+json_Data[i][1]+' '+json_Data[i][2]+'</td>'
+							tblStr +=  '<td>'+json_Data[i][3]+'</td>'
+					      }
+					//         for (key in json_Data[i]) {
+					// // keys are DisplayName,  Value, Option
+								
+					// 			if(key != 'id'){
+					// 				tblStr += '<td>'+json_Data[i][key]+'</td>';
+					// 			}
+									
+					//            // console.log("Value "+json_Data[i][key]); // instead of writing object.key you can also write object[key]
+					//         }
+					        if(strUser == "Parent"){
+							tblStr += '<td class="mg-align-center"><input type="checkbox" class="checkSingle user-check-box" name="mg_notification[user_check][]" value="'+json_Data[i]['mg_user_id']+'"></td>'
+					        }else{
+
+					      tblStr += '<td class="mg-align-center"><input type="checkbox" class="checkSingle user-check-box" name="mg_notification[user_check][]" value="'+json_Data[i][3]+'"></td>'
+					        }
+					      tblStr += '</tr>';
+					    }
+					    tblStr += '</tbody></table></div>';
+
+					    $("#usersNotificationListID").empty().append(tblStr);
+					//    $("#usersNotificationListID").css({"width":"300px","height":"350px"});
+					    // console.log(tblStr);
+
+	                 }else{
+	                 	alert("No data please select different group");
+	                 }
+
+
+
+
+	            }
+	        });
+		});
+
+		// 	 checkbox handling
+
+		$(document).on("change","#checkedAll",function(){
+			if(this.checked){
+		      $(".checkSingle").each(function(){
+		        this.checked=true;
+		      })              
+		    }else{
+		      $(".checkSingle").each(function(){
+		        this.checked=false;
+		      })              
+		    }
+		});
+        
+        $(document).on("change",".checkSingle",function(){
+			if ($(this).is(":checked")){
+		      var isAllChecked = 0;
+		      $(".checkSingle").each(function(){
+		        if(!this.checked)
+		           isAllChecked = 1;
+		      })              
+		      if(isAllChecked == 0){ $("#select_all").prop("checked", true); }     
+		    }
+		    else {
+		      $("#checkedAll").prop("checked", false);
+		    }
+
+        });
+
+
+	});
+</script>
+<style type="text/css">
+	#selectAllUserListBtnID{
+		padding: 5px;
+		background-color: #BEBDCD;
+		width:100px;
+
+	}
+</style>

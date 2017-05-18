@@ -1,0 +1,86 @@
+
+
+<%#=left_array.inspect%>
+
+
+<section id="userBodyContentBox" >
+    <table width=100% border="0" cellspacing="0" cellpadding="0">
+        <tr>
+            <td valign="top" class="userBodyContentBox1">
+                <aside class="userMenuBoxLeft" style="width: 210px;">
+                    <ul class="menuListHome">
+                       
+                        <%user=MgUser.find(session[:user_id])%>
+                        <%if user.user_type!="principal"%>
+                        <li class="myAccountMenu"><%=t('admin')%></li>
+                        <li id="viewPayslipsLiID">
+                            <a class="menuItemsActivities" href="/payslips" id="viewPayslipsCalendar">
+                                <div class="setMenu"><i class="fa fa-file">&nbsp;&nbsp;</i><%=t('payslips')%>
+                                </div>
+                            </a>
+                        </li>
+                        
+                          <li id="viewGeneratePayslipsLiID">
+                            <a class="menuItemsActivities" href="/payslips/generate_payslip" id="viewGeneratePayslipsAID">
+                                <div class="setMenu"><i class="fa fa-file">&nbsp;&nbsp;</i><%=t('generate_payslip')%>
+                                </div>
+                            </a>
+                        </li>
+                       <li id="viewGeneratePayslipsSalaryDeductionLiID">
+                            <a class="menuItemsActivities" href="/payslips/salary_deduction?month=<%=Date.today.month%>&year=<%=Date.today.year%>" id="viewGeneratePayslipsSalaryDeductionAID">
+                                <div class="setMenu"><i class="fa fa-file">&nbsp;&nbsp;</i><%=t('salary_deduction')%>
+                                </div>
+                            </a>
+                        </li> 
+                        <%else%>
+                        <li class="myAccountMenu"><%=t('principal')%></li>
+                        <li id="viewPayslipsApprovedLiID">
+                            <a class="menuItemsActivities" href="/payslips/payslips_for_approve" id="viewPayslipsApprovedAID">
+                                <div class="setMenu"><i class="fa fa-file">&nbsp;&nbsp;</i><%=t('payslips_for_approver')%>
+                                </div>
+                            </a>
+                        </li> 
+                        <li id="viewPayslipsReportsLiID">
+                            <a class="menuItemsActivities" href="/payslips/reports" id="viewPayslipsReports">
+                                <div class="setMenu"><i class="fa fa-pie-chart">&nbsp;&nbsp;</i><%=t('reports')%>
+                                </div>
+                            </a>
+                        </li>
+                        <li id="viewPayslipsOvertimeReportsLiID">
+                            <a class="menuItemsActivities" href="/payslips/overtime_report" id="viewPayslipsOvertimeReports">
+                                <div class="setMenu"><i class="fa fa-clock-o">&nbsp;&nbsp;</i><%=t('overtime_report')%>
+                                </div>
+                            </a>
+                        </li>
+                        <li id="viewPayslipsUnpaidLeavesReportsLiID">
+                            <a class="menuItemsActivities" href="/payslips/unpaid_leaves_report" id="viewPayslipsUnpaidLeavesReports">
+                                <div class="setMenu"><i class="fa fa-file">&nbsp;&nbsp;</i><%=t('unpaid_leaves_report')%>
+                                </div>
+                            </a>
+                        </li> 
+                        
+                    <%end%>
+                    <%#efor i in 0...left_array.size%>
+<!-- 
+                         <li id="<%#=left_array[i]['li_id']%>">
+                            <a class="menuItemsActivities" href="<%#=left_array[i]['url']%>" id="<%#=left_array[i]['a_id']%>">
+                                <div class="setMenu"><i class="fa fa-calendar">&nbsp;&nbsp;</i><%#=t("#{left_array[i]['name']}")%>
+                                </div>
+                            </a>
+                        </li> -->
+                    <%#end%>
+
+
+
+                        
+                    </ul>    
+
+                </aside>
+            </td>
+            <td  valign="top" id="manageAdminCategoryID" class="mg-table-td-main-2">
+              <%=render partial: 'layouts/messages'%>  
+<script>
+$(document).ready(function(){
+    focusPaySlip();
+});
+</script>

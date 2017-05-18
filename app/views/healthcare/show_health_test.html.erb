@@ -1,0 +1,172 @@
+<% navigation_add t('schedule'), :controller=>'healthcare' ,:action=> 'health_test' %>
+<%=render partial: 'healthcare_left'%>
+<%=hidden_field_tag "mg_checkup_schedule_id", params[:id]%>
+<%if @user_type.checkup_for=='student'%>
+  <% navigation_add t('tested_student'), :controller=>'healthcare' ,:action=> 'show_health_test',:id=>params[:id] %>
+  <h4 class="mg-h4"><%=t('tested_student_list')%></h4>
+<%else%>
+  <% navigation_add t('tested_employee'), :controller=>'healthcare' ,:action=> 'show_health_test',:id=>params[:id] %>
+  <h4 class="mg-h4"><%=t('tested_employee_list')%></h4>
+<%end%>
+
+<button class="add-health-test-repoert mg-btn-bottom-margin mg-custom-form-btn" id="<%=raw params[:id] %>-addHealthTestBTNID"><%= t('add_report')%></button>
+
+<%if @health_test.present?%>
+  <%if @health_test[0].user_type=='student'%>
+    <%student_id = @health_test.select(:mg_student_id).map(&:mg_student_id).uniq%>
+    <table  class="batch-tbl mg-tbl-margin">   <!-- border="2" --> 
+      <tr class="subject-table-header">
+        <th><%= t('name') %></th>
+        <th><%= t('semester') %></th>
+        <th><%= t('actions') %></th>
+      </tr>
+
+      <%student_id.each do |id|%>
+        <%health_test_obj = @health_test.where(:mg_student_id=>id,:is_deleted=>0) %>
+        <% batchobj = MgBatch.find_by(:id=>health_test_obj[0].mg_batch_id,:is_deleted=>0)%>
+        <% student_obj = MgStudent.find_by(:id=>id,:is_deleted=>0)%>
+        <%@courseObj = MgCourse.find_by_id(batchobj.mg_course_id)%>
+        <tr>
+          <td class="mg-capitalize-text">
+            <%= student_obj.try(:first_name) %><%=" "%><%= student_obj.try(:last_name) %>
+          </td>
+          <td class="mg-capitalize-text">
+            <%= (@courseObj.course_name) +"-"+ batchobj.name %>
+          </td>
+          <td>
+            <button title="Show" id="<%=raw id %>-showHealthTestBTNID" class="show-form-section-btn mg-icon-btn"><i class="fa fa-eye"></i></button>
+            <button title="Edit" id="<%=raw id %>-editHealthTestBTNID" class="edit-form-sections-btn mg-icon-btn"><i class="fa fa-pencil-square-o"></i></button>
+            <button title="Delete" id="<%=raw id %>-deleteHealthTestBTNID" class="delete-form-section-btn mg-icon-btn"><i class="fa fa-trash"></i></button>
+          </td>
+        </tr>
+     <%end%>
+    </table>
+  <%else%>
+    <%employee_id = @health_test.select(:mg_employee_id).map(&:mg_employee_id).uniq%>
+    <table  class="batch-tbl mg-tbl-margin">   <!-- border="2" --> 
+      <tr class="subject-table-header">
+        <th><%= t('employee_name') %></th>
+        <th><%= t('department') %></th>
+        <th><%= t('actions') %></th>
+      </tr>
+
+      <%employee_id.each do |id|%>
+        <%health_test_obj = @health_test.where(:mg_employee_id=>id,:is_deleted=>0)%>
+        <% emp_dept_obj = MgEmployeeDepartment.find_by(:id=>health_test_obj[0].mg_employee_department_id,:is_deleted=>0)%>
+        <% emp_obj = MgEmployee.find_by(:id=>id,:is_deleted=>0)%>
+        <tr>
+          <td>
+            <%= emp_obj.try(:first_name) %><%=" "%><%= emp_obj.try(:last_name) %>
+          </td>
+          <td>
+            <%= emp_dept_obj.try(:department_name) %>
+          </td>
+          <td>
+            <button title="Show" id="<%=raw id %>-showHealthTestBTNID" class="show-emp-form-section-btn mg-icon-btn"><i class="fa fa-eye"></i></button>
+            <button title="Edit" id="<%=raw id %>-editHealthTestBTNID" class="edit-form-sections-btn mg-icon-btn"><i class="fa fa-pencil-square-o"></i></button>
+            <button title="Delete" id="<%=raw id %>-deleteHealthTestBTNID" class="delete-emp-form-section-btn mg-icon-btn"><i class="fa fa-trash"></i></button>
+          </td>
+        </tr>
+     <%end%>
+    </table>
+  <%end%>
+<%else%>
+  <h5>No records are created </h5>
+<%end%>
+<div id="formSectionDivID"></div>
+<p class="mg-p-mgtop">
+  <%= link_to t('back'), {:controller=>'healthcare',:action=>'health_test'}, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+</p>
+
+<%= render  partial: 'application/common_left_close' %>
+
+
+<script>
+  $(document).ready(function () {
+    focusCurrentTab("healthTestAID","healthTestLID");
+    textSeeMoreLess();
+  });
+
+  var checkup_schedule_id = $("#mg_checkup_schedule_id").val();
+  $(document).on("click", ".show-form-section-btn", function(e){
+    var myID =$(this).attr('id');
+    var Id=myID.split("-");
+    var urlLink = "/healthcare/health_test_from_section/"+Id[0];
+    $.ajax({
+      url: urlLink ,
+      cache: false,
+      data:{id:Id[0],mg_checkup_schedule_id:checkup_schedule_id},
+      success: function(html){
+        $('#formSectionDivID').dialog({
+          modal: true,
+          minHeight: 'auto',
+          width: 'auto',
+          title: "Show Checkup Type",
+          open: function () {
+            $(this).html(html);
+          }
+        }); 
+      }
+    });
+  });
+
+  $(document).on("click", ".show-emp-form-section-btn", function(e){
+    var myID =$(this).attr('id');
+    var Id=myID.split("-");
+    var urlLink = "/healthcare/health_test_from_section/"+Id[0];
+    $.ajax({
+      url: urlLink ,
+      cache: false,
+      data:{id:Id[0],mg_checkup_schedule_id:checkup_schedule_id,emp_result:"emp_result"},
+      success: function(html){
+        $('#formSectionDivID').dialog({
+          modal: true,
+          minHeight: 'auto',
+          width: 'auto',
+          title: "Show Checkup Type",
+          open: function () {
+            $(this).html(html);
+          }
+        }); 
+      }
+    });
+  });
+
+  $(document).on("click", ".delete-form-section-btn", function(e){
+    var myID =$(this).attr('id');
+    var Id=myID.split("-");
+    var urlLink = "/healthcare/delete_health_test/"+Id[0]+"?delete_by=delete_by_student";
+    var result = confirm("Are you sure to delete");
+    if(result){
+      window.location=urlLink;
+    }
+  });
+
+  $(document).on("click", ".delete-emp-form-section-btn", function(e){
+    var myID =$(this).attr('id');
+    var Id=myID.split("-");
+    var urlLink = "/healthcare/delete_health_test/"+Id[0]+"?delete_by=delete_by_emp";
+    var result = confirm("Are you sure to delete");
+    if(result){
+      window.location=urlLink;
+    }
+  });
+
+  $(document).on("click", ".add-health-test-repoert", function(e){
+    var myID =$(this).attr('id');
+    var Id=myID.split("-");
+    var urlLink = "/healthcare/manage_health_test/"+Id[0];
+    window.location=urlLink;
+  });
+
+  $(document).on("click", ".edit-form-sections-btn", function(e){
+    var checkup_schedule_id = $("#mg_checkup_schedule_id").val();
+    var myID =$(this).attr('id');
+    var Id=myID.split("-");
+    var urlLink = "/healthcare/edit_health_test/"+Id[0]+"?checkup_schedule_id="+checkup_schedule_id;
+    window.location=urlLink;
+  });
+
+  
+</script>
+  

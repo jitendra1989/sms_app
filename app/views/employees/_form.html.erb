@@ -1,0 +1,886 @@
+<%# if !flash[:errorInRecords].blank? %>
+  <!-- <div class="alert alert-info"> -->
+  <%#= flash[:errorInRecords] %>
+ <!--  </div> -->
+<%# end %>
+<!-- <br />
+ -->
+<div id="employeeEditFormID"  class="employee-form-cls" >
+            
+    <div class="box">
+<!--   updation done on 17th to make layout  -->
+<%#= error_message_for :employee %>
+<%= form_for @employee, url: employees_path,:action=>"create", :html => {:id => 'employeeNewFormID'} do |f| %>         
+        <%= f.hidden_field :user_name, :value => "E"+@strVal%>
+        <%= f.hidden_field :password, :value => "employee123"%>
+        <%= f.hidden_field :is_deleted, :value => 0 %>
+        <%= f.hidden_field :mg_school_id, :value => session[:current_user_school_id] %>
+        <%= f.hidden_field :user_type, :value => "employee"%>
+              
+        <div class="form-content" style=" width:100%; border:0px #fac94a solid; color:#000; ">
+          <div class="form-content-inner" style="padding:5px;">
+            <table class="mg-table-align-main" width="100%" cellspacing="0" cellpadding="0" border="0">
+              <tbody>
+                <tr>
+                  <td align="right" style="width: 6.1em;">
+                    <label class="mg-label" for="employee_number"><%= t('employeenumber') %></label>
+                  </td>
+                  <td style="padding-left:8px;">
+                    <%= f.text_field :employee_number, :readonly => "readonly", :class=>"textboxwidth",:value => "E"+@strVal %>
+                  </td>
+                  <td align="right" style="width: 6.1em;">
+                    <label class="mg-label" for="joining_date"><%= t('joiningdate') %><span>&nbsp;*</span></label>
+                  </td>
+                  <td style="padding-left:8px;">
+                    <%= f.text_field :joining_date, :class=>"textboxwidth" %>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        
+        <div class="form-content">
+          <div class="form-content-inner">
+          <h4 class="mg-h4"><%= t('generaldetails') %></h4>
+            
+            <table width="100%" cellspacing="0" cellpadding="0" border="0" class="employee-form-cls">
+              <tbody>
+                <tr>
+                  <td width="33%" valign="bottom">
+                    <label class="mg-label" for="first_name" ><%= t('firstname') %>
+                      <span class="required-field">*</span> 
+                    </label>
+                  </td>
+
+                  <td> </td>
+                  <td width="33%" valign="bottom">
+                    <label class="mg-label" for="middle_name"><%= t('middlename') %></label>
+                  </td>
+                  <td> </td>
+                  <td width="33%" valign="bottom">
+                    <label class="mg-label" for="last_name"><%= t('lastname') %>
+                    <span class="required-field">*</span>
+                    </label>
+                  </td>
+                </tr> 
+                <tr>
+                  <td valign="top">
+                    <%= f.text_field :first_name  ,:class=>"mg-text-field"%>
+                  </td>
+                  <td> </td>
+                  <td valign="top">
+                    <%= f.text_field :middle_name ,:class=>"mg-text-field"%>
+                  </td>
+                  <td> </td>
+                  <td valign="top">
+                    <%= f.text_field :last_name ,:class=>"mg-text-field"%>
+                  </td>
+                </tr>
+
+              
+                <tr>
+                  <td width="33%" valign="bottom">
+                    <label class="mg-label" for="gender"> <%= t('gender') %>
+                      <span class="required-field">*</span>
+                    </label>
+                  </td>
+
+                  <td> </td>
+                  <td width="33%" valign="bottom">
+                    <label class="mg-label mg-label-text-transform-none" for="date_of_birth"><%= t('dateofbirth') %>
+                      <span class="required-field">*</span>
+                    </label>
+                  </td>
+                  <td> </td>
+                  <td width="33%" valign="bottom">
+                    <label class="mg-label" for="employee_category"><%= t('employeecategory') %>
+                       <span class="required-field">*</span>
+                    </label>
+                  </td>
+                </tr>
+                <tr> 
+                  <td valign="top">
+                     <%= f.select :gender, options_for_select([[t("Select"), ""], [t("male"), "male"], [t("female"), "female"]]) %>
+                  </td>
+                  <td> </td>
+                  <td valign="top">
+                    <%= f.text_field :date_of_birth, :class=>"textboxwidth mg-text-field" %>
+                  </td>
+                  <td> </td>
+                  <td valign="top">
+                    <%= f.collection_select(:mg_employee_category_id,MgEmployeeCategory.all, :id, :category_name,{:include_blank => t("select")},:onchange => "employeeCategorySelect()",:id => "employeeCategorySelectID")%>
+
+                  </td>
+                </tr>
+
+                <tr>
+                  <td width="33%" valign="bottom">
+                    <label class="mg-label" for="employee_position"><%= t('employeeposition') %><span class="required-field">&nbsp*</span></label>
+                  </td>
+
+                  <td> </td>
+                  <td width="33%" valign="bottom">
+                    <label class="mg-label" for="employee_department"><%= t('employeedepartment') %><span class="required-field">&nbsp*</span></label>
+                  </td>
+                  <td> </td>
+                 
+                  <td width="33%" valign="bottom">
+                    <label class="mg-label" for="job_title"><%= t('jobtitle') %></label>
+                  </td>
+                </tr>
+                
+                <tr>
+                  <td valign="top">
+
+                     <select id="employee_mg_employee_position_id" name="employee[mg_employee_position_id]">
+                     <option value="">Choose Category</option>
+                       <!-- <option value="">Select</option> -->
+               <!--     <option value="volvo">employeePositionSelectID Volvo</option>
+                      <option value="saab">Saab</option>
+                      <option value="mercedes">Mercedes</option>
+                      <option value="audi">Audi</option> -->
+                    </select> 
+
+
+                  </td>
+                  <td> </td>
+                  <td valign="top">
+                     <%= f.collection_select(:mg_employee_department_id,MgEmployeeDepartment.where(:is_deleted => '0', :mg_school_id=>session[:current_user_school_id]), :id, :department_name,{:include_blank => t("select")},:class => "myclass")%>
+                  </td>
+                  <td> </td>
+                  <td valign="top">
+                     <%= f.text_field :job_title, :class=>"textboxwidth mg-text-field" %>
+                    
+                  </td>
+                </tr>
+
+                <tr>
+                  <td width="33%" valign="bottom">
+                    <label class="mg-label" for="qualification"><%= t('qualification') %></label>
+                  </td>
+
+                  <td> </td>
+                  <td width="33%" valign="bottom">
+                    <label class="mg-label" for="experience_year"><%= t('experienceyear') %>
+                      <span class="required-field">*</span>
+                    </label>
+                  </td>
+                  <td> </td>
+                  <td width="33%" valign="bottom">
+                    <label class="mg-label" for="experience_month"><%= t('experiencemonth') %>
+                    <span class="required-field">*</span>
+                    </label>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top">
+                     <%= f.text_field :qualification, :class=>"textboxwidth mg-text-field" %>
+                     
+                  </td>
+                  <td> </td>
+                  <td valign="top">
+                    <%= f.text_field :experience_year, :class=>"textboxwidth mg-text-field" %>
+                  </td>
+                  <td> </td>
+                  <td valign="top">
+                    <%= f.text_field :experience_month, :class=>"textboxwidth mg-text-field" %>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td width="33%" valign="bottom">
+                    <label class="mg-label" for="status"><%= t('employeetype') %>
+                    <span class="required-field">*</span>
+                    </label>
+                  </td>
+
+                  <td> </td>
+                  <td width="33%" valign="bottom">
+                    <label class="mg-label" for="Language"><%= t('language') %>
+                    <span class="required-field">*</span>
+                    </label>
+                  </td>
+                 <td></td>
+                  <td width="33%" valign="bottom">
+                   <div id="isdeletedlabel" class="is_deleted" style="display: none;">
+                   <label class="mg-label" for="status "><%= t 'status' %>
+                  </div>
+                  </label>
+
+                  <label class="mg-label" for="ltc">LTC Applicable 
+                    <span class="required-field"></span>
+                  </label>
+
+
+
+                  </td>
+                  <td> </td>
+                  <td width="33%" valign="bottom">
+                    
+                  </td>
+                </tr>
+                <tr>
+                <td valign="top">
+    <%@employeetype=MgEmployeeType.where(:is_deleted=>0).pluck(:employee_type,:id)%>
+    <%=f.select :mg_employee_type_id,options_for_select(@employeetype),:prompt=> t('select')%>
+    </td> 
+    <td></td>
+  
+                <td valign="top">
+                     <%= f.text_field :language, :class=>"textboxwidth mg-text-field" %>
+                    <%#= select_tag 'locale', options_for_select([['English','en'],['Spanish','es'],['Hindi','hi'],['Germen','de']], I18n.locale.to_sym),:onchange => 'this.form.submit()'%>
+                  </td>
+                  <td> </td>
+                  <td valign="top">
+                   
+                    <%= f.check_box :is_ltc_applicable %>
+
+                    <!-- <input id="is_ltc_applicable" type="checkbox"  name="is_ltc_applicable" /> -->
+
+                  </td>
+                  <td>
+                    
+
+                  </td>
+                  <td valign="top" >
+              
+
+                  <div id="isdeleted" class="is_deleted" style="display: none;">
+                  <%= f.label :status, t("active"), :value => "true",:class=>"mg-label-inner-form"  %>
+                  <%= f.radio_button :status, false , :checked => true %>
+                  <%= f.label :status, t("inactive"), :value => "false",:class=>"mg-label-inner-form" %>
+                    <%= f.radio_button :status, true %>
+                    </div>
+
+
+
+
+                  </td>
+
+
+                </tr>
+
+
+              </tbody>
+            </table>
+          </div>
+      </div>
+      
+      
+      <div class="form-content">
+        <div class="form-content-inner">
+          <h4 class="mg-h4"><%= t('personaldetails') %></h4>
+            <table width="100%" cellspacing="0" cellpadding="0" border="0" class="employee-form-cls">
+                <tbody>
+                    <tr>
+                      <td width="33%" valign="bottom">
+                        <label class="mg-label" for="marital_status" ><%= t("maritalstatus") %>
+                        </label>
+                      </td>
+
+                      <td> </td>
+                      <td width="33%" valign="bottom">
+                        <label class="mg-label" for="mother_name" ><%= t("mothername") %>
+                          <span class="required-field">*</span> 
+                        </label>
+                      </td>
+                     
+                      <td> </td>
+                      <td width="33%" valign="bottom">
+                        <label class="mg-label" for="father_name"><%= t("fathername") %>
+                        <span class="required-field">*</span>
+                        </label>
+                      </td>
+                    </tr> 
+                    
+                    <tr>
+                      <td valign="top">
+                       <%= f.select :marital_status, options_for_select([[t("select"), ""], [t("single"), "single"], [t("married"), "married"], [t("divorced"), "divorced"], [t("widowed"), "widow/widowed"]]) %>
+                      </td>
+                      <td> </td>
+                       <td valign="top">
+                        <%= f.text_field :mother_name, :class=>"textboxwidth mg-text-field" %>
+                      </td>
+                    
+                      <td> </td>
+                      <td valign="top">
+                        <%= f.text_field :father_name, :class=>"textboxwidth mg-text-field" %>
+                      </td>
+                    </tr>
+                    
+                    <tr>
+                      <td width="33%" valign="bottom">
+                        <label class="mg-label" for="blood_group" ><%= t('bloodgroup') %>
+                          
+                        </label>
+                      </td>
+
+                      <td> </td>
+                      <td width="33%" valign="bottom">
+                        <label class="mg-label" for="mg_nationality_id" ><%= t('nationality') %>
+                        <span class="required-field">*</span>
+                          
+                        </label>
+                      </td>
+                    
+                      <td> </td>
+                      <td width="33%" valign="bottom">
+                        <!-- <label class="mg-label" for="image_file"><%#= t('PhotoUpload') %>
+                        
+                        </label> -->
+                      </td>
+                    </tr> 
+                    
+                    <tr>
+                      <td valign="top">
+                       <%= f.select :blood_group, options_for_select([[t("select"), ""], ["A+"], ["A-"], ["B+"], ["B-"], ["O+"], ["O-"], ["AB+"], ["AB-"]] ,:class=>"mg-select-btn") %>
+                      </td>
+                      <td> </td>
+                      <td valign="top">
+                        <!-- <#%= f.select :mg_nationality_id, options_for_select([[t("select"), ""], ["India", "2"], ["Sri Lanka", "3"]]) %> -->
+                        <%= f.country_select :nationality, ["India"], {}, { :class => "form-control" } %>
+                      </td>
+                    
+                      <td> </td>
+                      <td valign="top">
+                        <%#= f.file_field :photo ,:class=>"mg-text-field" ,:style=>"width: 95%;"%>
+                      </td>
+                    </tr>
+
+                    
+                 </tbody>
+            </table>
+        </div>
+      </div>
+
+
+      <!-- Language part has been done below -->
+          <h4 class="mg-h4"><%= t('languages_known') %></h4>
+          <div id="languagePlusId" class="mg-custom-form-btn mg-custom-labels" style="width: 6.5em; cursor: pointer;">Add New</div>
+          <div id="languagedivcloneid" class= "languagedivcloneclass">
+                <%= render :partial => "students/language_known" %>  
+          </div>
+
+          <div id="languagedivscloneid" class= "languagedivscloneclass">
+                
+          </div>
+<!-- Language part has been done above -->
+
+
+      <!-- Language part has been done below -->
+     <!--     <h4 class="mg-h4"><%#= t('language_known') %></h4>
+          <div id="languagePlusId">Add New</div>
+          <div id="languagedivcloneid" class= "languagedivcloneclass">
+                <%#= render :partial => "language_known" %>  
+          </div>
+
+          <div id="languagedivscloneid" class= "languagedivscloneclass">
+                
+          </div>  -->
+    <!-- Language part has been done above -->
+
+
+
+
+    <h4 class="mg-h4"><b>Photo</b></h4>
+      <table class="mg-btn-bottom-margin">
+        <tr>
+            <td width="30%">
+              <label class="mg-custom-labels mg-label"  for="schoollogo "><%= t 'PhotoUpload' %><span class="required-field">&nbsp;*</span></label><br/>
+              <%#= image_tag  @employee.photo.url(:medium, timestamp: false),:class => 'mg-img-size mg-btn-bottom-margin mg-custom-labels',:id=>"employeeImageTagID"  %>
+                <img id="employeeImageTagID" class="mg-img-size mg-btn-bottom-margin mg-custom-labels" src="#" style="display:none">
+              </td>
+              <td>
+              <%= f.file_field :photo,:onchange =>"validateEmployeeImage(this.value,this);"%>
+              <%#= file_field 'user_pic', accept: 'image/png,image/gif,image/jpeg'%>
+              <%#= @school.logo_file_name %>
+            </td>
+          </tr>
+      </table>
+
+
+      <h4 class="mg-h4"><b>Referred</b></h4>
+      <div id="empREferredDivId" class= "emp-referred-div-cls">   
+          <%= render :partial => "employee_referred" %>  
+      </div>
+      
+      <%= render :partial => 'address' , :locals => {:addresstype => "Temporary"}%>
+      
+      <%=render :partial => 'address' , :locals => {:addresstype => "Permanent"}%>
+      
+      
+
+      <table width="100%" cellspacing="0" cellpadding="0" border="0" class="employee-form-cls">
+            <tbody>
+            <tr>
+                <td width="100%" valign="bottom">
+                </td>
+                <td width="100%" valign="bottom">
+                </td>
+            </tr>
+      <h4 class="mg-h4"><%= t('contacts') %></h4>
+            <tr>
+                <td valign="top">
+                     <%= render :partial => "contact_emergency" ,:locals => {:phone_types => "phone"} %>
+                </td>
+        </tr>
+
+        <tr>
+                <td valign="top">
+                     <%= render :partial => "contact" ,:locals => {:phone_types => "mobile"} %>
+                </td>
+
+            </tr>
+     
+
+      
+
+         </tbody>
+       </table>
+
+       <%= render "email" %>
+       
+     <h4 class="mg-h4"><%= t('emergencycontacts') %></h4>
+            <div class="form-content">
+        <div class="form-content-inner">
+            <table width="100%" cellspacing="0" cellpadding="0" border="0" class="employee-form-cls">
+                <tbody>
+                    <tr>
+                      <td width="33%" valign="bottom">
+                        <label class="mg-label" for="emergency_contact_name" ><%= t('contactname') %>
+                          <span class="required-field">*</span> 
+                        </label>
+                      </td>
+
+                      <td> </td>
+                      <td width="33%" valign="bottom">
+                        <label class="mg-label" for="emergency_contact_number" ><%= t("contactnumber") %>
+                          <span class="required-field">*</span> 
+                        </label>
+                      </td>
+                     
+                      <td> </td>
+                      <td width="33%" valign="bottom">
+                        <span class="required-field"></span>
+                        </label>
+                      </td>
+                    </tr> 
+                    <tr>
+                      <td valign="top">
+                        <%= f.text_field :emergency_contact_name, :class=>"textboxwidth mg-text-field" %>
+                      </td>
+                      <td> </td>
+                       <td valign="top">
+                        +91-<%= f.text_field :emergency_contact_number, :class=>"textboxwidth mg-text-field mg-phn-text-field" %>
+                      </td>
+                    
+                      <td> </td>
+                      <td valign="top">
+                       
+                      </td>
+                    </tr>
+                 </tbody>
+            </table>
+        </div>
+      </div>
+
+
+      <!-- 
+############################################################################################
+
+ -->
+
+
+
+
+<h4 class="mg-h4"><%= t('activities') %></h4>
+            <div class="form-content">
+        <div class="form-content-inner">
+            <table width="100%" cellspacing="0" cellpadding="0" border="0" class="employee-form-cls">
+                <tbody>
+                    <tr>
+                      <td width="33%" valign="bottom">
+                        <label class="mg-label" for="sport_activity" ><%= t('sport_activity') %>
+                        </label>
+                      </td>
+                    </tr>
+                    <tr>
+                        <td valign="top" colspan="3">
+                        <%= f.text_area :sport_activity, :rows=>"5", :cols=>"70", :maxlength=>"4000", :class=>"textboxwidths mg-text-fields" %>
+                        </td>
+                    </tr>
+                    <tr>
+    <%= form_for :document_managements, url: document_managements_path, :html => {
+                                :id => 'documentManagementsFormID' } do |f| %>
+    
+                      <td>
+                        <label class="mg-label mg-rm-text-trans" for="upload_file" ><%= t('upload_file') %></label>
+                       <div class="mg-custom-labels" >
+   <div class="emp-file-file-div" id="dueFineDivId" style="float: left; width: 100%;">
+   <span style="float: left;">
+     <%= file_field_tag 'file[]'%>
+  </span>
+  <a href="#" class="emp-remove-file-upload mg-custom-form-btn mg-icon-btn" style="color: #297ACC; font-size:0.8em; float: left; position: relative; right: 0px; margin-top: 3px;"><i class="fa fa-trash"></i></a><br/>
+ </div><br/>
+ <a href="#" id="emp_add_file_uploads" class="mg-label-inner-form mg-custom-form-btn mg-icon-btn" style="color: #297ACC; font-size:0.8em;" ><i class="fa fa-plus">&nbsp;Add File</i></a> <br/>
+  </div><br/>
+                      </td>
+                    </tr>
+       <% end %>  
+                    </tbody>
+            </table>
+
+            <table width="100%" cellspacing="0" cellpadding="0" border="0" class="employee-form-cls">
+                <tbody>
+                    <tr>
+                      <td width="33%" valign="bottom">
+                        <label class="mg-label" for="extra_curricular" ><%= t("extra_curricular") %>
+                        </label>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td valign="top">
+                         <%= f.text_area :extra_curricular, :rows=>"5", :cols=>"70", :maxlength=>"4000", :class=>"textboxwidths mg-text-fields" %>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <label class="mg-label mg-rm-text-trans" for="upload_file" ><%= t('upload_file') %></label>
+                       <div class="mg-custom-labels" >
+    <%files=Array.new()%>
+     <div class="emp-files-upload-div" id="dueFineDivId" style="float: left; width: 100%;">
+      <span style="float: left;">
+    <%= file_field_tag 'files[]'%>
+    </span>
+   <a href="#" class="employees-removes-files-upload mg-custom-form-btn mg-icon-btn" style="color: #297ACC; font-size:0.8em; float: left; position: relative; right: 0px; margin-top: 3px;"><i class="fa fa-trash"></i></a>
+ </div>
+ <a href="#" id="employees_add_files_uploads" class="mg-label-inner-form mg-custom-form-btn mg-icon-btn" style="color: #297ACC; font-size:0.8em;" ><i class="fa fa-plus">&nbsp;Add File</i></a> <br/>
+  </div><br/>
+                      </td>
+                    </tr>
+            </tbody>
+            </table>
+
+
+            <table width="100%" cellspacing="0" cellpadding="0" border="0" class="employee-form-cls">
+                <tbody>
+                     <tr>
+                      <td width="33%" valign="bottom">
+                      <label class="mg-label" for="hobby" ><%= t("hobbies") %>
+                        <span class="required-field"></span>
+                        </label>
+                      </td>
+                    </tr> 
+                    <tr>
+                      <td valign="top">
+                       <%= f.text_area :hobby, :rows=>"5", :cols=>"70", :maxlength=>"4000", :class=>"textboxwidths mg-text-fields" %>
+                      </td>
+                    </tr>
+                    </tbody>
+            </table>
+        </div>
+      </div>
+
+
+
+
+
+
+<!-- ############################################################################################### -->
+
+
+
+
+<%if  @dbdatas.size>0 %>
+       <h4 class="mg-h4"><%= t('customfields') %></h4>
+
+       <!--generating custom fields-->
+       <%= f.hidden_field :mg_school_id, :value => session[:current_user_school_id]%>
+
+               <% @dbdatas.each do |dbdata| %>
+
+              <%custom_data=Array.new%>
+            <%= hidden_field_tag 'custom_data[]', dbdata.id%>
+
+            
+              <label class="mg-capitalize-lbl mg-label mg-custom-labels"><%= dbdata.name%></label><br>
+
+
+              <%@data=dbdata.text_data.split(",")%>
+
+               <%for i in 0..@data.length-1%>
+
+                  <%if dbdata.data_type=="check_box"%>
+
+                      <%custom_field=Array.new%>
+
+                      <label class="mg-custom-labels" style="font-weight: normal;"><%= check_box_tag 'custom_field_'+dbdata.id.to_s+'[]', @data[i]%></label>
+                      <label style="font-weight: normal;" ><%=@data[i] %></label>
+                  
+
+                  <%elsif dbdata.data_type=="radio_button" %>
+                      <%custom_field=Array.new%>
+                      <label class="mg-custom-labels" style="font-weight: normal;"><%= radio_button_tag 'custom_field_'+dbdata.id.to_s+'[]', @data[i]%></label>
+                       <%=@data[i] %>
+                 
+                     <%elsif dbdata.data_type=="input_type" %>
+                  
+                   
+                 
+                     <%custom_field=Array.new%>
+
+                     <label class="mg-custom-labels" style="font-weight: normal;"><%= text_field_tag 'custom_field_'+dbdata.id.to_s+'[]',@data[i] %></label>
+
+                  <%elsif dbdata.data_type=="drop_down" %>
+                      <%custom_field=Array.new%>
+                      <label class="mg-custom-labels" style="font-weight: normal;"><%=select_tag 'custom_field_'+dbdata.id.to_s+'[]',options_for_select(@data),:prompt => "Select"%></label>
+
+                        <%break%>
+                  
+
+                  <%end%><br>
+                
+
+                 <%end%>
+
+              <%end%>
+
+<%end%>
+
+
+
+       <br/><br>
+       <p>
+       <%= f.submit t('save') ,:class=>"mg-small-form-btn mg-custom-labels"%>
+        <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+        </p>
+    <% end %>
+
+    </div>
+</div>
+
+
+
+
+<script>
+
+$(document).ready(function () {
+
+dateFormatStr =  getJsDateFormat();
+$('#employee_joining_date').datepicker({ changeMonth: true,
+                changeYear: true,yearRange: "-100:+0",maxDate: "0",dateFormat: dateFormatStr});
+
+$('#employee_date_of_birth').datepicker({ changeMonth: true,
+                changeYear: true,yearRange: "-100:+0",maxDate: "0",dateFormat: dateFormatStr});
+
+
+
+         $("#languagePlusId").click(function(){
+        
+
+            var cloneDiv=$(".languagedivcloneclass").first();
+
+             $(cloneDiv).clone().appendTo("#languagedivscloneid");
+
+            var cloneDivLast=$(".languagedivcloneclass").last();
+            $(cloneDivLast).children().find('input,checkbox').each(function(){
+
+               $(this).val('');
+               $(this).attr("checked",false);
+               // neeed to change here
+               // $(".language-Student-Div-Class").hide();
+
+              });
+
+
+
+    });
+
+$("#employeeNewFormID").validate({
+
+        rules: {
+        "employee[first_name]": {required: true, name_validate: true, maxlength: 25},
+        "employee[middle_name]": {name_validate: true, maxlength: 25},
+        "employee[last_name]": {required: true, name_validate: true, maxlength: 25},
+        "employee[gender]": {required: true},
+        "employee[date_of_birth]": {required: true},
+        "employee[mg_employee_department_id]": {required: true},
+        "employee[mg_employee_position_id]": {required: true},
+        "employee[mg_employee_grade_id]": {required: true},
+        "employee[mg_employee_category_id]": {required: true},
+        
+        "employee[status]": {required: true},
+        "employee[job_title]": {name_validate: true, maxlength: 25},
+        "employee[experience_year]": {required: true, number: true, max: 50},
+        "employee[experience_month]": {required: true, number: true, max: 11},
+        "employee[father_name]": {required: true, name_validate: true, maxlength: 35},
+        "employee[mother_name]": {required: true, name_validate: true, maxlength: 35},
+        "employee[joining_date]": {required: true},
+        "employee[mg_nationality_id]": {required: true},
+        "employee[mg_employee_type_id]":{required: true},
+        "employee[language]":{required: true, name_validate: true, maxlength: 25},
+
+        "Temporary[address_line1]": {required: true}, 
+        "Temporary[city]": {required: true}, 
+        "Temporary[state]": {required: true}, 
+        "Temporary[pin_code]": {required: true, number: true, minlength: 6,maxlength: 6}, 
+        "Temporary[country]": {required: true}, 
+
+        "referred[referred_emp_name]": {required: true},
+
+        "Permanent[address_line1]": {required: true}, 
+        "Permanent[city]": {required: true}, 
+        "Permanent[state]": {required: true}, 
+        "Permanent[pin_code]": {required: true, number: true, minlength: 6,maxlength: 6}, 
+        "Permanent[country]": {required: true}, 
+        "employee[photo]": {required: true}, 
+        "employee[emergency_contact_name]": {required: true}, 
+        "employee[emergency_contact_number]": {required: true, number: true, minlength: 10,maxlength: 10}, 
+        "phone[phone_number]": {number: true, maxlength: 10}, 
+        "mobile[phone_number]" :  {required: true, number: true, minlength: 10,maxlength: 10}, 
+        "email[mg_email_id]": {required: true,  email: "Your email must be in the format of name@domain.com"}
+      },
+       messages: {
+        "Temporary[pin_code]": {minlength: "Please enter 6 digits.",maxlength: "Please enter only  6 digits"},
+        "Permanent[pin_code]": {minlength: "Please enter 6 digits.",maxlength: "Please enter only  6 digits"},
+        "mobile[phone_number]": {minlength: "Please enter 10 digits.",maxlength: "Please enter only  10 digits"},
+        "phone[phone_number]": {maxlength: "Please enter only  10 digits"},
+        "employee[emergency_contact_number]": {minlength: "Please enter 10 digits.",maxlength: "Please enter only  10 digits"},
+         "employee[photo]": {required: "Please upload a photo."}
+          }
+    });
+});
+//==================Dob & Joining date validation starts==========================
+     $(document).on("change","#employee_date_of_birth",function(e){
+      var joining_date=$("#employee_joining_date").val();
+      var dob=$(this).val();
+     // alert(getDateObj(dob,dateFormatStr)+3);
+     if(getDateObj(dob,dateFormatStr)>getEmployeeJoiningDateObj(joining_date,dateFormatStr)){
+        alert("Please check the age");
+        document.getElementById('employee_date_of_birth').value ="";
+      }
+
+   });
+   $(document).on("change","#employee_joining_date",function(e){
+
+      var joining_date=$(this).val();
+      var dob=$("#employee_date_of_birth").val();
+
+        if(getDateObj(dob,dateFormatStr)>getEmployeeJoiningDateObj(joining_date,dateFormatStr)){
+          alert("Please check the age");
+          document.getElementById('employee_joining_date').value ="";
+        }
+   });
+     //======================Dob & Joining date validation ends==============
+// $(document).on("change","#employee_date_of_birth",function(e){
+
+//       var joining_date=$("#employee_joining_date").val();
+//       var dob=$(this).val();
+//       if(Date.parse(dob)>Date.parse(joining_date)){
+//         alert("Date of Birth should less than Joining Date");
+//         document.getElementById('employee_date_of_birth').value ="";
+//       }
+
+//    });
+
+//    $(document).on("change","#employee_joining_date",function(e){
+
+//       var joining_date=$(this).val();
+//       var dob=$("#employee_date_of_birth").val();
+//       if(Date.parse(dob)==""){
+
+//       }
+//       else {
+//         if(Date.parse(dob)>Date.parse(joining_date)){
+//           alert("Date of Birth should less than Joining Date");
+//           document.getElementById('employee_date_of_birth').value ="";
+//         }
+//       }
+
+//    });
+   //============================================================================
+
+function employeeCategorySelect(){
+    var empCategoryID = $( "#employeeCategorySelectID" ).val();
+    if(empCategoryID > 0){
+  
+
+           //       alert(empCategoryID); 
+   // 'employees/employee_position_list/:id' 
+
+         var urlLink = "/employees/employee_position_list/"+empCategoryID;
+         $.ajax({
+         //    data : {'mg_employee_category_id':empCategoryID}, 
+             url: urlLink,
+             cache: false,
+             success: function(data){
+               // console.log();
+                if(data.length > 0){
+                    var apdStr = '<option value="select">Select</option>';
+                   // employeePositionSelectID
+                   for(key in data){
+                      apdStr += '<option value="'+data[key].id+'">'+data[key].position_name+'</option>'
+                    }
+                  // console.log(apdStr);
+                    $("#employee_mg_employee_position_id").empty().append(apdStr);
+
+                }
+
+             }
+                
+         });
+
+  }else{
+    var apdStr = '<option value="">Choose Category</option>';
+    $("#employee_mg_employee_position_id").empty().append(apdStr);
+    // alert("Please select category");
+  }
+
+    //employeeCategorySelectID
+}
+
+
+
+function validateEmployeeImage(inputFile, that) {
+
+  if ( that.files && that.files[0]) {
+    //alert("inside if");
+    var reader = new FileReader();
+    reader.onload = imageIsLoaded;
+    reader.readAsDataURL(that.files[0]);
+  }
+  var allowedExtension = ["jpg", "jpeg", "gif", "png"];
+  var extName = inputFile.split('.');
+  if ($.inArray(extName[1], allowedExtension) == -1){
+     window.alert("Only image file with extension: .jpg, .jpeg, .gif or .png is allowed");
+     $("#employee_photo").val('');
+  }
+  else{
+    // $("#schoolImageTagID").attr("src","ssc.jpeg.url");
+
+  }
+ 
+} 
+
+
+function imageIsLoaded(e) {
+    $('#employeeImageTagID').attr('src', e.target.result);
+     $('#employeeImageTagID').show();
+};
+
+
+</script>
+<!--   updation ended to make layout   -->
+
+<style>
+.mg-capitalize-lbl{
+  text-transform: capitalize;
+}
+#languagePlusId{
+  padding: 5px;
+  background-color: #2094F6;
+  width: 120px;
+
+}
+</style><!-- Sec --> 

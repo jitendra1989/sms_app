@@ -1,0 +1,81 @@
+<table border="1" class="mg-showdata-bg" cellspacing="1" cellpadding="1">
+  <tr>
+    <td valign="top">
+      <label class="mg-label"> <%= t('name')%></label>
+    </td>
+    <td valign="top">
+       <%=@food_items.try(:item_name)%>
+    </td>
+  </tr>
+  
+  <tr>
+    <td valign="top">
+      <label class="mg-label"> <%= t('brand')%></label>
+    </td>
+    <td valign="top">
+       <%=@food_items.try(:brand)%>
+    </td>
+  </tr>
+
+  <tr>
+    <td valign="top">
+      <label class="mg-label"> <%= t('category')%></label>
+    </td>
+    <td valign="top">
+       <%=@food_items.try(:category)%>
+    </td>
+  </tr>
+
+  <tr>
+    <td valign="top">
+      <label class="mg-label"> <%= t('unit')%></label>
+    </td>
+    <td valign="top">
+       <%=@food_items.try(:unit)%>
+    </td>
+  </tr>
+
+  <tr>
+    <td valign="top">
+      <label class="mg-label"> <%= t('quantity')%></label>
+    </td>
+    <td valign="top">
+       <%=@food_items.try(:quantity)%>
+    </td>
+  </tr>
+
+  <tr>
+    <td valign="top">
+      <label class="mg-label"> <%= t('price')%></label>
+    </td>
+    <td valign="top">
+       <%=@food_items.try(:price)%>
+    </td>
+  </tr>
+
+
+  <tr>
+    <td valign="top">
+      <label class="mg-label"> <%= t('description')%></label>
+    </td>
+
+    <td class="mg-td-width-half" valign="top">
+      <div class="text-scroll-for-log-text-cls comments-space">
+        <%= @food_items.try(:description) %>
+      </div>
+    </td>
+  </tr>
+</table>
+<br/>
+
+<a class="mg-small-form-btn cancel-form-dialog"><%=t("cancel")%></a>
+
+
+
+
+<script type="text/javascript">
+$(document).ready(function () {
+  textSeeMoreLess();
+});
+
+</script>

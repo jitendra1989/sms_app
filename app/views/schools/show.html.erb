@@ -1,0 +1,20 @@
+<!-- Sec --> 
+<!-- Partial left content -->
+<%= render partial: 'school_left' %>
+<!-- Partial show -->
+<% navigation_add t('school_information'), "/schools/show/#{@schools.id}" %>
+
+<%= render partial: 'show' %>
+<!-- Partial Section close-->
+<%= render partial: 'application/common_left_close' %>
+
+<script type="text/javascript">
+     $(document).ready(function(){
+     	 $("li").removeClass( "active" );
+         $("a").removeClass( "activeMenu" );
+     	 $("#schoolInformationLiID").addClass("active");
+         $("#createNewSchool").addClass("activeMenu");
+
+         focusSchool();
+   });
+</script>

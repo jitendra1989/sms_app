@@ -1,0 +1,132 @@
+<% navigation_add t('payslips'), :controller=>'payslips' %>
+<% navigation_add t('salary_deduction'), :controller=>'payslips', :action=>"salary_deduction" %>
+<%=render partial: 'payslip_left'%>
+
+
+<h4 class="mg-h4"><%=t('salary_deduction_list')%></h4>
+
+
+<%= form_for :sort_payslip, :controller=> 'payslips', :html => {
+                            :id => 'indexPayslipSalaryDeductionFormID' } do |f| %>
+
+<label class="mg-label mg-tt-width mg-rm-text-trans"><%=t('select_month_and_year')%></label>   <%=text_field_tag :date_month_approve, "#{Date.new(@year.to_i,@month.to_i,01).strftime('%B')} #{@year}" %>
+<%=hidden_field_tag :date_month_approve_date, "#{@month}-#{@year}"%>
+<br/>
+
+<%= f.submit t('search') ,:class=>"mg-small-form-btn hidden-button-onchange-submit-class", :id=>"payslipSalaryDeductionSubmitFormID" ,:style=>"display:none"%>
+
+<%end%>
+
+
+<%=hidden_field_tag :month, @month.present? ? @month : Date.today.month%>
+<%=hidden_field_tag :year, @year.present? ? @year : Date.today.year%>
+
+
+<%if @salary_deduction.present?%>
+	<%= form_for :sort_payslip, :url=>salary_deduction_path, :html => {
+                            :id => 'indexPaysliPsalaryDeductionCreateFormID' } do |f| %>
+	<table class="batch-tbl mg-tbl-margin mg-scrl-width-bar mg-tbl-layout">
+		<tr>
+			<th><%=t('sr_no')%></th>
+			<th><%=t('component_name')%></th>
+			<th><%=t('action')%>
+				<div class="mg-text-margin">
+		        	<a class="select-all-payslip-approval mg-pop-link"><%=t('all')%></a>&nbsp;<a class="select-non-payslip-approval mg-pop-link"><%=t('none')%></a>
+		      	</div>
+	      	</th>
+		</tr>
+		<%count=0%>
+		<%@salary_deduction.each do |salary|%>
+		<tr>
+			<td><%=count +=1%></td>
+			<td><%=salary.try(:name)%></td>
+			<td class="mg-align-center"><%=check_box_tag 'salary_component_deduction[]',salary.id,false, {:class=>"payslip-approval-cls"} %></td>
+
+		</tr>
+		<%end%>
+	</table>
+
+	<p class="mg-p-mgtop">
+		  <%#= link_to t("export_excel"), salary_deduction_path(format: "xls") , :class=>'mg-small-form-btn',:id=>"exportExcelSalaryComponentAID" , :style=>"display:none"%>
+		  <a onclick="salary_deduction_camponent_array()" class="mg-small-form-btn"><%=t("export_excel")%></a>
+		   <%= link_to t('back'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+	</p>
+<%end%>
+<%else%>
+	<h5>No Data</h5>
+<%end%>
+
+<%= render partial: 'application/common_left_close' %>
+
+<script type="text/javascript">
+	$(document).on("click", ".select-all-payslip-approval", function(e){
+  e.preventDefault();
+    $(".payslip-approval-cls").prop('checked', true);
+        
+  });
+   $(document).on("click", ".select-non-payslip-approval", function(e){
+     e.preventDefault();
+    $(".payslip-approval-cls").prop('checked', false);
+       
+  });
+
+   
+
+
+
+
+$(document).ready(function(){
+	$("li").removeClass( "active" );
+	$("a").removeClass( "activeMenu" );
+
+	$("#viewGeneratePayslipsSalaryDeductionLiID").addClass( "active" );
+	$("#viewGeneratePayslipsSalaryDeductionAID").addClass( "activeMenu" );
+
+	 focusPaySlip();
+});
+
+
+  $("#date_month_approve").datepicker( {
+        changeMonth: true,
+        changeYear: true,
+        showButtonPanel: true,
+        dateFormat: 'MM yy',
+        beforeShow: function (){
+                          setTimeout(function() {
+                        $(".ui-datepicker-buttonpane")
+                            .html('')
+                            .append("<button id='dateMonthDateMonthSalaryDeductionPayslipBTNID'>Done</button>");
+                        }, -6)
+                    },
+         onChangeMonthYear: function (){
+                        setTimeout(function() {
+                        
+                         $(".ui-datepicker-buttonpane")
+                            .html('')
+                            .append("<button id='dateMonthDateMonthSalaryDeductionPayslipBTNID'>Done</button>");
+                        }, -5)
+
+                    }, 
+        onClose: function(dateText, inst) { 
+            var month = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
+            var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
+            $(this).datepicker('setDate', new Date(year, month, 1));
+        }
+    });
+
+
+$(document).on("click", "#dateMonthDateMonthSalaryDeductionPayslipBTNID", function(e){
+  $( "#date_month_approve" ).datepicker("hide");
+  var month = parseInt($("#ui-datepicker-div .ui-datepicker-month :selected").val()) + 1;
+  var year = parseInt($("#ui-datepicker-div .ui-datepicker-year :selected").val());
+  $("#date_month_approve_date").val(month+"-"+year);
+  // $("#payslipIndexSubmitFormID").click();
+});
+</script>
+
+
+<style>
+.ui-datepicker-calendar {
+    display: none;
+    }
+</style>

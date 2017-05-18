@@ -1,0 +1,64 @@
+<%@count=0%>
+<%if @weekDays.length > 0%>
+<div id="classTimingList">
+	<table class="batch-tbl mg-tbl-margin">
+		<tr>
+			<th><%=t('weekday')%></th>
+			<th>Select Subject</th>
+			<th>Select Teacher</th>
+		</tr>
+			
+		<%@weekDays.each do|commonClassTiming|%>
+			<% if commonClassTiming.weekday==0%>
+	        	<% @day="Sunday"%>
+		      <% elsif commonClassTiming.weekday==1%>
+		        <% @day="Monday"%>
+		      <% elsif commonClassTiming.weekday==2%>
+		       <%  @day="Tuesday"%>
+		      <% elsif commonClassTiming.weekday==3%>
+		       <%  @day="Wednesday"%>
+		      <% elsif commonClassTiming.weekday==4%>
+		        <% @day="Thursday"%>
+		      <% elsif commonClassTiming.weekday==5%>
+		       <%  @day="Friday"%>
+		      <% else%>
+		       <%  @day="Saturday"%>
+		      <% end%>
+		<tr>
+			 <td><%=label(:day, @day)%></td> 
+			 <%=hidden_field_tag "weekday_id[]", commonClassTiming.weekday%>
+			 <%=hidden_field_tag 'is_deleted', 0%>
+			 <%=hidden_field_tag 'mg_school_id', 5%>
+
+			<td><%=select_tag 'subject[]',options_for_select(@subject),:prompt=>"Select Subject" ,:onchange=>"selectTeacherForSubject(this.value, #{@count}, #{commonClassTiming.weekday})"%></td>
+			<td id="Select Employee">
+			<div id="<%=@count%>DIVID"><%=select_tag 'employee[]',options_for_select(@employee),:prompt=>"Select Teacher"%></div></td>
+			<%@count +=1%>
+		</tr>
+		<%end%>
+	</table>
+<%end%>
+
+<script>
+	
+	function selectTeacherForSubject(subject, count, weekday_id){
+		$("#weekday_id").val(weekday_id);
+		$.ajax({
+		url:'/timetable/teacher_for_subject',
+		data:{"subject": subject, "sub":"Subject"},
+		type:"GET",
+		success:function(html){	
+			var divid=count+"DIVID";
+			 $("#"+divid).empty();
+             $("#"+divid).append(html);
+		}, 	 	
+		error:function(){
+			alert("inside error");
+		}
+	});
+	}
+
+
+
+
+</script>

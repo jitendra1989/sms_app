@@ -1,0 +1,203 @@
+<%= render  partial: 'master_settings/master_settings_left.html' %>
+<h4 class="mg-h4"><%=t('add_laboratory_incharge')%></h4>
+<%= form_for :laboratory, url: incharge_create_path, :html => {
+                            :id => 'laboratory_settings_data' } do |f| %>
+        <%= f.hidden_field :is_deleted ,:value=>0%>
+        <%= f.hidden_field :mg_school_id ,:value=>@school_id%>
+<table class="mg-tbl-margin mg-show-tbl-width mg-inner-table-align">
+    <tr>
+    <label class="mg-label mg-tt-width" ><%= t('subject_name') %><span class="required-field">&nbsp;*</span></label>
+
+<%subId=MgLaboratoryIncharge.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id],:incharge_type=>"Incharge").pluck(:mg_subject_id).uniq%>
+
+<%if subId[0].present?%>
+<%= f.collection_select(:mg_subject_id,MgLaboratorySubject.where("is_deleted=? and mg_school_id=? and id NOT IN (?)",0,session[:current_user_school_id],subId), :id, :name,{:include_blank => t("select")},:class => "consumption-lab-class")%>
+<%else%>
+<%= f.collection_select(:mg_subject_id,MgLaboratorySubject.where("is_deleted=? and mg_school_id=?",0,session[:current_user_school_id]), :id, :name,{:include_blank => t("select")},:class => "consumption-lab-class")%>
+<%end%>
+
+<%#= f.collection_select(:mg_subject_id,MgLaboratorySubject.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]), :id, :name,{:include_blank => t("select")},:class => "consumption-lab-class")%>
+    </tr>
+    <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="selectDepartment"><%= t('select_department') %><span class="required-field">&nbsp;*</span></label><br/>
+          <span style="margin-right:50px; vertical-align: top;">
+        <%
+        department_data=MgEmployeeDepartment.where(:is_deleted=>0, :mg_school_id=>session[:current_user_school_id]).pluck(:department_name,:id)
+        %>
+    <%=select_tag :notSelected, options_for_select(department_data),:multiple => true,:size =>10, :class=>"mg-add-laboratory-particular"%>
+    </span>
+    
+ <!--  <a  id="addingdatas" class="mg-custom-form-btn mg-fee-btn">Select Dept</a>  -->
+<span id="selected_employees_box" class="selected_emploghgfyees_box-class" style="vertical-align: top;">
+<%=select_tag :selectedEmployees,options_for_select([]),:multiple => true,:size =>10 ,:class=>"mg-add-laboratory-particular"%>
+</span>
+<a  id="editaddingemployeedatas" class="mg-custom-form-btn mg-add-rem-btn">Add</a> 
+
+<span id="removing_employees" style="display: inline-block;">
+<%
+laboratory_employee_data=MgLaboratoryIncharge.where(:mg_school_id=>session[:current_user_school_id],:is_deleted=>0).pluck(:mg_employee_id)
+@employee_data=MgEmployee.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id],:id=>laboratory_employee_data).pluck(:first_name,:id)
+%>
+<%=select_tag :selected_employees,options_for_select([]),:multiple => true,:size =>10 ,:class=>"mg-add-laboratory-particular"%>
+</span>
+
+<a  id="removingdataforlaboratory" class="mg-custom-form-btn mg-add-rem-btn">Remove</a>
+</td>
+    </tr>
+
+    </table>
+    <br/>
+    <br/>
+ <%= f.submit t('save'), class: "submit mg-small-form-btn mg-custom-labels",:id=>"input_field"%>
+      <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+<%end%>
+
+
+<%= render partial: 'emp_section_close' %>
+
+
+<script>
+
+
+$(document).on("click","#input_field",function(e){
+  
+$("#selected_employees option").prop('selected',true)
+//$("#selectedEmployees option").prop('selected',true)
+ 
+});
+$(document).ready(function () {
+        focusCurrentTab("laboratorycategorytypeAID","laboratorycategorytypeLiID");
+        focusMasterSettings();
+
+
+
+
+$("#laboratory_settings_data").validate({
+
+        rules: {        
+        "laboratory[mg_subject_id]": {required: true},
+        "selected_employees[]": {required: true}
+      }
+    });
+
+
+
+    });
+ $(document).on("click","#editaddingemployeedatas",function(e){
+
+ 
+
+ var demo=$("#selectedEmployees").val();
+ 
+ var texts=$("#selectedEmployees :selected").text();
+var text=texts.split(" ")
+ 
+ var array=[];
+
+$("#selected_employees option").each(
+
+function() {
+array.push(this.value);
+
+}
+
+);
+
+
+ for(var i=0;i<demo.length;i++)
+ {
+var a =false;
+
+for(var j=0;j<array.length;j++){
+  
+ if (demo[i]==array[j]){
+ a=true;
+  
+}
+
+}
+
+if (a){
+
+  }
+else{
+
+ var addselectedOption=$("#selectedEmployees option:selected")
+ 
+var str="<option value="+demo[i]+">"+text[i]+"</option>"
+
+  $("#selected_employees").append(str);
+
+}
+
+}
+
+
+ });
+
+
+
+
+$(document).on("click","#removingdataforlaboratory",function(e){
+
+var selectedOption=$("#selected_employees option:selected").remove();
+
+//$("#selectedEmployees").append(selectedOption);
+
+  });
+
+
+
+
+ $(document).on("click","#notSelected",function(e){
+    var dept_values=$("#notSelected").val();
+    var mg_subject_id=$("#laboratory_mg_subject_id").val();
+   if (mg_subject_id>0){
+      $.ajax({
+            url: "/laboratory/select_employees",
+            type: "GET",
+            data: {"dept_data":dept_values , "mg_subject_id": mg_subject_id},
+            dataType: "html",
+            success: function(data) {
+            
+             $("#selected_employees_box").empty();
+
+             $("#selected_employees_box").append(data);
+             
+              
+            },
+            error:function(){
+              alert("Something went wrong!");
+            }
+        });
+   }
+   else{
+    alert("Please select subject first");
+   }
+ 
+    
+});
+
+
+</script>
+
+<style>
+
+.error {
+  display: block;
+  font-size: 12px;
+}
+
+.mg-add-rem-btn {
+  cursor: pointer;
+  position: relative;
+  top: -6em;
+  vertical-align: middle;
+}
+
+. {
+  width: 150px;
+}
+
+</style>

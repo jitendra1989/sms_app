@@ -1,0 +1,32 @@
+<section id="userBodyContentBox" >
+  <table width=100% border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td valign="top" class="userBodyContentBox1">
+        <div class="userMenuBoxLeft" style="width: 210px;">
+          <ul class="menuListHome">
+           <li class="myAccountMenu mg-toggle-plus"><%=t('alumni_registration')%></li>
+           <div class="mg-left-sub-menu-title">
+              <li id="alumniRegistrationLID">
+                <a class="menuItemsActivities" href="/alumni/alumni_registration_form_new" id="alumniRegistrationAID">
+                  <div class="setMenu"><i class="fa fa-list">&nbsp;&nbsp;</i><%=t('alumni_registration_form_new')%>
+                  </div>
+                </a>
+              </li>
+            </div>
+          </ul>
+        </div>
+      </td>
+    <td  valign="top" id="manageAdminCategoryID" class="mg-table-td-main-2">
+             
+<%=render partial: 'layouts/messages'%>
+
+<script>
+$( document ).ready(function() {
+    var user_type=$("#user_type").val();
+    // if ((user_type=="admin")||(user_type=="principal"))
+    // {
+    //     collapseLeftMenu();
+    // }
+    focusheaderBox("ALUMNI");
+});
+</script>

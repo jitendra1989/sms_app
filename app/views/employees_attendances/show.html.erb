@@ -1,0 +1,46 @@
+<!-- Sec --> 
+ 
+ <p>
+
+
+ 	 <strong> <%= t('leavename')%>:</strong>
+  <%= @employees_attendances.leave_name %>
+ </p>
+  <p>
+ 	 <strong> <%= t('leavecode')%></strong>
+  <%= @employees_attendances.leave_code %>
+ </p>
+
+
+<p>
+  <strong> <%= t('maxleavecount')%>:</strong>
+  <%= @employees_attendances.max_leave_count %>
+</p>
+ 
+<p>
+  <strong> <%= t('leavecounttype')%>:</strong>
+  <%=@employees_attendances.leave_count_type %>
+</p>
+ 
+ <p>
+ 	<strong> <%= t('resetdate')%>:</strong>
+  
+    <%= @employees_attendances.reset_date %>
+  </p>
+  <p>
+ 	<strong><%= t('enableautomaticreset')%>:</strong>
+  
+    <%= @employees_attendances.enable_automatic_reset %>
+  </p>
+  <p>
+ 	<strong> <%= t('enablecarryforward')%>:</strong>
+  
+    <%= @employees_attendances.enable_carry_forward %>
+  </p>
+  <p>
+ 	<strong>Status <%= t('status')%>:</strong>
+  
+    <%= @employees_attendances.is_deleted %>
+  </p>
+  
+<%#= link_to 'Back', employees_attendances_path %>

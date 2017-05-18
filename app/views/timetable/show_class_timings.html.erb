@@ -1,0 +1,45 @@
+
+<%if @commonClassTimings.length > 0%>
+<div class="mg-scroll-employee-bar mg-btn-bottom-margin">
+<table class="batch-tbl mg-tbl-layout">
+		<tr>
+			<th><%=t('weekday')%></th>
+			<th><%=t('name')%></th>
+			<th><%=t('starttime')%></th>
+			<th><%=t('endtime')%></th>
+			<th><%=t("actions")%></th>
+		</tr>
+		<%@commonClassTimings.each do |commonClassTiming|%>
+		<% if commonClassTiming.weekday=="0"%>
+        	<% @day="Sunday"%>
+	      <% elsif commonClassTiming.weekday=="1"%>
+	        <% @day="Monday"%>
+	      <% elsif commonClassTiming.weekday=="2"%>
+	       <%  @day="Tuesday"%>
+	      <% elsif commonClassTiming.weekday=="3"%>
+	       <%  @day="Wednesday"%>
+	      <% elsif commonClassTiming.weekday=="4"%>
+	        <% @day="Thursday"%>
+	      <% elsif commonClassTiming.weekday=="5"%>
+	       <%  @day="Friday"%>
+	      <% else%>
+	       <%  @day="Saturday"%>
+	      <% end%>
+		<tr>
+			<td><%=@day%></td>
+			<td class="mg-table-normal-whitespace"><%=commonClassTiming.name%></td>
+			<td><%=commonClassTiming.start_time.strftime("%k:%M%p")%></td>
+			<td><%=commonClassTiming.end_time.strftime("%k:%M%p")%></td>
+			<td>
+				<button title="Edit" id="<%=raw commonClassTiming.id%>" class="editClassTimings mg-icon-btn" ><i class="fa fa-pencil-square-o"></i></button>
+				<button title="Delete" id="<%=raw commonClassTiming.id%>" class="deleteClassTimings mg-icon-btn" ><i class="fa fa-trash"></i></button>
+			</td>
+		</tr>
+		<%end%>
+</table>
+<%else%>
+<h5>Please create some class timings... </h5>
+<%end%>
+</div><br/>
+<!-- <button id="addClassTimingButton" class="mg-outform-btn">Add Class</button> -->
+<a onclick="$(this).closest('form').submit()" id="addClassTimingButton" class="mg-small-form-btn"><%=t("add_class")%></a>

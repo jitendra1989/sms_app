@@ -1,0 +1,8 @@
+<% navigation_add t('disciplinary_action'),:controller=>'sports_management', :action=>'disciplinary_action' %>
+<% navigation_add t('new_disciplinary_action'),:controller=>'sports_management', :action=>'disciplinary_action_new' %>
+<%=render partial:"disciplinary_action_form"%>
+<script>
+$(document).ready(function(){
+	focusCurrentTab("disciplinary_actionAID","disciplinary_actionLiID");
+});
+</script>

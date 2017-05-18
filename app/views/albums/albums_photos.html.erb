@@ -1,0 +1,42 @@
+<%if @user=='employee'%>
+    <% navigation_add t('albums'), employee_albums_path %>
+    <% navigation_add t('photos'), albums_photos_path %>
+    <%= render partial: 'dashboards/employee_left' %>
+<%elsif @user=='student'%>
+    <% navigation_add t('albums'), student_albums_path %>
+    <% navigation_add t('photos'), albums_photos_path %>
+    <%= render partial: 'dashboards/student_dashboard_left' %>
+<%elsif @user=='guardian'%>
+    <% navigation_add t('albums'), guardian_albums_path %>
+    <% navigation_add t('photos'), albums_photos_path %>
+    <%= render partial: 'dashboards/guardian_dashboard_left' %>
+
+<%end%>
+<%= render partial: 'show_images' %>
+<%= render partial: 'application/common_left_close' %>
+
+<script>
+
+$(document).ready(function () {
+var user_type="<%= @user%>";
+if(user_type=='employee'){
+
+ focusCurrentTab("viewEmployeeAlbumAID","viewEmployeeAlbumLiID");
+      focusDashboards();
+}else if( user_type=='student'){
+focusCurrentTab("viewStudentAlbumAID","viewStudentAlbumLiID");
+      focusDashboards();
+
+}else if( user_type=='guardian'){
+    focusCurrentTab("viewGuardianAlbumbAID","viewGuardianAlbumbLiID");
+      focusDashboards();
+}else{
+
+}
+
+
+
+});
+
+</script>
+

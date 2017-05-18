@@ -1,0 +1,129 @@
+/*
+
+.component {
+  line-height: 1.2;
+  margin: 5px auto;
+  padding: 0 0 1em;
+  width: 100%;
+  max-width: 730px;
+  overflow: hidden;
+}
+.component .filler {
+  font-family: "Blokk", Arial, sans-serif;
+  color: #d3d3d3;
+}
+#mg-scroll-attendance-tbl {
+    border-collapse: collapse;
+    margin-bottom: 3em;
+    width: 100%;
+    background: #fff;
+}
+#mg-scroll-attendance-tbl td, th {
+    padding: 0.75em 1.5em;
+    text-align: left;
+    height: 34px
+}
+
+.sticky-col tr {
+  font-size: 11px;
+  padding: 0em 1em ;
+  line-height: 1.427;
+}
+
+.sticky-thead th {
+  font-size: 12px;
+  padding: 8px 0px !important;
+  text-align: center;
+}
+
+.sticky-intersect {
+  line-height: 1.3;
+}
+
+.sticky-intersect tr {
+  line-height: 2.25;
+  font-size: 12px;
+}
+
+.sticky-intersect th {
+  padding: 0.7em 1.2em !important;
+}
+
+.mg-fix-width {
+  width: 38px !important;
+}
+
+#mg-scroll-attendance-tbl td.err {
+    background-color: #e992b9;
+    color: #fff;
+    font-size: 0.75em;
+    text-align: center;
+    line-height: 1;
+  }
+#mg-scroll-attendance-tbl th {
+    background: #30a879;
+    font-weight: bold;
+    color: #fff;
+    white-space: nowrap;
+}
+#mg-scroll-attendance-tbl tbody th {
+  background-color: #2ea879;
+}
+#mg-scroll-attendance-tbl tbody tr:nth-child(2n-1) {
+    background-color: #f5f5f5;
+    transition: all .125s ease-in-out;
+}
+#mg-scroll-attendance-tbl tbody tr:hover {
+    background-color: rgba(129,208,177,.3);
+}
+
+.sticky-wrap {
+  
+  position: relative;
+  margin: 0;
+  width: 100%;
+}
+.sticky-wrap .sticky-thead,
+.sticky-wrap .sticky-col,
+.sticky-wrap .sticky-intersect {
+  opacity: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  transition: all .125s ease-in-out;
+  z-index: 50;
+  width: auto;
+}
+  .sticky-wrap .sticky-thead {
+    box-shadow: 0 0.25em 0.1em -0.1em rgba(0,0,0,.125);
+    z-index: 100;
+   
+  }
+
+  .sticky-thead,.sticky-col {
+    background: #2ea879;
+  }
+
+  .sticky-wrap .sticky-intersect {
+    opacity: 1;
+    z-index: 150;
+
+  }
+    .sticky-wrap .sticky-intersect th {
+      background-color: #2ea879;
+      color: #eee;
+    }
+.sticky-wrap td,
+.sticky-wrap th {
+  box-sizing: border-box;
+}
+
+
+#mg-scroll-attendance-tbl td.user-name {
+  text-transform: capitalize;
+}
+.sticky-wrap.overflow-y {
+  overflow-y: auto;
+  max-height: 35em;
+}
+*/

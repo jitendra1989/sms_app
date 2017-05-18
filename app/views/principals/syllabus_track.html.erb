@@ -1,0 +1,137 @@
+<%= render partial: 'dashboards/principle_dashboard_left' %>
+<%#= button_to 'Edit Tracks', {:controller => "principals", :action => "syllabus_tracker_show" } %>
+ <h4 class="mg-h4"><%= t('syllabus_progress') %></h4>
+<!-- <div class="mg-custom-labels">
+<%#= form_for :curriculum_managements, url: principal_tracker_create_path, :html => {
+                            :id => 'batchSylCurriculamManagementsID' } do |f| %>
+
+<%#= f.hidden_field :is_deleted, :value => 0 %> 
+
+<div class="mg-curriculum-labels">
+	<table>
+		<tr>
+			<td>
+			<label class="mg-label" for="select_department"><%#= t('selectdepartment') %></label><br/>
+		
+			<%#@dept=MgEmployeeDepartment.where(:is_deleted=>0).pluck(:department_name, :id)%>
+				<%#=select_tag :mg_department_id, options_for_select(@dept),:prompt=>"Select",:onchange=>"myEmpDepartment(this.value)" %><br>
+			</td>
+		</tr>
+	</table>
+</div>  -->
+
+<!-- Column chart starts -->
+
+<%  @courses=MgCourse.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id])
+        @courses.each do |course|
+        @dataHash=Hash.new
+            @batches=MgBatch.where(:mg_course_id=>course.id,:is_deleted=>0,:mg_school_id=>session[:current_user_school_id])
+            @batches.each do |batch|
+                subject_ids=MgBatchSubject.where(:mg_batch_id=>batch.id)
+                #For each subject in batch
+                subject_ids.each do |subjectID|
+
+                    subject=MgSubject.find(subjectID.mg_subject_id)
+                    syllabus_ids=MgSyllabus.where(:mg_subject_id=>subject.id).pluck(:id)
+                    employees=MgTimeTableEntry.where(:mg_batch_id=>batch.id,:mg_subject_id=>subject.id)
+
+                                       
+                    syllabus_ids.each do |syllabusID|
+                         alloated_time=MgUnit.where(:mg_syllabus_id=>syllabusID).pluck(:time)
+                         puts "Alloated Time"
+                         puts alloated_time
+                         puts "====MgUnit===syllabusID========="
+                         puts syllabusID
+                         puts alloated_time
+                         puts "=========syllabusID======="
+                         # @array=Array.new
+                         alloated_time.each do |time|
+                            @array=Array.new
+                            @array.push(subject.subject_name,batch.name)
+                            @dataHash[@array]=time
+                        end
+                          # @expected_array=Array.new
+                          
+
+                    end
+                    #     employees.each do |employee|
+                    #        employee_time_taken=MgSyllabusTracker.where(:mg_syllabus_id=>syllabus_ids).count
+                    #        puts "Time taken"
+                    #        puts employee_time_taken
+                    #         @expected_array=Array.new
+                    #         @expected_array.push(subject.subject_name,batch.name)
+                    #         @dataHash[@expected_array]=employee_time_taken
+                    # end
+                #end
+                end
+            end%>
+            <% if @dataHash.size>0%>
+            <span><%=course.course_name%></span>
+            <%@dataHash.inspect%>
+           <!--  <#%= column_chart (@dataHash) %> -->
+
+            <%=column_chart @dataHash, library:  {width:600,hAxis: {title: ""}, vAxis: {title: "No. of Period"}}%>
+
+
+            <%end%>
+<%end%>
+
+    <%#=@dataHash.inspect%>
+    <%#=@syllabus_id_array.inspect%>
+<!-- Column chart ends -->
+
+
+<div id="principleEmployeeID">
+</div>
+
+<div id="principleEmployeeTrackID">
+</div>
+
+<div id="BatchSubID">
+
+</div>
+<%#end %>
+</div>
+<%= render partial: 'application/common_left_close' %>
+
+<script>
+function myEmpDepartment(batchid){
+    var urlLink = "/principals/principle_new/";
+        $.ajax({
+            url: urlLink ,
+            data:{"mg_department_id":batchid},
+            cache: false,
+            success: function(html){
+            //console.log(html);
+            $("#principleEmployeeID").empty();
+            $("#principleEmployeeID").append(html);
+            
+        }
+                }); 
+    };
+
+
+
+    function myPrincFunction(batchid){
+    var urlLink = "/principals/principle_data/";
+        $.ajax({
+            url: urlLink ,
+            data:{"mg_employee_id":batchid},
+            cache: false,
+            success: function(html){
+            $("#principleEmployeeTrackID").empty();
+            $("#principleEmployeeTrackID").append(html);
+            
+        }
+                }); 
+    };
+
+    
+
+$(document).ready(function () {
+
+focusCurrentTab("viewSyllabusTrackerAID","viewSyllabusTrackerLiID");
+        //focusCurriculum();
+      });
+
+</script>

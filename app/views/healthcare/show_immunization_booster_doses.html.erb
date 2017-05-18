@@ -1,0 +1,33 @@
+<table border="1" class="mg-showdata-bg mg-tbl-layout" cellspacing="1" cellpadding="1">
+   <tr>
+     <th class="mg-td-width-half" valign="top">
+   		<label class="mg-label"> <%= t('name')%></label>
+   	 </th>
+   	 <th class="mg-td-width-half" valign="top">
+        <label class="mg-label"> <%= t('frequency')%></label>
+  	 </th>
+     <th class="mg-td-width-half" valign="top">
+        <label class="mg-label"> <%= t('date')%></label>
+     </th>
+ </tr>
+<%@booster_doses.each do |v|%>
+  <tr>
+     <td class="mg-td-width-half" valign="top">
+        <label class="mg-label"> <%= v.try(:mg_booster_dose).try(:name)%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+       <label class="mg-label"><%= v.try(:mg_booster_dose).try(:frequency) %></label>
+     </td>
+      <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"><%=v.try(:date).present? ? v.try(:date).strftime(@school.date_format) : "" %></label>
+     </td>
+ </tr>
+
+ <%end%>
+</table>
+ <p class="mg-p-mgtop">
+    <a class="mg-small-form-btn cancel-form-dialog"><%=t('cancel')%></a> 
+</p> 
+ 
+
+

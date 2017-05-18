@@ -1,0 +1,126 @@
+<% navigation_add t('bed_details'), :controller=>'sports_management' ,:action=> 'bed_details' %>
+<%=render partial: 'sports_left'%>
+
+<h4 class="mg-h4"><%=t('bed_details_list')%></h4>
+
+<button class="add-bed-for-healthcare mg-btn-bottom-margin mg-custom-form-btn"><%= t('add_bed_details')%></button>
+
+<% if @bed.present? %>
+  <div class="mg_pagination">
+    <table  class="batch-tbl mg-tbl-margin">   <!-- border="2" --> 
+      <tr class="subject-table-header">
+        <th><%= t('bed_number') %></th>
+        <th><%= t('description') %></th>
+        <th><%= t('status') %></th>
+        <th><%= t('actions') %></th>
+      </tr>
+      <% @bed.each do |f| %>
+        <tr>
+          <td class="mg-align-center"><%= f.bed_no %></td>
+          <td class="mg-align-center mg-capitalize-text"><%= truncate(f.description,:length=>25,:separate=>'') %></td>
+          <td class="mg-align-center mg-capitalize-text"><%= f.status %></td>
+          <td>
+
+            <button title="show" id="<%=raw f.id %>-showBedDetailsBTNID" class="show-bed-details-btn mg-icon-btn"><i class="fa fa-eye"></i></button>
+            <button title="Edit" id="<%=raw f.id %>-editBedDetailsBTNID" class="edit-bed-details-btn mg-icon-btn"><i class="fa fa-pencil-square-o"></i></button>
+            <button title="Edit" id="<%=raw f.id %>-deleteBedDetailsBTNID" class="delete-Sbed-details-btn mg-icon-btn"><i class="fa fa-trash"></i></button>
+          </td>
+        </tr>
+      <% end %>
+    </table>
+    <br/>
+     <%= will_paginate @bed, :container => false %>
+  </div>
+<%else%>
+  <h5>No bed details created </h5>
+<%end%>
+
+
+<div id="addBedDetailsDivID"></div>
+<div id="showBedDetailsDivID"></div>
+<div id="editBedDetailsDivID"></div>
+<%= render  partial: 'application/common_left_close' %>
+
+<script type="text/javascript">
+  $(document).ready(function () {
+    focusCurrentTab("bedDetailsAID","bedDetailsLiID");
+  });
+
+  $(document).on("click", ".add-bed-for-healthcare", function(e){
+    var urlLink= '/sports_management/bed_details_new';
+    $.ajax({
+      url: urlLink,
+      cache: false,
+      success: function(html){
+        $("#addBedDetailsDivID").dialog({
+          modal:true,
+          minHeight: 'auto',
+          title: 'New Bed Details',
+          open: function(){
+            $(this).html(html);
+          }
+        });
+      }
+    });
+  });
+
+  $(document).on("click", ".show-bed-details-btn", function(e){
+    var myID =$(this).attr('id');
+    var Id=myID.split("-");
+    var urlLink = "/sports_management/bed_details_show/"+Id[0];
+    $.ajax({
+      url: urlLink ,
+      cache: false,
+      data:{id:Id[0]},
+      success: function(html){
+        $('#showBedDetailsDivID').dialog({
+          modal: true,
+          minHeight: 'auto',
+          width: 'auto',
+          title: "Show Bed Details",
+          open: function () {
+            $(this).html(html);
+          }
+        }); 
+      }
+    });
+  });
+
+  $(document).on("click", ".edit-bed-details-btn", function(e){
+    var myID =$(this).attr('id');
+    var Id=myID.split("-");
+    var urlLink = "/sports_management/bed_details_edit/"+Id[0];
+    $.ajax({
+      url: urlLink ,
+      cache: false,
+      data:{id:Id[0]},
+      success: function(html){
+        $('#editBedDetailsDivID').dialog({
+          modal: true,
+          minHeight: 'auto',
+          width: 'auto',
+          title: "Edit Bed Details",
+          open: function () {
+            $(this).html(html);
+          }
+        }); 
+      }
+    });
+  });
+
+
+  $(document).on("click", ".delete-Sbed-details-btn", function(e){
+  var myID =$(this).attr('id');
+  var Id=myID.split("-");
+  var urlLink = "/sports_management/bed_details_delete/"+Id[0];
+  var result = confirm("Are you sure to delete?");
+  if(result){
+    window.location=urlLink;
+  }
+});
+
+
+  
+
+
+</script>

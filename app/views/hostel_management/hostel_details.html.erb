@@ -1,0 +1,65 @@
+<% navigation_add t('hostel'), :controller=>'hostel_management', :action=>'hostel_details' %>
+<%#= render  partial: 'hostel_management_left' %>
+<%if session[:user_type]=="admin"%>
+<%= render  partial: 'master_settings/master_settings_left' %>
+<%else%>
+<%= render  partial: 'hostel_management_left' %>
+<%end%>
+
+<%#=@hostel_details.inspect%>
+<%if session[:user_type]=="admin"%>
+<%= button_to 'Add Hostel', {:controller=>'hostel_management',:action=>'hostel_details_new'}, :class=> 'mg-custom-form-btn' %><br/>
+<%end%>
+<h4 class="mg-h4"><%= t('hostel_list')%></h4>
+
+<%if @hostel_details.present?%>
+<table  class="batch-tbl mg-tbl-margin">   <!-- border="2" --> 
+  <tr class="subject-table-header">
+    <th><%= t('name') %></th>
+    <th><%= t('description') %></th>
+    <th><%= t('category') %></th>
+    <%if session[:user_type]=="admin"%>
+      <th style="width: 97px;"><%= t('actions') %></th>
+    <%else%>
+      <th><%= t('action') %></th>
+    <%end%>
+  </tr>
+ 
+  <% @hostel_details.each do |s| %>
+    <tr>
+      <td style="text-align:center"><%= s.name %></td>
+      <td class="mg-desc-text-justify" style="text-align:center"><%= truncate(s.description.to_s, :length => 25, :separator => ' ') %></td>
+      <td style="text-align:center"><%= s.category %></td>
+
+
+      <td>	
+      	<button title="Show" id="<%=raw s.id %>-showjobUploadBTNID" class="show-job-upload-fom-btn mg-icon-btn" onclick="window.location='/hostel_management/hostel_details_show/<%=s.id%>'"><i class="fa fa-eye"></i></button>
+
+        <%if session[:user_type]=="admin"%>
+
+            <button title="Edit" id="<%=raw s.id %>-editjobUploadBTNID" class="edit-job-upload-fom-btn mg-icon-btn" onclick="window.location='/hostel_management/hostel_details_edit/<%=s.id%>'"><i class="fa fa-pencil-square-o"></i></button>
+
+  		      <button title="Delete" onclick="confirm('Are you sure to delete?') ? window.location='/hostel_management/<%=s.id%>/hostel_details_delete' : ''" class="mg-icon-btn"><i class="fa fa-trash"></i></button>    
+          <%end%>
+      </td>
+    </tr>
+  <% end %>
+</table>
+<br/>
+ <div class="pagination-align" style="position: relative; bottom: 10px;">
+ <%= will_paginate @hostel_details, :container => false %>
+ </div>
+<%else%>
+<h5>No records are created </h5>
+<%end%>
+
+<%= render  partial: 'application/common_left_close' %>
+<script>
+  $( document ).ready(function() {
+      focusCurrentTab("HostelDetailsAID","HostelDetailsLiID");
+  });
+
+
+
+</script>
+

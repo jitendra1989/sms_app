@@ -1,0 +1,67 @@
+
+<table border="1" class="mg-showdata-bg mg-tbl-layout" cellspacing="1" cellpadding="1">
+   <tr>
+      <td class="mg-td-width-half" valign="top">
+        <label class="mg-label"><%=t('route_name')%></label>
+      </td>
+      <td class="mg-td-width-half" valign="top">
+        <label class="mg-label-inner-form"><%= @transport_data.route_name %></label>
+      </td>
+  </tr>
+  <tr>
+      <td class="mg-td-width-half" valign="top">
+        <label class="mg-label"><%=t('description')%></label>
+      </td>
+      <td class="mg-td-width-half" valign="top">
+        <label class="mg-label-inner-form"><%= @transport_data.description %></label>
+      </td>
+  </tr>
+  <tr>
+      <td class="mg-td-width-half" valign="top">
+        <label class="mg-label"><%=t('vehicle_number')%></label>
+      </td>
+      <td class="mg-td-width-half" valign="top">
+        
+        <label class="mg-label-inner-form"><%= @vehicle_data.vehicle_number %></label>
+      </td>
+  </tr>
+<!--  
+<p>
+   <strong> Event Privacy:</strong>
+  <%#= @events.event_privacy %>
+ </p>
+ -->
+
+  <tr>
+     <td class="mg-td-width-half" valign="top">
+       <label class="mg-label"><%=t('employee_name')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+     <%
+	         employee_data=MgEmployee.find(@vehicle_data.mg_employee_id)
+
+	        %>
+       <label class="mg-label-inner-form"><%= employee_data.first_name%></label>
+     </td>
+  </tr>
+   
+  <tr>
+     <td class="mg-td-width-half" valign="top">
+        <label class="mg-label"><%=t('drop_start_time')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+      
+        <label class="mg-label-inner-form"><%= @vehicle_data.drop_start_time.strftime("%k:%M%p") %></label>
+     	
+     </td>
+  
+  </tr>
+
+  
+
+
+  
+</table><br/>
+
+       <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+

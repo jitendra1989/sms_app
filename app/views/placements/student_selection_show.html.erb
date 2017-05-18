@@ -1,0 +1,111 @@
+<%= render  partial: 'placements_left' %>
+
+<table border="1" class="mg-showdata-bg" cellspacing="1" cellpadding="1">
+   <tr>
+     <td class="mg-td-width-half" valign="top">
+   		<label class="mg-label mg-rm-text-trans"> <%= t('name_of_the_company')%></label>
+   	 </td>
+   	 <td class="mg-td-width-half" valign="top">
+   
+  		<%= @placement.try(:name_of_the_company) %>
+  	 </td>
+ </tr>
+
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+  		<label class="mg-label mg-rm-text-trans"><%=t('job_id')%></label>
+  	 </td>
+  	 <td class="mg-td-width-half" valign="top">
+  	<%= @job.try(:job_id) %>
+    
+  	 </td>
+ </tr>
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"><%=t('programme')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+     <%= @wing.try(:wing_name) %>
+     </td>
+ </tr>
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"><%=t('semester')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+     <%= "#{@course.course_name}-#{@batch.name}"%>
+     </td>
+ </tr>
+  <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"><%=t('round_name')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+     <%=@interview.name%>
+     </td>
+ </tr>
+  <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"><%=t('next_round_date')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+     <%= @placement_data.next_round_date.strftime(@dateFormat)%>
+     </td>
+ </tr>
+</table>
+<div class="mg-scrl-width-bar ">
+
+  <table border="1" class="mg-showdata-bg batch-tbl mg-tbl-margin" cellspacing="1" cellpadding="1">
+  <tr>
+    <th>Student Name</th>
+    <th>Admission Number</th>
+    <% (1..10).each do |i| %>
+        <% if @job.public_send("round#{i}").present? %>
+         
+                 <% round_data=MgInterviewRound.find_by(:id=>@job.public_send("round#{i}"))%>
+                  <th>  <%= "Round "+ i.to_s%>(<%= round_data.name %>)</th>
+                  <th><%= "Round "+ i.to_s%><%=" date"%></th>
+   
+        <% end %>
+    <% end %>
+    
+  </tr>
+  <%@student_data.each_with_index do |data,index|%>
+<tr>
+  
+  <td><%="#{data.first_name} #{data.last_name}"%></td>
+  <td><%=data.admission_number%></td>
+  <% (1..10).each do |i| %>
+   <% if @job.public_send("round#{i}").present? %>
+           <% round_data=MgInterviewRound.find_by(:id=>@job.public_send("round#{i}"))%>
+           <%if round_data.id.to_i==@interview.id.to_i%>
+           <td>  <%=@placement_data_array[index].is_round_selected==true ? "Selected":"Not Selected"%></td>
+           <%#if @placement_data_array[index].try(:interview_selected_date).present?%>
+                  <td><%= @placement_data_array[index].try(:interview_selected_date).strftime(@dateFormat)%></td>
+   
+     <%else%>
+     <td></td>
+     <td></td>
+     <%end%>
+     <%end%>
+
+<%end%>
+</tr>
+<%end%>
+
+  </table> 
+  </div>
+ <p class="mg-p-mgtop">
+     <a class="mg-small-form-btn cancel-form-dialog"><%=t('cancel')%></a>
+
+  </p>
+<%= render  partial: 'application/common_left_close' %>
+
+
+<script type="text/javascript">
+$(document).ready(function () {
+  textSeeMoreLess();
+});
+
+</script>
+

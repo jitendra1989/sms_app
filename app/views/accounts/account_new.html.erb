@@ -1,0 +1,54 @@
+<%= render  partial: 'accounts/accounts_left'%>
+<h4 class="mg-h4"><%= t('new_account') %></h4>
+<%=form_for :account,url:account_create_path,:html => {:id => 'newAccountFormID'} do |f|%>
+	<%= f.hidden_field :is_deleted, :value => 0 %>
+	<%= f.hidden_field :mg_school_id, :value => session[:current_user_school_id] %>
+	<%= f.hidden_field :created_by, :value => session[:user_id] %>
+	<%= f.hidden_field :updated_by, :value => session[:user_id] %>
+	<%= f.hidden_field :user_type, :value => "account_incharge" %>
+
+	<p>
+		<label class="mg-label" style="width:140px"><%=t('account_name')%><span class="required-field"> *</span></label><br/>
+		<%=f.text_field :mg_account_name,:class=>"mg-text-field"%>
+	</p>
+
+	<p>
+    	<label class="mg-label" style="width:140px"><%= t('description') %></label><br/>
+   		<%= f.text_area :description,:class=>"mg-text-field" %>
+	</p>
+
+	<h4 class="mg-h4"><%= t('incharge') %></h4>
+	<p>
+	    <label class="mg-label" style="width:140px"><%= t('user_name') %><span class="required-field">&nbsp;*</span></label>
+	    <br/>
+	    <%school=MgSchool.find_by(:id=>session[:current_user_school_id])%>
+	   <%=school.subdomain%><%= f.text_field :user_name,:class=>"mg-text-field",:style=>"width:10.3em;"%>
+  	</p>
+
+  	<p>
+	    <label class="mg-label" style="width:140px"><%= t('password') %><span class="required-field">&nbsp;*</span></label>
+	    <br/>
+	   <%= f.text_field :password,:class=>"mg-text-field" %>
+  	</p>
+
+	<p class="mg-p-mgtop">
+    	<a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("save")%></a>
+    	<%= link_to t('cancel'),:back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+	</p>
+<%end%>
+<%= render  partial: 'common_left_close'%>
+
+<script>
+	$(document).ready(function(){
+		focusCurrentTab("aboutAccountsAID","aboutAccountsLiID");
+		$("#newAccountFormID").validate({
+		rules: 
+			{
+				"account[mg_account_name]": {required: true},
+				"account[user_name]": {required: true},
+				"account[password]": {required: true}
+			}
+		});
+	});
+
+</script>

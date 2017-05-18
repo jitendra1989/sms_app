@@ -1,0 +1,39 @@
+
+<% navigation_add t('hostel_admin'), :controller => 'hostel_management', :action => 'hostel_admin_login_index' %>
+<%= render  partial: 'master_settings/master_settings_left' %>
+<h4 class="mg-h4"><%= t('about_hostel_admin') %></h4>
+<%if @users.length<1%>
+<button class="add-hostel_admin-head mg-btn-bottom-margin mg-custom-form-btn"><%= t('add_hostel_admin')%></button>
+<%end%>
+<%if @users.length>0%>
+  <%= render  partial: 'login_index' %>
+<%else%>
+  <h5>No Records created</h5>
+<%end%>
+<%= render  partial: 'application/common_left_close' %>
+<div id="newhosteladminHeadDivId"></div>
+
+<script>
+  $( document ).ready(function() {
+    focusCurrentTab("hostelAdminLoginAID","hostelAdminHeadLID");
+  });
+
+  $(document).on("click", ".add-hostel_admin-head", function(e){
+    var urlLink = "/hostel_management/new_user";
+    $.ajax({
+      url: urlLink ,
+      cache: false,
+      success: function(html){
+        $('#newhosteladminHeadDivId').dialog({
+          modal: true,
+          minHeight: 'auto',
+          minWidth: '250px',
+          title: "New Hostel Admin",
+          open: function () {
+          $(this).html(html);
+          }
+        }); 
+      }
+    });
+  });
+</script>

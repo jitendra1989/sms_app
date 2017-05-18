@@ -1,0 +1,124 @@
+<%= render partial: 'hostel_management_left' %>
+<% navigation_add t('hostel_application'), :controller=>'hostel_management', :action=>'hostel_application_list' %>
+
+<h4 class="mg-h4"><%= t('hostel_application_list')%></h4>
+
+<% wing_data=MgWing.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:wing_name,:id) 
+hostel_details=MgHostelDetails.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:name,:id)
+%>
+<%if params[:id].present?%>
+	<%=hidden_field_tag 'wing_data',@data[1]%>
+	<%=hidden_field_tag 'wing_data_demo',"#{@data[1]}-#{}"%>
+<%else%>
+<%=hidden_field_tag 'wing_data',""%>
+<%end%>
+
+<table class="exam-rounds">
+<tr class="prgm-div"> 
+<td>
+<%=label :select_hostel, "Select Hostel" ,:class=>"mg-label select_hostels"%><span class="required-field prgme">*</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<%= select_tag "mg_hostel_details",options_for_select(hostel_details,:selected=>@data[0]),:prompt=>"Select",:class => 'prgm2' %>
+	</td>
+	</tr>
+	<tr>
+	
+
+<td>
+<%=label :programme, t("select_programme") ,:class=>"mg-label programme"%><span class="required-field prgme">*</span>
+<%= select_tag "programme",options_for_select([]),{:class => 'prgm1',:prompt=>"Select"} %>
+</td>			
+</tr>
+</table>
+
+<div id="Student_list_application_data"></div>
+
+<%= render partial: 'application/common_left_close' %>
+
+
+<script>
+$(document).ready(function(){
+	focusCurrentTab("hostel_application_listAID","hostel_application_listLiID");
+	if($("#wing_data").val()!=""){
+	var myID =$("#mg_hostel_details").val();
+    var wing_data=$("#wing_data").val();
+	  
+	  var urlLink = "/hostel_management/select_programme_data";
+	  $.ajax({
+	      url: urlLink ,
+	      cache: false,
+	      data:{id:myID,data1:"data",wing_data:wing_data},
+	      success: function(html){
+	            $('#programme').empty().append(html.main);
+	             var hostel_id =$("#mg_hostel_details").val();
+	  	  var myID1 =$("#programme").val();
+
+	  	  
+	  //var myID =$(this).attr('id');
+ 	  var Id=myID1.split("-");
+	  var urlLink = "/hostel_management/select_student_list_data";
+	  $.ajax({
+	      url: urlLink ,
+	      cache: false,
+	      data:{wing_id:Id[0],quota_id:Id[1],hostel_id:hostel_id},
+	      success: function(html){
+	            $('#Student_list_application_data').empty().append(html);
+	      }
+	  });
+	      }
+	  });
+
+
+       
+
+	}
+
+});
+
+$(document).on("change", "#mg_hostel_details", function(e){
+	  var myID =$(this).val();
+	  $('#Student_list_application_data').empty();
+	  
+	  var urlLink = "/hostel_management/select_programme_data";
+	  $.ajax({
+	      url: urlLink ,
+	      cache: false,
+	      data:{id:myID},
+	      success: function(html){
+	            $('#programme').empty().append(html.main);
+	      }
+	  });
+	});
+
+
+$(document).on("change", "#programme", function(e){
+	  var myID =$(this).val();
+	  	  var hostel_id =$("#mg_hostel_details").val();
+
+	  //var myID =$(this).attr('id');
+ 	  var Id=myID.split("-");
+	  var urlLink = "/hostel_management/select_student_list_data";
+	  $.ajax({
+	      url: urlLink ,
+	      cache: false,
+	      data:{wing_id:Id[0],quota_id:Id[1],hostel_id:hostel_id},
+	      success: function(html){
+	            $('#Student_list_application_data').empty().append(html);
+	      },
+	      error: function(html){
+
+	      	$('#Student_list_application_data').empty();
+	      }
+	  });
+	});
+</script>
+
+
+<style type="text/css">
+	.select_hostel{
+		margin-right: 28px;	
+	}
+	.programme{
+		margin-right: 1px;	
+	}
+</style>

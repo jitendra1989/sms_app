@@ -1,0 +1,117 @@
+<!-- breadcrumbs Work -->
+<%# navigation_add 'Timetable', timetable_index_path %>
+
+<% navigation_add 'Academic Year', timetable_class_timing_index_path %>
+
+<!-- breadcrumbs Work -->
+
+
+
+
+<%= render  partial: 'master_settings/master_settings_left' %>
+<button id="addAcadamicYearButton" class="mg-btn-bottom-margin mg-custom-form-btn"><%=t('addacademicyear')%></button>
+ <% if !params[:notice].blank? %>
+  <div class="alert alert-info mg-success-msg">
+  <%= params[:notice] %>
+  </div>
+<% end %>
+<%if @academicdetails.length>0%>
+<h4 class="mg-h4">Academic Year List</h4>
+<div class="mg_pagination">
+<table class="batch-tbl mg-tbl-margin" id="academicListTableID">
+	<tr>
+		<th><%=t('name')%></th>
+		<th><%=t('startdate')%></th>
+		<th><%=t('enddate')%></th>
+		<th><%=t('actions')%></th>
+	</tr>
+	<%@academicdetails.each do |academicDetail|%>
+	<tr>
+		<td><%=academicDetail.name%></td>
+		<%@dateFormat = MgSchool.find_by(5).date_format %>
+		<td><%=academicDetail.start_date.strftime(@dateFormat)%></td>
+		<td><%=academicDetail.end_date.strftime(@dateFormat)%></td>
+		<td><button title="Edit" id="<%=raw academicDetail.id %>" class="academic-year-edit mg-icon-btn"><i class="fa fa-pencil-square-o"></i></button>
+
+
+		<!-- <button title="Delete" id="<%#=raw academicDetail.id %>" class="academic-year-delete mg-icon-btn" onclick="return confirm('Are you sure?)"><i class="fa fa-trash"></i></button></td> -->
+
+		<button title="Delete" id="<%=raw academicDetail.id %>" class="academic-year-delete mg-icon-btn" ><i class="fa fa-trash"></i></button></td>
+
+	</tr>
+	<%end%>
+</table>
+<%else%>
+<h5>Please create some Academic Year..</h5>
+<%end%>
+<%= will_paginate @academicdetails, :container => false %>
+  </div>
+  <div id="addNewAcademicYearDialogDivID"></div>
+  <div id="editAcademicYearDialogDivID"></div>
+<%= render  partial: 'schools/school_left_close' %>
+
+<script>
+$(document).ready(function () {
+        focusCurrentTab("createTimeTableAID","createTimeTableLiID");
+        focusMasterSettings();
+    });
+
+$(document).on("click","#addAcadamicYearButton",function(){
+	$.ajax({
+		url:"/timetable/new_time_table",
+		success:function(data){
+			$("#addNewAcademicYearDialogDivID").dialog({
+				model:true,
+				title:"Add Academic Year",
+				minWidth:280,
+				open:function(){
+					$(this).html(data);
+				}
+			});
+		},
+		error:function(){
+			alert("inside error");
+		}
+	});
+
+});
+
+$(document).on("click",".academic-year-edit",function(){
+	var ID=$(this).attr("id");
+	$.ajax({
+		url:'/timetable/edit_time_table',
+		data:{"id":ID},
+		success:function(html){
+			$("#editAcademicYearDialogDivID").dialog({
+				model:true,
+				title:"Edit",
+				minWidth:280,
+				
+				open:function(){
+					$(this).html(html);
+				}
+			});
+
+		},
+		error:function(){
+			alert("inside error");
+		}
+	});
+});
+
+$(document).on("click",".academic-year-delete",function(){
+	var ID=$(this).attr("id");
+    var retVal = confirm("Are you sure to delete ?");
+	if (retVal)
+	{
+		$.ajax({
+		url:'/timetable/delete_time_table',
+		data:{"id":ID},
+		success:function(html){
+			 $("#academicListTableID").html(html);
+		}
+	});
+	}
+	
+});
+</script>

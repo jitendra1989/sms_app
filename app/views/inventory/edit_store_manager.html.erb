@@ -1,0 +1,43 @@
+<div class="mg-custom-labels">
+  <%= form_for :store_manager, url: update_store_manager_path,method: :patch,:html => {:id => 'updateInventoryStoreMannagerId' } do |f| %>
+    <%= f.hidden_field :is_deleted, :value => 0 %>
+    <%= f.hidden_field :mg_school_id, :value => session[:current_user_school_id] %>
+    <%= f.hidden_field :updated_by, :value => session[:user_id] %>
+    <%= f.hidden_field :user_type, :value => "store_manager" %>
+    <%= f.hidden_field "id", :value => @store_manager.id %>
+    <%= hidden_field_tag "change_store_username", params[:change_store_username] %>
+
+    <p>
+      <%store=MgInventoryStoreManager.find_by(:mg_user_id=>@store_manager.id)%>
+      <%stores=MgInventoryStoreManagement.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:store_name,:id)%>
+      <label class="mg-label" style="width:140px"><%= t('store_name') %></label><br/>
+      <%= select_tag :mg_store_id,options_for_select(stores,:selected=>store.mg_inventory_store_management_id),:prompt=>"Select",:class=>"mg-text-field",:disabled=>true%>
+    </p>
+
+    <p>
+      <%
+        school_subdomain= MgSchool.where(:id=>session[:current_user_school_id],:is_deleted=>0)
+        @subdomain = school_subdomain[0].subdomain
+        mguser_name = @store_manager.user_name
+        @user_name = mguser_name.sub(@subdomain,"")
+      %>
+      <%= hidden_field_tag "subdomain", @subdomain %>
+      <label class="mg-label" style="width:140px"><%= t('user_name') %><span class="required-field">&nbsp;*</span></label><br/>
+      <%=@subdomain%><%= f.text_field :user_name,:value=>@user_name,:class=>"mg-text-field" %>
+    </p>
+
+    <p class="mg-p-mgtop">
+      <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("save")%></a>
+      <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+    </p>
+
+  <% end %>
+</div>
+
+<script>
+$("#updateInventoryStoreMannagerId").validate({
+  rules: {        
+    "store_manager[user_name]": {required: true}
+  }
+});
+</script>

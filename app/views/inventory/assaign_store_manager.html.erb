@@ -1,0 +1,171 @@
+
+
+<%= render  partial: 'inventory/inventory_left' %>
+
+<% navigation_add 'Assign Store Manager', inventory_assaign_store_manager_path %>
+
+<h4 class="mg-h4"><%= t('store_manager_list') %></h4>
+
+<button class="inventory-new-store-manager-create mg-btn-bottom-margin mg-custom-form-btn"><%= t('add_manager')%></button>
+
+
+<div class="mg_pagination">
+<%if !@store_manager_data.present?%>
+<h5>No Manager is created </h5>
+
+<%else%>
+<table  class="batch-tbl mg-tbl-margin">   <!-- border="2" --> 
+  <tr class="subject-table-header">
+    <!-- <th>Subject Id</th> -->
+   
+    <th><%= t('store_name') %></th>
+    <th><%= t('department') %></th>
+    <th><%= t('employee') %></th>
+
+
+    <th><%= t('action') %></th>
+
+  </tr>
+ 
+  <% @store_manager_data.each do |category| %>
+    <tr>
+    <%store_data=MgInventoryStoreManagement.find_by(:id=>category.mg_inventory_store_management_id)%>
+      <td><%= store_data.try(:store_name) %></td>
+      <%
+department_data=MgEmployeeDepartment.find_by(:id=>category.mg_employee_department_id)
+      %>
+      <td><%=  department_data.try(:department_name) %></td>
+     
+<%employee_data=MgEmployee.find_by(:id=>category.mg_employee_id)%>
+<%
+fname=employee_data.try(:first_name)
+lname=employee_data.try(:last_name) 
+%>
+      <td><%= "#{fname} #{lname}" %></td>
+      <td>
+        
+      <button title="Show" id="<%=raw category.id %>-showlibrBTNID" class="show-inventory-manager-management mg-icon-btn"><i class="fa fa-eye"></i></button>
+
+        <button title="Edit" id="<%=raw category.id %>-editlibriBTNID" class="edit-manager-stack-management mg-icon-btn"><i class="fa fa-pencil-square-o"></i></button>
+
+        <!-- <button title="Delete" id="<%#=raw category.id %>-deletelibrBTNID" class="delete-library-stack-management mg-icon-btn"><i class="fa fa-trash"></i></button> -->
+        <span style="left: -2px; position: relative; float: right; top: -2px;">
+        <%= link_to "<i class=\"fa fa-trash\"></i>".html_safe, {:controller => "inventory", :action => "assaign_store_manager_delete",:id =>category.id },:title=>"Delete" ,:class=>"mg-icon-btn",data: { confirm: 'Are you sure to delete?' } %>
+        </span>
+      </td>
+
+    </tr>
+  <% end %>
+</table>
+<br/>
+ <div class="pagination-align" style="position: relative; bottom: 10px;">
+              <%#= will_paginate @category, :container => false %>
+           </div>
+
+<%end%>
+</div>
+<div id="showdataaalibrarystackmanagementDIVID"></div>
+<div id="editmanagerDIVID"></div>
+
+
+<div id="showInventorymanagerDIVID"></div>
+<%= render  partial: 'application/common_left_close' %>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+$( document ).ready(function() {
+    focusCurrentTab("assign_store_managerAid","vassign_store_managerLiID");
+          //focusStudentHeaderBox();
+});
+
+$(document).on("click",".inventory-new-store-manager-create",function(){
+
+var urlLink = "/inventory/assaign_store_manager_new/";
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(html){
+                  $('#showInventorymanagerDIVID').dialog({
+                    modal: true,
+                     minHeight: '330',
+                    maxWidth: '600',
+                    title: "Create Store Manager",
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+
+});
+$(document).on("click",".show-inventory-manager-management",function(){
+var myID =$(this).attr('id');
+        var Id=myID.split("-");
+
+        var datas=Id[0];
+var urlLink = "/inventory/assaign_store_manager_show/";
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            data:{"id":datas},
+            success: function(html){
+                  $('#showInventorymanagerDIVID').dialog({
+                    modal: true,
+                     minHeight: 'auto',
+                    maxWidth: '600',
+                    title: "Show Inventory Store Manager",
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+
+});
+$(document).on("click",".edit-manager-stack-management",function(){
+var myID =$(this).attr('id');
+        var Id=myID.split("-");
+
+        var datas=Id[0];
+        
+var urlLink = "/inventory/assaign_store_manager_edit/";
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+             data:{"id":datas},
+
+            success: function(html){
+                  $('#editmanagerDIVID').dialog({
+                    modal: true,
+                     minHeight: 'auto',
+                    maxWidth: '600',
+                    title: "Edit Inventory Store Manager",
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+
+});
+
+
+</script>

@@ -1,0 +1,179 @@
+<%=render partial: "dashboards/student_dashboard_left"%>
+
+<% navigation_add t('room_reallotment_request'), :controller=>'hostel_management', :action=>'room_reallotment_request' %>
+
+<%# navigation_add t('new_room_reallotment_request'), :controller=>'hostel_management', :action=>'room_reallotment_form' %>
+<h4 class="mg-h4"><%= @action=='new' ? t('room_reallotment_request') : t('edit')%></h4>
+
+
+	<% studentData=MgStudent.where(:mg_user_id=>session[:user_id]).pluck(:id)%>
+ <% allocate_data=MgAllocateRoomList.find_by(:mg_student_id=>studentData) %>
+
+ <% if allocate_data.present? %>
+	<%= form_for :reallotment, :url=>@action=='new' ? 'room_reallotment_create' : '/hostel_management/room_reallotment_update/'+@reallotment_list.try(:id).to_s,:html => {:id => 'studentDetailNewEditFormId' } do |f| %>
+
+
+
+	<%= f.hidden_field :is_deleted, :value => 0 %>
+	<%= f.hidden_field :mg_school_id, :value => session[:current_user_school_id] %>
+
+  	<%if @action=='new'%>
+    	<%= f.hidden_field :created_by, :value => session[:user_id] %>
+
+  	<%end%>
+  	<%= f.hidden_field :updated_by, :value => session[:user_id] %>
+  	<%#= f.hidden_field :mg_student_id, :value => @student_id[0] %>
+  	<%#=hidden_field_tag "actions",@action%>
+
+	<label class="mg-label mg-tt-width" style="width:185px"><%= t('hostel') %><span class="required-field">&nbsp;*</span></label>
+	    <%= f.hidden_field :mg_student_id, :value => @student_application_form.try(:mg_student_id) %>
+	    <%= f.hidden_field :mg_hostel_details_id, :value => @allocate_room_data.try(:mg_hostel_details_id) %>
+	    <%hostel_details=MgHostelDetails.find_by(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id],:id=>@allocate_room_data.try(:mg_hostel_details_id))%>
+	<%= text_field_tag :hostel_name,hostel_details.try(:name),:readonly=>true,:class =>"mg-select-btn"%><br/>
+
+	
+
+	
+
+	<label class="mg-rm-text-trans mg-label mg-tt-width" style="width:185px"><%= t('floor') %><span class="required-field">&nbsp;*</span></label>
+	<%if @action=='new'%>
+
+<%floor_data=MgHostelFloor.find_by(:id=>@student_application_form.try(:mg_hostel_floor_id))%>
+	    <%= f.hidden_field :mg_hostel_floor_id, :value => @student_application_form.try(:mg_hostel_floor_id) %>
+
+	<%= text_field_tag :mg_hostel_floor,floor_data.try(:name),:readonly=>true,:class =>"mg-select-btn"%><br/>
+<%else%>
+<%floor_data=MgHostelFloor.find_by(:id=>@reallotment_list.mg_hostel_floor_id)%>
+<%= text_field_tag :mg_hostel_floor,floor_data.try(:name),:readonly=>true,:class =>"mg-select-btn"%><br/>
+<%end%>
+<label class="mg-rm-text-trans mg-label mg-tt-width" style="width:185px"><%= t('room_type') %><span class="required-field">&nbsp;*</span></label>
+<%if @action=='new'%>
+
+<%type_data=MgHostelRoomType.find_by(:id=>@student_application_form.try(:mg_hostel_room_type_id))%>
+	    <%= f.hidden_field :mg_hostel_room_type_id, :value => @student_application_form.try(:mg_hostel_room_type_id) %>
+
+	<%= text_field_tag :mg_hostel_type,type_data.try(:name),:readonly=>true,:class =>"mg-select-btn"%><br/>
+<%else%>
+<%type_data=MgHostelRoomType.find_by(:id=>@reallotment_list.mg_hostel_room_type_id)%>
+	<%= text_field_tag :mg_hostel_type,type_data.try(:name),:readonly=>true,:class =>"mg-select-btn"%><br/>
+
+<%end%>
+	<label class="mg-rm-text-trans mg-label mg-tt-width" style="width:185px"><%= t('programme') %><span class="required-field">&nbsp;*</span></label>
+<%wing_data=MgWing.find_by(:id=>@allocate_room_data.try(:mg_wing_id))%>
+	    <%= f.hidden_field :mg_wing_id, :value => @allocate_room_data.try(:mg_wing_id) %>
+
+	<%= text_field_tag :mg_wing,wing_data.try(:wing_name),:readonly=>true,:class =>"mg-select-btn"%><br/>
+ <p class="formfield">
+	<label class="mg-rm-text-trans mg-label mg-tt-width" style="width:185px"><%= t('present_room_no') %><span class="required-field">&nbsp;*</span></label>
+<%if @action=='new'%>
+<%room_data=MgHostelRoom.find_by(:id=>@student_application_form.try(:mg_hostel_room_id))%>
+	    <%= f.hidden_field :mg_hostel_room_id, :value => @student_application_form.try(:mg_hostel_room_id) %>
+
+	<%= text_field_tag :room_no,room_data.try(:name),:readonly=>true,:class =>"mg-select-btn"%><br/>
+	<%else%>
+<%room_data=MgHostelRoom.find_by(:id=>@reallotment_list.mg_hostel_room_id)%>
+
+	<%= text_area_tag :room_no,room_data.try(:name),:readonly=>true,:class =>"mg-select-btn"%><br/>
+
+	<%end%>
+	</p>
+	 <p class="formfield">
+	<label class="mg-label mg-tt-width" style="width:185px"><%= t('reason') %><span class="required-field">&nbsp;*</span></label>
+	<%if @action=='new'%>
+	<%= text_area_tag :reason,nil,:class =>"mg-select-btn"%><br/>
+	<%else%>
+	<%= text_area_tag :reason,@reallotment_list.reason,:class =>"mg-select-btn"%><br/>
+
+	<%end%>
+	</p>
+	<label class="mg-label mg-tt-width" style="width:185px"><%= t('status') %><span class="required-field">&nbsp;*</span></label>
+	<%if @action=='new'%>
+	<%= f.hidden_field :status, :value => "Applied" %>
+
+	<%= select_tag :status_data,options_for_select([["Applied","Applied"],["Accepted","Accepted"],["Rejected","Rejected"]]),:disabled=>true,:class =>"mg-select-btn"%><br/>
+	<%else%>
+
+	<%= select_tag :status_data,options_for_select([["Applied","Applied"],["Accepted","Accepted"],["Rejected","Rejected"]],:selected=>@reallotment_list.status,:disabled=>["Accepted","Rejected"]),:onchange=>"dataHastoBeDisabled(this.value)",:class =>"mg-select-btn edit_class_data"%><br/>
+<%end%>
+	<p class="mg-p-mgtop">
+	<%#if @action=='new'%>
+<a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("save")%></a>
+	<%#else%>
+<!-- <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%#=t("save")%></a> -->
+<!-- <a  class="mg-small-form-btn data99" style="display:none"><%#=t("save")%></a> -->
+
+<!-- <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn data100" style="display:none"><%#=t("save")%></a> -->
+	
+<%#end%>
+	    <%= link_to t('cancel'),:back ,{:class=>"mg-small-form-btn cancel-form-dialog"} %>
+	</p>
+<%end%>
+
+	<% else %>
+		Room is Not Yet Confirmed
+	<% end%>
+
+<%= render partial: 'application/common_left_close' %>
+
+<script>
+	$( document ).ready(function() {
+	focusCurrentTab("room_reallotment_requestAID","room_reallotment_requestLiID");
+	var status=$(".edit_class_data").val();
+	if(status==null){
+			$(".data100").hide();
+
+		$(".data99").show();
+	}
+	else{
+		$(".data99").hide();
+
+			$(".data100").show();
+
+	}
+ // if(data=="Processing"){
+ //        $('.edit_class_data option[value="Pending"]').remove();
+ //        var newOption = $('<option value="Pending" disabled=true>Pending</option>');
+ //       newOption.insertBefore('.edit_class_data option[value="Processing"]');
+ //         $(".data87").hide();
+ //         $(".data89").show();
+ //        }
+ //       else if(data=="Resolved"){
+
+ //        $(".data87").hide();
+ //        $(".data89").show();
+
+ //       }else{
+        
+ //      $(".data87").show();
+ //      $(".data89").hide();
+
+ //       }
+		
+	});
+
+	function dataHastoBeDisabled(data){
+	
+if(data==null){
+	alert("Cant be Submitted")
+$(".data100").hide();
+
+		$(".data99").show();
+}else{
+
+$(".data99").hide();
+
+			$(".data100").show();
+
+
+}
+
+	}
+	
+</script>
+
+
+<style>
+.formfield * {
+    vertical-align: middle;
+}
+</style>

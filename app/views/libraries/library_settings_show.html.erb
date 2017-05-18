@@ -1,0 +1,28 @@
+<%= render  partial: 'master_settings/master_settings_left' %>
+<% navigation_add 'Library Settings', library_settings_show_path %>
+
+<%if flash[:success].present?%>
+  <div class="alert alert-info mg-success-msg">
+
+<%=flash[:success]%>
+</div>
+<%end%>
+
+<%= render  partial: 'library_settings_show' %>
+
+
+
+<%= render  partial: 'schools/school_left_close' %>
+<script>
+$(document).ready(function () {
+
+  
+    
+
+
+        focusCurrentTab("librarysettingsAID","librarysettingsLiID");
+        focusMasterSettings();
+        
+    });
+
+</script>

@@ -1,0 +1,56 @@
+<!-- breadcrumbs Work -->
+<% navigation_add 'Examinations', examinations_path %>
+<% navigation_add 'CCE', examination_cce_new_path %>
+<% navigation_add 'Co-Scholastic Settings', examination_Co_Scholastic_index_path %>
+
+<% navigation_add 'Co-Scholastic New', examination_Co_Scholastic_new_path %>
+
+
+<!-- breadcrumbs Work -->
+
+<%= render  partial: 'examination_table_left' %>
+<h4 class="mg-h4">Create Co-Scholastic Item</h4>
+<div">
+  <button class="Co-Scholastic-new-datas mg-custom-form-btn">New </button><br/>
+
+
+  <div id="Co_Scholastic_datas">
+  </div>
+  <div id="Co_Scholastic_datasEdit">
+  </div>
+
+  <table class="batch-tbl mg-tbl-margin" cellspacing="0" style="padding:0; border-collapse:collapse;">
+
+   
+  <%if  @observationData[0].to_s.empty? %>
+  <h5><%="No Records Found"%></h5>
+  <%else%>
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+      <th><%=t('actions')%></th>
+    </tr>
+    <% @observationData.each do |data| %>
+      <tr>
+        <td><a href="/examination/Co_Scholastic_newDataShow/<%=raw data.id%>" class="co-scholastic-show-class"><%= data.name %></a></td>
+        <td style="max-width:400px"><a href="/examination/Co_Scholastic_newDataShow/<%=raw data.id%>" class="co-scholastic-show-class"><%= data.description %></a></td>
+
+        <td>
+          <a href="#" id=<%=raw data.id%> class="co-scholastic-edit-class"><button title="Edit" class="mg-text-exam mg-icon-btn"><i class="fa fa-pencil-square-o"></i></button></a>
+          <a href="#" id=<%=raw data.id%> class="co-scholastic-delete-class"><button title="Delete" class="mg-text-exam mg-icon-btn"><i class="fa fa-trash"></i></button></a>
+        </td>
+      </tr>
+    <% end %>
+    <%end%>
+  </table> 
+</div>
+<%= render  partial: 'examination_table_close' %><br/>
+
+<script type="text/javascript">
+  $(document).ready(function() {
+        focusCurrentTab("viewStudentListAId","viewStudentListLiId");
+        focusExaminationHeaderBox();
+  });
+
+</script>
+

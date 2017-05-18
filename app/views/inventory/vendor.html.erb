@@ -1,0 +1,103 @@
+<% navigation_add 'About Vendor', :controller => 'inventory', :action => 'vendor' %>
+
+
+<%= render  partial: 'inventory/inventory_left' %>
+
+
+<h4 class="mg-h4"><%= t('vendor_list') %></h4>
+
+<%= button_to 'Add Vendor', {:controller => "inventory", :action => "vendor_new" } ,:class=>"mg-custom-form-btn"%>
+
+<div class="mg_pagination">
+<%if @item.present?%>
+<table  class="batch-tbl mg-tbl-margin">   <!-- border="2" --> 
+  <tr class="subject-table-header">
+    <th><%= t('vendor_name') %></th>
+    <th><%= t('category') %></th>
+    <th><%= t('city') %></th>
+    <th><%= t('phone_number') %></th>
+    <th  style="width: 92px;"><%= t('actions') %></th>
+  </tr>
+  <% @item.each do |vendor| %>
+    <tr>
+      <td><%= vendor.try(:name) %></td>
+      <td><%= vendor.try(:category) %></td>
+      <td><%= vendor.try(:city) %></td>
+      <td><%= vendor.try(:phone_number) %></td>
+     
+      <td style="width: 8.5em;">
+      <span class="mg-paginatin-a-link">
+      	<button title="Show" id="<%=raw vendor.id %>-showinventoryBTNID" class="show-vendor-btn mg-icon-btn"><i class="fa fa-eye"></i></button>
+      </span>
+      <span class="mg-paginatin-a-link">
+      <%= link_to "<i class=\"fa fa-pencil-square-o\"></i>".html_safe, {:controller => "inventory", :action => "vendor_edit",:id =>vendor.id} , :method=>'post' ,:title=>"Edit" ,:class=>"mg-icon-btn"%>
+      </span>
+      <span class="mg-paginatin-a-link" style="margin-left: 1px;">
+      <%= link_to "<i class=\"fa fa-trash\"></i>".html_safe, {:controller => "inventory", :action => "vendor_delete",:id =>vendor.id }, :method=>'post' ,:title=>"Delete" ,:class=>"mg-icon-btn",data: { confirm: 'Are you sure to delete?' } %>
+      </span>
+      </td>
+    </tr>
+  <% end %>
+</table>
+<br/>
+ <div class="pagination-align" style="position: relative; bottom: 10px;">
+              <%#= will_paginate @consumption, :container => false %>
+              <%= will_paginate @item%>
+           </div>
+<%else%>
+<h5>No Vendor data is created </h5>
+<%end%>
+</div>
+<div id="showVendorDIVID"></div>
+
+
+<%= render  partial: 'application/common_left_close' %>
+
+<script>
+$( document ).ready(function() {
+            focusCurrentTab("viewInventoryVendorIndex","viewInventoryVendorLiID");
+});
+
+
+$(document).on("click", ".show-vendor-btn", function(e){
+        var myID =$(this).attr('id');
+        var Id=myID.split("-");
+        var urlLink = "/inventory/vendor_show/"+Id[0];
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(html){
+                  $('#showVendorDIVID').dialog({
+                    modal: true,
+                    minHeight: 'auto',
+                    minWidth: '500',
+                    title: "Show Vendor",
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+});
+
+function changeItemFunction(a,b){
+        $("#category_wise_item_ID").empty();
+  //$(document).on("change","#vendor_mg_category_id",function(e){
+    var vendorId=b;
+    var categoryId=a.value;
+      $.ajax({
+            url: "/inventory/category_wise_item",
+            type: "GET",
+            data: {"mg_category_id":categoryId , "vendor_id":vendorId},
+            //dataType: "html",
+            success: function(data) {
+             $("#category_wise_item_ID").empty();
+             $("#category_wise_item_ID").append(data);
+            }
+        });
+}
+
+</script>
+

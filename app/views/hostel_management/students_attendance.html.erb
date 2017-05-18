@@ -1,0 +1,659 @@
+<% navigation_add t('attendance'), :controller=>'hostel_management', :action=>'students_attendance' %>
+<%= render  partial: 'hostel_management_left' %>
+
+<% hostel_details=MgHostelDetails.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:name,:id) %>
+
+  <h4 class="mg-h4"><%=t('students_attendance')%></h4>
+
+<table class="exam-rounds">
+  <tr class="prgm-div">
+    <td>
+    
+    <% hostel_warden=MgHostelWarden.find_by(:mg_user_id=>session[:user_id],:is_deleted=>0,:mg_school_id=>session[:current_user_school_id])
+        hostel_details=MgHostelDetails.find_by(:id=>hostel_warden.mg_hostel_details_id)
+        %>
+        
+      <%=label :select_hostel, "Select Hostel" ,:class=>"mg-label "%>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%#= select_tag "mg_hostel_list",options_for_select(hostel_details,:selected=>""),:prompt=>"Select",:class => 'prgm2' %>
+      <%= hidden_field_tag :mg_hostel_details_id ,hostel_warden.mg_hostel_details_id%>
+        <%= text_field_tag :mg_hostel_id ,hostel_details.try(:name),:readonly=>true,:class=>"mg-text-field"%>
+
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <%=label :programme_list, t("select_programme") ,:class=>"mg-label "%><span class="required-field prgme">*</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      &nbsp;<%= select_tag "programme_list",options_for_select([]),{:class => 'prgm1',:prompt=>"Select", :onchange=>"studentProgrammeChangeFunction()"} %>
+      <%#= select_tag :course_list, options_for_select(@classes,@mgcours_id), :prompt=>t("select"), :onchange=>"courseList(this.value)", :class=>"mg-text-field" %>
+    </td>     
+  </tr>
+</table>
+
+<table>
+  <tr>
+    <td>
+      <label class="mg-label mg-label-width ">Select Date</label>
+      &nbsp;&nbsp;<input id="employeeAttendanceDatePickerID" class="employee-attendance-month mg-text-field" type="text" placeholder="Select Month" />
+    </td>
+  </tr>
+</table>
+
+
+<div align="right"  style="margin-right: 20px;" id ="div_icon_information_ID"><span style='color:#00ff40;'><i class='fa fa-check'> </i></span>&nbsp;Morning &nbsp;&nbsp;<span style='color:#808080;'><i class='fa fa-check'> </i></span>&nbsp;Evening &nbsp;&nbsp;<span style=''><i class='fa fa-circle'> </i></span>&nbsp;Absent</div>
+<br/>
+
+<div id="studentListDIVID"></div>
+<div id="attendanceCalendarScroll">
+  <div id="attendanceTanleAppendDIVID">
+  </div>
+</div>
+
+
+ <div id="employeeAttendanceDIVID1"></div>
+<div id="employeeAttendanceDIVID2"></div>
+<div id="employeeAttendanceLeaveReportForHalfDayDIVID"></div>
+<div id="employeeAttendanceLeaveReportForFullDayDIVID"></div>
+<div id="employeeAttendanceLeaveReportForAllDayDIVID" class="mg-pop-up-padding" style="overflow: hidden;"></div>
+<div id="employeeLeaveTypeReportDIVID"></div>
+
+
+<%= render  partial: 'application/common_left_close' %>
+
+<script type="text/javascript">
+  
+  $(document).ready(function(){
+    focusCurrentTab("hostelStudentAttendanceAID","hostelStudentAttendanceLID");
+
+              // $(".content-tab").tabs();
+      dateFormatStr =  getJsDateFormat();
+    $("#start_date").datepicker({ dateFormat: dateFormatStr})// ,changeMonth: true,changeYear: true,yearRange: "-100:+0"});
+    $("#end_date").datepicker({ dateFormat: dateFormatStr})// ,changeMonth: true,changeYear: true,yearRange: "-100:+0"});
+    $('#employeeAttendanceDatePickerID').val($.datepicker.formatDate('MM yy',new Date()));
+    prgmData();
+    $('#employeeAttendanceDatePickerID').datepicker({
+      changeMonth: true,
+      changeYear: true,
+      dateFormat: 'MM yy',
+      showButtonPanel: true,
+      beforeShow: function (){
+          setTimeout(function() {
+           $(".ui-datepicker-buttonpane")
+              .html('')
+              .append("<button id='employeeAttendanceDoneBTNID'>Done</button>");
+          }, 1)
+          $('#hideMonth').html('.ui-datepicker-calendar{display:none;}');
+      },
+        onChangeMonthYear: function (){
+            setTimeout(function() {
+            
+             $(".ui-datepicker-buttonpane")
+                .html('')
+                .append("<button id='employeeAttendanceDoneBTNID'>Done</button>");
+            }, 1)
+
+          }, 
+          dateFormat: 'MM yy',
+          onClose: function(dateText, inst) { 
+              var month = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
+            month1=month;
+
+              var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
+           year1=year;
+              $('#employeeAttendanceDatePickerID').datepicker('setDate', new Date(year, month, 1));
+              setTimeout(function(){$('#hideMonth').html('');},200);
+          }
+    });
+  });//end ready
+
+ $(document).on("click","#employeeAttendanceDoneBTNID",function(e){
+    attendanceAfterSuccess();
+  });
+
+  function studentProgrammeChangeFunction(){
+    attendanceAfterSuccess();
+  }
+
+
+  function attendance(){
+      var SelectValueIs = $( "#mg_hostel_list" ).val();
+      var programme_lists = $( "#programme_list" ).val();
+      if(SelectValueIs !='' && programme_lists !='' ){
+
+      $( "#employeeAttendanceDatePickerID" ).datepicker("hide");
+       var month = parseInt($("#ui-datepicker-div .ui-datepicker-month :selected").val()) + 1;
+       var year = parseInt($("#ui-datepicker-div .ui-datepicker-year :selected").val());
+        if(isNaN(month)){
+          var presentDate = new Date();
+          month=presentDate.getMonth()+1;
+          year=presentDate.getFullYear();
+        }
+      var days = new Array(7);
+          days[0]=  "Sun";
+          days[1] = "Mon";
+          days[2] = "Tues";
+          days[3] = "Wed";
+          days[4] = "Thur";
+          days[5] = "Fri";
+          days[6] = "Sat";
+      Date.prototype.getDayName = function() {
+              return days[ this.getDay() ];
+          };
+      //  generate dynamic calendr here
+      var totalDays = parseInt(daysInMonth(month, year));
+
+      var strDates = "<thead><tr><th class='mg-fix-width'>Name</th>"
+      for(var index=1; index <= totalDays;index++){
+                 var now = new Date(year,month-1,index);
+    strDates +="<th>"+index+"<br/>"+now.getDayName()+"</th>";
+      }
+      // strDates +="";
+  
+    $('.header-row-data').empty();
+    $('.header-row-data').prepend( strDates );
+    //==================================================
+      var myID =$("#programme_list").val();
+      var hostel_id =$("#mg_hostel_list").val();
+      var Id=myID.split("-");
+//==================================================
+
+       var urlLink = "/hostel_management/hostler_student_list/"+SelectValueIs;  
+          $.ajax({
+          url: urlLink,
+          cache: false, 
+          data:{wing_id:Id[0],quota_id:Id[1],hostel_id:hostel_id}, 
+
+          success: function(data) {
+
+                  var strName = "";
+                  var count=0;
+                  var day_1=new Date().getDate();
+                  var day=new Date().getDate();
+
+                  var current_month = parseInt(new Date().getMonth()) + 1;
+                  var current_year = parseInt(new Date().getFullYear());
+                //  alert(day_1+":"+current_month+":"+current_year);
+                
+                  for(var outerIndex = 0;outerIndex < data[0].length;outerIndex++){
+
+                      strName += "<tr><th>"+data[0][outerIndex].first_name+"</th>"
+                      for(var index=1; index <= totalDays;index++){
+                      var value=0;
+
+                      if(new Date().getDate()<index && current_month==month && current_year==year){
+                        value=4;
+                       //}else if(current_month<month || current_year<year){// && current_year<year
+                        }else if(new Date(month+'/01/'+year) > new Date(current_month+'/01/'+current_year)){
+                        value=5;
+                       }else{
+                        // var date=year1+'-'+month1+'-'+index;
+                        //var value=0;
+                        if(data[1].length >0){
+                             for(var dbindex=0;dbindex< data[1].length;dbindex++){
+                                  var checkDate=month+'/'+index+'/'+year
+                                      d = new Date(checkDate); 
+                                      x = d.getDay(); 
+                                      if(data[2].indexOf(x)>-1){
+                                        value = 2;
+                                      }
+                                      if(data[1][dbindex].year ==year && data[1][dbindex].month ==month && data[1][dbindex].day== index && data[1][dbindex].mg_student_id==data[0][outerIndex].id && x !=0 && data[1][dbindex].created_at==data[1][dbindex].updated_at){
+                                         value = 1;
+                                      var is_morning_var=data[1][dbindex].is_morning
+                                      var is_evening_var=data[1][dbindex].is_evening
+                                      // alert("is_evening_var===================="+is_evening_var);
+                                       }
+                                      if(data[1][dbindex].year ==year && data[1][dbindex].month ==month && data[1][dbindex].day== index && data[1][dbindex].mg_student_id==data[0][outerIndex].id && x !=0 && data[1][dbindex].created_at!=data[1][dbindex].updated_at && 1==0){
+                                       value = 3;
+                                      }
+                                }
+                        }else{
+                              var checkDate=month+'/'+index+'/'+year;
+                              x = new Date(checkDate).getDay();
+                              if(data[2].indexOf(x)>-1){
+                                value = 2;
+                              }
+                        } 
+                        }  
+                        var TDID="TDID";
+                      if (value!=5){
+                          if (value!=4){
+                              if(value!=1 && value!=2 && value ==3){
+                                strName +="<td class='mg-att-bg-clr' bgcolor='#ffb0b0' id="+index+","+data[0][outerIndex].id+TDID+"><a id="+ index+","+data[0][outerIndex].id +" class='atts_class-all'>"
+                                // alert("1st");
+                                if (is_morning_var==1)
+                                {
+                                 "<span><i class='fa fa-circle'> </i></span>&nbsp;" 
+                                }
+                                else{
+                                  "<span><i class='fa fa-check'> </i></span>&nbsp;"
+                                }
+
+
+                                if (is_evening_var==1)
+                                {
+                                 "<span><i class='fa fa-circle'> </i></span>&nbsp;" 
+                                }
+                                else{
+                                  "<span><i class='fa fa-check'> </i></span>&nbsp;"
+                                }
+
+                                "</a></td>";
+                              }else if(value!=1 && value==2 && value !=3){
+                                strName +="<td><i class='fa fa-ellipsis-h'></i></td>";
+                              }else if(value==1 && value!=2 && value !=3){
+                                if (is_morning_var==1)
+                                {
+                                 strName +="<td class='mg-att-bg-clr' id="+index+","+data[0][outerIndex].id+TDID+"><a id="+ index+","+data[0][outerIndex].id +" class='atts_class-all-circle'>"+"<span class='spanMorningCircleClass' id="+index+","+data[0][outerIndex].id+TDID+" ><i class='fa fa-circle'> </i></span>&nbsp;" 
+                                }
+                                else {
+                                 strName +="<td class='mg-att-bg-clr' id="+index+","+data[0][outerIndex].id+TDID+"><a id="+ index+","+data[0][outerIndex].id +" class='atts_class-all'>"+"<span  style='color:#00ff40;' class='spanMorningClass' id="+index+","+data[0][outerIndex].id+TDID+"><i class='fa fa-check'> </i></span>&nbsp;"
+                                }
+                                if (is_evening_var==1)
+                                {
+                                   strName +="<span id="+index+","+data[0][outerIndex].id+TDID+" class='spanEveningCircleClass'><i class='fa fa-circle'> </i></span>" +"</a></td>";
+                                }
+                                else {
+                                  strName +="<span id="+index+","+data[0][outerIndex].id+TDID+" class='spanEveningClass' style='color:#808080;'><i class='fa fa-check'> </i></span>" +"</a></td>";
+                                }
+                              }else{
+                               strName +="<td class='mg-att-bg-clr' id='"+index+","+data[0][outerIndex].id+TDID+"'><a id="+ index+","+data[0][outerIndex].id +" class='atts_class-all'><span style='color:#00ff40;' id='"+ index+","+data[0][outerIndex].id +"' class='spanMorningClass'><i class='fa fa-check' > </i></span><span style='color:#808080;' id='"+ index+","+data[0][outerIndex].id +"' class='spanEveningClass'><i class='fa fa-check' > </i></span></a></td>";
+                              }
+                          }else{
+                            strName +="<td></td>";
+                          }
+                      }else{
+                            strName +="<td></td>";
+                      }
+
+                                    }
+                                  // 
+                                    strName +="</tr>";
+                                }
+                                 var table_part1='<div class="ul-container"><div class="component"><table class="att-calendar mg-scroll-att-table overflow-y"   id="mg-scroll-attendance-tbl">';
+                                 var table_part2='</table></div> </div>'  ;
+                                     
+                                $('#attendanceTanleAppendDIVID').empty();
+                                $('#attendanceTanleAppendDIVID').html( table_part1+strDates+"</tr></thead><tbody>"+strName+"</tbody>" );
+                                console.log(strDates+"</tr></thead><tbody>"+strName+"</tbody>"+table_part2);
+                                // table_sticky("mg-scroll-attendance-tbl");
+                              },
+                        error: function() {
+                                alert("Please Select Department");
+                              }
+                });  // Ajax close"
+
+             }else{
+              $('#attendanceTanleAppendDIVID').empty();
+             }
+
+                // });  // on click is close for that button
+
+  }
+
+
+
+
+  function attendanceAfterSuccess(){
+     // $('.ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix ui-draggable-handle').dialog('close');
+     $(".cancel-form-dialog").click();
+    // e.preventDefault();
+      // var SelectValueIs = $( "#attendances_mg_employee_department_id" ).val();
+              $('#attendanceTanleAppendDIVID').empty();
+      
+      var SelectValueIs = $( "#mg_hostel_list" ).val();
+      var programme_lists = $( "#programme_list" ).val();
+      if(SelectValueIs !='' && programme_lists !='' ){
+
+      $( "#employeeAttendanceDatePickerID" ).datepicker("hide");
+
+
+       var month = parseInt($("#ui-datepicker-div .ui-datepicker-month :selected").val()) + 1;
+       var year = parseInt($("#ui-datepicker-div .ui-datepicker-year :selected").val());
+        
+      
+        if(isNaN(month)){
+          
+          var presentDate = new Date();
+          month=presentDate.getMonth()+1;
+          year=presentDate.getFullYear();
+        }
+      var days = new Array(7);
+          days[0]=  "Sun";
+          days[1] = "Mon";
+          days[2] = "Tues";
+          days[3] = "Wed";
+          days[4] = "Thur";
+          days[5] = "Fri";
+          days[6] = "Sat";
+      Date.prototype.getDayName = function() {
+              return days[ this.getDay() ];
+          };
+      //  generate dynamic calendr here
+      var totalDays = parseInt(daysInMonth(month, year));
+
+      var strDates = "<thead><tr><th class='mg-fix-width'>Name</th>"
+      for(var index=1; index <= totalDays;index++){
+                 var now = new Date(year,month-1,index);
+    strDates +="<th>"+index+"<br/>"+now.getDayName()+"</th>";
+                   
+                  
+      }
+      // strDates +="";
+  
+    $('.header-row-data').empty();
+    $('.header-row-data').prepend( strDates );
+    // //==================================================
+      var myID =$("#programme_list").val();
+      var hostel_id =$("#mg_hostel_list").val();
+      var Id=myID.split("-");
+//==================================================
+
+       var urlLink = "/hostel_management/hostler_student_list/"+SelectValueIs;  
+          $.ajax({
+          url: urlLink,
+          cache: false, 
+          data:{wing_id:Id[0],quota_id:Id[1],hostel_id:hostel_id}, 
+
+          success: function(data) {
+
+                  var strName = "";
+                  var count=0;
+                  var day_1=new Date().getDate();
+                  var day=new Date().getDate();
+
+                  var current_month = parseInt(new Date().getMonth()) + 1;
+                  var current_year = parseInt(new Date().getFullYear());
+                //  alert(day_1+":"+current_month+":"+current_year);
+                
+
+                  for(var outerIndex = 0;outerIndex < data[0].length;outerIndex++){
+
+                      strName += "<tr><th>"+data[0][outerIndex].first_name+"</th>"
+                      for(var index=1; index <= totalDays;index++){
+                      var value=0;
+
+                      if(new Date().getDate()<index && current_month==month && current_year==year){
+                        value=4;
+                       //}else if(current_month<month || current_year<year){// && current_year<year
+                        }else if(new Date(month+'/01/'+year) > new Date(current_month+'/01/'+current_year)){
+                        value=5;
+                       }else{
+                        // var date=year1+'-'+month1+'-'+index;
+                        //var value=0;
+                        if(data[1].length >0){
+                             for(var dbindex=0;dbindex< data[1].length;dbindex++){
+                                  var checkDate=month+'/'+index+'/'+year
+                                      d = new Date(checkDate); 
+                                      x = d.getDay(); 
+                                      if(data[2].indexOf(x)>-1){
+                                        value = 2;
+                                      }
+                                      if(data[1][dbindex].year ==year && data[1][dbindex].month ==month && data[1][dbindex].day== index && data[1][dbindex].mg_student_id==data[0][outerIndex].id && x !=0){
+                                         value = 1;
+                                      var is_morning_var=data[1][dbindex].is_morning;
+                                      var is_evening_var=data[1][dbindex].is_evening;
+                                       }
+                                      if(data[1][dbindex].year ==year && data[1][dbindex].month ==month && data[1][dbindex].day== index && data[1][dbindex].mg_student_id==data[0][outerIndex].id && x !=0 && data[1][dbindex].created_at!=data[1][dbindex].updated_at && 1==0){
+                                       value = 3;
+                                      }
+                                }
+                        }else{
+                              var checkDate=month+'/'+index+'/'+year;
+                              x = new Date(checkDate).getDay();
+                              if(data[2].indexOf(x)>-1){
+                                value = 2;
+                              }
+                        } 
+                        }  
+                        var TDID="TDID";
+                      if (value!=5){
+                          if (value!=4){
+                              if(value!=1 && value!=2 && value ==3){
+                                strName +="<td class='mg-att-bg-clr' bgcolor='#ffb0b0' id="+index+","+data[0][outerIndex].id+TDID+"><a id="+ index+","+data[0][outerIndex].id +" class='atts_class-all'>"
+                                if (is_morning_var==1)
+                                {
+                                 "<span><i class='fa fa-circle'> </i></span>&nbsp;" 
+                                }
+                                else{
+                                  "<span><i class='fa fa-check'> </i></span>&nbsp;"
+                                }
+
+
+                                if (is_evening_var==1)
+                                {
+                                 "<span><i class='fa fa-circle'> </i></span>&nbsp;" 
+                                }
+                                else{
+                                  "<span><i class='fa fa-check'> </i></span>&nbsp;"
+                                }
+
+                                "</a></td>";
+                              }else if(value!=1 && value==2 && value !=3){
+                                strName +="<td><i class='fa fa-ellipsis-h'></i></td>";
+                              }else if(value==1 && value!=2 && value !=3){
+                                if (is_morning_var==1)
+                                {
+                                 strName +="<td class='mg-att-bg-clr' id="+index+","+data[0][outerIndex].id+TDID+"><a id="+ index+","+data[0][outerIndex].id +" class='atts_class-all-circle'>"+"<span class='spanMorningCircleClass' id="+index+","+data[0][outerIndex].id+TDID+" ><i class='fa fa-circle'> </i></span>&nbsp;" 
+                                }
+                                else {
+                                 strName +="<td class='mg-att-bg-clr' id="+index+","+data[0][outerIndex].id+TDID+"><a id="+ index+","+data[0][outerIndex].id +" class='atts_class-all'>"+"<span style='color:#00ff40;' class='spanMorningClass' id="+index+","+data[0][outerIndex].id+TDID+"><i class='fa fa-check'> </i></span>&nbsp;"
+                                }
+
+
+                                if (is_evening_var==1)
+                                {
+                                   strName +="<span id="+index+","+data[0][outerIndex].id+TDID+" class='spanEveningCircleClass'><i class='fa fa-circle'> </i></span>" +"</a></td>";
+                                }
+                                else {
+                                  strName +="<span  style='color:#808080;'  id="+index+","+data[0][outerIndex].id+TDID+" class='spanEveningClass'><i class='fa fa-check'> </i></span>" +"</a></td>";
+                                }
+                                // ===========================================================
+                                
+                              }else{
+                               strName +="<td class='mg-att-bg-clr' id='"+index+","+data[0][outerIndex].id+TDID+"'><a id="+ index+","+data[0][outerIndex].id +" class='atts_class-all'><span class='spanMorningClass' style='color:#00ff40;' id='"+ index+","+data[0][outerIndex].id +"' class='spanMorningClass'><i class='fa fa-check' > </i></span><span style='color:#808080;' id='"+ index+","+data[0][outerIndex].id +"' class='spanEveningClass'><i class='fa fa-check' > </i></span></a></td>";
+                              }
+                          }else{
+                            strName +="<td></td>";
+                          }
+                      }else{
+                            strName +="<td></td>";
+                      }
+
+                                    }
+                                  // 
+                                    strName +="</tr>";
+                                }
+                                 var table_part1='<div class="ul-container"><div id="parent" class="component"><table id="tableScrolltableHeadFixerId" class="att-calendar mg-scroll-att-table overflow-y"   id="mg-scroll-attendance-tbl">';
+                                 var table_part2='</table></div> </div>'  ;
+                                     
+                                $('#attendanceTanleAppendDIVID').empty();
+                                $('#attendanceTanleAppendDIVID').html( table_part1+strDates+"</tr></thead><tbody>"+strName+"</tbody>" );
+                                tableChange();
+                                console.log(strDates+"</tr></thead><tbody>"+strName+"</tbody>"+table_part2);
+                                // table_sticky("mg-scroll-attendance-tbl");
+                              },
+                        error: function() {
+                                alert("Please Select Department");
+                              }
+                });  // Ajax close"
+
+             }else{
+              $('#attendanceTanleAppendDIVID').empty();
+             }
+
+                // });  // on click is close for that button
+
+  }
+
+          function daysInMonth(iMonth, iYear){
+                    return new Date(iYear, iMonth, 0).getDate();
+                }  
+  
+
+
+
+
+
+function toggleAll()
+{
+ //    alert("i'm in toggleAll function");
+ $("#whatever").toggle();
+}
+
+
+  $(function () {
+    $.validator.addMethod('dateFormat',function (value, element){
+      dateFormatStr =  getJsDateFormat();
+        if (this.optional(element)) {
+            return true;
+        }
+        var ok = true;
+        try {
+            $.datepicker.parseDate(dateFormatStr, value);
+        }
+        catch (err) {
+            ok = false;
+        }
+        return ok;
+    },
+      "Please enter a date in the format "+ getDateFormat(dateFormatStr) +".");
+      dateFormatStr =  getJsDateFormat();
+
+    $(".datefield").datepicker({ dateFormat: dateFormatStr, changeYear: true });
+  });
+
+  $("#employeeReportAttendancesFormID").validate({
+      rules: {  
+      "start_date": {dateFormat: true, required: true},
+      "end_date": {dateFormat: true, required: true}
+    }
+  });
+
+
+  function  prgmData(){
+    var myID =$("#mg_hostel_details_id").val();
+    var urlLink = "/hostel_management/select_programme_data";
+    $.ajax({
+      url: urlLink ,
+      cache: false,
+      data:{id:myID},
+      success: function(html){
+        $('#programme_list').empty().append(html.main);
+      }
+    });
+  }
+
+
+$(document).on("click",".spanMorningClass", function(e){
+  // alert("1");
+   e.preventDefault();
+  var employee_date =$(this).attr('id');
+  // alert(employee_date);
+   var x=document.getElementById(employee_date);
+  if(x.innerHTML=='<i class="fa fa-circle"> </i>'){
+    isCheck(employee_date);
+  }else{
+     isCircle(employee_date,'morning');
+  }
+});
+
+
+$(document).on("click",".spanEveningClass", function(e){
+  e.preventDefault();
+  // alert("2");
+  var employee_date =$(this).attr('id');
+  var x=document.getElementById(employee_date);
+  // alert(x.innerHTML);
+  if(x.innerHTML=='<i class="fa fa-circle"> </i>'){
+    // alert("1");
+    isCheck(employee_date);
+  }else{
+    // alert("2");
+    isCircle(employee_date,'evening');
+  }
+});
+
+
+//new employee
+function  isCircle(employee_date,mororeve){
+  // alert("5");
+  // alert("1");
+  var studentCategoryID =employee_date;
+          var date_student_id=studentCategoryID;
+          //==============================================================================
+          var mg_hostel_list=$("#mg_hostel_list").val();
+          var programme_list=$("#programme_list").val();
+          var employeeAttendanceDatePickerID=$("#employeeAttendanceDatePickerID").val();
+          var mororeve=mororeve
+          //===============================================================================
+          var month = parseInt($("#ui-datepicker-div .ui-datepicker-month :selected").val()) + 1;
+          var year = parseInt($("#ui-datepicker-div .ui-datepicker-year :selected").val());
+
+          if(isNaN(month)){
+            var presentDate = new Date();
+            month=presentDate.getMonth()+1;
+            year=presentDate.getFullYear();
+          }
+         var urlLink = "/hostel_management/new";
+        $.ajax({
+             url: urlLink ,
+            data: {'mororeve':mororeve ,'mg_hostel_list': mg_hostel_list, 'date_student_id':date_student_id, 'programme_list':programme_list, 'employeeAttendanceDatePickerID':employeeAttendanceDatePickerID, 'month':month, 'year':year},
+           
+            cache: false,
+            success: function(html){
+
+                  $('#employeeAttendanceDIVID1').dialog({
+                    title: "Attendance Details",
+                    model: true,
+                    open: function () {
+                         $(this).html(html);
+                    },
+                    close: function (e) {
+                        $(this).empty();
+                    }
+                }); 
+            }
+        });
+}
+
+
+
+//edit and delete
+function isCheck(employee_date){
+ 
+}
+
+
+
+
+
+
+</script>
+
+<style type="text/css">
+  #attendanceCalendarScroll{
+    border: 1px solid #bcbcbc;
+    overflow-x: scroll;
+    max-width: 719px;
+  }
+
+  .ui-datepicker-calendar {
+   display: none;
+  }
+
+  #parent {
+      max-height: 400px;
+  }
+
+ a:hover {
+  cursor:pointer;
+ }
+
+</style>
+
+<script>
+
+
+ function tableChange(){
+   $("#tableScrolltableHeadFixerId").tableHeadFixer({'left' : 1, 'foot' : true, 'head' : true, 'right' : 0}); 
+ }
+</script>

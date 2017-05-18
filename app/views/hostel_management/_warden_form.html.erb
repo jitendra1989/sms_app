@@ -1,0 +1,80 @@
+<%= form_for :user, :url=>@action=='new' ? 'hostel_warden_login_create' : 'warden_update_user/'+@user.try(:id).to_s , :html => {:id => 'userLoginCreateFormID'} do |f| %>    
+
+<%= f.hidden_field :is_deleted, :value => 0 %>
+<%= f.hidden_field :mg_school_id, :value => session[:current_user_school_id] %>
+<%= f.hidden_field :created_by, :value => session[:user_id] %>
+<%= f.hidden_field :updated_by, :value => session[:user_id] %>
+
+<%= f.hidden_field :user_type, :value =>@user_type %>
+
+<% school= MgSchool.where(:id=>session[:current_user_school_id],:is_deleted=>0) %>
+<% subdomain = school[0].subdomain%> 
+
+<p>
+	<%= f.label :select_hostel, t('select_hostel') ,:class=>"mg-label"%><span class="required-field"> *</span><br>
+	<%@hostel_details=MgHostelDetails.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:name,:id)%>
+	<%if @action=='new'%>
+	
+	<%= select_tag :mg_hostel_details_id,options_for_select(@hostel_details),:prompt=>"Select",:class => 'mg-select-btn'%><br>
+	<%else%>
+     <%= f.hidden_field :user_id_data, :value => @warden.mg_employee_id %>
+
+	 	<%= select_tag :mg_hostel_details_id,options_for_select(@hostel_details,:selected=>@warden.mg_hostel_details_id),:prompt=>"Select",:class => 'mg-select-btn'%><br>
+	<%end%>
+
+</p>
+<p>
+	<%= f.label :select_department, t('select_department') ,:class=>"mg-label"%><span class="required-field"> *</span><br>
+	<%@employee_department=MgEmployeeDepartment.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:department_name,:id)%>
+	<%if @action=='new'%>
+	
+	<%= select_tag :mg_employee_department_id,options_for_select(@employee_department),:prompt=>"Select",:class => 'mg-select-btn'%><br>
+	<%else%>
+	 	<%= select_tag :mg_employee_department_id,options_for_select(@employee_department,:selected=>@warden.mg_employee_department_id),:prompt=>"Select",:class => 'mg-select-btn'%><br>
+	<%end%>
+
+</p>
+
+
+<p>
+	<%= f.label :select_employee, t('select_employee') ,:class=>"mg-label"%><span class="required-field"> *</span><br>
+	<%if @action=='new'%>
+	
+	<%= select_tag :mg_employee_id  ,options_for_select([]),:class => 'mg-select-btn'%><br>
+	<%else%>
+	<%= select_tag :mg_employee_id  ,options_for_select([]),:class => 'mg-select-btn'%><br>
+	 	<%#= select_tag :mg_employee_department_id  ,options_for_select(@employee_department),:prompt=>"Select",:class => 'mg-select-btn'%><br>
+	<%end%>
+
+</p>
+
+<p>
+	<%= f.label :user_name, t('user_name') ,:class=>"mg-label"%><span class="required-field"> *</span><br>
+	<%if @action=='new'%>
+		<%=subdomain%><%= f.text_field :user_name  ,:class => 'mg-select-btn'%><br>
+	<%else%>
+	 	<%school=MgSchool.find_by(:id=>session[:current_user_school_id])%>
+        <%user_name=@user.user_name.sub(school.subdomain,"")%>
+		<%=subdomain%><%= f.text_field :user_name,:value=>user_name,:class => 'mg-select-btn'%><br>
+	<%end%>
+
+</p>
+<%if @action=='new'%>
+	<p>
+		<%= f.label :password, t("password") ,:class=>"mg-label"%><span class="required-field"> *</span><br>
+	  	<%= f.password_field :password, :class=> 'mg-select-btn' , :step => 'any',:id=>"newUserPassword"%>
+	</p>
+	<div id="passwordfeedbackdivId" style="color:#ff0000"></div>
+	<p>
+		<%= f.label :retype_Password, t("confirm_password") ,:class=>"mg-label"%><span class="required-field"> *</span><br>
+	  	<%= f.password_field :confirm_password, :class=> 'mg-select-btn' , :step => 'any',:id=>"reUserPassword"%>
+	</p>
+<%end%>
+
+<p class="mg-p-mgtop">
+    <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("save")%></a>
+    <a class="mg-small-form-btn cancel-form-dialog"><%=t('cancel')%></a>
+
+</p>
+<% end %>
+

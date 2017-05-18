@@ -1,0 +1,32 @@
+<!-- Sec --> 
+ <%= form_for :subjects, url: subjects_path  do |f| %>
+
+
+ <p>
+
+    <label for="subjectname"><%= t('subjectname') %></label><br>
+    <%= f.text_field :subject_name   %>
+  </p>
+ 
+  <p>
+    <label for="subjectcode"><%= t('subjectcode') %></label><br>
+    <%= f.text_field :subject_code %>
+  </p>
+  
+ <p>
+    <label for="maxweeklyclass"><%= t('maxweeklyclass') %></label><br>
+    <%= f.label :max_weekly_class %><br>
+    <%= f.text_field :max_weekly_class %>
+  </p>
+  <%=f.hidden_field :mg_subject_id,:value=>session[:current_user_school_id]%>
+<p>
+  <label for="status"><%= t('status') %></label><br>
+    <%= f.label :status, t("active"), :value => "true"  %>
+    <%= f.radio_button :status, false , :checked => true%>
+    <%= f.label :status, t("inactive"), :value => "false" %>
+    <%= f.radio_button :status, true %>
+</p>
+  <p>
+    <%= f.submit t('save') %>
+  </p>
+<% end %>

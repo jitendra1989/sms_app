@@ -1,0 +1,23 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  mg_batch_id: 1
+  name: MyString
+  start_time: 2015-01-15 15:19:42
+  end_time: 2015-01-15 15:19:42
+  is_break: false
+  is_deleted: false
+  mg_school_id: 1
+  created_by: 1
+  updated_by: 1
+
+two:
+  mg_batch_id: 1
+  name: MyString
+  start_time: 2015-01-15 15:19:42
+  end_time: 2015-01-15 15:19:42
+  is_break: false
+  is_deleted: false
+  mg_school_id: 1
+  created_by: 1
+  updated_by: 1

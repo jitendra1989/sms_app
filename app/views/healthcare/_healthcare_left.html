@@ -1,0 +1,127 @@
+<section id="userBodyContentBox" >
+    <table width=100% border="0" cellspacing="0" cellpadding="0">
+        <tr>
+            <td valign="top" class="userBodyContentBox1">
+                <div class="userMenuBoxLeft" style="width: 210px;">
+                    <ul class="menuListHome">
+                     <%=hidden_field_tag "user_type",session[:user_type]%>
+                        <%if session[:user_type]=="healthcare_admin"%>
+                            <li class="myAccountMenu mg-toggle-plus"><%=t('about_healthcare')%></li>
+                            <div class="mg-left-sub-menu-title">
+                             <!-- Added By Jitendra from here -->
+                                <li id="checkupliId">
+                                <a class="menuItemsActivities" href="/healthcare" id="checkupAID">
+                                    <div class="setMenu"><i class="fa fa-calendar-plus-o">&nbsp;&nbsp;</i><%=t('checkup_type')%>
+                                    </div>
+                                </a>
+                            </li>
+                            <li id="checkupVaccinationsliId">
+                                <a class="menuItemsActivities" href="/healthcare/vaccinations" id="checkupVaccinationsAID">
+                                    <div class="setMenu"><i class="fa fa-eyedropper">&nbsp;&nbsp;</i><%=t('vaccinations')%>
+                                    </div>
+                                </a>
+                            </li>
+                            <li id="boosterDosesliId">
+                                <a class="menuItemsActivities" href="/healthcare/booster_doses" id="boosterDosesAID">
+                                    <div class="setMenu"><i class="fa fa-bolt">&nbsp;&nbsp;</i><%=t('booster_doses')%>
+                                    </div>
+                                </a>
+                            </li>
+                            <li id="bedDetailLID">
+                                <a class="menuItemsActivities" href="/healthcare/bed_detail" id="bedDetailAID">
+                                    <div class="setMenu"><i class="fa fa-bed">&nbsp;&nbsp;</i><%=t('bed_details')%>
+                                    </div>
+                                </a>
+                            </li>
+                                <li id="assignBedLID">
+                                    <a class="menuItemsActivities" href="/healthcare/assign_bed" id="assignBedAID">
+                                        <div class="setMenu"><i class="fa fa-hospital-o">&nbsp;&nbsp;</i><%=t('bed_assignment')%>
+                                        </div>
+                                    </a>
+                                </li>
+
+                                <li id="checkUpScheduleLID">
+                                    <a class="menuItemsActivities" href="/healthcare/check_up_schedule" id="checkUpScheduleAID">
+                                        <div class="setMenu"><i class="fa fa-list-alt">&nbsp;&nbsp;</i><%=t('checkup_schedule')%>
+                                        </div>
+                                    </a>
+                                </li>
+                            </div>
+                            <!-- end Added By Jitendra -->
+                            <li class="myAccountMenu mg-toggle-plus"><%=t('immunization')%></li>
+                             <div class="mg-left-sub-menu-title">
+                                <li id="immunizationDetailsLID">
+                                    <a class="menuItemsActivities" href="/healthcare/immunization_vaccinations" id="immunizationDetailsAID">
+                                        <div class="setMenu"><i class="fa fa-eyedropper">&nbsp;&nbsp;</i><%=t('immunization_details')%>
+                                        </div>
+                                    </a>
+                                </li>
+                            </div>
+                            
+                            <li class="myAccountMenu mg-toggle-plus"><%=t('allergy')%></li>
+                            <div class="mg-left-sub-menu-title">
+                                <li id="allergyLiId">
+                                <a class="menuItemsActivities" href="/healthcare/allergy_index" id="allergyAId">
+                                  <div class="setMenu"><i class="fa fa-ambulance">&nbsp;&nbsp;</i><%=t('allergy')%>
+                                  </div>
+                                </a>
+                                </li>
+                            </div>
+                            <li class="myAccountMenu mg-toggle-plus"><%=t('change_password')%></li>
+                             <div class="mg-left-sub-menu-title">
+                               <li id="healthcareAdminChangePasswordLID">
+                                  <a class="menuItemsActivities" href="/healthcare/healthcare_admin_detail" id="healthcareAdminChangePasswordAID">
+                                    <div class="setMenu"><i class="fa fa-cogs">&nbsp;&nbsp;</i><%=t('change_password')%>
+                                    </div>
+                                  </a>
+                               </li>
+                             </div>
+                        <%end%>
+
+                        <%if session[:user_type]=="doctor"%>
+                            <li class="myAccountMenu"><%=t('about_healthcare')%></li>
+                            <li id="healthTestLID">
+                                <a class="menuItemsActivities" href="/healthcare/health_test" id="healthTestAID">
+                                    <div class="setMenu"><i class="fa fa-list-alt">&nbsp;&nbsp;</i><%=t('schedule')%>
+                                    </div>
+                                </a>
+                            </li>
+
+                            <li id="assignBedLID">
+                                <a class="menuItemsActivities" href="/healthcare/assign_bed" id="assignBedAID">
+                                    <div class="setMenu"><i class="fa fa-bed">&nbsp;&nbsp;</i><%=t('patient')%>
+                                    </div>
+                                </a>
+                            </li>
+
+                            <li id="generateHealthCareReportLID">
+                                <a class="menuItemsActivities" href="/healthcare/generate_report" id="generateHealthCareReportAID">
+                                    <div class="setMenu"><i class="fa fa-h-square">&nbsp;&nbsp;</i><%=t('generate_report')%>
+                                    </div>
+                                </a>
+                            </li>
+                            <li id="changeDoctorPasswordLID">
+                                <a class="menuItemsActivities" href="/healthcare/doctor_detail" id="changeDoctorPasswordAID">
+                                    <div class="setMenu"><i class="fa fa-cogs">&nbsp;&nbsp;</i><%=t('change_password')%>
+                                    </div>
+                                </a>
+                            </li>
+                        <%end%>
+                    </ul>
+                </div>
+            </td>
+            <td  valign="top" id="manageAdminCategoryID" class="mg-table-td-main-2">
+                         
+            <%=render partial: 'layouts/messages'%>
+
+<script>
+$( document ).ready(function() {
+    focusheaderBox("HEALTHCARE");
+    var user_type=$("#user_type").val();
+    if(user_type=="healthcare_admin"){
+        collapseLeftMenu();
+    }
+
+  });
+</script>
+

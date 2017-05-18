@@ -1,0 +1,50 @@
+<%if @assignment.present?%>
+<table border="1" class="mg-showdata-bg mg-tbl-layout" cellspacing="1" cellpadding="1">
+<tr>
+	<th>
+		<label class="mg-label mg-td-width-half" valign="top"> <%= t('title')%></label>    
+	</th>
+	<th>
+		<label class="mg-label mg-td-width-half" valign="top"> <%= t('due_date')%></label>
+	</th>
+	<th>
+		<label class="mg-label mg-label-text-transform-none mg-td-width-half" valign="top"> <%= t('no_of_students')%></label>     
+	</th>
+	<th>
+		<label class="mg-label mg-td-width-half" valign="top"> <%= t('submitted')%></label>
+	</th>
+	</tr>
+	<%
+	@assignment.each do |assign|
+		if assign.title.present?
+	%>
+	<tr>
+		<td class="mg-td-width-half" valign="top"><%=assign.title%></td>
+		<%else%>
+			<td class="mg-td-width-half" valign="top"></td>
+		<%end
+	 	timeformat=MgSchool.find_by_id(assign.mg_school_id)
+		if assign.due_date.present?%>
+
+		<td class="mg-td-width-half" valign="top"><%=assign.due_date.strftime(timeformat.date_format)%></td>
+		<%else%>
+			<td class="mg-td-width-half" valign="top"></td>
+		<%end
+		assignment_given_count=MgAssignmentSubmission.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id],:mg_assignment_id=>assign.id).count
+		%>
+		<td class="mg-td-width-half" valign="top"><%=assignment_given_count%></td>
+<%
+		student_submission_count=MgAssignmentSubmission.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id],:mg_assignment_id=>assign.id,:status=>"submitted").count
+%>
+		<td class="mg-td-width-half" valign="top"><%=student_submission_count%></td>
+</tr>
+	<%end%>
+</table>
+<br/>
+<%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+<%else%>
+<br/>
+
+
+<h4>No Assignment given for particular subject<h4>
+<%end%>

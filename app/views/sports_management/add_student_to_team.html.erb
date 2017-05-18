@@ -1,0 +1,178 @@
+
+      <h4 class="mg-h4"><%=t('select_student')%></h4>
+<div id="attendanceCalendarScroll">
+      <table class="mg-tbl-margin mg-show-tbl-width mg-inner-table-align">
+<tr>
+<th>Select Programme</th>
+<th></th>
+<th></th>
+<th>Select Semester/class</th>
+<th></th>
+
+<th></th>
+
+<th>Select Student</th>
+<th></th>
+<th></th>
+
+<th></th>
+
+<th>Selected Student*</th>
+<th></th>
+
+</tr>
+    <tr>
+      <td>
+
+        <%=select_tag :notSelectedstudent, options_for_select(@prgm_list),:multiple => true,:size =>10,:class=>"mg-add-library-particular mg-select-btn"%>
+
+    </td>
+    <td></td>
+    <td></td>
+
+    <td>
+ <!--  <a  id="addingdatas" class="mg-custom-form-btn mg-fee-btn">Select Dept</a>  -->
+<%=select_tag :selectedStudentdata,options_for_select([]),:multiple => true,:size =>10 ,:class=>"mg-add-library-particular"%>
+</td>
+    <td></td>
+    <td></td>
+
+<td>
+<%=select_tag :selectedStudents,options_for_select([]),:multiple => true,:size =>10 ,:class=>"mg-add-library-particular"%>
+
+</td>
+<td><a  id="editaddingstudentdatas" class="mg-custom-form-btn mg-add-rem-btn">Add</a> 
+</td>
+    <td></td>
+    <td></td>
+
+<td>
+
+<%=select_tag :selected_students,options_for_select([]),:multiple => true,:size =>10 ,:class=>"mg-add-library-particular data12"%>
+
+</td>
+<td><a  id="removingstudentdata" class="mg-custom-form-btn mg-add-rem-btn">Remove</a>
+</td>
+    </tr>
+
+    </table>
+</div>
+
+
+  <script type="text/javascript">
+
+   $(document).ready(function () {
+      $("#eventCommitteesFormID").validate({
+        rules: {
+        "mg_student_id[]": {required: true}
+        }
+      });
+    });
+
+
+
+  $(document).on("click","#editaddingstudentdatas",function(e){
+
+
+    var demo=$("#selectedStudents").val();
+    var texts=$("#selectedStudents :selected").text();
+    var text=texts.split("  ")
+    var array=[];
+
+    $("#selected_students option").each(
+      function() {
+        array.push(this.value);
+      }
+    );
+
+     for(var i=0;i<demo.length;i++)
+     {
+        var a =false;
+        for(var j=0;j<array.length;j++){
+          if (demo[i]==array[j]){
+            a=true;
+          }
+        }
+
+        if (a){
+          }
+        else{
+         var addselectedOption=$("#selectedStudents option:selected")
+         var str="<option value="+demo[i]+">"+text[i]+"</option>"
+         $("#selected_students").append(str);
+         $("#selected_students option").prop('selected',true);
+        }
+      }
+   });
+
+
+  $(document).on("click","#removingstudentdata",function(e){
+      var selectedOption=$("#selected_students option:selected").remove();
+      $("#selected_students option").prop('selected',true)
+    });
+
+
+   $(document).on("click","#notSelectedstudent",function(e){
+      var wing_id=$("#notSelectedstudent").val();
+      
+        $.ajax({
+                url: "/sports_management/sem_data",
+                type: "GET",
+                data: {"data":"wing","wing_id":wing_id},
+                success: function(data) {
+                  $("#selectedStudentdata").empty();
+                  $("#selectedStudentdata").html(data.main);
+                },
+                error:function(){
+                  alert("Something went wrong!");
+                }
+            });
+      
+    });
+
+
+ $(document).on("click","#selectedStudentdata",function(e){
+    var sec_id=$("#selectedStudentdata").val();
+    var wing_id=$("#notSelectedstudent").val();
+    jQuery.ajax({
+            url: "/sports_management/section_students",
+            type: "GET",
+            data: {"data":"suc","stu_id":sec_id,"data":"edit"},
+            success: function(html) {
+               $("#studentListLabelID").show();
+               $("#selectedStudents").html(html.main);
+            },
+            error:function(){
+              alert("Something went wrong!");
+            } 
+      });
+    
+});
+
+ </script>
+  
+ 
+
+
+  
+<script type="text/javascript">
+ 
+  
+
+
+</script>
+
+
+</style>
+
+<style type="text/css">
+  #attendanceCalendarScroll{
+    border: 1px solid #bcbcbc;
+    overflow-x: scroll;
+    max-width: 719px;
+  }
+
+  .ui-datepicker-calendar {
+   display: none;
+  }
+</style>

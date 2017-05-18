@@ -1,0 +1,171 @@
+ <%= render  partial: 'placements_left' %>
+ <%= form_for :shortlist_students , url:student_selection_update_path ,:html => {:id => 'placement_TrainingID' } do |f| %>
+
+
+<p>
+
+    <%= f.label :select_company, t('select_company') ,:class=>"mg-label mg-rm-text-trans"%><span class="required-field"> *</span><br>
+    
+<%= f.collection_select(:mg_placement_registration_id, MgPlacementRegistration.where(:is_deleted=>0, :mg_school_id=>session[:current_user_school_id]), :id, :name_of_the_company,{:include_blank => 'Select',:selected=>@placement_data.mg_placement_registration_id} ,:class=>"mg-select-btn" , :onchange=>"selectShortlistedStudentsForCompany(this.value);") %>
+  </p>
+
+  <p>
+
+    <%= f.label :select_job_id, t('select_job_id') ,:class=>"mg-label mg-rm-text-trans"%><span class="required-field"> *</span><br>
+    <%= f.collection_select(:mg_placement_job_upload,[], :id, :job_id,{:include_blank => 'Select'} ,:class=>"mg-select-btn")  %>
+
+  </p>
+
+
+  <p>
+
+    <%= f.label :select_programme, t('select_programme') ,:class=>"mg-label mg-rm-text-trans"%><span class="required-field"> *</span><br>
+   <%= f.collection_select(:mg_wing_id, MgWing.where(:is_deleted=>0, :mg_school_id=>session[:current_user_school_id]), :id, :wing_name,{:include_blank => 'Select',:selected=>@placement_data.mg_wing_id} ,:class=>"mg-select-btn" ,:onchange=>"selectSemesterShortlistedStudentsForCompany(this.value);")%>
+
+  </p>
+ <p>
+
+    <%= f.label :select_semester, t('select_semester') ,:class=>"mg-label mg-rm-text-trans"%><span class="required-field"> *</span><br>
+   <%=select_tag :mg_batch_id ,options_for_select([]),:prompt=>t('select'),:class=>"mg-select-btn",:onchange=>"selectRoundsBasedOnJobId(this.value);"%>
+
+  </p>
+  <p id="add_student_data_on_job_id"></p>
+  
+  <%= f.hidden_field :updated_by, :value => session[:user_id]%> 
+  <%= f.hidden_field :job_id_data, :value =>@placement_data.mg_placement_job_upload %> 
+  <%= f.hidden_field :course_id_data, :value =>@placement_data.mg_batch_id %> 
+    <%= f.hidden_field :id, :value =>@placement_data.id %> 
+<p class="mg-p-mgtop">
+    <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("accept")%></a>
+    <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+</p>
+<%end%>
+<%= render  partial: 'application/common_left_close' %>
+
+<script>
+
+$(document).ready(function () {
+
+
+   var data=$("#shortlist_students_mg_placement_registration_id").val();
+   var data1=$("#shortlist_students_job_id_data").val();
+  var urlLink = "/placements/onchange_data_edit";
+
+  
+          $.ajax({
+              url: urlLink ,
+              cache: false,
+              data:{ 
+                selecter: "company_job_id",
+               id: data,
+                data1:data1
+              },
+              success: function(data){
+
+                  console.log("data   ~>  "+data.main);
+                $("#shortlist_students_mg_placement_job_upload").html(data.main);        
+                }      
+          });
+
+
+     var data2=$("#shortlist_students_mg_wing_id").val();
+   var data3=$("#shortlist_students_course_id_data").val();
+  var urlLink = "/placements/onchange_data_edit";
+  alert(data2);
+  alert(data3);
+
+  
+          $.ajax({
+              url: urlLink ,
+              cache: false,
+              data:{ 
+                selecter: "Select_Semester",
+               id: data2,
+                data1:data3
+              },
+              success: function(data){
+
+                  console.log("data   ~>  "+data.main);
+                $("#mg_batch_id").html(data.main);        
+                }  ,
+                error: function(data){
+                  console.log("data   ~>  "+data.main);
+             alert("asdfas")    
+                }      
+          });
+
+          var job_id=$("#shortlist_students_mg_placement_job_upload").val();
+          var data3=$("#shortlist_students_course_id_data").val();
+
+          var urlLink = "/placements/select_students_on_job";
+  
+          $.ajax({
+              url: urlLink ,
+              cache: false,
+              data:{ 
+                selecter: "Select_Semester",
+                id: data3,
+                job_id:job_id
+              },
+              success: function(data){
+
+                $("#add_student_data_on_job_id").empty().html(data);              }
+          });
+
+});
+function selectShortlistedStudentsForCompany(data){
+  
+  var urlLink = "/placements/onchange_data";
+
+  
+          $.ajax({
+              url: urlLink ,
+              cache: false,
+              data:{ 
+                selecter: "company_job_id",
+                id: data
+              },
+              success: function(data){
+
+                  console.log("data   ~>  "+data.main);
+                $("#shortlist_students_mg_placement_job_upload").html(data.main);              }
+          });
+}
+function selectSemesterShortlistedStudentsForCompany(data){
+  var urlLink = "/placements/onchange_data";
+  
+  
+          $.ajax({
+              url: urlLink ,
+              cache: false,
+              data:{ 
+                selecter: "Select_Semester",
+                id: data
+              },
+              success: function(data){
+
+                $("#mg_batch_id").html(data.main);              }
+          });
+}
+
+function selectRoundsBasedOnJobId(data){
+var job_id=$("#shortlist_students_mg_placement_job_upload").val();
+ var urlLink = "/placements/select_students_on_job";
+  
+          $.ajax({
+              url: urlLink ,
+              cache: false,
+              data:{ 
+                selecter: "Select_Semester",
+                id: data,
+                job_id:job_id
+              },
+              success: function(data){
+
+                $("#add_student_data_on_job_id").empty().html(data);              }
+          });
+}
+
+
+
+</script>

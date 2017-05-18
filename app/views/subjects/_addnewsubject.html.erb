@@ -1,0 +1,52 @@
+<!-- Sec --> 
+ <body>
+
+
+                     <form style="elm_style" method="post" id="elm_id" class="elm_class" action="/subjects" accept-charset="UTF-8" novalidate="novalidate"><div style="display:none"><input type="hidden" value="✓" name="utf8"><input type="hidden" value="ElxSv/dDHatrMspXGcEKJcwodgffJF/Q2IgSQf5JOhQ=" name="authenticity_token"></div>
+
+
+                    <p>
+                        <label for="subjects_batch"><%= t('batch') %></label><br>
+                       <select name="subjects[batch]" id="subjects_batch"><option value="select_batch"><%= t('selectbatch') %></option>
+                    <option value="1st_sem">1st_sem</option>
+                    <option value="2nd_sem">2nd_sem</option>
+                    <option value="3ed_sem">3ed_sem</option>
+                    <option value="4th_sem">4th_sem</option>
+                    <option value="5th_sem">5th_sem</option>
+                    <option value="6th_sem">6th_sem</option>
+                    <option value="7th_sem">7th_sem</option>
+                    <option value="8th_sem">8th_sem</option></select>
+                     </p>
+
+                     <p>
+                        <label for="subjects_subject_name">Subject name</label><br>
+                        <input type="text" name="subjects[subject_name]" id="subjects_subject_name">
+                      </p>
+                     
+                      <p>
+                        <label for="subjects_subject_code">Subject code</label><br>
+                        <input type="text" name="subjects[subject_code]" id="subjects_subject_code">
+                      </p>
+                      
+                     <p>
+                        <label for="subjects_max_weekly_class">Max weekly class</label><br>
+                        <input type="text" name="subjects[max_weekly_class]" id="subjects_max_weekly_class">
+                      </p>
+                    <p>
+                      <label for="subjects_is_deleted">Is Active</label><br>
+                        <label for="subjects_is_deleted_true">Yes</label>
+                        <input type="radio" value="true" name="subjects[is_deleted]" id="subjects_is_deleted_true" checked="checked">
+                        <label for="subjects_is_deleted_false">No</label>
+                        <input type="radio" value="false" name="subjects[is_deleted]" id="subjects_is_deleted_false" >
+                    </p>
+                      <p>
+                        <input type="submit" value="<%=t("save")%>" name="commit">
+                      </p>
+                    </form>
+
+
+
+                    
+
+
+                    </body>

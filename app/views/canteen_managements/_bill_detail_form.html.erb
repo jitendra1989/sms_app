@@ -1,0 +1,402 @@
+<%= render partial: 'canteen_management_left' %>
+<% navigation_add t('bill_detail'), :controller=>'canteen_managements', :action=>'bill_detail' %>
+<% navigation_add t('new_bill_generate'), :controller=>'canteen_managements', :action=>'new_bill_genereate' %>
+
+<h4 class="mg-h4"><%=t("new_bill_generate")%></h4>
+
+<%= form_for :bill_detail, :url=>'/canteen_managements/create_bill_detail', :method=> "post",:html => {:id => 'billDetailFormID'} do |f| %>
+
+  <%= f.hidden_field :is_deleted, :value => 0 %>
+  <%= f.hidden_field :mg_school_id, :value => session[:current_user_school_id] %>
+  <%= f.hidden_field :created_by, :value => session[:user_id] %>
+  <%= f.hidden_field :updated_by, :value => session[:user_id] %>
+  <%= f.hidden_field :updated_by, :value => session[:user_id] %>
+  <%#= f.hidden_field :id, :value => @bill_detail.try(:id) %>
+
+  <p style="margin-left: 209px;">
+    <%= f.radio_button :checkup_for, 'select_user',:checked=>true,:class=>''%> 
+    <label class="mg-label" style="margin-right: 45px;"><%= t('select_user') %></label>
+
+    <%= f.radio_button :checkup_for, 'search_by_user',:class=>''%>
+    <label class="mg-label" style=";"><%= t('search_user') %></label>
+  </p>
+  <br/>
+  <div id="billBySelectUserDivId">
+    <label class="mg-label mg-tt-width" style=";"><%= t('select_user') %><span class="required-field">&nbsp;*</span></label>
+    <%= f.select :user_type, options_for_select([[t("Student"), "student"], [t("Employee"), "employee"]]),:prompt=>"Select",:selected=>""%>&nbsp;
+  </div>
+
+  <div id="billBySearchUserDivId" style="display:none;">
+    <label class="mg-label mg-tt-width" style=""><%= t('search_by') %><span class="required-field">&nbsp;</span></label>&nbsp;
+    <%= select_tag "user_type_option", options_for_select([[t("Select"), ""], [t("student_id"), "student_id"], [t("employee_id"), "employee_id"], [t("student_name"), "student_name"], [t("employee_name"), "employee_name"]],:selected=>"") %>
+  </div>
+
+  <div id="billDetailStudentDivId" class="studentDivClass" style=";">
+    <label class="mg-label mg-tt-width" style=""><%= t('select') %> <%= t('semester') %><span class="required-field">&nbsp;*</span></label>
+ 
+    <%= f.collection_select(:mg_batch_id,MgBatch.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]), :id, :course_batch_name,{:selected=>"",:include_blank => t("select")},:class =>"mg-select-btn",:onchange=>"mgBatchChangeFunction(this.value)")%><br/>
+
+    <label class="mg-label mg-tt-width" style=""><%= t('select_student') %><span class="required-field">&nbsp;*</span></label>
+    <%= f.collection_select(:mg_student_id,MgStudent.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]), "id", "student_full_name",{:selected=>"",:include_blank => t("select")},:class =>"mg-select-btn",:onchange=>"",:disabled=>@bool_val)%><br/>
+  </div>
+
+
+  <div id="billDetailEmployeeDivId" class="employeeDivClass" style="display:none;">
+    <label class="mg-label mg-tt-width" style=""><%= t('select') %> <%= t('department') %><span class="required-field">&nbsp;*</span></label>
+      <%= f.collection_select(:mg_employee_department_id,MgEmployeeDepartment.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]), :id, :department_name,{:selected=>"",:include_blank => t("select")},:class =>"mg-select-btn",:onchange=>"billDetailDepartmentChangeFunction(this.value)")%><br/>
+
+    <label class="mg-label mg-tt-width" style=""><%= t('select_employee') %><span class="required-field">&nbsp;*</span></label>
+    <%= f.collection_select(:mg_employee_id,MgEmployee.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]), "id", "employee_full_name_with_number",{:selected=>"",:include_blank => t("select")},:class =>"mg-select-btn",:onchange=>"")%><br/>
+  </div>
+
+  <%#---------------------------searching start-------------------------------------------%>
+
+
+
+  <div id="billDetailByStudentIdDivID" class="" style="display:none;">
+    <label class="mg-label mg-tt-width" style=""><%= t('student_id') %><span class="required-field">&nbsp;*</span></label>
+     <%= text_field_tag :student_id,nil,:class=>"mg-text-field search-student-ids-cls" %>
+      <br/>
+
+    <label class="mg-label mg-tt-width" style=""><%= t('select_student_name') %><span class="required-field">&nbsp;*</span></label>
+     <%#= text_field_tag :student_employee_name,nil,:class=>"mg-text-field" %>
+     <%= select_tag :student_name_list, options_for_select(""), :prompt=>t("select"), :onchange=>"", :class=>"mg-text-field" %>
+  </div>
+
+  <div id="billDetailByStudentNameDivID" class="" style="display:none;">
+    <label class="mg-label mg-tt-width" style=""><%= t('student_name') %><span class="required-field">&nbsp;*</span></label>
+     <%= text_field_tag :student_name,nil,:class=>"mg-text-field search-student-name-cls" %>
+      <br/>
+
+    <label class="mg-label mg-tt-width" style=""><%= t('select_student_id') %><span class="required-field">&nbsp;*</span></label>
+     <%#= text_field_tag :student_employee_name,nil,:class=>"mg-text-field" %>
+     <%= select_tag :student_id_list, options_for_select(""), :prompt=>t("select"), :onchange=>"", :class=>"mg-text-field" %>
+  </div>
+
+
+
+  <div id="billDetailByEmployeeIDDivID" class="" style="display:none;">
+    <label class="mg-label mg-tt-width" style=""><%= t('employee_id') %><span class="required-field">&nbsp;*</span></label>
+     <%= text_field_tag :employee_id,nil,:class=>"mg-text-field search-employee-ids-cls" %>
+      <br/>
+
+    <label class="mg-label mg-tt-width" style=""><%= t('select_employee_name') %><span class="required-field">&nbsp;*</span></label>
+     <%#= text_field_tag :student_employee_id,nil,:class=>"mg-text-field" %>
+
+     <%= select_tag :employee_name_list, options_for_select(""), :prompt=>t("select"), :onchange=>"", :class=>"mg-text-field" %>
+  </div>
+
+  <div id="billDetailByEmployeeNameDivID" class="" style="display:none;">
+    <label class="mg-label mg-tt-width" style=""><%= t('employee_name') %><span class="required-field">&nbsp;*</span></label>
+     <%= text_field_tag :employee_name,nil,:class=>"mg-text-field search-employee-name-cls" %>
+      <br/>
+
+    <label class="mg-label mg-tt-width" style=""><%= t('select_employee_id') %><span class="required-field">&nbsp;*</span></label>
+     <%#= text_field_tag :student_employee_id,nil,:class=>"mg-text-field" %>
+
+     <%= select_tag :employee_id_list, options_for_select(""), :prompt=>t("select"), :onchange=>"", :class=>"mg-text-field" %>
+  </div>
+
+  <%#---------------------------searching---------------------------------------------%>
+
+
+
+
+
+<p>
+  <a id="billDetailsMoreFoodItem" onclick="" class="mg-label-inner-form mg-custom-form-btn" style="color: #297ACC; font-size:0.8em; position: relative;" >Add </a>
+</p><br\>
+
+<div class="mg-scroll-employee-bar">
+  <table class="mg-show-tbl-width batch-tbl mg-adjust-padding width-set-for-purchase-table">  
+    <th><label class="mg-label custome-mg-tt-width"><%= t('sl_no') %><span class="required-field">&nbsp;</span></label></th>
+    <th style="width: 120px;"><label class="mg-label mg-tt-width" style="width:185px"><%= t('select_food_item') %><span class="required-field">&nbsp;*</span></label></th>
+    <th style="width: 120px;"><label class="mg-label mg-tt-width" style="width:185px"><%= t('unit') %><span class="required-field">&nbsp;*</span></label></th>
+    <th style="width: 120px;"><label class="mg-label mg-tt-width" style="width:185px"><%= t('quantity') %><span class="required-field">&nbsp;*</span></label></th>
+    <th style="width: 120px;"><label class="mg-label mg-tt-width" style="width:185px"><%= t('total_price') %><span class="required-field">&nbsp;*</span></label></th>
+    
+    <th><%=t("action")%></th>
+    
+    <tr class="bill-detail-row-div-id">
+      <div id="finalDueFineDivId">
+        <div class="due-fine-div" id="dueFineDivId">
+          <td class="mg-align-center"><span class="incremented-field-text-cls">1</span></td>
+          <td class="mg-align-center food-items-cls">
+            <%= select_tag "mg_food_item_id[1]",options_for_select(@food_item),:prompt=>"Select",:onchange=>"foodItemTypeFunction(this.value,this)",:class=>"food-item-record-id"%>
+            <%#= text_field_tag "mg_food_item_id[1]",nil,:class =>"mg-select-btn food-item-record-id"%><br/>
+          </td>
+          <td class="mg-align-center quantites-cls">
+            <%= text_field_tag "quantity[1]",nil,:class =>"mg-select-btn food-item-record-id2 food-quantity-cls"%><br/>
+          </td>
+
+          <td class="mg-align-center total-unit-quantity-cls">
+            <%= text_field_tag "unit_quantity[1]",nil,:class =>"mg-select-btn food-item-record-id4 food-unit-quantity-cls",:readonly=>true%><br/>
+          </td>
+
+          <td class="mg-align-center total-price-cls">
+            <%= text_field_tag "total_price[1]",nil,:class =>"mg-select-btn food-item-record-id3 remove-cls-for-total-amount",:readonly=>true%><br/>
+          </td>
+          
+          <td class="mg-align-center">
+            <a title="Remove" class="remove-bill-details-cls mg-icon-btn" style="color: #297ACC;"> <i class="fa fa-trash"></i></a>
+          </td>   
+        </div>
+      </div>
+    </tr>
+
+    <tr>
+      <td></td>
+      <td></td>
+      <td class="mg-align-center"><b><%="Total Amount"%><b></td>
+      <td class="mg-align-center">
+        <%= text_field_tag "total_amount[]",nil,:class =>"mg-select-btn calculate-total-amount",:readonly=>true%>
+      </td>
+      <td></td>
+    </tr>
+  </table>
+</div>
+<br/>
+<br/>
+<div class="mg-scroll-employee-bar">
+<table class="mg-show-tbl-width batch-tbl mg-adjust-padding width-set-for-purchase-table">  
+  <tr>
+    <th><label class="mg-label custome-mg-tt-width"><%= t('previous_balance') %><span class="required-field">&nbsp;</span></label></th>
+    <th><label class="mg-label custome-mg-tt-width"><%= t('amount_to_be_paid') %><span class="required-field">&nbsp;</span></label></th>
+    <th><label class="mg-label custome-mg-tt-width"><%= t('paid_amount') %><span class="required-field">&nbsp;</span></label></th>
+    <th><label class="mg-label custome-mg-tt-width"><%= t('balance_amount') %><span class="required-field">&nbsp;</span></label></th>
+    <th><label class="mg-label custome-mg-tt-width"><%= t('wallet_amount') %><span class="required-field">&nbsp;</span></label></th>
+    <th><label class="mg-label custome-mg-tt-width"><%= t('use_wallet_amount') %><span class="required-field">&nbsp;</span></label></th>
+  </tr>
+  <tr>
+    <td class="mg-align-center">
+      <%= text_field_tag "total_previous_balance[]",nil,:class =>"mg-select-btn previous-balance-amount-cls",:readonly=>true%>
+    </td>
+    <td class="mg-align-center">
+      <%= text_field_tag "total_sum_amount[]",nil,:class =>"mg-select-btn total-amount-cls",:readonly=>true%>
+    </td>
+    <td class="mg-align-center">
+      <%= text_field_tag "paid_amount[]",nil,:class =>"mg-select-btn paid-amount-cls",:readonly=>true%>
+    </td>
+    <td class="mg-align-center">
+      <%= text_field_tag "balance_amount[]",nil,:class =>"mg-select-btn balance-amount-cls",:readonly=>true%>
+    </td>
+    <td class="mg-align-center">
+      <%= hidden_field_tag :hidden_wallet_amount, ''%>
+      <%= text_field_tag "wallet_amount[]",nil,:class =>"mg-select-btn wallet-amount-cls",:readonly=>true%>
+    </td>
+    <td class="mg-align-center">
+      <%= check_box_tag :use_wallet_amount,'1', false ,{:class=>"wallet-amount-checkbox-cls"}%>
+    </td>
+  </tr>
+</table>
+</div>
+
+
+
+
+
+  <p class="mg-p-mgtop">
+    <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("save")%></a>
+    <!-- <a class="mg-small-form-btn cancel-form-dialog"><%#=t("cancel")%></a> -->
+    <%= link_to t('cancel'), {:controller=>'canteen_managements',:action=>'bill_detail'}, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+  </p>
+<% end %>
+
+<%= render  partial: 'application/common_left_close' %>
+
+
+<script>
+  $(document).ready(function(){
+    focusCurrentTab("canteenBillGenerateAID","canteenBillGenerateLID");
+
+    $("#billDetailFormID").validate({
+      rules: {        
+       "bill_detail[user_type]": {required: true},
+       "bill_detail[mg_batch_id]": {required: true},
+       "bill_detail[mg_student_id]": {required: true},
+       "bill_detail[mg_employee_department_id]": {required: true},
+       "bill_detail[mg_employee_id]": {required: true},
+       "quantity[1]": {required: true},
+       "total_price[1]": {required: true},
+       "mg_food_item_id[1]": {required: true},
+       "total_amount[]": {required: true},
+       "user_type_option": {required: true},
+       "student_id": {required: true},
+       "student_name": {required: true},
+       "student_id_list": {required: true},
+       "student_name_list": {required: true},
+       "employee_id": {required: true},
+       "employee_name_list": {required: true},
+       "employee_id_list": {required: true},
+       "employee_name": {required: true}
+      }
+    });
+    $.validator.addClassRules("food-quantity-cls", {required: true, number: true});
+    $.validator.addClassRules("food-item-record-id", {required: true});
+    $.validator.addClassRules("paid-amount-cls", {required: true, number: true});
+  });
+
+
+
+$("#bill_detail_mg_student_id").change(function(){
+  var user_type = $("#bill_detail_user_type").val();
+  var mg_batch_id = $("#bill_detail_mg_batch_id").val();
+  var mg_student_id = $("#bill_detail_mg_student_id").val();
+  var mg_employee_department_id = $("#bill_detail_mg_employee_department_id").val();
+  var mg_employee_id = $("#bill_detail_mg_employee_id").val();
+  $("#total_previous_balance_").val("");
+  $("#total_sum_amount_").val("");
+  $.ajax({
+    url: '/canteen_managements/show_particular_balance_details',
+    data:{"user_type":user_type,"mg_batch_id":mg_batch_id,"mg_student_id":mg_student_id,"mg_employee_department_id":mg_employee_department_id,"mg_employee_id":mg_employee_id},
+    cache: false,
+    success: function(data){
+      $("#total_previous_balance_").val(data.balance_amount);
+      $("#total_sum_amount_").val(data.balance_amount);
+      $("#hidden_wallet_amount").val(data.wallet_amount);
+      $(".wallet-amount-cls").val(data.wallet_amount);
+    }
+  });
+});
+
+
+//===============employeeeeeeee start ========================
+
+$("#bill_detail_mg_employee_id").change(function(){
+  var user_type = $("#bill_detail_user_type").val();
+  var mg_batch_id = $("#bill_detail_mg_batch_id").val();
+  var mg_student_id = $("#bill_detail_mg_student_id").val();
+  var mg_employee_department_id = $("#bill_detail_mg_employee_department_id").val();
+  var mg_employee_id = $("#bill_detail_mg_employee_id").val();
+  $("#total_previous_balance_").val("");
+  $("#total_sum_amount_").val("");
+  $.ajax({
+    url: '/canteen_managements/show_particular_balance_details',
+    data:{"user_type":user_type,"mg_batch_id":mg_batch_id,"mg_student_id":mg_student_id,"mg_employee_department_id":mg_employee_department_id,"mg_employee_id":mg_employee_id},
+    cache: false,
+    success: function(data){
+      $("#total_previous_balance_").val(data.balance_amount);
+      $("#total_sum_amount_").val(data.balance_amount);
+      $("#hidden_wallet_amount").val(data.wallet_amount);
+      $(".wallet-amount-cls").val(data.wallet_amount);
+    }
+  });
+});
+
+//===============employeeeeeeee enddd========================
+
+
+$("#student_name_list").change(function(){
+  var user_type = $("#user_type_option").val();
+  var mg_student_id = $("#student_name_list").val();
+  $("#total_previous_balance_").val("");
+  $("#total_sum_amount_").val("");
+  $.ajax({
+      url: '/canteen_managements/show_particular_search_balance_details',
+      data:{"user_type":user_type,"mg_student_id":mg_student_id},
+      cache: false,
+      success: function(data){
+        $("#total_previous_balance_").val(data.balance_amount);
+        $("#total_sum_amount_").val(data.balance_amount);
+        $("#hidden_wallet_amount").val(data.wallet_amount);
+        $(".wallet-amount-cls").val(data.wallet_amount);
+      }
+    });
+});
+
+
+
+
+
+$("#student_id_list").change(function(){
+  var user_type = $("#user_type_option").val();
+  var mg_student_id = $("#student_id_list").val();
+  $("#total_previous_balance_").val("");
+  $("#total_sum_amount_").val("");
+  $.ajax({
+      url: '/canteen_managements/show_particular_search_balance_details',
+      data:{"user_type":user_type,"mg_student_id":mg_student_id},
+      cache: false,
+      success: function(data){
+        $("#total_previous_balance_").val(data.balance_amount);
+        $("#total_sum_amount_").val(data.balance_amount);
+        $("#hidden_wallet_amount").val(data.wallet_amount);
+        $(".wallet-amount-cls").val(data.wallet_amount);
+      }
+    });
+});
+
+
+$("#employee_name_list").change(function(){
+  var user_type = $("#user_type_option").val();
+  var mg_employee_id = $("#employee_name_list").val();
+  $("#total_previous_balance_").val("");
+  $("#total_sum_amount_").val("");
+  $.ajax({
+      url: '/canteen_managements/show_particular_search_balance_details',
+      data:{"user_type":user_type,"mg_employee_id":mg_employee_id},
+      cache: false,
+      success: function(data){
+        $("#total_previous_balance_").val(data.balance_amount);
+        $("#total_sum_amount_").val(data.balance_amount);
+        $("#hidden_wallet_amount").val(data.wallet_amount);
+        $(".wallet-amount-cls").val(data.wallet_amount);
+      }
+    });
+});
+
+
+
+$("#employee_id_list").change(function(){
+  var user_type = $("#user_type_option").val();
+  var mg_employee_id = $("#employee_id_list").val();
+  $("#total_previous_balance_").val("");
+  $("#total_sum_amount_").val("");
+  $.ajax({
+      url: '/canteen_managements/show_particular_search_balance_details',
+      data:{"user_type":user_type,"mg_employee_id":mg_employee_id},
+      cache: false,
+      success: function(data){
+        $("#total_previous_balance_").val(data.balance_amount);
+        $("#total_sum_amount_").val(data.balance_amount);
+        $("#hidden_wallet_amount").val(data.wallet_amount);
+        $(".wallet-amount-cls").val(data.wallet_amount);
+      }
+    });
+});
+
+
+
+  // function selectFoodItemFunction(food_item_item,that){
+  //   array=[];
+  //   var text_val= parseInt($(that).parent("td").siblings("td").text());
+
+  //   $(".canteent-regular-menu-row").each( function( index, element ){
+  //     var select_val = $(this).children("td").find("select").val();
+  //     if ((index+1)!=text_val){
+  //       array.push(select_val);
+  //     }
+  //   });
+  //   if(array.indexOf(food_item_item) > -1){
+  //     alert("Already selected please select other!");
+  //     $(that).parent("td").children("select").val('');
+  //   }
+  // }//function end
+
+
+
+
+
+ 
+
+</script>
+
+<style type="text/css">
+  /*#cantenManagemetnDivScroll {
+    border: 1px solid #b2b2b2;
+    display: inline-block;
+    height: 315px;
+    overflow-y: scroll;
+    /*width: 737px;*/
+/*}*/
+</style>

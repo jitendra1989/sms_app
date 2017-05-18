@@ -1,0 +1,226 @@
+<div id="generateReportDivID">
+  <%school=MgSchool.find_by(:id=>session[:current_user_school_id])%>
+  <h4 class="mg-h4"><%= t('immunization_details') %></h4>
+  <table class="batch-tbl mg-tbl-margin">
+    <tr>
+      <th>Immunization</th>
+      <th>Age Recommended</th>
+      <th style="width: 120px;">Due Date</th>
+      <th style="width: 120px;">Date</th>
+    </tr>
+    <%@vaccinations.each do |v|%>
+      <tr>
+        <td><%=v.name%></td>
+        <td><%=v.age_recommended%></td>
+        <%temp=@vaccination_detail.find_by(:mg_vaccination_id=>v.id)%>
+        <td><%=text_field_tag "due_date[#{v.id}]",temp.present? ? (temp.due_date.present? ? temp.due_date.strftime(@school.date_format) : nil) : nil, :class=>'immunization-due-date-cls mg-text-field'%></td>
+        <td><%=text_field_tag "vaccs_date[#{v.id}]",temp.present? ? (temp.date.present? ? temp.date.strftime(@school.date_format) : nil) : nil, :class=>'immunization-due-date-cls mg-text-field immunization-custom-date-cls'%></td>
+      </tr>
+    <%end%>
+  </table>
+  <br/><a id="addMoreVaccinationIDS" class="mg-label-inner-form mg-custom-form-btn" style="color: #297ACC; font-size:0.8em; position: relative;" >Add vaccination</a> <br/>
+  <%if @vaccination_particular.present?%>
+    <div class="mg-scroll-employee-bar scroll-max-width mg-tbl-margin" style="">   
+      <table class="mg-show-tbl-width batch-tbl mg-adjust-padding">  
+        <tr>
+          <th><%=t("sr_no.")%></th>
+          <th><%=t("Immunization")%><span class="required-field">&nbsp;*</span></th>
+          <th><%=t("Age Recommended")%><span class="required-field">&nbsp;*</span></th>
+          <th style="width: 120px;"><%=t("Due Date")%><span class="required-field">&nbsp;</span></th>
+          <th style="width: 120px;"><%=t("Date")%><span class="required-field">&nbsp;</span></th>
+          <th><%=t('action')%></th>
+        </tr>
+        <%@vaccination_particular.each_with_index do |particular,index|%>
+          <%=hidden_field_tag "particular_details_id[]",particular.id%>
+          <tr class="new-row-for-vaccination">
+            <div id="finalDueFineDivId">
+              <div class="due-fine-div" id="dueFineDivId">
+                <%span_value=(index.to_i+1).to_s%>
+
+                <td class="required-incremented-field-class"><span class="required-incremented-field"><%=(index.to_i+1).to_s%></span></td>
+                <%particular_id='immunization_'.to_s+"#{particular.id}".to_s%>
+                <td><%=text_field_tag "immunization[]",value=particular.try(:name), :id=>"#{particular_id}", :class=>'text-value-cls1 mg-text-field'%></td>
+                <%particular_id='age_recommended_'.to_s+"#{particular.id}".to_s%>
+                <td><%=text_field_tag "age_recommended[]",value=particular.try(:age_recommended), :id=>"#{particular_id}", :class=>'text-value-cls2 mg-text-field'%></td>
+                <%particular_id='vaccination_due_date_'.to_s+"#{particular.id}".to_s%>
+                <td class="date-picker-cls"><%=text_field_tag "vaccination_due_date[]",value=particular.try(:due_date).try(:strftime,school.date_format), :id=>"#{particular_id}", :class=>'immunization-due-date-cls text-value-cls3 mg-text-field'%></td>
+                <%particular_id='vaccination_date_'.to_s+"#{particular.id}".to_s%>
+                <td class="date-picker-cls"><%=text_field_tag "vaccination_date[]",value=particular.try(:date).try(:strftime,school.date_format), :id=>"#{particular_id}", :class=>'immunization-due-date-cls text-value-cls4 mg-text-field immunization-custom-date-cls'%></td>
+
+                <td>
+                  <a title="Remove" id="<%= raw particular.try(:id) %>-vaccinationBTNID" class="vaccination-remove-details mg-icon-btn" style="color: #297ACC; font-size:0.8em;"> <i class="fa fa-trash"></i></a>
+                </td>   
+              </div>
+            </div>
+          </tr>
+        <%end%>
+      </table>
+    </div>
+  <%else%>
+    <div class="mg-scroll-employee-bar scroll-max-width mg-tbl-margin add-vaccination-div-class" style="display:none;">   
+      <table class="mg-show-tbl-width batch-tbl mg-adjust-padding">  
+        <tr>
+          <th><%=t("sr_no.")%></th>
+          <th><%=t("Immunization")%><span class="required-field">&nbsp;*</span></th>
+          <th><%=t("Age Recommended")%><span class="required-field">&nbsp;*</span></th>
+          <th style="width: 120px;"><%=t("Due Date")%><span class="required-field">&nbsp;</span></th>
+          <th style="width: 120px;"><%=t("Date")%><span class="required-field">&nbsp;</span></th>
+          <th><%=t('action')%></th>
+        </tr>
+        <tr class="new-row-for-vaccination">
+          <div id="finalDueFineDivId">
+            <div class="due-fine-div" id="dueFineDivId">
+              <td class="required-incremented-field-class"><span class="required-incremented-field">1</span></td>
+              <td><%=text_field_tag "immunization[]",nil, :id=>"immunization_1", :class=>'text-value-cls1 mg-text-field'%></td>
+              <td ><%=text_field_tag "age_recommended[]",nil, :id=>"age_recommended_1", :class=>'text-value-cls2 mg-text-field'%></td>
+              <td class="date-picker-cls" ><%=text_field_tag "vaccination_due_date[]",nil, :id=>"vaccination_due_date_1", :class=>'immunization-due-date-cls text-value-cls3 mg-text-field'%></td>
+              <td class="date-picker-cls"><%=text_field_tag "vaccination_date[]",nil, :id=>"vaccination_date_1", :class=>'immunization-due-date-cls text-value-cls4 mg-text-field immunization-custom-date-cls'%></td>
+              <td>
+                <a title="Remove" id="" class="vaccination-remove-details mg-icon-btn" style="color: #297ACC; font-size:0.8em;"> <i class="fa fa-trash"></i></a>
+              </td>   
+            </div>
+          </div>
+        </tr>
+      </table>
+    </div>
+  <%end%>
+
+  <%#="Booster Details"%>
+
+  <br/><h4 class="mg-h4"><%= t('booster_doses_details') %></h4>
+  <table class="batch-tbl mg-tbl-margin">
+    <tr>
+      <th><%=t('immunization')%></th>
+      <th><%=t('frequency')%></th>
+      <th style="width: 120px;"><%=t('due_date ')%></th>
+      <th style="width: 120px;"><%=t('date ')%></th>
+      <th><%=t('action')%></th>
+    </tr>
+    
+    <%if @booster_doses_detail.present?%>
+      <%@booster_doses_detail.each do |v|%>
+        <tr class="boster-doses-new-inline-row">
+          <td><%=v.mg_booster_dose.try(:name)%><%=hidden_field_tag "booster_doses_details_id[]",v.mg_booster_dose_id, :class=>"booster_doses_value_class"%>
+
+          </td>
+          <td><%=v.mg_booster_dose.frequency%></td>
+          <td class="booster-due-date-td-class"><%=text_field_tag "booster_due_date[#{v.id}]",v.present? ? (v.due_date.present? ? v.due_date.strftime(@school.date_format) : nil) : nil, :class=>'immunization-due-date-cls booster-due-date-cls booster_due_date_class mg-text-field'%>
+
+            <%=hidden_field_tag "booster_due_date_cpy_id[]",nil, :class=>"booster_due_date_cpy_class"%>
+
+          </td>
+          <td class="booster-date-td-class"><%=text_field_tag "date[#{v.id}]",v.present? ? (v.date.present? ? v.date.strftime(@school.date_format) : nil) : nil, :class=>'immunization-due-date-cls booster-date-cls booster_date_class mg-text-field immunization-custom-date-cls'%>
+
+            <%=hidden_field_tag "booster_date_cpy_id[]",nil, :class=>"booster_date_cpy_class"%>
+            </td>
+            <td class="booster-date-td-class">
+                <a title="Add" id="<%=raw v.mg_booster_dose_id %>" class="add-same-booster-again <%=raw v.mg_booster_dose.name%> add-same-booster-again-<%=raw v.mg_booster_dose_id%> mg-icon-btn"><i class="fa fa-plus-circle"></i></a>
+          </td>
+        </tr>
+      <%end%>
+    <%else%>
+      <%@booster_doses.each do |v|%>
+        <tr class="boster-doses-new-inline-row">
+          <td><%=v.name%><%=hidden_field_tag "booster_doses_details_id[]",v.id, :class=>"booster_doses_value_class"%>
+          </td>
+          <td><%=v.frequency%></td>
+          <%temp=@booster_doses_detail.find_by(:mg_booster_dose_id=>v.try(:id))%>
+          <td class="booster-due-date-td-class"><%=text_field_tag "booster_due_date[#{v.id}]",temp.present? ? (temp.due_date.present? ? temp.due_date.strftime(@school.date_format) : nil) : nil, :class=>'immunization-due-date-cls booster-due-date-cls booster_due_date_class mg-text-field'%>
+
+            <%=hidden_field_tag "booster_due_date_cpy_id[]",nil, :class=>"booster_due_date_cpy_class"%>
+
+          </td>
+          <td class="booster-date-td-class"><%=text_field_tag "date[#{v.id}]",temp.present? ? (temp.date.present? ? temp.date.strftime(@school.date_format) : nil) : nil, :class=>'immunization-due-date-cls booster-date-cls booster_date_class mg-text-field immunization-custom-date-cls'%>
+
+            <%=hidden_field_tag "booster_date_cpy_id[]",nil, :class=>"booster_date_cpy_class"%>
+            </td>
+            <td class="booster-date-td-class">
+                <a title="Add" id="<%=raw v.id %>" class="add-same-booster-again <%=raw v.name%> add-same-booster-again-<%=raw v.id%> mg-icon-btn"><i class="fa fa-plus-circle"></i></a>
+            </td>
+
+          <!-- </td> -->
+        </tr>
+      <%end%>
+    <%end%>
+  </table>
+</div>
+
+
+
+
+
+
+<script type="text/javascript">
+     var dateFormatStr =  getJsDateFormat();
+  $( document ).ready(function() {
+    $(".immunization-due-date-cls").datepicker({changeMonth: true,changeYear: true,yearRange: "-100:+0", dateFormat: dateFormatStr});
+    var arrId=[];
+      $( ".add-same-booster-again" ).each(function() {
+      var tempId=$(this).prop("class");
+      temp=tempId.split(" ");
+      tempId=temp[1];
+      // alert(tempId+"============================================"+arrId);
+      // alert(arrId)
+      var leng=jQuery.inArray( tempId, arrId );
+      // alert(leng);
+      if ((leng!=-1))
+      {
+          $(this).removeClass("fa fa-plus-circle");
+          $(this).find("i").removeClass("fa fa-plus-circle");
+          $(this).removeClass("add-same-booster-again");
+          $(this).find("i").removeClass("add-same-booster-again");
+          $(this).addClass("fa fa-minus-circle");
+          $(this).addClass("delete-same-booster-again");
+          arrId.push(tempId);
+      }
+      else{
+          arrId.push(tempId);
+      }
+    });
+  });
+
+  $.validator.addClassRules("text-value-cls1", {required: true});
+  $.validator.addClassRules("text-value-cls2", {required: true});
+  $.validator.addClassRules("booster-text-value-cls1", {required: true});
+  $.validator.addClassRules("booster-text-value-cls2", {required: true});
+
+
+
+  //============================immunization date validation start============================
+
+  $.validator.addClassRules("immunization-custom-date-cls", {maxDate: true });
+  $.validator.addMethod("maxDate", function(value, element) {
+    if(value!=''){
+      var EnteredDate = value; //for javascript
+
+      var date = EnteredDate.substring(0, 2);
+      var month = EnteredDate.substring(3, 5);
+      var year = "20"+EnteredDate.substring(6, 8);
+      var myDate = new Date(year, month - 1, date);
+
+      var inputDate = myDate;
+      var currentDate = new Date()//(fulldate);
+      // alert("inputDate  "+inputDate+"  currdate  "+currentDate);
+      console.log("inputDate  "+inputDate+"  currdate  "+currentDate);
+      if (inputDate !="" && inputDate!="Invalid Date"){
+        if (inputDate <= currentDate){
+          return true;
+        }
+      }else{
+        return true;
+      }
+    }else{
+      return true;
+    }
+    // return false;
+  }, "Date Should be less than or equal to Today's Date");
+  //============================immunization date validation end============================
+
+</script>
+
+<style type="text/css">
+  .scroll-max-width{
+    max-height: 190px !important;
+  }
+
+</style>

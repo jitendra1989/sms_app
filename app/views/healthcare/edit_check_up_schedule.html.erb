@@ -1,0 +1,3 @@
+<% navigation_add t('checkup_schedule'), :controller=>'healthcare' ,:action=> 'check_up_schedule' %>
+<% navigation_add t('edit_checkup_schedule'), :controller=>'healthcare' ,:action=> 'edit_check_up_schedule',:id=>params[:id] %>
+<%=render :partial=>'check_up_schedule_form'%>

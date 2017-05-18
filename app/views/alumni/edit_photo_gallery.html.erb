@@ -1,0 +1,69 @@
+<%= render partial:'alumni_left'%>
+<% navigation_add t('gallery'), photo_gallery_path %>
+<% navigation_add t('edit_photo_gallery'),:controller=>'alumni',:action=>'edit_photo_gallery',:id=>params[:id] %>
+
+<h4 class="mg-h4"><%= t('edit_photo_gallery')%></h4>
+<%= form_for :photo_gallery, url: update_photo_gallery_path, method: :post, :html => {:id => 'photGalleryFormID' } do |f| %>
+
+  <%= f.hidden_field :mg_school_id, :value => session[:current_user_school_id]%>
+  <%= f.hidden_field :created_by, :value => session[:user_id]%> 
+  <%= f.hidden_field :updated_by, :value => session[:user_id]%> 
+  <%= f.hidden_field :is_deleted, :value => 0%> 
+  <%= f.hidden_field :status, :value => 'pending'%> 
+  <%= f.hidden_field :id, :value => params[:id]%> 
+  <%#= hidden_field_tag :url_direction%> 
+
+    <p>
+    <%= f.label :name, t('name') ,:class=>"mg-label"%><span class="required-field"> *</span><br>
+    <%= f.text_field :name,:class=>"mg-text-field" %>
+  </p>                          
+  <p>
+    <%= f.label :description, t('description') ,:class=>"mg-label"%><br>
+    <%= f.text_area :description,:class=>"mg-text-field"%>
+  </p>
+
+  <p>
+    <%= f.label :status, t('status') ,:class=>"mg-label"%><br>
+    <%=f.select :status, [["Pending", "pending"],["Accepted", "accepted"], ["Rejected", "rejected"]], {}, {:class=> "mg-select-btn", :disabled=>true}%>
+  </p>
+
+  <p>
+    <%= f.label :status, t('uploads') ,:class=>"mg-label"%><br>
+    <%=select_tag :uploads,options_for_select([["None", "none"],["Photos", "photo"], ["Videos", "video"]],{:class=>"mg-select-btn"})%>
+  </p>
+ 
+ <p class="mg-p-mgtop">
+   <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("save")%></a>
+  <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+ </p>
+
+  <%#=f.submit "abcd",{:id=>"PhotoGalleryIDS", :style=>"display:none"}%>
+<% end %>
+<!-- <p class="mg-p-mgtop">
+ <a onclick="submitFormWithPhotoGallery()" class="mg-small-form-btn"><%#=t("save")%> & <%#=t("upload_photos")%></a>
+</p> -->
+<%= render  partial: 'application/common_left_close' %>
+
+
+
+
+<script>
+  $(document).ready(function () {
+    focusCurrentTab("PhotoGalleryAID","PhotoGalleryLiID");
+
+    $("#photGalleryFormID").validate({
+      rules: {
+        "photo_gallery[name]": {required: true}
+      }
+    });
+  });
+
+  // function submitFormWithPhotoGallery(){
+  //   $("#url_direction").val("index");
+  //   $("#PhotoGalleryIDS").click();
+  // }
+
+</script>
+
+
+

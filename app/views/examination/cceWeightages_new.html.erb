@@ -1,0 +1,50 @@
+<%= form_for :cceWeightage, :url=>{:controller=>'examination',:action=>'cceWeightages_create'},:html => {:id => 'gradeSetDatasCategoryNewFormId', :class => 'elm_class',:style => 'elm_style' } do |f| %>
+<%= f.hidden_field :mg_school_id ,:value=> session[:current_user_school_id]%>
+
+
+      <p>
+        <label class="mg-label" for="weightages"> <%= t('weightages') %><span class="required-field">&nbsp;*</span></label><br/>
+        <%= f.text_field :weightages ,:class=>"mg-text-field"%>
+      </p>
+     
+<p>
+    <label class="mg-label" for="criteria_type"> <%= t('criteria_type') %></label><span class="required-field">&nbsp;*</span><br/>
+    <%= f.select :criteria_type, options_for_select([["FA","fa"], ["SA","sa"]]),{:include_blank => 'Select'} ,:class=>"mg-select-btn"%>
+      </p>
+     
+<p>
+<label class="mg-label" for="exam_category"> <%= t('exam_category') %><span class="required-field">&nbsp;*</span></label><br/>
+<%=f.select :mg_cce_exam_category_id, options_for_select(@categories),{:include_blank => 'Select'} ,:class=>"mg-select-btn"%><br>
+
+</p> 
+<div style="display:none;">
+      <p>
+        <label for="is_deleted" class="mg-label "><%=t('status')%></label><br />
+        <label for="is_deleted" class="mg-label-inner-form "><%=t('active')%></label>
+        <%= f.radio_button :is_deleted, false , :checked => true%>
+        <label for="is_deleted" class="mg-label-inner-form "><%=t('inactive')%></label>
+        <%= f.radio_button :is_deleted, true %>
+      </p>
+</div>
+<p>
+       <%= f.submit t('save') ,:class=>"mg-small-form-btn"%>
+        <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+</p>
+
+<%end%>
+
+ 
+
+
+<script>
+ $("#gradeSetDatasCategoryNewFormId").validate({
+        //debug: true,
+        rules: {
+                  "cceWeightage[weightages]": {required: true},
+                  "cceWeightage[criteria_type]": {required: true},
+                  "cceWeightage[mg_cce_exam_category_id]": {required: true}
+                    
+        }
+      });
+ 
+</script>

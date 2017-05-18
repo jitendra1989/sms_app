@@ -1,0 +1,252 @@
+<!-- Sec --> 
+
+
+
+
+<%if !(@studentcategory.nil?)%>
+<label class="mg-label"><%="Student Category:"%></label>
+<label class="mg-label-inner-form"><%=@studentcategory.name%></label><br/>
+<%end%>
+
+<%#=@fee_collection_hash.inspect%>
+
+<%= form_for :fees_submission_batch, url: fees_fees_submission_batch_path, method: :post  do |f| %>
+
+
+<% if( @fee_collection_hash.size>0) %>
+
+<table  class="mg-fees-submission-batch-tbl" cellpadding="0" cellspacing="0"  >
+  <tr class="mg-tbl-tr">
+    <th class="md-tbl-th">Sl no. </th>
+    <th class="md-tbl-th">Particulars</th>
+    <th class="md-tbl-th">Fee</th>
+     <th class="md-tbl-th">Paid</th>
+      <th class="md-tbl-th">Balance</th>
+      <th class="md-tbl-th">Amount</th>
+  </tr>
+ <% i=0 
+  totalFee=0
+  totalfineamount=0
+  totalFine=0
+  totalDiscount=0
+  categoryFees = 0
+  %>
+
+ <tr>
+ 
+
+<!-- Displaying category -->
+   <% 
+      @fee_collection_hash.each do |fee_collection|
+          collection_particular_list = MgFeeCollectionParticular.where(:mg_student_id=>params[:id],:mg_fee_collection_id=>fee_collection.id)
+        categoryFees = 0
+     if(collection_particular_list.size>0)%>
+     
+     
+     <tr class="mg-group-end" >
+     <td><%=hidden_field_tag 'fee_collection_ids[]', fee_collection.id%></td>
+     <td><%=fee_collection.name%></td>
+     <td ><%='Due Date:'%></td>
+     <td>
+      <%if fee_collection.due_date.present?
+         @dateFormat = MgSchool.find(session[:current_user_school_id]) %>
+          <%= fee_collection.due_date.strftime(@dateFormat.date_format) %>
+      <%end%>
+     </td>
+     <td colspan="2"></td>
+   </tr>   
+   <%end%>
+
+
+  <!-- Displaying Particlars Categorywise --> 
+   <% collection_particular_list.each_with_index do |particular,j|
+     totalFee += particular.mg_fee_particular_amount.to_i
+     categoryFees += particular.mg_fee_particular_amount.to_i
+
+     particular_paid_amount = MgFinanceTransactionDetail.where(:mg_collection_id=>fee_collection.id,:mg_student_id=>@studentObj.id,:mg_school_id=>@studentObj.mg_school_id,:mg_fee_particular_id=>particular.id).sum(:paid_amount)
+
+     particular_balance_amount = particular.mg_fee_particular_amount.to_f - particular_paid_amount.to_f
+
+     %>
+      <tr>
+        <td class="mg-tbl-td"><%= i +=1 %></td>
+        <td class="mg-tbl-td">
+          <%= particular.mg_fee_particular_name%>
+          <%=hidden_field_tag 'p_fee_collection_ids[]', fee_collection.id%>
+          <%=hidden_field_tag 'collection_particular_ids[]', particular.id%>
+        </td>
+      
+        <td class="mg-tbl-td"><%= particular.mg_fee_particular_amount %></td >
+        <td class="mg-tbl-td"><%= particular_paid_amount %></td>
+        <td class="mg-tbl-td">
+          <%=particular_balance_amount%>
+        </td>
+        <td class="mg-tbl-td"><%=text_field_tag 'amount[]' ,particular_balance_amount,:readonly=> "readonly",:class=>"connect-input-classes mg-show-tbl-width" ,:collection_id=>fee_collection.id, :b_line_id=>particular_balance_amount%>
+        <%=hidden_field_tag 'full_amount[]' ,particular_balance_amount%>
+        </td>
+      </tr>
+
+   <% end#particular end%>
+    <%=hidden_field_tag 'category_fees[]', categoryFees%>
+
+    <!-- Displaying Category Discount --> 
+
+  <% 
+  particular_discount_list=MgFeeCollectionDiscount.select(:mg_discount_name,:id,:mg_discount).where(:mg_fee_collection_id=>fee_collection.id,:mg_discount_type=>"Section", :mg_discount_receiver_id=>@studentObj.mg_batch_id)
+      particular_discount_list+=MgFeeCollectionDiscount.select(:mg_discount_name,:id, :mg_discount).where(:mg_fee_collection_id=>fee_collection.id,:mg_discount_type=>"Student", :mg_discount_receiver_id=>@studentObj.id)
+      particular_discount_list+=MgFeeCollectionDiscount.select(:mg_discount_name,:id, :mg_discount).where(:mg_fee_collection_id=>fee_collection.id,:mg_discount_type=>"Student Category", :mg_discount_receiver_id=>@studentObj.mg_student_catagory_id)
+
+
+  if(particular_discount_list.size>0) %>
+    <tr>
+     <td></td>
+     <td colspan="5" align="center">Discount</td>
+     <td></td>
+   </tr>   
+
+  <!-- <td class="discountAmount"> -->
+    <% particular_discount_list.each do |discount| 
+       totalDiscount += discount.mg_discount.to_i%>
+      <tr>
+        <td class="mg-tbl-td"><%= i +=1 %></td>
+        <td class="mg-tbl-td" colspan="3"><%= discount.mg_discount_name %></td>
+        <td class="mg-tbl-td"><%= discount.mg_discount %> 
+        <%=hidden_field_tag 'd_fee_collection_ids[]', fee_collection.id%>
+        <%=hidden_field_tag 'collection_discount_ids[]',discount.id%>
+        </td>
+        <td class="mg-tbl-td">
+        <%=text_field_tag 'discountamount[]', discount.mg_discount,:readonly=> "readonly",:class=>"connectinput",:d_collection_id=>fee_collection.id%>
+        </td>
+      </tr>
+    <% end %>
+  <% end %>
+<!-- </td> -->
+
+  <!-- Displaying Category Fine --> 
+    <% 
+      feeFineDue=MgFeeFineDue.where(:mg_fee_fine_id=>fee_collection.mg_fine_id).order('days_after_due_date DESC').pluck(:days_after_due_date, :amount, :mg_fee_fine_id,:id)
+
+    if(feeFineDue.size>0) 
+     feeFineDue.each do |fine|
+      
+        
+        daysLate = (Date.today - fee_collection.due_date).to_i
+
+        if(daysLate >= fine[0].to_i)
+
+      %>
+
+      <tr>
+         <td></td>
+         <td colspan="5" align="center">Late Payment Fine</td>
+         <td></td>
+       </tr>
+      <tr>
+        <td class="mg-tbl-td"><%= i +=1 %></td>
+
+        <%@feeFine=MgFeeFine.find_by_id(fine[2])%>
+        <%if@feeFine!=nil%>
+            <td class="mg-tbl-td" colspan="3"><%= @feeFine.fine_name %></td>
+        <%else%>
+            <td></td>
+        <%end%>
+        
+        <td class="mg-tbl-td"><%= fine[1] %></td>
+        <%=hidden_field_tag 'f_fee_collection_ids[]', fee_collection.id%>
+        <td class="mg-tbl-td">
+        <%=text_field_tag 'latepaymentfines[]', fine[1], :readonly=> "readonly",:class=>"latepaymentfine",:f_collection_id=>fee_collection.id%>
+        </td>
+        <%=hidden_field_tag 'late_fine_category_ids[]', fine[2]%>
+       
+      </tr>
+
+    <%
+        #totalFee += fine[1].to_i 
+        totalFine += fine[1].to_i
+        break
+      end 
+    end
+   end %>
+
+  
+
+   <%end#category end%>
+
+
+   
+
+ <%if @fee_fine_particulars_hash.size>0%>
+
+  <tr>
+    <td colspan="6" align="center" class="mg-group-end" >Fine</td>
+  </tr>
+    <%@fee_fine_particulars_hash.each do|fee_fine_particulars|%>
+
+     <tr>
+        <td class="mg-tbl-td"><%= i +=1 %></td>
+        <td colspan="3" class="mg-tbl-td"><%=fee_fine_particulars[2]+'-'+fee_fine_particulars[1]%></td>
+        <td class="mg-tbl-td"><%= fee_fine_particulars[0]%> </td>
+          <%totalfineamount+=fee_fine_particulars[0]%>
+         <td class="mg-tbl-td"> 
+          <%=text_field_tag 'fineamount[]' , fee_fine_particulars[0],:readonly => "readonly",:class=>"finecaliculationamount mg-show-tbl-width"%>
+          </td>
+          <%=hidden_field_tag 'fine_particular_ids[]' , fee_fine_particulars[3]%>
+   
+  </tr>
+  <%end
+    end%>
+<%#end====================%>
+    <tr>
+         <td colspan="6" align="center" class="mg-group-end">&nbsp;</td>
+       </tr>
+      <tr>
+ 
+
+  <tr>
+    <td class="mg-tbl-td"></td>
+    <td colspan="4" class="mg-tbl-td" align="right">Total amount to pay&nbsp;</td>
+    <td class="mg-tbl-td"><%#= totalFee-totalDiscount %>
+        <%=totalFee-totalDiscount+totalFine+totalfineamount%>
+    </td>
+  </tr>
+  <tr>
+    <td class="mg-tbl-td" style="border-bottom: none;"></td>
+    <td colspan="4" class="mg-tbl-td"  style="border-bottom: none;" align="right">Amount paying&nbsp;</td>
+    <td class="mg-tbl-td" style="border-bottom: none;"><%#= totalFee-totalDiscount %>
+
+  <%= f.text_field :fee_amount , :readonly => "readonly", value: totalFee-totalDiscount+totalFine+totalfineamount  ,:class=>"mg-show-tbl-width"%>
+  <%=hidden_field_tag 'totalamount', totalFee-totalDiscount+totalFine+totalfineamount%>
+    </td>
+  </tr>
+  
+<!-- End of display -->
+
+
+  <tr>
+    <td colspan="7" >
+      <div id="page-yield" align="right">
+      <div class="box">
+        
+          <%= f.hidden_field :is_deleted, :value=> 0%>
+          <%= f.hidden_field :mg_school_id, :value=> @school_id%>
+          <%= f.hidden_field :student_id, :value=> @studentObj.id%>
+          <%= f.hidden_field :transaction_date, :value=> Date.today%>
+
+                 <%#= submit_tag 'Submit', id: "savePayFeeID", value: "Pay Fee" ,:class=>"mg-custom-form-btn" ,:style=>"margin: 4px;"%>
+
+           
+        
+      </div>
+    </div>
+
+    </td>
+  </tr>
+  
+   </tr>
+</table>
+<%else%>
+<h5>No Fee Record Found</h5>
+
+<% end %>
+<%end%>
+

@@ -1,0 +1,310 @@
+<!-- breadcrumbs Work -->
+<% navigation_add 'Examinations', examinations_path %>
+<% navigation_add 'Exam Management', examination_exammanagement_index_path %>
+
+<%# navigation_add 'Add New', exammanagement_addnewdata_path(@id) %>
+
+
+<%= render  partial: 'examination_table_left'%>
+
+<h4 class="mg-h4">Add New Exam Name </h4>
+<div>
+    <%= form_for :exams, :url=>{:controller=>'examination',:action=>'exammanagement_newcreate'},:html => {
+                                :id => 'exammanagementsCategoryNewFormId', :class => 'elm_class',
+                                :style => 'elm_style' } do |f| %>
+
+        <%=f.hidden_field :mg_batch_id,:value=>@id%>
+         <%=f.hidden_field :is_published,:value=>0%>
+          <%=f.hidden_field :is_final_exam,:value=>0%>
+           <%=f.hidden_field :result_published,:value=>0%>
+           <%=f.hidden_field :exam_type,:value=>"marksandgrades"%>
+            <%=f.hidden_field :mg_school_id,:value=>session[:current_user_school_id]%>
+
+        <%=hidden_field_tag :count,nil,:id=>"totalCountId"%>
+      <div style="float:left ;width: 50%;"> 
+
+          <p>
+         <label class="mg-label" for="exam_name"> <%= t('exam_name') %><span class="required-field">&nbsp;*</span></label><br/>
+            <%= f.text_field :name ,:class=>"mg-text-field"%>
+          </p>
+         
+          
+           <label class="mg-label" for="exam_category"> <%= t('exam_category') %><span class="required-field">&nbsp;*</span></label><br/>
+
+     <%@category=MgCceExamCategory.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:name,:id)%>
+     <%=select_tag :examType, options_for_select(@category),
+     :prompt=>"Select",:onchange=>"myExammanagementFunction(this.value)"%>
+      <%= f.hidden_field :cce_exam_category_id %>
+     </p>
+      <div id="test" style="display:none;">
+        <p>
+    <label class="mg-label" for="maximum_mark"> <%= t('maximum_mark') %><span class="required-field">&nbsp;*</span></label><br/>
+            <%= f.text_field :maximum_mark ,:class=>"mg-text-field"%>
+          </p>
+          <p>
+    <label class="mg-label" for="pass_mark"> <%= t('pass_mark') %><span class="required-field">&nbsp;*</span></label><br/>
+            <%= f.text_field :minimum_mark ,:class=>"mg-text-field"%>
+          </p>
+    <label style="font-size: 0.85em;"><%="Enter Exam Details Here"%></label>
+
+    <table class="batch-tbl mg-tbl-margin mg-tbl-layout" cellspacing="0" style="padding:0; border-collapse:collapse; font-size: 0.75em;">
+
+
+<!--<%=@id%>
+  <tr>-->
+ 
+
+      <tr>
+
+
+        <th>Subject Name</th>
+        <th>Max Marks</th>
+        <th>Pass Marks</th>
+        <th>Date</th>
+        <th>Start Time</th>
+        <th>End Time</th>
+       
+       
+      </tr>
+     
+     <%@batchid=MgBatchSubject.where(:mg_batch_id=>@id,:is_deleted=>0,:mg_school_id=>session[:current_user_school_id])%>
+     <%i=1%>
+     <%@batchid.each do |sub|%>
+      <tr>
+        <%@data=sub.mg_subject_id%>
+        <%@subjects=MgSubject.find(@data)%>
+
+        <%data_field=Array.new%>
+                <td><%=@subjects.subject_name%></td>
+        <%=hidden_field_tag 'data_field_'+i.to_s+'[]',@subjects.id%>
+        <td><%=text_field_tag 'data_field_'+i.to_s+'[]',nil, :class=>"max-score mg-marks-width"%></td>
+        <td><%=text_field_tag 'data_field_'+i.to_s+'[]', nil,:class=>"min-score mg-marks-width"%></td>
+
+        <td class="date-time-table-cls "><%=text_field_tag 'data_field_'+i.to_s+'[]', nil,:class=>" date_picker_text_field_cls mg-marks-width"%></td>
+
+        <td class="start-time-picker-text-field-cls"><%=text_field_tag 'data_field_'+i.to_s+'[]',nil,:class=>"mg-marks-width start_time_picker_text_field_cls"%></td>
+
+        <td class="end-time-picker-text-field-cls"><%=text_field_tag 'data_field_'+i.to_s+'[]',nil,:class=>"mg-marks-width end_time_picker_text_field_cls"%></td>
+
+        <!-- <td style="padding: 0 0 6px 6px;" class="mg-align-center"><%#=check_box_tag 'data_field_'+i.to_s+'[]'%></td> -->
+
+        <%i=i+1%>
+
+        <%end%>
+     
+      
+      </tr>
+
+
+    </table> <br/>
+
+
+
+
+
+
+      </div>
+       
+<div style="display:none;">
+    <p>
+        <label for="is_deleted" class="mg-label "><%=t('status')%></label><br />
+        <label for="is_deleted" class="mg-label-inner-form "><%=t('active')%></label>
+        <%= f.radio_button :is_deleted, false , :checked => true%>
+        <label for="is_deleted" class="mg-label-inner-form "><%=t('inactive')%></label>
+        <%= f.radio_button :is_deleted, true %>
+      </p>
+</div>
+<p class="mg-p-mgtop">
+           <%#= f.submit t("save") ,:class=>"mg-small-form-btn mg-font-wgt"%>
+           <a onclick="$(this).closest('form').submit()" class="mg-font-wgt mg-small-form-btn"><%=t("save")%></a>
+           <%= link_to t('back'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %> 
+           </p>
+    <%end%>
+</div>
+
+
+
+
+<%= render  partial: 'examination_table_close'%>
+
+<script type="text/javascript">
+  
+$(document).ready(function(){
+
+  var dateFormatStr =  getJsDateFormat();
+  $('.start_time_picker_text_field_cls').timepicker({ 'scrollDefault': 'now' });
+    $('.end_time_picker_text_field_cls').timepicker({ 'scrollDefault': 'now' });
+
+    $('.date_picker_text_field_cls').each(function(){
+      $(this).removeAttr('id').removeClass('hasDatepicker'); // added the removeClass part.
+      $('.date_picker_text_field_cls').datepicker({ changeMonth: true,
+                changeYear: true,yearRange: "-50:+0",minDate: "0",dateFormat: dateFormatStr});
+    }); 
+
+        focusCurrentTab("createNewStudentAID","createNewStudentLiID");
+        focusExaminationHeaderBox();
+   dateFormatStr =  getJsDateFormat();
+
+ 
+
+   var count=$(".min-score").length;
+   //alert(count);
+   $("#totalCountId").val(count);
+
+});
+
+
+
+    $("#examType").change(function(){
+      $("#exams_cce_exam_category_id").val($("#examType").val());
+
+    });
+
+    $("#exams_maximum_mark").change(function(){
+
+      var maximumMarks=$("#exams_maximum_mark").val();
+      if(maximumMarks!=""){
+
+         $(".max-score").each(function() {
+            var currentElement = $(this);
+            $(this).val(maximumMarks);
+
+          });
+        
+      }
+
+    });
+
+    $("#exams_minimum_mark").change(function(){
+
+      var minimumMarks=$("#exams_minimum_mark").val();
+      if(minimumMarks!=""){
+
+        $(".min-score").each(function() {
+          var currentElement = $(this);
+          $(this).val(minimumMarks);
+
+        });
+        
+      }
+
+    });
+
+
+
+
+
+ $("#exammanagementsCategoryNewFormId").validate({
+        //debug: true,
+        rules: {
+                  "exams[name]": {required: true},
+                  "examType": {required: true},
+                  "exams[maximum_mark]": {required: true,number: true},
+                  "exams[minimum_mark]": {required: true,number: true}
+                      
+                      
+        }
+      });
+ 
+
+ // ============================date and time validation================================
+
+
+
+$(".start_time_picker_text_field_cls").on('focusout', function () {
+    submission_criteria();
+});
+
+
+$(".end_time_picker_text_field_cls").on('focusout', function () {
+    submission_criteria();
+});
+
+
+function submission_criteria(){
+  var count=0;
+  $(".date_picker_text_field_cls:visible").each(function(){
+    var date=$(this).val();
+    if (!date){return;}
+    var start_time=minFromMidnight($(this).parent('td').siblings(".start-time-picker-text-field-cls").children(".start_time_picker_text_field_cls").val());
+    var end_time=minFromMidnight($(this).parent('td').siblings(".end-time-picker-text-field-cls").children(".end_time_picker_text_field_cls").val());
+    //alert(date+" ==== "+start_time+ "===="+end_time);
+    $(this).addClass( "synchronize" );
+    //$(".date_picker_text_field_cls:not(:$(this))").each(function(){});
+    $('.date_picker_text_field_cls:visible').not($('.synchronize:visible')).each(function(){
+      var c_date=$(this).val();
+      var s_time=minFromMidnight($(this).parent('td').siblings(".start-time-picker-text-field-cls").children(".start_time_picker_text_field_cls").val());
+    var e_time=minFromMidnight($(this).parent('td').siblings(".end-time-picker-text-field-cls").children(".end_time_picker_text_field_cls").val());
+
+    count=0;
+    if (date == c_date)
+    {
+      if (start_time && end_time){
+      //  if (s_time && e_time){
+          if (s_time>=start_time && s_time<=end_time)
+          {
+            count++;
+            alert("Date and Time cann't overlap.");
+            $(this).parent('td').siblings(".start-time-picker-text-field-cls").children(".start_time_picker_text_field_cls").val(null);
+            
+          }
+          if (e_time>=start_time && e_time<=end_time){
+            count++;
+            if (count==1)
+            {
+              alert("Date and Time cann't overlap.");
+            }
+            $(this).parent('td').siblings(".end-time-picker-text-field-cls").children(".end_time_picker_text_field_cls").val(null);
+            
+
+          }
+          if (start_time>=s_time && start_time<=e_time){
+            count++;
+            if (count==1)
+            {
+              alert("Date and Time cann't overlap.");
+            }
+            $(this).parent('td').siblings(".end-time-picker-text-field-cls").children(".end_time_picker_text_field_cls").val(null);
+            
+
+          }
+          if (end_time>=s_time && end_time<=e_time){
+            count++;
+            if (count==1)
+            {
+              alert("Date and Time cann't overlap.");
+            }
+            $(this).parent('td').siblings(".end-time-picker-text-field-cls").children(".end_time_picker_text_field_cls").val(null);
+            
+
+          }
+      //  }
+      }
+    }   
+    count=0;    
+  });
+    $(this).removeClass( "synchronize" );
+  });
+
+}
+
+
+// function minFromMidnight(tm){
+//   if(tm==''){
+//     return;
+//   }else{
+//   var ampm= tm.substr(-2)
+//    var clk = tm.substr(0, 4);
+//    var m  = parseInt(clk.match(/\d+$/)[0], 10);
+//    var h  = parseInt(clk.match(/^\d+/)[0], 10);
+//    h += (ampm.match(/pm/i))? 12: 0;
+//    return h*60+m;
+//   }
+
+// }
+ //==============================date and time validation ends==========================
+
+
+
+</script>
+

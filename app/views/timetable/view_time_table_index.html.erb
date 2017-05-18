@@ -1,0 +1,127 @@
+<!-- breadcrumbs Work -->
+<% navigation_add t('timetable'), timetable_index_path %>
+<% navigation_add 'View Student '+t('timetable') , timetable_view_time_table_index_path %>
+
+<!-- breadcrumbs Work -->
+
+
+
+
+<%= render  partial: 'timetable_left' %>
+<h4 class="mg-h4">View Full <%=t('timetable')%></h4>
+<label class="mg-label mg-tt-width mg-tbl-margin">Select Class</label>
+<%=select_tag :course,options_for_select(@course),:prompt=>"Select",:onchange=>"batchesForCourse(this.value)"%><br>
+
+<div id="batchForSelectedCourseDivID">
+	
+	<%#=select_tag :batch,options_for_select(@batch),:prompt=>"Select",:onchange=>"selectBatch(this.value)"%>
+</div>
+
+<!-- <label class="mg-label mg-custom-labels mg-tt-width mg-tbl-margin">Select Mode</label>
+ --><%#=select_tag :mode,options_for_select([["weekday",1],["day",2]]),:prompt=>"Select Mode",:onchange=>"modeSelect(this.value)"%>
+
+<!-- <div id="selectWeekDayId" style="display:none">
+	<label class="mg-label mg-custom-labels mg-tt-width mg-tbl-margin">Select Day</label>
+	<%#=select_tag :day,options_for_select([["Sunday",0],["Monday",1],["Tuesday",2],["Wednesday",3],["Thursday",4],["Friday",5],["Saturday",6]]),:prompt=>"Select Day",:onchange=>"daySelect(this.value)"%>
+</div>
+ -->
+<div id="viewTimeTableForBatchwiseDivID">
+</div>
+
+<div id="viewTimetableForDayDivID">
+</div>
+<div id="batchWiseTimeTableDIVID" class="mg-tbl-margin"></div>
+
+<%= render  partial: 'timetable_left_close' %>
+
+<script>
+$(document).ready(function () {
+        focusCurrentTab("viewTimeTableAID","viewTimeTableLiID");
+        focusTimeTable();
+
+    });
+
+	function modeSelect(modeID){
+		if(modeID==2){
+			$("#selectWeekDayId").show();
+			$("#viewTimetableForDayDivID").show();	
+			$("#viewTimeTableForBatchwiseDivID").hide();
+		}
+		else{
+			$("#selectWeekDayId").hide();
+			var batchid=$("#batch").val();
+			$("#viewTimeTableForBatchwiseDivID").show();
+			$("#viewTimetableForDayDivID").hide();
+			viewTimetableForBatch(batchid);
+		}
+	}
+
+	function selectBatch(batchid){
+	
+		
+		$.ajax({
+			url:"/timetable/select_batch_for_show_time_table",
+			data:{"batch_id":batchid},
+			success:function(html){
+				
+				$("#batchWiseTimeTableDIVID").html(html);
+			},
+			// error:function(){
+			// 	$("#batchWiseTimeTableDIVID").empty();
+   //           $("#batchWiseTimeTableDIVID").append("<h5 class='mg-custom-labels'>No data for time table...</h5>");
+			// }
+		});
+	}
+
+	function daySelect(dayId){
+		var batchid=$("#batch").val();
+		var courseId=$("#course").val();
+		$.ajax({
+			url:"/timetable/day_wise_view_time_table",
+			data:{"batch_id":batchid,"course_id":courseId,"day_id":dayId},
+			success:function(html){
+				
+				$("#viewTimetableForDayDivID").html(html);
+			},
+			error:function(){
+				alert("inside error");
+			}
+		});
+	}
+
+	function batchesForCourse(courseid){
+
+		$.ajax({
+			url:"/timetable/batch_for_selected_course",
+			data:{"course_id":courseid},
+			success:function(html){
+				 $("#batchForSelectedCourseDivID").empty();
+             $("#batchForSelectedCourseDivID").append(html);
+				
+				// $("#batchForSelectedCourseDivID").html(html);
+			},
+			error:function(){
+				$("#batchForSelectedCourseDivID").empty();
+				$("#batchWiseTimeTableDIVID").empty();
+             $("#batchForSelectedCourseDivID").append("<h5>No Class Selected</h5>");
+			}
+		});
+	}
+
+	function viewTimetableForBatch(batchid){
+		var courseId=$("#course").val();
+		alert(batchid);
+		$.ajax({
+			url:"/timetable/batch_wise_view_time_table",
+			data:{"batch_id":batchid,"course_id":courseId},
+			success:function(html){
+				$("#viewTimeTableForBatchwiseDivID").html(html);
+			},
+			error:function(){
+				alert("inside error");
+			}
+		});
+	}
+	
+</script>
+

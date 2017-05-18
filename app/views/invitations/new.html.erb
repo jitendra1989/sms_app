@@ -1,0 +1,112 @@
+
+<h4 class="mg-h4"><%= t('invitation')%></h4>
+ <%= form_for :invitation, url: invitations_path, method: :post, :html => {
+                            :id => 'invitationFormID' } do |f| %>
+
+  <%=f.hidden_field :mg_event_id,:value=>@mg_event_id%>
+
+<table>
+  <tr>
+    <td>
+       <p>
+          <%= f.label :employees, t('employees') ,:class=>"mg-label mg-tt-width"%>
+          <%= f.check_box :employee,:checked=>@department_list_checked.present? %>
+        </p>
+    </td>
+    <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td>
+      <p>
+        <%= f.label :teacher, t('teacher') ,:class=>"mg-label mg-tt-width"%>
+          <%= f.check_box :teacher,:checked=>@department_list_tech_checked.present? %>
+      </p>
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+        <div id="accessableTo­EmployeesHideandShowDIVID" style="display:none">
+          <%=render partial: "department_list"%>
+        </div>
+    </td>
+    <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td>
+       <div id="accessableTechTo­EmployeesHideandShowDIVID" style="display:none">
+        <%=render partial: "department_list_tech"%>
+       </div>
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      <p>
+        <%= f.label :students, t('students') ,:class=>"mg-label mg-tt-width"%>
+        <%= f.check_box :student  ,:checked=>@batch_std_checked.present? %>
+      </p>
+    </td>
+    <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td>
+     <p>
+      <%= f.label :guardians, t('guardians') ,:class=>"mg-label mg-tt-width"%>
+      <%= f.check_box :guardian ,:checked=>@batch_gnd_list_checked.present?  %>
+    </p>
+      
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+       <div id="accessableTo­StudentsHideandShowDIVID" style="display:none">
+        <%=render partial: "course_batch_list_student"%>
+      </div>
+    </td>
+    <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td>
+      <div id="accessableTo­GuardiansHideandShowDIVID" style="display:none">
+        <%=render partial: "course_batch_list_guardian"%>
+      </div>
+    </td>
+
+  </tr>
+</table>
+
+  <%= f.hidden_field :mg_school_id, :value => session[:current_user_school_id]%>
+
+  <%= f.hidden_field :created_by, :value => session[:user_id]%> 
+  <%= f.hidden_field :updated_by, :value => session[:user_id]%> 
+
+
+  <%= f.hidden_field :is_deleted, :value => 0%> 
+
+ 
+   <p class="mg-p-mgtop">
+    <a onclick="$(this).closest('form').submit();" class="mg-small-form-btn call-spin-a-cls"><%=t("invite")%></a>
+      <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+  </p>
+
+<% end %>
+
+<script type="text/javascript">
+  $(document).ready(function () {
+   $("#invitationFormID").validate({
+
+rules: {
+"mg_employee_department_id[]": {required: true},
+"tech_mg_employee_department_id[]": {required: true},
+"student_mg_batch_id[]": {required: true},
+"guardian_mg_batch_id[]": {required: true}
+
+
+}
+// success: spin()
+
+});
+});
+
+</script>
+
+
+
+  
+
+
+

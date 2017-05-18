@@ -1,0 +1,38 @@
+<!-- breadcrumbs Work -->
+<% navigation_add 'Examinations', examinations_path %>
+<% navigation_add 'Exam Report', examination_report_center_path %>
+<% navigation_add 'View Report', cce_reports_path %>
+<!-- breadcrumbs Work -->
+
+
+
+<%= render  partial: 'examination/examination_table_left' %>
+
+<h4 class="mg-h4"><%= "CCE Reports"%></h4>
+
+<div>
+	<table>
+		<tr>
+			<!-- <td class="mg-exam-td-width" valign="top">
+				<%#= button_to 'Generate Cce Report', {controller: 'cce_reports',action:''}, {:class=>"mg-exam-scholastic-btn-width"} %><br>
+			</td>  -->
+
+			<td class="mg-exam-td-width" valign="top">
+				<%= button_to 'View Student CCE Report', {controller: 'cce_reports',action:'student_wise_report'}, {method: :get, :class=>"mg-exam-scholastic-btn-width mg-btn-exam"} %><br>
+			</td>
+		</tr>
+	</table>
+</div>
+
+
+
+<%= render  partial: 'examination/examination_table_close' %>
+
+
+<script type="text/javascript">
+  $(document).ready(function() {
+        focusCurrentTab("viewResultAID","viewResultLiID");
+        focusExaminationHeaderBox();
+  });
+
+</script>

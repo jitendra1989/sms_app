@@ -1,0 +1,39 @@
+<% navigation_add "#{t('school_custom_fields')}", :controller => 'schools', :action => 'custom_fields' %>
+
+<!-- Sec --> 
+<h4 class="mg-h4"><%=t("school_custom_fields")%></h4>
+<div>
+<%= button_to "#{t('create_school_custom_field')}", { :controller=> "schools", :action=> "custom_index"} , :class=> "mg-custom-form-btn"%>
+
+
+<% if(@customfields.length > 0 ) %>
+  <table class="batch-tbl mg-tbl-margin">
+    <tr>
+            <th>Field Name</th>
+            <th>Field Type</th>
+            <th>Default Value</th>
+            <th><%=t('actions')%></th>
+   </tr>
+            <% @customfields.each do |schools| %>
+    <tr>
+            <td><%=schools.name %></td>
+            <% 
+                temp=schools.data_type.split("_") 
+                str=temp[0].split.map(&:capitalize).join(' ')+" "+temp[1]
+            %>
+            <td><%=str%></td>
+            <td><%=schools.text_data %></td>
+            <td>
+                <button title="Edit" id="editCustum-<%=raw schools.id %>" class="edit-custum-fields mg-icon-btn"><i class="fa fa-pencil-square-o"></i></button>
+                 <button title="Delete" class="delete-custum mg-icon-btn" id="deleteCustumID-<%= schools.id%>"><i class="fa fa-trash"></i></button>
+            </td>
+    </tr>
+    <%end%>
+  </table>
+
+<%else%>
+<h5>Please add some custom fields.</h5>
+
+<%end%>
+</div>
+<div id="editSchollCustomDialogID"></div>

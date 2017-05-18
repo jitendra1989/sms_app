@@ -1,0 +1,315 @@
+<!-- Sec --> 
+<%= form_for :fesses2, :url=>{:controller=>'sports_management',:id=>@fesses2.id,:action=>'update_fee_fine_particular'},:html => {
+                            :id => 'feeParticularEditFormId', :class => 'elm_class',
+                            :style => 'elm_style' } do |f| %>
+
+ <% if @fesses2 != nil%>
+ <% if @fesses2.errors.any? %>
+  <div id="error_explanation">
+    <h2><%= pluralize(@fesses2.errors.count, "error") %> prohibited
+      this from being saved:</h2>
+    <ul>
+    <% @fesses2.errors.full_messages.each do |msg| %>
+      <li><%= msg %></li>
+    <% end %>
+    </ul>
+  </div>
+  <% end %>
+  <% end %>
+  
+<div>                     
+
+    <p>
+
+      <%= f.label :fine_name ,:class=>"mg-label"%><span class="required-field"> *</span><br>
+       <%= f.text_field :fine_name ,:class=>"mg-text-field"%>
+      <%#= f.text_field :fee_category ,:value=>@category[0].id,  :style => "diaplay:none"%>
+
+      </p>
+      <p>
+        <%= f.label :description ,:class=>"mg-label"%><br>
+        <%= f.text_area :description ,:class=>"mg-text-field"%>
+      </p>
+      <p>
+
+      <%= f.label :fine_from ,:class=>"mg-label"%><span class="required-field"> *</span><br>
+       <%= f.text_field :fine_from ,:class=>"mg-text-field"%>
+      <%#= f.text_field :fee_category ,:value=>@category[0].id,  :style => "diaplay:none"%>
+
+      </p>
+      <p>
+       <%= f.label :account ,:class=>"mg-label"%><span class="required-field"> *</span><br>
+       <%
+          account=Array.new
+          account.push("Central","central")
+          accounts=MgAccount.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:mg_account_name,:id)
+          accounts.insert(0,account)
+       %>
+       <%if @fesses2.mg_account_id.present?%>
+          <%=f.select :mg_account_id,options_for_select(accounts,:selected=>@fesses2.mg_account_id),{:include_blank =>"Select"} ,:class=>"mg-select-btn",:disabled=>true%>
+        <%elsif @fesses2.is_to_central.present?%>
+          <%=f.select :mg_account_id,options_for_select(accounts,:selected=>"central"),{:include_blank =>"Select"} ,:class=>"mg-select-btn",:disabled=>true%>
+        <%end%>
+      </p>
+      <p>
+      <%@batchId=MgBatch.find(@fesses2.mg_batch_id)%>
+      <%courseId=MgCourse.find(@batchId.mg_course_id)%>
+      <%@courseName=courseId.course_name%>
+      <%@batchName=@batchId.name%>
+      <%= f.label :Semester ,:class=>"mg-label"%><span class="required-field"> *</span><br>
+      <%=text_field_tag :mg_batch_id,"#{@courseName}-#{@batchName}",:readonly => "readonly",:class=>"mg-text-field"%>
+    </p>
+    <%if @fesses2.mg_student_id.nil?%>
+    <%else%>
+    <p>
+      <%= f.label :Admission_Number ,:class=>"mg-label"%><br>
+      <%@admission_number=MgFeeFineParticular.find(@fesses2.id)%>
+      <%if @admission_number.present? %>
+        <%@admis_num=MgStudent.find_by(:id=>@admission_number.mg_student_id,:mg_batch_id=>@fesses2.mg_batch_id)%>
+        <%if @admis_num.present? %>
+          <%=text_field_tag :admission_no,@admis_num.admission_number,:readonly => "readonly",:class=>"mg-text-field"%>
+        <%else%>
+          <%=text_field_tag :admission_no,"",:readonly => "readonly",:class=>"mg-text-field"%>
+        <%end%>
+        <%end%>
+    </p>
+    <p>
+    <%@student=MgStudent.find_by(:id=>@fesses2.mg_student_id,:mg_batch_id=>@fesses2.mg_batch_id)%>
+      <%#=@fesses2.mg_batch_id%>
+      <%#=@fesses2.admission_no%>
+      <%@firstName=@student.first_name%>
+      <%@lastName=@student.last_name%>
+      <%= f.label :Full_Name ,:class=>"mg-label"%><br>
+      <%=text_field_tag :full_name,"#{@firstName}" "#{@lastName}",:readonly => "readonly",:class=>"mg-text-field"%>
+    </p>
+<%end%>
+   <%if @fesses2.mg_student_category_id.nil?%>
+   <%else%>
+    <p>
+     <%@studentCategory=MgStudentCategory.find(@fesses2.mg_student_category_id)%>
+    <%= f.label :Category_Name ,:class=>"mg-label"%><br>
+      <%=text_field_tag :category_name,@studentCategory.name,:readonly => "readonly",:class=>"mg-text-field"%>
+    </p>
+  <%end%>
+    </p>
+    
+      <p>
+      <%= f.label :amount ,:class=>"mg-label"%><span class="required-field"> *</span><br>
+      <%= f.text_field :amount ,:class=>"mg-text-field"%>
+      </p>
+       <p>
+      <%= f.label :start_date ,:class=>"mg-label"%><span class="required-field"> *</span><br>
+   <%=f.text_field :start_date,:class=>"fee-collection-start-date-edit-class" %>
+      </p>
+       <p>
+      <%= f.label :end_date ,:class=>"mg-label"%><span class="required-field"> *</span><br>
+  <%= f.text_field :end_date, :class=>"fee-collection-end-date-edit-class" %>
+      </p>
+       <p>
+    <%= f.label :due_date ,:class=>"mg-label"%><span class="required-field"> *</span><br>
+    <%= f.text_field :due_date, :class=>"fee-collection-due-date-edit-class" %>
+      </p>
+<div style="display:none;">
+    <p>
+   
+    
+      <%= f.label :is_deleted, "Is Active" ,:class=>"mg-label"%><br />
+       <label for="is_deleted" class="mg-label-inner-form "><%=t('active')%></label>
+
+      <%#= f.label :is_deleted, "Active", :value => "true" ,:class=>"mg-label-inner-form"%>
+      <%= f.radio_button :is_deleted, false , :checked => true%>
+       <label for="is_deleted" class="mg-label-inner-form "><%=t('inactive')%></label>
+      <%#= f.label :is_deleted, "In Active", :value => "false" ,:class=>"mg-label-inner-form"%>
+      <%= f.radio_button :is_deleted, true %>
+    </p>
+</div>
+    <p class="mg-p-mgtop">
+      <%#= f.submit 'Submit' ,:class=>"mg-small-form-btn"%>
+      <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("save")%></a>
+       <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+
+    </p>
+   
+</div>
+
+
+
+<div >  
+
+
+
+   
+   
+  <p>
+    <div id="FeeCategoryID">
+    </div>
+  </p>
+
+</div>
+
+
+<% end %>
+
+
+<script>
+
+
+dateFormatStr =  getJsDateFormat();
+      //alert(dateFormatStr);
+
+    $(".fee-collection-start-date-edit-class").datepicker({ changeMonth: true,changeYear: true,dateFormat: dateFormatStr});
+    $(".fee-collection-end-date-edit-class").datepicker({ changeMonth: true,changeYear: true,dateFormat: dateFormatStr});
+    $(".fee-collection-due-date-edit-class").datepicker({ changeMonth: true,changeYear: true,dateFormat: dateFormatStr});
+
+$(".fee-collection-start-date-edit-class").datepicker({ changeMonth: true,changeYear: true,dateFormat: dateFormatStr});
+    $(".fee-collection-end-date-edit-class").datepicker({ changeMonth: true,changeYear: true,dateFormat: dateFormatStr});
+    $(".fee-collection-due-date-edit-class").datepicker({ changeMonth: true,changeYear: true,dateFormat: dateFormatStr});
+
+   
+
+    var startDate =  $.datepicker.formatDate(dateFormatStr,new Date($('.fee-collection-start-date-edit-class').val()));
+    //alert(startDate);
+
+    $('.fee-collection-start-date-edit-class').val(startDate);
+    //alert($('.fee-collection-start-date-class').val());
+
+    var endDate =  $.datepicker.formatDate(dateFormatStr,new Date($('.fee-collection-end-date-edit-class').val()));
+    $('.fee-collection-end-date-edit-class').val(endDate);
+    var dueDate =  $.datepicker.formatDate(dateFormatStr,new Date($('.fee-collection-due-date-edit-class').val()));
+    //alert(dueDate);
+    $('.fee-collection-due-date-edit-class').val(dueDate);
+
+
+
+
+  $(document).ready(function(){
+
+    
+    $("#feeParticularEditFormId").validate({
+      rules: 
+      {
+          "fesses2[name]": {required: true},
+          "fesses2[amount]": {required: true,number: true,min:1},
+          "fesses2[fine_name]": {required: true},
+          "fesses2[fine_from]": {required: true},
+          "fesses2[start_date]": {required: true},
+          "fesses2[end_date]": {required: true},
+          "fesses2[due_date]": {required: true}
+      }
+    });
+  });
+   $(document).on("click","#fesses2_value1_demo",function(e){
+    
+    var checkedvalue="";
+    var uncheckedvalue="";
+
+    
+    $("input[name^=selected_batches]:checked").each(function(index){
+      
+      
+      checkedvalue+=$(this).val()+" ";
+    });
+
+      checkedvalue=checkedvalue.trim().replace(/ /g,",");
+      console.log("val");
+      console.log(checkedvalue);
+      jQuery.ajax({
+            url: "/fees/section_students",
+            type: "GET",
+            data: {"batch_value":checkedvalue},
+            dataType: "html",
+            success: function(data) {
+               $(".fee-particulars-admissions-numbers-cls").empty();
+               $(".fee-particulars-admissions-numbers-cls").append(data);
+             
+              
+            },
+            error:function(){
+              alert("Something went wrong!");
+            }
+        });
+  });
+
+
+
+$(document).on("change","#fesses2_start_date",function(e){
+      var end_date=$("#fesses2_end_date").val();
+      var start_date=$(this).val();
+
+     // console.log("Changed dob"); 
+     // console.log(new Date(Date.parse(dob,dateFormatStr)).toString());
+     // console.log(new Date(Date.parse(admission_date,dateFormatStr)).toString());
+
+     if(getDateObj(start_date,dateFormatStr)>getDateObj(end_date,dateFormatStr)){
+        alert("Start Date should be less than End Date");
+        document.getElementById('fesses2_start_date').value ="";
+      }
+
+      var temp=$("#fesses2_due_date").val();
+      if(!temp=="")
+      {
+      var end_date=$("#fesses2_end_date").val();
+      var start_date=$("#fesses2_start_date").val();
+      var due_date=$("#fesses2_due_date").val();
+
+     if(!(getDateObj(due_date,dateFormatStr)>=getDateObj(start_date,dateFormatStr)&&getDateObj(due_date,dateFormatStr)<=getDateObj(end_date,dateFormatStr))){
+        alert("Due Date should be between Start Date and End Date");
+        document.getElementById('fesses2_start_date').value ="";
+      }
+}
+   });
+
+$(document).on("change","#fesses2_end_date",function(e){
+      var start_date=$("#fesses2_start_date").val();
+      var end_date=$(this).val();
+
+     // console.log("Changed dob"); 
+     // console.log(new Date(Date.parse(dob,dateFormatStr)).toString());
+     // console.log(new Date(Date.parse(admission_date,dateFormatStr)).toString());
+
+     if(getDateObj(start_date,dateFormatStr)>getDateObj(end_date,dateFormatStr)){
+        alert("End Date should be more than Start Date");
+        document.getElementById('fesses2_end_date').value ="";
+      }
+var temp=$("#fesses2_due_date").val();
+      if(!temp=="")
+      {
+      var end_date=$("#fesses2_end_date").val();
+      var start_date=$("#fesses2_start_date").val();
+      var due_date=$("#fesses2_due_date").val();
+
+     if(!(getDateObj(due_date,dateFormatStr)>=getDateObj(start_date,dateFormatStr)&&getDateObj(due_date,dateFormatStr)<=getDateObj(end_date,dateFormatStr))){
+        alert("Due Date should be between Start Date and End Date");
+        document.getElementById('fesses2_end_date').value ="";
+      }
+}
+   });
+ 
+    
+$(document).on("change","#fesses2_due_date",function(e){
+
+      var end_date=$("#fesses2_end_date").val();
+      var start_date=$("#fesses2_start_date").val();
+      var due_date=$("#fesses2_due_date").val();
+if(start_date=="" || end_date=="")
+{
+  alert("Enter The Start Date And End Date");
+  document.getElementById('fesses2_due_date').value ="";
+}
+      else
+      {
+
+     if(!(getDateObj(due_date,dateFormatStr)>=getDateObj(start_date,dateFormatStr)&&getDateObj(due_date,dateFormatStr)<=getDateObj(end_date,dateFormatStr))){
+        alert("Due Date should be between Start Date and End Date");
+        document.getElementById('fesses2_due_date').value ="";
+      }
+   }
+   });
+
+
+
+
+
+
+</script
+ 

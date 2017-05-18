@@ -1,0 +1,51 @@
+<%= form_for :doctor, :url=>@action=='new' ? 'create_doctor_login' : @doctor.try(:id).to_s+'/update_doctor_login', :method=> @action=='new' ? "post" : "patch" , :html => {:id => 'doctorLoginCreateFormID'} do |f| %>    
+
+<%= f.hidden_field :is_deleted, :value => 0 %>
+<%= f.hidden_field :mg_school_id, :value => session[:current_user_school_id] %>
+<%= f.hidden_field :created_by, :value => session[:user_id] %>
+<%= f.hidden_field :updated_by, :value => session[:user_id] %>
+<%= f.hidden_field :user_type, :value =>"doctor" %>
+
+<% school= MgSchool.where(:id=>session[:current_user_school_id],:is_deleted=>0) %>
+<% subdomain = school[0].subdomain%> 
+
+<p>
+	<%= f.label :user_name, t('user_name') ,:class=>"mg-label"%><span class="required-field"> *</span><br>
+	<%if @action=='new'%>
+		<%=subdomain%><%= f.text_field :user_name  ,:class => 'mg-select-btn'%><br>
+	<%else%>
+	 	<%school=MgSchool.find_by(:id=>session[:current_user_school_id])%>
+        <%user_name=@doctor.user_name.sub(school.subdomain,"")%>
+		<%=subdomain%><%= f.text_field :user_name,:value=>user_name,:class => 'mg-select-btn'%><br>
+	<%end%>
+</p>
+
+<p>
+	<%= f.label :mg_specialization_id, t('Specialization') ,:class=>"mg-label"%><span class="required-field"> *</span><br>
+	<%= f.select :mg_specialization_id,options_from_collection_for_select(MgSpecialization.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]),"id","name",:selected=>@doctor.mg_specialization_id),{include_blank: "Select"},{:class=>"mg-specialization-width mg-text-field",:onchange=>""}%>	
+</p>
+
+<%if @action=='new'%>
+	<p>
+		<%= f.label :password, t("password") ,:class=>"mg-label"%><span class="required-field"> *</span><br>
+	  	<%= f.password_field :password, :class=> 'mg-select-btn' , :step => 'any'%>
+	</p>
+<%end%>
+
+<p class="mg-p-mgtop">
+    <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("save")%></a>
+    <a class="mg-small-form-btn cancel-form-dialog"><%=t('cancel')%></a>
+
+</p>
+<% end %>
+<script>
+$(document).ready(function () {
+	$("#doctorLoginCreateFormID").validate({
+		rules: {
+			"doctor[user_name]": {required: true},
+			"doctor[mg_specialization_id]": {required: true},
+			"doctor[password]": {required: true}
+		}
+	});
+});
+</script>

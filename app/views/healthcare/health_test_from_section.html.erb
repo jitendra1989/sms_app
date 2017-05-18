@@ -1,0 +1,136 @@
+  <%@checkup_type = MgCheckupType.where(:id=>@health_test[0].mg_check_up_type_id,:is_deleted=>0)%>
+  <%if params[:emp_result] =='emp_result'%>
+
+    <table border="1" class="mg-showdata-bg" cellspacing="1" cellpadding="1"> 
+      <% emp_department = MgEmployeeDepartment.find_by(:id=>@health_test[0].mg_employee_department_id,:is_deleted=>0)%>
+      <% employee_id = MgEmployee.find_by(:id=>@health_test[0].mg_employee_id,:is_deleted=>0)%>
+      <tr>
+        <td class="mg-td-width-half" valign="top">
+          <label class="mg-label"> <%= t('employee_name')%></label>
+        </td>
+        <td class="mg-td-width-half mg-capitalize-text" valign="top">
+          <%= employee_id.try(:first_name) %><%=' '%><%= employee_id.try(:last_name) %>
+        </td>
+      </tr>
+
+     <tr>
+        <td class="mg-td-width-half" valign="top">
+          <label class="mg-label"><%=t('department')%></label>
+        </td>
+        <td class="mg-td-width-half mg-capitalize-text" valign="top">
+          <%= emp_department.try(:department_name) %>
+        </td>
+      </tr>
+      <tr>
+        <td class="mg-td-width-half" valign="top">
+          <label class="mg-label"><%=t('checkup_type')%></label>
+        </td>
+        <td class="mg-td-width-half" valign="top">
+          <label class="mg-label"><%=t('checkup_particular')%></label>
+        </td>
+      </tr>
+      <tr>
+        <td class="mg-td-width-half mg-capitalize-text mg-align-center" valign="top">
+          <%= @checkup_type[0].name %>
+        </td>
+        <td>
+          <div class="text-scroll-for-log-text-cls comments-space" style="">
+          <table class="batch-tbl mg-tbl-margin"> 
+            <tr class="subject-table-header">
+               <th><%= t('name') %></th>
+               <th><%= t('normal') %></th>
+               <th><%= t('result') %></th>
+               <th><%= t('recommendation') %></th>
+            </tr>
+            <%@health_test.each do |health_obj| %>
+              <%checkup = MgCheckupParticular.find_by(:id=>health_obj.mg_checkup_particular_id,:is_deleted=>0)%>
+              <%if checkup.present?%>
+                <tr>
+                  <td class="mg-align-center mg-capitalize-text"><%= checkup.try(:particulars) %></td>
+                  <td class="mg-align-center mg-capitalize-text"><%= checkup.try(:normal) %></td>
+                  <td class="mg-align-center mg-capitalize-text"><%=health_obj.try(:result) %></td>
+                  <td class="mg-align-center mg-capitalize-text"><%=health_obj.try(:recommendation) %></td>
+                </tr>
+              <%end%>
+            <%end%>
+          </table>
+        </div>
+      </td>
+    </tr>
+  </table>
+<%else%>
+  <table border="1" class="mg-showdata-bg" cellspacing="1" cellpadding="1"> 
+    <% batchobj = MgBatch.find_by(:id=>@health_test[0].mg_batch_id,:is_deleted=>0)%>
+    <% student_obj = MgStudent.find_by(:id=>@health_test[0].mg_student_id,:is_deleted=>0)%>
+    <%@courseObj = MgCourse.find_by_id(batchobj.mg_course_id)%>
+    <tr>
+      <td class="mg-td-width-half" valign="top">
+        <label class="mg-label"> <%= t('name')%></label>
+      </td>
+      <td class="mg-td-width-half mg-capitalize-text" valign="top">
+        <%= student_obj.try(:first_name) %><%=" "%><%= student_obj.try(:last_name) %>
+      </td>
+    </tr>
+
+    <tr>
+      <td class="mg-td-width-half" valign="top">
+        <label class="mg-label"><%=t('semester')%></label>
+      </td>
+      <td class="mg-td-width-half mg-capitalize-text" valign="top">
+        <%= (@courseObj.course_name) +"-"+ batchobj.name %>
+      </td>
+    </tr>
+    <tr>
+      <td class="mg-td-width-half" valign="top">
+        <label class="mg-label"><%=t('checkup_type')%></label>
+      </td>
+      <td class="mg-td-width-half" valign="top">
+        <label class="mg-label"><%=t('checkup_particular')%></label>
+      </td>
+    </tr>
+    <tr>
+      <td class="mg-td-width-half mg-capitalize-text mg-align-center" valign="top">
+        <%= @checkup_type[0].name %>
+      </td>
+      <td>
+        <div class="text-scroll-for-log-text-cls comments-space" style="">
+        <table class="batch-tbl mg-tbl-margin"> 
+          <tr class="subject-table-header">
+             <th><%= t('name') %></th>
+             <th><%= t('normal') %></th>
+             <th><%= t('result') %></th>
+             <th><%= t('recommendation') %></th>
+          </tr>
+          <%@health_test.each do |health_obj| %>
+            <%checkup = MgCheckupParticular.find_by(:id=>health_obj.mg_checkup_particular_id,:is_deleted=>0)%>
+            <%if checkup.present?%>
+              <tr>
+                <td class="mg-align-center mg-capitalize-text"><%= checkup.try(:particulars) %></td>
+                 <td class="mg-align-center mg-capitalize-text"><%= checkup.try(:normal) %></td>
+                <td class="mg-align-center mg-capitalize-text"><%=health_obj.try(:result) %></td>
+                <td class="mg-align-center mg-capitalize-text"><%=health_obj.try(:recommendation) %></td>
+              </tr>
+            <%end%>
+          <%end%>
+        </table>
+        </div>
+      </td>
+    </tr>
+  </table>
+<%end%>
+<p class="mg-p-mgtop">
+  <a class="mg-small-form-btn cancel-form-dialog"><%=t('cancel')%></a>
+</p>
+
+
+
+
+
+
+
+
+
+
+
+
+

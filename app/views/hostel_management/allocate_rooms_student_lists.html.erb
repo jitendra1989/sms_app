@@ -1,0 +1,284 @@
+<h4 class="mg-h4"><%= t('student_list')%></h4> 
+<%if @student_list.size>0%>
+  <div class="mg-scroll-employee-bar mg-tbl-margin">   
+    <table class="mg-show-tbl-width mg-table-nowrap batch-tbl mg-adjust-padding">  
+      <tr>
+        <th><%=t("student_name.")%></th>
+        <th><%=t("student_id")%></th>
+        <th><%=t("select_floor")%><span class="required-field">&nbsp;*</span></th>
+        <th><%=t("select_room_type")%><span class="required-field">&nbsp;*</span></th>
+        <th><%=t("select_room_no")%></th>
+        <th><%=t("available_beds")%></th>
+        <th><%=t("Is allocated?")%></th>
+      </tr>
+      <%@student_list.each_with_index do |data,i|
+        if params[:main_id].present?%>
+          <%@room_student_list=MgAllocateRoomList.find_by(:mg_allocate_room_id=>params[:main_id],:mg_student_id=>data.mg_student_id)
+        else
+          @room_student_list=MgAllocateRoomList.find_by(:mg_allocate_room_id=>@hostel_rooms_data.try(:id),:mg_student_id=>data.mg_student_id)
+        end %>
+        <tr>
+          <%student_data=MgStudent.find_by(:id=>data.mg_student_id)%>
+          <td>
+            <%=hidden_field_tag "student_id_data[#{i}]",data.mg_student_id%>
+            <%="#{student_data.try(:first_name)} #{student_data.try(:last_name)}"%></td>
+          <td><%=data.try(:admission_number)%></td>
+          <%
+            rooms_data=MgHostelRoom.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id],:mg_hostel_details_id=>params[:hostel_id]).pluck(:mg_hostel_floor_id).uniq
+            floor_data=MgHostelFloor.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id],:id=>rooms_data).pluck(:name,:id)
+          %>
+          <td class="mg-select-floor-cls">
+            <%=select_tag "mg_floor_id[#{i}]",options_for_select(floor_data,:selected=>@room_student_list.present? ? @room_student_list.mg_hostel_floor_id : 0 ),:prompt=>"Select",:class=>"floor_data_value"%>
+          </td>
+          <td class="mg-select-room-type-cls">
+            <%=select_tag "mg_room_type_id[#{i}]",options_for_select([["Select"]]),:class=>"room_data_value"%>
+            <%=hidden_field_tag "room_type[#{i}]",@room_student_list.present? ? @room_student_list.mg_hostel_room_type_id : 0%>
+          </td>
+          <td class="mg-select-room-cls">
+            <%=select_tag "mg_room_no_id[#{i}]",options_for_select([["Select"]]),:class=>"room_no_value"%>
+            <%=hidden_field_tag "room_no[#{i}]",@room_student_list.present? ? @room_student_list.mg_hostel_room_id : 0%>
+          </td>
+          <td>
+            <%=text_field_tag "capacity_of_available[#{i}]",nil,:readonly=>true,:class=>"capacity_of_available_data"%>
+          </td>
+          <td><%=check_box_tag "is_allocated[#{i}]",data.mg_student_id,@room_student_list.present? ? @room_student_list.is_allocated : false,:class=>"check_box_tag_data checkbox-toggle-cls"%></td>
+        </tr>
+      <%end%>
+    </table>
+  </div>
+  <p class="mg-p-mgtop">
+    <!-- <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn allocate-room-submit-cls",:style=>"display:none"><%#=t("ssssubmit")%></a> -->
+
+    <%=submit_tag "submit", :class=>"allocate-room-submit-cls", :style=>"display:none"%>
+    <a onclick="allocateRoomSubmitForm(); " class="mg-small-form-btn "><%=t("save")%></a>
+    <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+  </p>
+<%else%>
+  <%="No Request"%>
+<%end%>
+
+
+<script>
+
+  $( document ).ready(function() {
+//         $(".check_box_tag_data").each(function(){
+//         temp_check=$(this).prop("checked");
+//         if (temp_check)
+//         {
+//             var data_id_value=$(this).attr('id');
+//             var data_array=data_id_value.split("_");
+//             var hostel_data = $("#allocate_rooms_hostel_id").val();
+//             var room_data_id = $("#mg_room_no_id_"+data_array[2]).val();
+//             var urlLink = "/hostel_management/manage_central_data";
+//             var availability = $("#capacity_of_available_"+data_array[2]).val();
+//             alert(availability);
+
+//             if(parseInt(availability) < parseInt("0") || availability == ""){
+//               alert("Can't be selected");
+//               $(this).attr('checked', false);
+//               alert(availability+"11");
+//             }else{
+//               if($(this).prop("checked") == true && parseInt(availability)!=0){
+//                 if(room_data_id!=''){
+//                   $.ajax({
+//                     url: urlLink,
+//                     cache: false,
+//                     data:{hostel_id:hostel_data,room_id:room_data_id,data:"check_box"},
+//                     success: function(html){
+//                       $(".check_box_tag_data").each(function(){
+//                         if (room_data_id==$(this).parent().siblings().find(".room_no_value").val()){
+//                           $(this).parent().siblings().find(".capacity_of_available_data").empty().val(html.main);
+//                         }
+//                       });
+//                     }
+//                   });
+//                 }else{
+//                   alert("Can't be selected");
+//                   $(this).attr('checked', false);
+//                 }
+//               }else if($(this).prop("checked") == false && parseInt(availability)>=0){
+//                 $.ajax({
+//                   url: urlLink,
+//                   cache: false,
+//                   data:{hostel_id:hostel_data,room_id:room_data_id,data:"un_check_box"},
+//                   success: function(html){
+//                     $(".check_box_tag_data").each(function(){
+//                       if (room_data_id==$(this).parent().siblings().find(".room_no_value").val()){
+//                         $(this).parent().siblings().find(".capacity_of_available_data").empty().val(html.main);
+//                       }
+//                     });
+//                   }
+//                 });
+//               }else{
+//                 alert("Can't be selected");
+//                 $(this).attr('checked', false);
+//               }
+//             }
+//         }
+// });
+
+
+
+    
+
+    
+$(document).on("change",".check_box_tag_data",function(){
+  var data_id_value=$(this).attr('id');
+  var data_array=data_id_value.split("_");
+  var hostel_data = $("#allocate_rooms_hostel_id").val();
+  var room_data_id = $("#mg_room_no_id_"+data_array[2]).val();
+  var urlLink = "/hostel_management/manage_central_data";
+  var availability = $("#capacity_of_available_"+data_array[2]).val();
+
+  if(parseInt(availability) < parseInt("0") || availability == ""){
+    alert("Can't be selected");
+    $(this).attr('checked', false);
+  }else{
+    if($(this).prop("checked") == true && parseInt(availability)!=0){
+      if(room_data_id!=''){
+        $.ajax({
+          url: urlLink,
+          cache: false,
+          data:{hostel_id:hostel_data,room_id:room_data_id,data:"check_box"},
+          success: function(html){
+            $(".check_box_tag_data").each(function(){
+              if (room_data_id==$(this).parent().siblings().find(".room_no_value").val()){
+                $(this).parent().siblings().find(".capacity_of_available_data").empty().val(html.main);
+              }
+            });
+          }
+        });
+      }else{
+        alert("Can't be selected");
+        $(this).attr('checked', false);
+      }
+    }else if($(this).prop("checked") == false && parseInt(availability)>=0){
+      $.ajax({
+        url: urlLink,
+        cache: false,
+        data:{hostel_id:hostel_data,room_id:room_data_id,data:"un_check_box"},
+        success: function(html){
+          $(".check_box_tag_data").each(function(){
+            if (room_data_id==$(this).parent().siblings().find(".room_no_value").val()){
+              $(this).parent().siblings().find(".capacity_of_available_data").empty().val(html.main);
+            }
+          });
+        }
+      });
+    }else{
+      alert("Can't be selected");
+      $(this).attr('checked', false);
+    }
+  }
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // ==============================================================================================================
+    $(".floor_data_value").each(function(){
+      var data=$(this).val();
+      var data_id_value=$(this).attr('id');
+      var data_array=data_id_value.split("_");
+      var room_type_value = $(this).parent().siblings().find("#room_type_"+data_array[3]).val();
+      var room_no_value = $(this).parent().siblings().find("#room_no_"+data_array[3]).val();
+      var hostel_data = $("#allocate_rooms_hostel_id").val();
+      var urlLink = "/hostel_management/manage_central_data";
+      $.ajax({
+        url: urlLink,
+        cache: false,
+        data:{hostel_id:hostel_data,floor_data:data,data:"edit_floor",room_type:room_type_value},
+        success: function(html){
+          $("#mg_room_type_id_"+data_array[3]).empty().append(html.main);
+          var data=$("#mg_room_type_id_"+data_array[3]).val();
+          var floor_data=$("#mg_floor_id_"+data_array[3]).val();
+          var hostel_data = $("#allocate_rooms_hostel_id").val();
+          var urlLink = "/hostel_management/manage_central_data";
+          $.ajax({
+            url: urlLink,
+            cache: false,
+            data:{hostel_id:hostel_data,type_data:data,floor_data:floor_data,data:"edit_room",room_no:room_no_value},
+            success: function(html){
+              $("#mg_room_no_id_"+data_array[3] ).empty().append(html.main);
+              var data=$("#mg_room_no_id_"+data_array[3]).val();
+              var hostel_data = $("#allocate_rooms_hostel_id").val();
+              var urlLink = "/hostel_management/manage_central_data";
+              if(data!=''){
+                $.ajax({
+                  url: urlLink,
+                  cache: false,
+                  data:{hostel_id:hostel_data,id_data:data,data:"capacity"},
+                  success: function(html){
+                    $("#capacity_of_available_"+data_array[3]).empty().val(html.main);
+                  }
+                });
+              }
+            }
+          });
+        }
+     });
+    });
+
+
+    $(".checkbox-toggle-cls").each(function(){
+      if($(this).is(':checked')){
+        $(this).parent("td").siblings(".mg-select-room-cls").find("select").prop( "disabled", true );
+        $(this).parent("td").siblings(".mg-select-room-type-cls").find("select").prop( "disabled", true );
+        $(this).parent("td").siblings(".mg-select-floor-cls").find("select").prop( "disabled", true );
+      }else{
+        $(this).parent("td").siblings(".mg-select-room-cls").find("select").prop( "disabled",false);
+        $(this).parent("td").siblings(".mg-select-room-type-cls").find("select").prop( "disabled",false);
+        $(this).parent("td").siblings(".mg-select-floor-cls").find("select").prop( "disabled",false);
+      }
+    });
+
+  });//end ready function
+
+  
+
+  </script>

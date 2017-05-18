@@ -1,0 +1,83 @@
+<table border="1" class="mg-showdata-bg" cellspacing="1" cellpadding="1"> 
+  <% if @student_exam_detail.present? %>
+     <tr>
+       <td class="mg-td-width-half" valign="top">
+       <label class="mg-label"> <%= t('name')%></label>
+       </td>
+       <td class="mg-td-width-half mg-capitalize-text" valign="top">
+        <%= @student_list[0].try(:first_name) %>&nbsp;<%= @student_list[0].try(:middle_name) %>&nbsp;<%= @student_list[0].try(:last_name) %>
+       </td>
+     </tr>
+     <tr>
+       <td class="mg-td-width-half" valign="top">
+       <label class="mg-rm-text-trans mg-label"> <%= t('dateofbirth')%></label>
+       </td>
+       <td class="mg-td-width-half" valign="top">
+        <% date_Format = MgSchool.find_by(:id=>session[:current_user_school_id]).date_format %>
+        <%= @student_list[0].date_of_birth.strftime(date_Format) %>
+       </td>
+     </tr>
+     <tr>
+       <td class="mg-td-width-half" valign="top">
+       <label class="mg-label"> <%= t('class_name')%></label>
+       </td>
+       <td class="mg-td-width-half" valign="top">
+        <%= @class_name.course_name %>
+       </td>
+     </tr>
+     <tr>
+       <td class="mg-td-width-half" valign="top">
+       <label class="mg-label"> <%= t('select_exam_date')%></label>
+       </td>
+       <td class="mg-td-width-half" valign="top">
+        <% @dateFormat = MgSchool.find_by(:id=>session[:current_user_school_id]).date_format %>
+        <%= @student_exam_detail.try(:start_date).try(:strftime,@dateFormat) %>
+        
+       </td>
+     </tr>
+     <tr>
+       <td class="mg-td-width-half" valign="top">
+       <label class="mg-label"> <%= t('start_time')%></label>
+       </td>
+       <td class="mg-td-width-half" valign="top">
+        <%= @student_exam_detail.try(:start_time).try(:strftime,"%l:%M%P") %>
+       </td>
+     </tr>
+     <tr>
+       <td class="mg-td-width-half" valign="top">
+       <label class="mg-label"> <%= t('end_time')%></label>
+       </td>
+       <td class="mg-td-width-half" valign="top">
+        <%= @student_exam_detail.try(:end_time).try(:strftime,"%l:%M%P") %>
+       </td>
+     </tr>
+     <tr>
+       <td class="mg-td-width-half" valign="top">
+       <label class="mg-label"> <%= t('venue_address')%></label>
+       </td>
+       <td class="mg-td-width-half" valign="top">
+         <%@school = MgSchool.where(:id=>session[:current_user_school_id],:is_deleted=>0)%>
+         <%if @school[0].is_test_center==true%>
+           <% @vanue_name=MgEntranceExamVenue.where(:id=>@student_exam_detail.mg_entrance_exam_venue_id,:is_deleted=>0)%>
+           <div class="text-scroll-for-log-text-cls comments-space">
+             <%= @vanue_name[0].try(:institute_name) %><%=","%><%= @vanue_name[0].exam_venue %>
+            </div>
+         <%elsif@school[0].is_test_center==false%>
+           <div class="text-scroll-for-log-text-cls comments-space">
+             <%=@school[0].try(:school_name)%><%=","%><%= @school[0].try(:address_line1)+' '+@school[0].try(:address_line2)+' '+@school[0].try(:street)+' '+@school[0].try(:landmark)+' '+@school[0].try(:city)+' '+@school[0].try(:state)+' '+@school[0].try(:pin_code).to_s %>
+            </div>
+         <%end%>
+       </td>
+     </tr>
+    <% else %>
+      <label> <%= t('else_message')%></label>
+    <% end %>
+</table>
+<br/>
+<a class="mg-small-form-btn cancel-form-dialog"><%=t('cancel')%></a>
+
+<script>
+  $(document).ready(function(){
+    textSeeMoreLess();
+  });
+</script>

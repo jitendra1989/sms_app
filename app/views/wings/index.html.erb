@@ -1,0 +1,52 @@
+<% navigation_add 'Wings', :controller => 'wings', :action => 'index' %>
+
+<!-- Sec --> 
+<!-- comment -->
+ 
+<%= render  partial: 'master_settings/master_settings_left' %>
+<h4 class="mg-h4"><%= t('wings') %></h4>
+<div>
+  <%= button_to 'Add Wing', {:controller => "wings", :action => "new" } ,:class=>"mg-custom-form-btn"%>
+  <%if @wings.length >0%>
+
+
+  <table  class="batch-tbl mg-tbl-margin">   <!-- border="2" --> 
+    <tr class="subject-table-header">
+      <!-- <th>Subject Name</th> -->
+
+      <th><%=t('wing_name')%></th>
+      <!-- <th><%#=t('status')%></th> -->
+       <th colspan="2"><%=t('actions')%></th>
+    </tr>
+   
+    <% @wings.each do |curr| %>
+      <tr>
+        <td><%= curr.wing_name %></td>
+        <!-- <td><#%= curr.status %></td> -->
+        <td style="width: 65px; text-align: center;">
+        <span>
+          <%= link_to "<i class=\"fa fa-pencil-square-o\"></i>".html_safe, {:controller => "wings", :action => "wing_edit",:id =>curr.id } ,:title=>"Edit" ,:class=>"mg-icon-btn"%>
+        </span>
+        <span>
+          <%= link_to "<i class=\"fa fa-trash\"></i>".html_safe, {:controller => "wings", :action => "wing_delete",:id =>curr.id } ,:title=>"Delete" ,:class=>"mg-icon-btn" ,data:{confirm:"Are you sure to delete the data?"}%>
+        </span>
+
+        </td>
+
+      </tr>
+    <% end %>
+  </table>
+  <%else%>
+  <h5>Please create some wings </h5>
+  <% end %>
+</div>
+
+
+
+<%= render partial: 'schools/school_left_close' %>
+
+<script>
+$(document).ready(function(){
+  focusCurrentTab("wingListAID","schoolWingLiID");
+});
+</script>

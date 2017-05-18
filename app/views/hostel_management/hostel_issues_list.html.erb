@@ -1,0 +1,116 @@
+
+<%= render  partial: 'hostel_management_left' %>
+<% navigation_add t('hostel_issues'), :controller=>'hostel_management', :action=>'hostel_issues_list' %>
+<!-- ===================================================================================================== -->
+
+<p>
+<%=label :select_hostel, "Select Hostel" ,:class=>"mg-label select_hostel"%><span class="required-field prgme">*</span>
+<%= select_tag "mg_hostel_details_data",options_for_select(@hostel_uniq_data,:selected=>@data),:prompt=>"Select All",:class => 'prgm2' %>
+</p>
+<!-- ===================================================================================================== -->
+
+
+<h4 class="mg-h4"><%=t('hostel_issues')%></h4>
+
+<% if @complain_hostel.size>0%>
+<table class="batch-tbl mg-tbl-margin">   <!-- border="2" --> 
+<tr>
+	<th><%=t('hostel_name')%></th>
+	<th><%=t('student_name')%></th>
+	<th><%=t('student_id')%></th>
+
+	<th><%=t('reason')%></th>
+	<th><%=t('programme')%></th>
+	<th><%=t('date')%></th>
+
+
+	<th><%=t('status')%></th>
+
+    <th><%=t('action')%></th>
+
+</tr>
+
+		 <% @complain_hostel.each do |e| %>
+
+		<tr>
+		<%hostel_details=MgHostelDetails.find_by(:id=>e.mg_hostel_details_id)
+		@date_format=MgSchool.find_by(:id=>session[:current_user_school_id]).date_format
+		%>
+		<td><%=hostel_details.name%></td>
+		<%student_data=MgStudent.find_by(:id=>e.mg_student_id)%>
+		<td><%="#{student_data.first_name} #{student_data.last_name}" %></td>
+		<td><%=student_data.admission_number %></td>
+
+		      <td><%=truncate(e.reason.to_s, :length => 25, :separator => ' ')  %></td>
+		      		      <td><%=e.programme%></td>
+
+		      		<td><%=e.date.strftime(@date_format)%></td>
+
+		      <td><%=e.status%></td>
+
+		<td>
+			    <button title="Show" id="<%=raw e.id %>-showjobUploadBTNID" class="showRommIssuesDataReportBTNID mg-icon-btn"><i class="fa fa-eye"></i></button>
+		</td>
+
+		</tr>
+		<%end%>
+</table>
+
+<% else %>
+
+<%= "No Request" %>
+
+<% end %>
+
+
+
+<div id="hostelhostelissuesdataDIVID">
+</div>
+
+
+
+
+
+<%= render  partial: 'application/common_left_close' %>
+
+
+
+<script>
+$(document).ready(function () {
+
+        focusCurrentTab("hostel_issues_listAID","hostel_issues_listLiID");
+        
+    });
+
+$(document).on("click", ".showRommIssuesDataReportBTNID", function(e){
+		$("#hostelDisciplanaryDIVID").html("");
+		var id=$(this).attr("id").split("-")[0];
+		
+	        var urlLink = "/hostel_management/hostel_admin_complain_hostel_show";
+	        $.ajax({
+	            url: urlLink ,
+	            cache: false,
+	            data:{id:id},
+	            success: function(html){
+	                  $('#hostelhostelissuesdataDIVID').dialog({
+	                    modal: true,
+	                    minHeight: 'auto',
+              			width: 'auto',
+	                    title: "Show Hostel Issues",
+	                    open: function () {
+	                        
+	                        $(this).html(html);
+	                    }
+	                }); 
+	               
+	            }
+	        });
+	});
+
+$(document).on("change","#mg_hostel_details_data",function(){
+  var data=$(this).val();
+  window.location = "/hostel_management/hostel_issues_list/"+data;
+});
+
+
+</script>

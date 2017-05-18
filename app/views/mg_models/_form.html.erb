@@ -1,0 +1,34 @@
+<!-- Sec --> 
+<%= form_for(@mg_model) do |f| %>
+  <% if @mg_model.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@mg_model.errors.count, "error") %> prohibited this mg_model from being saved:</h2>
+
+      <ul>
+      <% @mg_model.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :model_name ,:class=>"mg-label"%><br>
+    <%= f.text_field :model_name %>
+  </div><br>
+
+  <div class="field">
+    <%= f.label :index ,:class=>"mg-label"%><br>
+    <%= f.number_field :index %>
+  </div><br>
+
+
+  <div class="field">
+    <%= f.label :description ,:class=>"mg-label"%><br>
+    <%= f.text_area :description %>
+  </div><br>
+
+  <div class="actions">
+    <%= f.submit "Submit" ,:class=>"mg-small-form-btn"%>
+  </div>
+<% end %>

@@ -1,0 +1,78 @@
+<%= render  partial: 'vehicle_left' %>
+<%# navigation_add 'Vehicles', vehicles_path %>
+<% navigation_add 'Add Report', vehicles_vehicle_report_index_path %>
+
+
+<div id="vehicle_report_index">
+
+
+<h4 class="mg-h4"><%=('Add Report')%></h4>
+
+<%= button_to 'Add Report', {:controller => "vehicles", :action => "vehicle_report_new"},:class=>"mg-custom-form-btn" %><br/>
+
+<% if @all_vehicle_report.length > 0 %>
+
+
+<!-- ============================================================================ -->
+<%= form_for :short_number_wise, url: vehicles_vehicle_report_index_path, :html => {
+                            :id => 'labconsumptionshortCreateID' } do |f| %>
+<%lab_short=MgVehicle.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:vehicle_number,:id)%>
+<%="Search Vehicle"%><br/>
+ <%=f.select :mg_vehicle_id,options_for_select(lab_short,:selected=> @id   ),{:prompt=>t('select_all')},:onchange => 'this.form.submit();' %>
+
+<%= f.submit t('save') ,:class=>"mg-small-form-btn hidden-button-onchange-submit-class" , :style=>"display:none"%>
+
+<%end%>
+<!-- ================================================================================ -->
+
+<div id="report_datasShow">
+</div>
+<div id="report_datasEdit">
+</div>
+ <div class="mg_pagination">
+
+    <table class="batch-tbl mg-tbl-margin" cellspacing="0" style="padding:0; border-collapse:collapse;">   <!-- border="2" --> 
+      <tr >
+        <th><%=t('vehicle_number')%></th>
+        <th><%=t('report_type')%></th>
+        
+        <th align="center"><%=t('actions')%></th>
+       </tr>
+   
+
+    <%@all_vehicle_report.each do |report| %>
+
+	      <tr>
+	      <%
+	      	vehicle_data=MgVehicle.find(report.mg_vehicle_id)
+	      	report_data=MgReportType.find(report.mg_report_type_id)
+	      %>
+	        <td><%=vehicle_data.vehicle_number%></td>
+	        <td><%=report_data.report_type_name%></td>
+	        
+	      <td class="mg-align-center">
+	   
+	           <button title="Show" id='<%=report.id %>' class="show-report-details-class mg-icon-btn"><i class="fa fa-eye"></i></button>
+	           <button title="Edit" id='<%=report.id %>' class='edit-report-details-class mg-icon-btn'><i class="fa fa-pencil-square-o"></i></button>           
+	          <span class="mg-a-link-pagination-align" style="left: -2px; position: relative; float: right; top: -2px;">
+	           <%= link_to "<i class=\"fa fa-trash\"></i>".html_safe ,{ action: "vehicle_report_destroy", id: report.id },data: { confirm: "Are you sure to delete the selected entry?" } ,:title=>"Delete" ,:class=>"mg-icon-btn"  %>
+               </span>
+           </td>
+	      </tr>
+
+     <% end %>
+	</table>
+ <%= will_paginate @all_vehicle_report, :container => false %>
+ </div>
+	<% else %>
+	  <h5>Please create some Report and Payment details... </h5>
+
+	<% end %>
+	</div>
+<%=render partial: 'vehicle_left_close'%>
+<script>
+$(document).ready(function () {
+         
+          focusCurrentTab("vehiclereportAssociateAID","vehiclereportAssociateLiID");
+      });
+</script>

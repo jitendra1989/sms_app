@@ -1,0 +1,131 @@
+<%#= navigation_add t('edit_query'), :controller=>"front_office_management", :action=>"query_record_edit", :id=>@query_record_type.id%>
+<h4 class="mg-h4"><%=t('edit_query_record')%></h4>
+<%if session[:user_type]=="principal"
+@readonly_value=true
+else
+@readonly_value=false
+end%>
+<%= form_for :query_record_type ,:url=> {:action=>'query_record_update',:id=>@query_record_type.id }, :html=> 
+       { :id=> 'edit_query_record_id' } do |f| %>
+
+       <table cellspacing="0" cellpadding="0" border="0" class="employee-form-cls mg-table-spacing">
+
+<%= f.hidden_field :is_deleted, :value => 0 %>
+<%= f.hidden_field :mg_school_id, :value => session[:current_user_school_id] %>
+<%= f.hidden_field :updated_by, :value => session[:user_id] %>
+
+<tr><td width="33%" valign="top">
+
+<!-- <p> -->
+  <%= f.label :query_number, t('query_number') ,:class=>"mg-label"%><span class="required-field"> *</span><br>
+    <%= f.text_field :query_number,:readonly=>true, :class=>'query-number-joining-date-picker mg-text-field'%>
+<!-- </p> -->
+</td>
+<td width="33%" valign="top">
+<!-- <p> -->
+  <%= f.label :caller_name, t("name") ,:class=>"mg-label"%><span class="required-field"> *</span><br>
+    <%= f.text_field :caller_name, :readonly=>@readonly_value,  :class=>"mg-text-field" %>
+<!-- </p> -->
+</td></tr>
+<tr><td width="33%" valign="top">
+<!-- <p> -->
+  <%= f.label :phone_number, t("phone_number") ,:class=>"mg-label"%><span class="required-field"> *</span><br>
+    <%= f.text_field :phone_number, :readonly=>@readonly_value, :class=>"mg-text-field"%>
+<!-- </p> -->
+</td>
+<td width="33%" valign="top">
+<!-- <p> -->
+  <%= f.label :mg_caller_category_fom_id, t("request_type") ,:class=>"mg-label"%><span class="required-field"> *</span><br/>
+
+  <% request_type_data=MgCallerCategoryFom.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:name,:id) 
+  %> 
+  <%= f.select :mg_caller_category_fom_id,options_for_select(request_type_data,:selected=> 
+  @query_record_type.mg_caller_category_fom_id),{},{:disabled => @readonly_value, :prompt=>"Select"} %>
+<!-- </p> -->
+</td></tr>
+<tr><td width="33%" valign="top">
+
+  <%= f.label :mg_fom_query_record_id, t("query_type") ,:class=>"mg-label mg-rm-text-trans"%><span class="required-field"> *</span><br>
+  <% type_of_query_data = MgFomQueryRecord.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:name,:id) %>
+  <%= f.select :mg_fom_query_record_id, options_for_select(type_of_query_data,:selected=> 
+  @query_record_type.mg_fom_query_record_id) ,{},{:disabled => @readonly_value, :prompt=>"Select"}%>
+<!-- </p> -->
+<!-- </p> -->
+</td>
+<td width="33%" valign="top">
+<!-- <p> -->
+  <%= f.label :mg_caller_category_id, t("caller_category") ,:class=>"mg-label mg-rm-text-trans"%><span class="required-field"> *</span><br>
+  <% caller_category = MgCallerCategory.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:name,:id) %>
+  <%= f.select :mg_caller_category_id, options_for_select(caller_category,:selected=> 
+  @query_record_type.mg_caller_category_id) ,{},{:disabled => @readonly_value, :prompt=>"Select"}%>
+<!-- </p> -->
+</td></tr>
+<tr><td width="33%" valign="top">
+<!-- <p> -->
+  <%= f.label :query, t("query") ,:class=>"mg-label"%><span class="required-field"> *</span><br>
+    <%= f.text_area :query, :readonly=>@readonly_value, :class=>"mg-text-field"%>
+
+    <!-- <p> -->
+</td>
+<td width="33%" valign="top">
+<!-- <p> -->
+  <%= f.label :response_given, t("response_given") ,:class=>"mg-label"%><span class="required-field"> *</span><br>
+    <%= f.text_area :response_given, :readonly=>@readonly_value, :class=>"mg-text-field" %>
+<!-- </p> -->
+</td></tr>
+<tr><td width="33%" valign="top">
+<!-- <p> -->
+  <%= f.label :follow_up_action, t("follow-up_action") ,:class=>"mg-label"%><br>
+    <%= f.text_area :follow_up_action, :readonly=>@readonly_value, :class=>"mg-text-field"%>
+<!-- </p> -->
+</td>
+<td width="33%" valign="top">
+<!-- <p> -->
+  <%= f.label :action_required, t("action_required") ,:id=> "action_id",:class=>"mg-label" %><br>
+<%if session[:user_type]=="principal"%>
+  <%=f.collection_select(:action_required, MgActionRequired.where(:is_deleted=>0, :mg_school_id=>session[:current_user_school_id]), :id, :action_required, {:include_blank => 'Select'} ,:class=>"mg-select-btn") %>
+<%else%>
+  <%=f.collection_select(:action_required, MgActionRequired.where(:is_deleted=>0, :mg_school_id=>session[:current_user_school_id]), :id, :action_required, {:include_blank => 'Select'} , :disabled=>"disabled",:class=>"mg-select-btn") %>
+<%end%>
+
+    <%#= f.text_area :action_required,:readonly=>false, :class=>"mg-text-field" %>
+<!-- </p> -->
+</td></tr>
+<tr><td width="33%" valign="top">
+
+
+<p class="mg-p-mgtop">
+<a onclick="$(this).closest('form').submit()" class="mg-small-form-btn cancel-form-dialog"><%='Submit'%></a>
+<%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+
+  </p>
+</td></tr>
+
+<% end %>
+
+
+
+
+<script>
+  $(document).ready(function () {
+    focusCurrentTab("query_recordAID","query_recordLiID");
+    $("#edit_query_record_id").validate({
+      rules: { 
+        "query_record_type[query_number]": {required: true},
+        "query_record_type[caller_name]" : {required: true},
+        "query_record_type[phone_number]": {required: true, number: true, minlength: 10,maxlength: 10},
+        "query_record_type[mg_caller_category_fom_id]": {required: true},
+        "query_record_type[query]"     : {required: true},
+        "query_record_type[mg_fom_query_record_id]": {required: true},
+        "query_record_type[response_given]": {required: true},
+       // "query_record_type[follow_up_action]": {required: true},
+       // "query_record_type[action_required]": {required: true},
+        "query_record_type[mg_caller_category_id]": {required: true}
+      },
+       messages: {
+        "query_record_type[phone_number]": {maxlength: "Please enter only  10 digits"}
+          }
+    });
+  });
+
+</script>

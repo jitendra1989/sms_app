@@ -1,0 +1,68 @@
+<%= render partial: 'dashboards/principle_dashboard_left' %>
+<h4 class="mg-h4"><%= t('syllabustracker') %></h4>
+
+<%= form_for :syllabus, url: principal_tracker_update_path(@syllabus.id), :html => {
+                            :id => 'unitEditTrackerID' }, id: @syllabus.id, method: :patch do |f| %>
+
+                        
+<%
+  #emp=MgEmployee.where(:mg_user_id=>session[:user_id]).pluck(:id)
+#  logger.info("========")
+# @id=session[:user_id]
+#  emp=MgEmployee.find_by(:mg_user_id=>@id)
+#  logger.info(@id.to_i)
+
+#    #emp=MgEmployee.find_by_mg_user_id(session[:user_id])
+#    emp=emp.id
+%>
+
+<%= f.hidden_field :is_deleted, :value => 0 %>
+<!-- <#%= f.hidden_field :mg_employee_id, :value => emp %> -->
+<!--#Syllabus.where(:is_deleted => '0')-->
+
+<p>
+<label class="mg-label" for="joining_date"><%= t('selectsyllabus') %><br/>
+<%= f.collection_select(:mg_syllabus_id,MgSyllabus.where(:is_deleted=>0), :id, :name,{:include_blank => t("select")},:class => "unit-syllabus-tracker-class")%>
+</p>
+
+<p>
+<label class="mg-label" for="joining_date"><%= t('selectunit') %><br/>
+    <%= f.collection_select(:mg_unit_id,MgUnit.where(:is_deleted=>0), :id, :unit_name,{:include_blank => t("select")},:class => "unit-syllabus-id-class")%>
+</p>
+<p>
+<label class="mg-label" for="joining_date"><%= t('selecttopic') %><br/>
+    <%= f.collection_select(:mg_topic_id,MgTopic.where(:is_deleted=>0), :id, :topic_name,{:include_blank => t("select")},:class => "unit-syllabus-id-class")%>
+ </p>
+ <p>
+   <!-- <label class="mg-label" for="date"><#%= t('date') %><br/> -->
+   <%= f.label :date ,:class=> "mg-label"%><br>
+   <%= f.text_field :date, :class=>"textboxwidth mg-text-field", :id=>"dateSyllabusEditId" %>
+ </p>
+    <%= f.submit t('submit') %>
+  </p>
+<% end %>
+
+
+<script>
+$(document).ready(function () {
+  // dateFormatStr =  getJsDateFormat();
+
+ $('#dateSyllabusEditId').datepicker({ changeMonth: true,
+                 changeYear: true,maxDate: "0"});
+
+
+$("#unitEditTrackerID").validate({
+
+rules: {
+"syllabus[mg_syllabus_id]": {required: true},
+"syllabus[mg_unit_id]": {required: true},
+"syllabus[mg_topic_id]": {required: true},
+"syllabus[date]": {required: true}
+}
+});
+});
+</script>
+
+
+<!-- Partial Section close-->
+<%= render partial: 'application/common_left_close' %>

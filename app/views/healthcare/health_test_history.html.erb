@@ -1,0 +1,83 @@
+<% if params[:mg_employee_id].present? || params[:mg_student_id].present?%>
+  <% if @checkup_particular.present? %>
+    <%@dateFormat = MgSchool.find_by(:id=>session[:current_user_school_id]).date_format %>
+    <% if @health_test_history.present?%>
+      <div class="mg-batch-divscroll mg-btn-bottom-margin">
+        <%if params[:mg_student_id].present? %>
+          <table  class="batch-tbl mg-tbl-margin"> 
+            <tr class="subject-table-header">
+              <th rowspan="2"><%= t('name') %></th>
+              <th rowspan="2"><%= t('normal') %></th>
+              <% @health_test_history.each do |schedule_id|%>
+                <%schedule_date=MgCheckUpSchedule.find_by(:id=>schedule_id,:is_deleted=>0,:mg_school_id=>session[:current_user_school_id])%>
+                <th colspan="2"><%= schedule_date.try(:date).try(:strftime, @dateFormat) %></th>
+              <%end%>
+              <tr>
+                <% @health_test_history.each do |schedule_id|%>
+                  <th class="mg-align-center"><%=t('result')%></th>
+                  <th class="mg-align-center"><%=t('recommendation')%></th>
+                <%end%>
+              </tr>
+            </tr>
+              <% @checkup_particular.each do |f| %>
+                <tr>
+                  <td class="mg-align-center mg-capitalize-text"><%= f.try(:particulars) %></td>
+                  <td class="mg-align-center mg-capitalize-text"><%= f.try(:normal) %></td>
+                  <%@health_test_history.each do |checkup_schedule_id|%>
+                    <%@healt_test_record = MgHealthTest.find_by(:mg_check_up_type_id=>params[:check_type_id],:mg_batch_id=>params[:mg_batch_id],:mg_student_id=>params[:mg_student_id],:mg_check_up_schedule_id=>checkup_schedule_id,:mg_checkup_particular_id=>f.id,:is_deleted=>0)%>
+                    <% if @healt_test_record.present?%>
+                      <td class="mg-align-center"><%= @healt_test_record.try(:result)%></td>
+                      <td class="mg-align-center"><%= @healt_test_record.try(:recommendation)%></td>
+                    <%else%>
+                      <td class="mg-align-center"><%= ''%></td>
+                      <td class="mg-align-center"><%= ''%></td>
+                    <%end%>
+                  <%end%>
+                </tr>
+              <% end %>
+          </table>
+        <%else%>
+          <table  class="batch-tbl mg-tbl-margin"> 
+            <tr class="subject-table-header">
+              <th rowspan="2"><%= t('name') %></th>
+              <th rowspan="2"><%= t('normal') %></th>
+              <% @health_test_history.each do |schedule_id|%>
+                <%schedule_date=MgCheckUpSchedule.find_by(:id=>schedule_id,:is_deleted=>0,:mg_school_id=>session[:current_user_school_id])%>
+                <th colspan="2"><%= schedule_date.try(:date).try(:strftime, @dateFormat) %></th>
+              <%end%>
+              <tr>
+                <% @health_test_history.each do |schedule_id|%>
+                  <th class="mg-align-center"><%=t('result')%></th>
+                  <th class="mg-align-center"><%=t('recommendation')%></th>
+                <%end%>
+              </tr>
+            </tr>
+            
+            <% @checkup_particular.each do |f| %>
+              <tr>
+                <td class="mg-align-center mg-capitalize-text"><%= f.try(:particulars) %></td>
+                <td class="mg-align-center mg-capitalize-text"><%= f.try(:normal) %></td>
+                <%@health_test_history.each do |checkup_schedule_id|%>
+                  <%@healt_test_record = MgHealthTest.find_by(:mg_check_up_type_id=>params[:check_type_id],:mg_employee_department_id=>params[:mg_employee_department_id],:mg_employee_id=>params[:mg_employee_id],:mg_check_up_schedule_id=>checkup_schedule_id,:mg_checkup_particular_id=>f.id,:is_deleted=>0)%>
+                  <% if @healt_test_record.present?%>
+                    <td class="mg-align-center"><%= @healt_test_record.try(:result)%></td>
+                    <td class="mg-align-center"><%= @healt_test_record.try(:recommendation)%></td>
+                  <%else%>
+                    <td class="mg-align-center"><%= ''%></td>
+                    <td class="mg-align-center"><%= ''%></td>
+                  <%end%>
+                <%end%>
+              </tr>
+            <% end %>
+          </table>
+        <%end%>
+      </div>
+    <%else%>
+      <%= "No Record Available"%>
+    <%end%>
+  <%else%>
+    <h5>No Particular Created Please Create some particular </h5>
+  <%end%>
+<%else%>
+  <%= "User Not Selected"%>
+<%end%>

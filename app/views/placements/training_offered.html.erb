@@ -1,0 +1,83 @@
+<% navigation_add t('training'), :controller=>'placements', :action=>'training_offered' %>
+<%= render  partial: 'placements_left' %>
+<h4 class="mg-h4"><%= t('training_offered_list')%></h4>
+<button onclick="window.location.href='/placements/training_offered_new'" class="mg-btn-bottom-margin mg-custom-form-btn"><%= t('add_training')%></button>  
+<%if @training_offered.present?%>
+<div class="mg_pagination">
+<table class="batch-tbl mg-tbl-margin">   <!-- border="2" --> 
+ <tr >
+    <th class="mg-rm-text-trans"><%=t('name_of_the_company')%></th>
+<th class="mg-rm-text-trans"><%=t('area_of_training')%></th>
+    <th> <%=t('start_date')%></th>
+    <th> <%=t('end_date')%></th>
+    <th><%=t('actions')%></th>
+  </tr>
+  <% @training_offered.each do |e| %>
+    <tr>
+    <%placement=MgPlacementRegistration.find_by(:id=>e.mg_placement_registration_id)%>
+    <!-- asdasdsadsa   -->
+    <%#=e.mg_placement_registration_id%>
+    <%
+      if placement.try(:status)!='Active'
+          next
+      end
+    %>
+      <td><%= placement.try(:name_of_the_company) %></td>
+      <td class="mg-desc-text-justify" style="text-align:center"><%= truncate(e.area_of_training.to_s, :length => 25, :separator => ' ') %></td>
+      <td><%= e.try(:start_date).strftime(@dateFormat) %></td>
+      <td><%= e.try(:end_date).strftime(@dateFormat) %></td>
+      <td>
+        <button title="Show" id="<%=raw e.id %>-showPlacementrainingBTNID" class="show-placements-training-btn mg-icon-btn"><i class="fa fa-eye"></i></button>
+        <button title="Edit" onclick="window.location.href='/placements/<%=e.id%>/training_offered_edit'" class="edit-event-type-btn mg-icon-btn"><i class="fa fa-pencil-square-o"></i></button>
+        <button title="Delete"  onclick="confirm('Are you sure to delete?') ? window.location.href='/placements/<%=e.id%>/training_offered_delete/' : ''" class="delete-event-type-btn mg-icon-btn"><i class="fa fa-trash"></i></button>
+        <button title="Training Offered List"  onclick="window.location.href='/placements/<%=e.id%>/training_offered_list/'" class="delete-event-type-btn mg-icon-btn"><i class="fa fa-list"></i></button></td>
+    </tr>
+  <% end %>
+</table>
+ <%= will_paginate @training_offered, :container => false %>
+  </div>
+
+<%else%>
+<p>No Records</p>
+<%end%>
+
+
+<div id="showPlacementsRegistrationDIVID"></div>
+
+
+
+<%= render  partial: 'application/common_left_close' %>
+
+<script>
+  $( document ).ready(function() {
+    focusCurrentTab("training_offeredAID","training_offeredLiID");
+    focusCurrentTab("placementsTrainingofferedCorpAID","placementsTrainingofferedCorpLiID");
+    
+  });
+
+  $(document).on("click", ".show-placements-training-btn", function(e){
+        var myID =$(this).attr('id');
+        var Id=myID.split("-");
+
+
+        var urlLink = "/placements/"+Id[0]+"/training_offered_show/";
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(html){
+                  $('#showPlacementsRegistrationDIVID').dialog({
+                    modal: true,
+                    minHeight: 'auto',
+                    width: 'auto',
+                    title: "Offered Training Details",
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+});
+
+</script>

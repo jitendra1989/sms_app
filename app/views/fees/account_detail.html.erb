@@ -1,0 +1,20 @@
+<%account=Array.new
+	account.push("Central","central")
+	accounts=MgAccount.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:mg_account_name,:id)
+	accounts.insert(0,account)
+%>
+<%if @particular.length>0  || @is_to_central.length>0%>
+	<label class="mg-label"%><%=t('select_account')%><span class="required-field"> *</span><br></label>
+	<%if @particular.any?%>
+		<%=select_tag :mg_account_id,options_for_select(accounts,@particular),:prompt=>"Select",:class=>"mg-text-field disabled-accounts-class", :disabled => "disabled"%>
+	<%elsif @is_to_central.any?%>
+		<%=select_tag :mg_account_id,options_for_select(accounts,"central"),:prompt=>"Select",:class=>"mg-text-field disabled-accounts-class", :disabled => "disabled"%>
+	<%else%>
+		<%=select_tag :mg_account_id,options_for_select(accounts),:prompt=>"Select" ,:class=>"mg-select-btn"
+		%>
+	<%end%>
+<%else%>
+	<label class="mg-label"%><%=t('select_account')%><span class="required-field"> *</span><br></label>
+	
+	<%=select_tag :mg_account_id,options_for_select(accounts),:prompt=>"Select" ,:class=>"mg-select-btn"%>
+<%end%>

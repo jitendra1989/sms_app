@@ -1,0 +1,58 @@
+<!-- Sec --> 
+<div class="box">
+<%= form_for :school ,url:setting_path(@school), :html => { :id=>"editSchoolSettingsID", :multipart => true }, method: :patch do |f| %>
+
+    <table class="mg-tbl-size-width">
+<!-- <<<<<<< .mine
+      <td class="mg-td-width-half">
+        <label class="mg-label"  for="DateFormat "><#%= t 'dateformat' %><span class="required-field">&nbsp;*</span></label><br/>
+        <#%= f.select :date_format, options_for_select([["dd/mm/yy","%d/%m/%y"], ["dd/mm/yyyy","%d/%m/%Y"],["mm/dd/yy","%m/%d/%y"],["mm/dd/yyyy","%m/%d/%Y"],["dd/mmm/yy","%d/%b/%y"],["dd/mmm/yyyy","%d/%b/%Y"]],:selected => @school[:date_format]) %>
+      </td>
+      <td class="mg-td-width-half">
+        <label class="mg-label" for="Language "><#%= t 'schoolLanguage' %><span class="required-field">&nbsp;*</span></label><br/>
+        <#%= select_tag 'locale', options_for_select([['English','en'],['Spanish','es'],['Hindi','hi'],['Germen','de']], I18n.locale.to_sym)%>
+      </td>
+======= -->
+      <tr>
+        <td class="mg-td-width-half">
+          <label class="mg-label"  for="DateFormat "><%= t 'dateformat' %><span class="required-field">&nbsp;*</span></label><br/>
+          <%= f.select :date_format, options_for_select([["dd/mm/yy","%d/%m/%y"], ["dd/mm/yyyy","%d/%m/%Y"],["mm/dd/yy","%m/%d/%y"],["mm/dd/yyyy","%m/%d/%Y"],["dd/mmm/yy","%d/%b/%y"],["dd/mmm/yyyy","%d/%b/%Y"]],:selected => @school[:date_format]) %>
+        </td>
+
+        <td class="mg-td-width-half">
+          <label class="mg-label" for="Language ">Language<span class="required-field">&nbsp;*</span></label><br/>
+          <%= select_tag 'locale', options_for_select([['English','en'],['Spanish','es'],['Hindi','hi'],['Germen','de']], I18n.locale.to_sym)%>
+        </td>
+
+      </tr>
+      <tr>
+        <td class="mg-td-width-half">
+          <label class="mg-label"  for="TimeZone "><%= t 'timezone' %><span class="required-field">&nbsp;*</span></label><br/>
+          <%= f.time_zone_select :timezone %>
+        </td>
+        <td class="mg-td-width-half">
+          <label class="mg-label" for="CurrencyType "><%= t 'currencytype' %><span class="required-field">&nbsp;*</span></label><br/>
+          <%= f.select :currency_type, options_for_select([["$"], ["Rs"]],:selected => @school[:currency_type])%>
+        </td>
+      </tr>
+      <tr>
+        <td class="mg-td-width-half"> 
+          <label class="mg-label"  for="GradingSystem "><%= t 'gradingsystem' %><span class="required-field">&nbsp;*</span></label><br/>
+          <%= f.select :grading_system, options_for_select([["CCE"], ["CWE"],["GPA"]],:selected => @school[:grading_system])%>
+        </td>
+        
+      </tr>
+    </table><br>
+
+
+  <%= f.hidden_field :language %>
+
+<%= submit_tag t('save') ,:class=>"mg-small-form-btn"%>
+   <%= link_to t('cancel'), :back, {:class=>"btn btn-default cancel-form-dialog"} %>
+
+<%end%>
+
+<!-- <span class="mg-cncl-btn-align">
+  <button class="cancel-form-dialog btn btn-cancel"><%= t('cancel') %></button>
+</span> -->
+<!-- <button class="cancel-form-dialog"><%#= t('cancel') %></button> -->

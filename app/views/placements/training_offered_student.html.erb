@@ -1,0 +1,104 @@
+<% navigation_add t('training'),:controller=>'placements',:action=>'training_offered_student' %>
+<%= render partial: 'dashboards/student_dashboard_left' %>
+
+
+<h4 class="mg-h4"><%= t('training_list')%></h4>
+
+<%= hidden_field :is_deleted, :value => 0 %>
+<%= hidden_field :mg_school_id, :value => session[:current_user_school_id] %>
+<%= hidden_field :created_by, :value => session[:user_id] %>
+<%= hidden_field :updated_by, :value => session[:user_id] %>
+
+
+<%if @training_offered.length>0%>
+<%=label_tag 'Select Company:'%>
+<%=select_tag :Company_drop_down,options_for_select(@company_registration,:selected=>@data),:prompt=>"All"%>
+
+<div class="mg_pagination drop_down_company_list">
+<table  class="batch-tbl mg-tbl-margin">
+  <tr class="subject-table-header">
+    <th><%= t('company') %></th>
+    <th class="mg-rm-text-trans"><%= t('area_of_training') %></th>
+    <th><%= t('start_date') %></th>
+    <th><%= t('end_date') %></th>
+    <th><%= t('training_status') %></th>
+    <th><%= t('status') %></th>
+    <th><%= t('action') %></th>
+  </tr>
+ 
+  <% @training_offered.each do |f| %>
+    <tr>
+      <% company_name= MgPlacementRegistration.find_by(:id=>f.mg_placement_registration_id)%>
+      <td  class='mg-capitalize-text'><%= company_name.name_of_the_company%></td>
+      <td class="mg-desc-text-justify" style="text-align:center"><%= f.area_of_training.to_s%></td>
+      <td><%= f.start_date.strftime(@timeformat.date_format) %></td>
+      <td><%= f.end_date.strftime(@timeformat.date_format) %></td>
+      <%accept_training=MgPlacementAcceptedTrainee.find_by(:mg_placement_training_offered_id=>f.id,:mg_student_id=>@student_data.id)%>
+      <td class="mg-capitalize-text"><%=f.try(:is_active)%></td>
+      <td class="mg-capitalize-text">
+        <%if accept_training.try(:status).present?%>
+          <%=accept_training.try(:status)%>
+        <%else%>
+          <%="Pending"%>
+        <%end%>
+      </td>
+      <td>
+        <button title="Show" id="<%=raw f.id %>-<%=params[:id]%>" class="show-training-offered mg-icon-btn"><i class="fa fa-eye"></i></button>
+      </td>
+    </tr>
+  <% end %>
+</table>
+<br/>
+<%= will_paginate @training_offered, :container => false %>
+</div>
+ 
+<%else%>
+<h5>No Training data is created </h5>
+<%end%>
+</div>
+<div id="show_offered_data"></div>
+
+<%=render partial: 'common_left_close'%>
+<script>
+    $( document ).ready(function() {
+      focusCurrentTab("placementsTrainigOfferedAID","placementsTrainigOfferedLiID");
+    });
+    $(document).on("change","#Company_drop_down",function(){
+          var urlLink = "/placements/filter_company_data";
+          var data=$(this).val();
+              $.ajax({
+                  url: urlLink ,
+                  cache: false,
+                  data:{id:data},
+                  success: function(html){
+                       $(".drop_down_company_list").empty().append(html);
+                  }
+              });
+    });
+
+
+     $(document).on("click", ".show-training-offered", function(e){
+    var myID =$(this).attr('id');
+        var Id=myID.split("-"); 
+
+        var urlLink= '/placements/training_offered_new_show';
+         
+        
+        $.ajax({
+          url: urlLink,
+          cache: false,
+          data: {"id":Id[0],"data1":Id[1]},
+          success: function(html){
+            $("#show_offered_data").dialog({
+              modal:true,
+              minHeight: 'auto',
+              width: 'auto',
+              title: 'Show Training',
+              open: function(){
+                $(this).html(html);
+              }
+            })
+          }
+        })
+  });
+</script>

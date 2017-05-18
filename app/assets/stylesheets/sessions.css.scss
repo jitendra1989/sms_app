@@ -1,0 +1,280 @@
+/* comm */
+// Place all the styles related to the sessions controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+// Place all the styles related to the sessions controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+#header nav{
+	background:#3a3c3e;
+	
+}
+#header nav.top{
+	height:40px;
+	line-height:45px;
+	left:0px;
+	margin:-8px;
+	padding:0px;
+	position:relative;
+	right:0px;
+
+}
+#header nav.top .heading{
+	color:#ffffff;
+	font-family:Chaparral Pro;
+	float:right;
+	margin-right:10%;
+}
+
+
+#content .body-line{
+	position: absolute;
+	top:410px;
+	left:0px;
+	right:0px;
+	z-index: -1;
+	height:100px;
+	min-width:225%;
+}
+
+#container{
+	display:block;	
+	margin:110px auto;
+	width:685px;	
+}
+
+#container .LoginScreen .inner-logo{
+	/*height:120px;*/
+	margin:0 auto;
+	position:relative;
+	text-align: center;
+	top:-8.5em;
+	/*width:110px;*/
+}
+
+#container .LoginScreen{
+	background:#d8d8d8;
+	border:10px ridge #7a534c;
+	
+}
+
+/* Using pseudo-elements and background gradients */
+
+.LoginScreen {
+padding-bottom: 5px;
+  position: relative;
+  z-index:2;
+}
+
+
+#container .inner-heading-box{
+	min-width:100%;
+	height:120px;
+}
+
+#container .title-part{
+	box-shadow: 0 5px 20px -1px #9E9E9E;
+	filter:progid:DXImageTransform.Microsoft.Shadow(color=#9e9e9e,direction=180);
+	position: relative;
+	width:100%;
+	z-index:-3;
+
+}
+#container .inner-logo .Logo{
+	position:relative;
+	top: -50px;
+	left: -50px;
+	width: 200px;
+}
+#container .School-tag{
+	color:#420c02;
+	background:#c5c5c5;
+	border:1px solid #b0b3b4;
+	font-family:"Times New Roman", sans-serif;
+	font-size:1em;
+	font-variant: small-caps;
+	font-weight:bold;
+	margin: 5px auto;
+	padding:10px;
+	position: relative;
+	text-align: center;
+	top:-5px;
+	width:40%;
+	z-index:-4;
+}
+
+.content-box{
+	position:relative;	
+}
+
+.content-box table{
+	/*height:10em; */
+	position:relative;
+	/*top:1em;*/
+	width:100%;	
+}
+
+.Login-content .content-box ul{
+	display:inline-flex;
+	list-style:none;	
+}
+
+.formStyling{
+	position:relative;
+	left:60px;
+}
+
+#container .Login-content .content1{
+	text-transform:uppercase;
+	font-family:Chaparral Pro;
+	color:#420c02;
+	font-size:2em;
+	font-weight:bold;
+	position: relative;
+	top: 10px;
+	left: 50px;
+}
+#container .Login-content .user-content,.password-content{
+	bottom: 10px;
+	/*font-family:Chaparral Pro !important;   */
+	font-family: "Times New Roman", sans-serif !important;   
+	color:#5a5858 !important;
+	font-size: 0.8em !important;
+	display: inline;
+}
+
+#container .Login-content .user-content{
+	font-weight:bold;
+	position: relative;
+}
+.user-content1{
+	font-weight:bold;
+	
+	position: relative;
+	top:-14px;
+	width:225px;
+}
+.password-content1{
+	
+	position: relative;
+	top:-5px\9;		
+	top:-14px;
+	width:225px;
+}
+#container .Login-content .password-content{
+	font-weight:bold;
+	position: relative;
+}
+
+
+#container .Login-content .checkRemeberMeBox{
+	position:relative;
+}
+
+#container .Login-content .Remember-Me-checkbox{
+	position:relative;
+}
+
+#container .Login-content .Remember-Me-text{
+	color:#5a5858;
+	font-family:Chaparral Pro;
+	font-size:1em;
+	position:relative;
+}
+
+button[type="submit"]{
+	background:#105278;
+	color:#ffffff;
+	font-size:1em;
+}
+
+#container .style-login{
+	background: -webkit-linear-gradient(top, #7b9fb4,#0c3f5c);
+	background: -moz-linear-gradient(top, #7b9fb4,#0c3f5c);
+	background: -ms-linear-gradient(top, #7b9fb4,#0c3f5c);
+	background: -o-linear-gradient(top, #7b9fb4,#0c3f5c);
+ 	background: linear-gradient(to bottom, #7b9fb4,#0c3f5c);
+	
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#7b9fb4', endColorstr='#0c3f5c',GradientType=0 ); /* IE6-9 */
+	
+    -moz-border-radius: 20px;
+    -ms-border-radius: 20px;
+    -webkit-border-radius: 20px;
+    -o-border-radius: 20px;
+	-khtml-border-radius:20px;
+    border-radius:6px;
+	
+    color: #fff;
+    font-family: Chaparral Pro;
+    font-size: 1.3em	;
+    text-decoration: none;
+    cursor: pointer;
+    border:none;
+    position:relative;
+    padding: 5px 20px 5px 20px;
+    top: 10px;
+	z-index:2;
+	
+}
+
+#container input.style-login{
+	position:relative;
+	zoom:1;
+	top: -0.5em;
+}
+
+.vert-lines{
+	position: relative;
+	top: -50px;	
+}
+
+.vert-line{
+	border-left:2px solid black;
+	height:25px;
+	position:relative;
+	top: 15px;
+	left: 205px;
+}
+
+.vert-lines a{
+	text-decoration:none;		
+}
+
+.forgot-password{
+	font-family:Chaparral Prol;
+	color:#246083;
+	left: 240px;
+	position: relative;
+	top: -5px;
+}
+
+.sms-logo {
+	float: right;
+    height: 65px;
+    position: absolute;
+    right: 0;
+    top: 110px;
+    width: 65px;
+}
+
+.mg-sms-logo {
+	width: 60px;
+	height: 85px;
+	left: -0.6em;
+	position: absolute;
+	top: -1em;
+}
+
+.powered-by-content {
+    float: right;	
+}
+
+.mg-powered-by-text {
+	color: #5A5858;
+    font-size: 0.7em;
+    position: relative;
+    right: -5px;
+    top: -25px;
+}

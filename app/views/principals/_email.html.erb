@@ -1,0 +1,51 @@
+<!-- Sec --> 
+
+<%= fields_for (email_types) do |eml| %>
+
+  <%= eml.hidden_field :email_type,:value => "home"%>
+  <%= eml.hidden_field :is_deleted, :value => 0 %>
+  <!--<h4  class="mg-h4"><label for="email "><#%= t 'emailidtag' %></label> </h4>-->
+  
+  <div class="form-content">
+          <div class="form-content-inner">
+            <table width="100%" cellspacing="0" cellpadding="0" border="0" class="employee-form-cls">
+              <tbody>
+                <tr>
+                  <td width="33%" valign="bottom">
+                    <label class="mg-label" for="emailid" ><%= t('emailid') %>
+                      <span class="required-field">*</span> 
+                    </label>
+                  </td>
+
+                  <td> </td>
+                  <td width="33%" valign="bottom">
+                    <label class="mg-label" for="notification"><%= t('notification') %></label>
+                  </td>
+                  <td> </td>
+                  <td width="33%" valign="bottom">
+                    <label class="mg-label" for="subscription"><%= t('subscription') %>
+                    <span class="required-field"></span>
+                    </label>
+                  </td>
+                </tr> 
+                <tr>
+                  <td valign="top">
+                    <%= eml.text_field :mg_email_id %>
+                  </td>
+                  <td> </td>
+                  <td valign="top">
+                    <%=eml.check_box :notification%>
+                  </td>
+                  <td> </td>
+                  <td valign="top">
+                    <%=eml.check_box :subscription%>
+                  </td>
+                </tr>  
+              </tbody>
+            </table>
+          </div>
+        
+    </div>
+<% end %>      
+
+              

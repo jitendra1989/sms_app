@@ -1,0 +1,77 @@
+<div class="mg-custom-labels">
+
+<%= form_for :store_manager, :url=>{:controller=>'inventory',:action=>'assaign_store_manager_update',:id=>@store_manager.id}, :html => {
+                            :id => 'edit_assaigm_store_manager_validation' } do |f| %>
+
+<p>
+    <label class="mg-label" style="width:140px"><%= t('select_store') %><span class="required-field">&nbsp;*</span></label>
+    <br/>
+    <%store_data=MgInventoryStoreManagement.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:store_name,:id)%>
+   <%= select_tag :mg_inventory_store_management_id,options_for_select(store_data,:selected=>@store_manager.mg_inventory_store_management_id),:prompt=>"Select",:class=>"mg-text-field" %>
+</p>
+<p>
+    <label class="mg-label" style="width:140px"><%= t('select_department') %><span class="required-field">&nbsp;*</span></label>
+    <br/>
+   <%department_data=MgEmployeeDepartment.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:department_name,:id)%>
+   <%= select_tag :mg_employee_department_id,options_for_select(department_data,:selected=>@store_manager.mg_employee_department_id),:prompt=>"Select",:class=>"mg-text-field" ,:onchange=>"selectEmployeeFunction(this.value)"%>
+</p>
+<p>
+    <label class="mg-label" style="width:140px"><%= t('select_employee') %><span class="required-field">&nbsp;*</span></label>
+    <br/>
+    <%
+employee_data=MgEmployee.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id],:mg_employee_category_id=>2)
+  @employee_arr=Array.new()
+  employee_data.each do |data|
+    demo_arr=Array.new()
+    first_name=data.first_name
+    last_name=data.last_name
+    demo_arr.push("#{first_name} #{last_name}",data.id)
+    @employee_arr.push(demo_arr)
+  end
+    %>
+   <div id="employeee_data">
+   <%= select_tag :mg_employee_id,options_for_select(@employee_arr,:selected=>@store_manager.mg_employee_id),:prompt=>"Select",:class=>"mg-text-field" %>
+   </div>
+</p>
+
+
+<p class="mg-p-mgtop">
+    <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("save")%></a>
+    <!-- <%#= f.submit t('save') ,:class=>"mg-small-form-btn"%> -->
+    <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+</p>
+<% end %>
+</div>
+<!-- <%#= render  partial: 'application/common_left_close' %> -->
+<script>
+$( document ).ready(function() {
+           // focusCurrentTab("InventorynagementAid","InventorynagementLiID");
+          //focusStudentHeaderBox();
+
+$("#edit_assaigm_store_manager_validation").validate({
+        rules: {        
+        "mg_inventory_store_management_id": {required: true},
+        "mg_employee_department_id": {required: true},
+        "mg_employee_id":{required: true},
+        
+        
+      }
+    });
+});
+
+function selectEmployeeFunction(data){
+var urlLink = "/inventory/select_employee_for_manager/";
+   $.ajax({
+            url: urlLink ,
+            cache: false,
+            data:{"id":data},
+            success: function(html){
+                  $("#employeee_data").empty();
+                  $("#employeee_data").append(html);
+
+               
+            }
+        });
+
+}
+</script>

@@ -1,0 +1,76 @@
+<%= form_for :training_required_show, :url=>{:action=>"job_upload_accept",:id=>"#{@placements_training.id}-#{params[:data1]}"},:html => {
+                            :id => 'trainingRequiredNewEditFormId' } do |f| %>
+
+<table border="1" class="mg-showdata-bg" cellspacing="1" cellpadding="1">
+   <tr>
+     <td class="mg-td-width-half" valign="top">
+   		<label class="mg-label mg-rm-text-trans"> <%= t('name_of_the_company')%></label>
+   	 </td>
+   	 <td class="mg-td-width-half" valign="top">
+   
+  		<%= @placement.try(:name_of_the_company) %>
+  	 </td>
+ </tr>
+
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+  		<label class="mg-label mg-rm-text-trans"><%=t('area_of_training')%></label>
+  	 </td>
+  	 <td class="mg-td-width-half" valign="top">
+     <div class="text-scroll-for-log-text-cls comments-space">
+  		<%= @placements_training.try(:area_of_training) %>
+      </div>
+  	 </td>
+ </tr>
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"><%=t('start_date')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+      <%= @placements_training.try(:start_date).strftime(@dateFormat) %>
+     </td>
+ </tr>
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"><%=t('end_date')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+      <%= @placements_training.try(:end_date).strftime(@dateFormat) %>
+     </td>
+ </tr>
+ <tr>
+    <td class="mg-td-width-half" valign="top">
+      <label class="mg-label mg-rm-text-trans"> <%= t('status')%></label>
+    </td>
+    <td class="mg-td-width-half" valign="top">
+    <%if @accept_traine.try(:status)=="Rejected" || @accept_traine.try(:status)=="Approved" %>
+      <%if @accept_traine.try(:status)=="Approved" %>
+        <%=t("approved")%>
+      <%else%>
+        <%=t("rejected")%>
+      <%end%>
+    <%else%>
+      <%= select_tag "status",options_for_select([['Select',''],['Applied','applied'],['Reject','reject']],:selected=>@accept_traine.try(:status)) %>
+    <%end%>
+       <br/>
+     </td>
+ </tr>
+</table><br/>
+<!-- ==========================================<%#=@accept_traine.inspect%> -->
+<p>
+         
+  <%if @accept_traine.try(:status)=="Rejected" || @accept_traine.try(:status)=="Approved" %>
+  <%else%>
+    <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("save")%></a>
+  <%end%>
+  <a class="mg-small-form-btn cancel-form-dialog"><%=t('cancel')%></a>
+</p>
+<% end %>
+
+<script type="text/javascript">
+$(document).ready(function () {
+  textSeeMoreLess();
+});
+
+</script>
+

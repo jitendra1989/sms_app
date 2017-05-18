@@ -1,0 +1,96 @@
+
+
+<!-- breadcrumbs Work -->
+<% navigation_add 'Guardians List', guardians_path %>
+
+<!-- breadcrumbs Work -->
+
+<!-- Sec --> 
+<%= render  partial: 'students/student_left' %>
+<!-- Student Search
+<%#= form_for :student, url: search_guardian_data_path  do |f| %>
+  <div class="search-container">
+   Search Guardian:
+    <input type="search" name="studentsearch" id="studentSearchBoxID"> -->
+
+      <%#= f.text_field :searchData  %>
+  <!--   <input type="submit" id="studentSearchBtnID"> 
+     <%#= button_to "Search", search_student_data_path , :method => :get%>   
+
+     <%#= submit_tag t("save"), class: "submit mg-small-form-btn"  %>
+  </div>
+
+<br/>
+<%# end %> -->
+
+
+
+<% if @guardians.length > 0 %>
+		<div class="mg_pagination">
+	<h4 class="mg-h4">Guardians List</h4>
+	<div class="student-table-div-cls">
+	    <table class="batch-tbl mg-tbl-margin">
+	        <tr class="student-table-header">
+	              <th>Guardian Name</th>
+	              <th>Student Name</th>
+	              <th>Relation</th>
+	              <th>Occupation</th>
+	              <th><%=t("actions")%></th>
+	        </tr>
+	        <% @guardians.each do |guardian| %>
+	        <tr class="even">
+	        		<%@studentname=MgStudent.where(:id=>guardian.mg_student_id).pluck(:first_name).join("")%>
+
+	              <td><%= guardian.first_name + " " +guardian.last_name%></td>
+	               <td><%=@studentname%></td>
+	              <td><%= guardian.relation %></td>
+	              <td><%= guardian.occupation %></td>
+	              <td class="mg-align-center">
+	              	<span style="left: 3px; position: relative; top:-2px;">
+		            	<%= link_to "<i class=\"fa fa-eye\"></i>".html_safe, {controller: "guardians", action: "show" ,id:guardian.id } , method: :get ,:title=>"Show" ,:class=>"mg-btn-icon"%>
+		             	<%#= link_to 'Show', guardian_path(guardian) ,:style=>"border: none; color: #363131; padding: 0.3px 0px 0.2px 0px;"%>    
+		            </span>
+	                <button title="Edit" class="edit-guardian mg-icon-btn" id="editGuardianID-<%= guardian.id%>"><i class="fa fa-pencil-square-o"></i></button>
+	                <button title="Delete" class="delete-guardian mg-icon-btn" id="deleteGuardianID-<%= guardian.id%>"><i class="fa fa-trash"></i></button>
+	              
+	             </td>
+	        </tr>
+
+	        <% end %>
+	    </table>
+	    <br/>
+	    <%= will_paginate @guardians, :container => false %>
+	  </div>
+
+	      
+<% else %>
+  <h5>No Guardian... </h5>
+<% end %>
+<div id="editGuardianDialogDivId"></div>
+<%= render  partial: 'application/common_left_close' %>
+
+<script>
+
+
+
+    $(document).ready(function () {
+
+		              // Removing class from Li
+		    $("#createNewStudentLiID").removeClass( "active" );
+		    $("#viewStudentListLiId").removeClass( "active" );
+		    $("#createNewStudentCategoryLiID").removeClass( "active" );
+		    $("#viewGuardiantListLiId").removeClass( "active" );
+		    // Removing class from A
+		    $("#viewStudentListAId").removeClass( "activeMenu" );
+		    $("#createNewStudentAID").removeClass( "activeMenu" );
+		    $("#createNewStudentCategoryAID").removeClass( "activeMenu" );
+		    $("#viewGuardiantListAId").removeClass( "activeMenu" );
+
+		    // Adding class 
+		    $("#viewGuardiantListAId").addClass( "activeMenu" );
+		    $("#viewGuardiantListLiId").addClass( "active" );
+
+		     focusStudentHeaderBox();
+      });
+
+</script>

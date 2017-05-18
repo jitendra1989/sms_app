@@ -1,0 +1,367 @@
+<%# navigation_add 'subjects', subjects_for_employee_path %>
+
+
+ <%= render partial: 'employee_left' %>
+ <div class="mg-scroll-page">
+<!-- <div class="mg-btn-bottom-margin">
+ <label class="mg-label mg-leave-width">Select </label><%#= select_tag :some, options_for_select([["Notification ","notification"],["Leave status","leave_status"],["Attendance","attendance"], ["Events ","events"],  ["Time Table ","time_table"], ["Syllabus Progress" ,"syllabus_progress"]]), :onchange=>"onChangeFunctionForEmployeeChart(this.value)"%>
+
+ </div> -->
+ <!-- notification start -->
+   <%#= render partial: 'notifications/show_notify' %>
+   <h4 class="mg-h4" style="width: 736px;"><%=t('notifications')%></h4>
+  <% if @notifications.length > 0 %>
+  <div class="mg_pagination">
+  <div class="container mg-btn-bottom-margin" style="width: 736px; margin-left: -14px;">
+  <!--  s<button type="button" class="btn btn-info" data-toggle="collapse" data-target="#showNotificationPage">Notifications <span class="badge"><%#= @size %></span></button> -->
+        <div id="showNotificationPage2" class="collapse-sh">
+
+       
+        <div class="notification-list" style="width: 711px;">
+            <%  @notifications.each do |notification| %>
+        
+               <a href="/notifications/view_notification/<%= notification.id %>" class="anchor-btn mg-rm-pagination-style" >
+            <% if notification.status %>
+              <div class="notification notification-seen">
+            <% else %>
+              <div class="notification notification-unseen">
+            <% end %>
+            
+              <div class="notification-label">
+                <%= notification.subject %>
+              </div>
+              <div class="notification-data mg-file-clr">
+                <%= notification.description %>
+              </div>
+            </div>
+                </a>
+                 
+            <% end %>
+          </div>
+        
+        </div>
+  </div>
+  
+  </div>
+  <% else %>
+  <h5>No notification...</h5>
+  <% end %>
+   
+    <br>
+
+  <!-- notification end -->
+<div id=""></div>
+<div id="employeeChartDIVID">
+	
+
+</div >
+<!-- <div id="employeeLeaveStatusChartDIVID" style="display:none"> -->
+	<h4 class="mg-h4"><%= t('leavedetails')%></h4>
+	<%#= pie_chart @mg_employee_leave_types.group(:leave_name).sum(:max_leave_count)%>
+
+
+<%if @mg_employee_leave_types.present?%>
+<table class="batch-tbl mg-btn-bottom-margin" border="1">
+  <tr class="subject-table-header">
+    <th><%= t('leavename')%></th>
+      	<!-- <th><%#= t('min leave count')%></th> -->
+      	<th class="mg-label-text-transform-none"><%= t('maxleavecount')%></th>
+    	<th><%= t('Leave Applied')%></th>
+    	<th><%= t('leave balance')%></th>
+  	</tr>
+    <tr>
+	     <%@mg_employee_leave_types.each do |s|%>
+	        <td><%=s.leave_name %></td>
+	        <!-- <td><%#=s.min_leave_count %></td> -->
+	        <td class="mg-align-center"><%=s.max_leave_count%></td>
+	            <% @leve_taken=MgEmployeeLeaves.where(:mg_leave_type_id=>s.id, :mg_employee_id=>@employee.id, :leave_month_year=>@month_start...@month_end )%>
+	            <%if @leve_taken.length <=0%>
+	                <td class="mg-align-center">0</td>
+	                <td class="mg-align-center"><%=s.max_leave_count %></td>
+	            <%else%>
+	                <%@leve_taken.each do |l|%>
+	        <td class="mg-align-center"><%=l.leave_taken %></td>
+	        <td class="mg-align-center"><%=s.max_leave_count-l.leave_taken %></td>
+	        <%end%>
+	  	<%end%>
+
+    </tr> 
+    <%end%>
+</table>
+<%else%>
+<h5>No Leaves...</h5>
+<%end%><br>
+
+<!-- </div> -->
+
+<!-- <div id="employeeAttendanceChartDIVID" style="display:none"> -->
+	<%#= column_chart(@chart_dataHash)%>
+		<h4 class="mg-h4"><%= t('attendance')%></h4>
+		<div class="mg-scroll-page-inner">
+	<div id="employeeAttendanceDashboardDIVID"></div>
+	</div><br>
+
+<!-- </div> -->
+
+
+
+<!-- <div id="employeeDashboardCalenderDIVID" style="display:none"> -->
+<h4 class="mg-h4"> <%= t('events') %></h4>
+<%if @events.present?%>
+<table class="batch-tbl mg-tbl-margin">   <!-- border="2" --> 
+ <tr >
+    <th><%=t('title')%></th>
+    <th><%=t('eventtype')%></th>
+    <th><%=t('eventdescription')%></th>
+    <th><%=t('startdate')%></th>
+    <th><%=t('starttime')%></th>
+    <th><%=t('enddate')%></th>
+    <th><%=t('endtime')%></th>
+  </tr>
+  <% @events.each do |e| %>
+    <tr> 
+      <td><%= e.title %></td>
+      <% @name=MgEventType.where(:id=>e.mg_event_type_id, :is_deleted=>0).pluck(:name)%>
+      <td><%= @name[0] %></td>
+      <td><%= e.event_description %></td>
+      <td><%= e.event_date.strftime(@school.date_format) %></td>
+      <td><%= e.start_time.strftime('%I:%M%p') %></td>
+      <td><%= e.end_date.strftime(@school.date_format) %></td>
+      <td><%= e.end_time.strftime('%I:%M%p') %></td>
+    </tr>
+  <% end %>
+</table>
+<%else%>
+<h5>No Events...</h5>
+<%end%><br>
+	<!-- <h4 class="mg-h4">Calendar</h4> -->
+	<!-- <div id='employeeDashboardCalender' class="mg-tbl-margin"></div> -->
+	
+	
+<!-- </div> -->
+<!-- <div id="employeeDashboardTimeTableDivid"  style="display:none"> -->
+<h4 class="mg-h4">Time Table</h4>
+<%@day=Date.today.strftime("%A")%>
+<%= render partial: 'employee_time_table'%>
+<!-- </div> -->
+
+
+<!--=========================================================Employee syllabus chart starts=======================================================-->
+<!-- <div id="employeeDashboardSyllabusDivid"  style="display:none"> -->
+<!--=========================================================Employee syllabus code starts=======================================================-->
+
+<div class="mg-scroll-page-inner">
+<%= render partial: 'employee_dashboard_syllabus' %>
+</div>
+
+
+
+<!-- <div class="mg-scroll-page-inner"> -->
+<%#= render partial: 'chartkick_employee_dashboard_syllabus' %>
+<!-- </div> -->
+
+
+
+
+
+
+
+<!--=========================================================Employee syllabus code ends=======================================================-->
+<!-- </div> -->
+<!--=========================================================Employee syllabus chart ends=======================================================-->
+
+
+
+
+
+
+<div id="employeeDashboardCalenderShowDIVID"></div>
+</div>
+<%= render partial: 'application/common_left_close' %>
+
+
+
+
+<script type="text/javascript">
+   
+
+ $(document).ready(function(){
+
+ 
+    focusCurrentTab("viewEmployeeDashboard","viewEmployeeDashboardLiID");
+    focusDashboards();
+    //attendance
+        var days = new Array(7);
+        days[0]=  "Sun";
+        days[1] = "Mon";
+        days[2] = "Tues";
+        days[3] = "Wed";
+        days[4] = "Thur";
+        days[5] = "Fri";
+        days[6] = "Sat";
+
+        Date.prototype.getDayName = function() {
+                return days[ this.getDay() ];
+            };
+        var totalDays = parseInt(daysInMonth1(new Date().getMonth()+1, new Date().getFullYear()));
+
+        var strDates = '<table class="att-calendar"><tr><th>Name</th>';
+        for(var index=1; index <= totalDays;index++){
+                   var now = new Date(new Date().getFullYear(),new Date().getMonth(),index);
+      strDates +="<th>"+index+"<br/>"+now.getDayName()+"</th>";
+        }
+      $('.header-row-data').empty();
+        $('.header-row-data').prepend( strDates );
+         var urlLink = "/employees_attendances/employee_attendence/"; 
+            $.ajax({
+            url: urlLink,
+            cache: false, 
+            success: function(data) {
+            		var day=new Date().getDate();
+                    var month = parseInt(new Date().getMonth()) + 1;
+                    var year = parseInt(new Date().getFullYear());
+                    var strName = "";
+                    for(var outerIndex = 0;outerIndex < data[0].length;outerIndex++){
+                        strName += "<tr><td>"+data[0][outerIndex].first_name+"</td>"
+                        for(var index=1; index <= totalDays;index++){
+                          var date=year+'-'+month+'-'+index;
+                          var value=0;
+                           if(day<index){
+		                     	value=4;
+		                     }else{
+
+                          if(data[1].length >0){
+		                   		for(var dbindex=0;dbindex< data[1].length;dbindex++){
+		                                    var checkDate=month+'/'+index+'/'+year
+		                                    d = new Date(checkDate);
+		                                    x = d.getDay();
+		                                    if(data[2].indexOf(x)>-1){
+		                                      value = 2;
+		                                    }
+		                                    if(data[1][dbindex].year ==year && data[1][dbindex].month ==month && data[1][dbindex].day== index && data[1][dbindex].mg_employee_id==data[0][outerIndex].id){
+		                                       value = 1;
+		                                    }
+		                         }
+		                     
+                        }else{
+                                var checkDate=month+'/'+index+'/'+year;
+                                x = new Date(checkDate).getDay();
+                                if(data[2].indexOf(x)>-1){
+                                  value = 2;
+                                }
+                         }
+                     }
+	                    if(value!=4)
+	                    {
+	                    	if(value == 2)
+	                    	{
+	                            strName +="<td><i class='fa fa-ellipsis-h'></i></td>"
+	                        }
+	                        if(value ==1)
+	                        {
+	                        strName +="<td class='mg-att-bg-clr'><i class='fa fa-circle' > </i></td>"
+	                        }
+	                        else
+	                        {
+		                      if(value != 2)
+		                      	{
+		                      		strName +="<td class='mg-att-bg-clr'><i class='fa fa-check' > </i></td>"
+	                            }
+	                        }
+
+	                    }
+	                    else
+	                    {
+	                    	strName +="<td></td>";
+	                    }
+                    }
+                    strName +="</tr>"
+                }
+                    $('#employeeAttendanceDashboardDIVID').append( strDates+"</tr>"+strName );
+            },
+    error: function() {
+            // alert("Please Select Department");
+        }
+    });        
+function daysInMonth1(iMonth, iYear){
+                    return new Date(iYear, iMonth, 0).getDate();
+                }  
+
+
+
+});
+
+function eventDashboardCalender(){
+	 $('#employeeDashboardCalender').fullCalendar({
+    	header: {
+    				left:   'today prev,next',
+    				center: 'title',
+    				right:  'year,month,agendaWeek,agendaDay',
+    			},
+        // weekends:false,
+    	defaultView: 'month',
+    	// defaultView: 'basicWeek'
+        //hiddenDays: [ 2, 4 ],        
+        businessHours:true,
+        minTime: "8:00:00",
+        maxTime: '18:00:00',
+        startParam: "10:00:00",
+        slotDuration:'00:20:00',
+        //slotMinutes: 20,
+        allDaySlot: false,
+         lazyFetching: true,
+
+ eventSources: [
+        {
+        url: '/dashboards/allevents',
+         data:{
+
+            calenderType: "Employee_dashboard"
+        },
+
+        error:function(){
+        },
+        textColor: 'black'
+        }
+
+    ],
+     dayClick: function(date, allDay, jsEvent, view) {
+
+    },
+    eventClick: function(event, element, current_event_id) {
+        event.title = "CLICKED!";
+        var eventID=event.id;
+        var urlLink = "/events/"+eventID;
+        $.ajax({
+        url: urlLink,
+        cache: false,
+        success: function(html) {
+             $('#employeeDashboardCalenderShowDIVID').dialog({
+                    modal: true,
+                    width: 'auto',
+                    title: "Event Detail",
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+        }
+    });
+        // $('#calendar').fullCalendar('updateEvent', event);
+    }
+          
+    });
+}
+</script>
+
+
+
+
+
+<style>
+            .charts-tooltip div{
+        background: #009933 !important;
+        font-family: Calibri !important;
+    }
+            </style>

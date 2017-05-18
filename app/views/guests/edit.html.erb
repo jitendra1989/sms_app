@@ -1,0 +1,92 @@
+ <%= form_for :guests, url: guest_path(@guests), method: :patch, :html => {
+                            :id => 'editGuestsFormID' } do |f| %>
+
+<p>
+    <%= f.label :mg_event_id, t('event_title') ,:class=>"mg-label"%><span class="required-field"> *</span><br>
+    <%= f.collection_select(:mg_event_id, MgEvent.where(:is_deleted=>0, :mg_school_id=>session[:current_user_school_id]), :id, :title,{:include_blank => 'Select'} ,:class=>"mg-select-btn")  %>
+  </p>
+
+  <p>
+    <%= f.label :guest_name, t('guest_name') ,:class=>"mg-label"%><span class="required-field"> *</span><br>
+    <%= f.text_field :guest_name %>
+  </p>
+   <p>
+    <%= f.label :guest_details, t('guest_details') ,:class=>"mg-label"%>
+    <%= f.text_area :guest_details   %>
+  </p>
+  <p>
+    <%= f.label :mobile_no, t('mobile_no') ,:class=>"mg-label"%><span class="required-field"> *</span><br>
+    <%= f.text_field :mobile_no   %>
+  </p>
+
+   <p>
+    <%= f.label :email_id, t('email_id') ,:class=>"mg-label"%><span class="required-field"> *</span><br>
+    <%= f.text_field :email_id   %>
+  </p>
+
+     <p>
+    <%= f.label :status, t('status') ,:class=>"mg-label"%><span class="required-field"> *</span><br>
+    <%#= f.text_field :status   %>
+     <%=f.select :status, options_for_select([["Select", ""],["Invited" ,"invited"],["Will Attend" ,"will_attend"],["Not Attend","not_attend"]], :selected=>@guests.status), {:prompt => t('select')}, :class=>"mg-select-btn"%>
+
+
+  </p>
+
+  
+  <%= f.hidden_field :mg_school_id, :value => session[:current_user_school_id]%>
+
+  <%#= f.hidden_field :created_by, :value => session[:user_id]%> 
+  <%= f.hidden_field :updated_by, :value => session[:user_id]%> 
+
+
+  <%= f.hidden_field :is_deleted, :value => 0%> 
+
+<!--   <p>
+    <%#= f.submit t('save') ,:class=>"mg-small-form-btn"%>
+      <%#= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+
+  </p>
+ -->
+
+  <p class="mg-p-mgtop">
+    <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"  id="addStudentCommitteeSubmitFormID"><%=t("save")%></a>
+       <%#= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+      <a  class="mg-small-form-btn cancel-form-dialog"><%=t("cancel")%></a>
+  </p>
+
+
+<% end %>
+
+
+<%#= render  partial: '/event_committees/event_committees_left' %>
+
+
+<%#= render  partial: '/event_types/event_types_close' %>
+
+<script>
+$(document).ready(function () {
+
+
+
+$("#editGuestsFormID").validate({
+
+rules: {
+"guests[guest_name]": {required: true},
+// "guests[guest_details]": {required: true},
+"guests[mobile_no]": {required: true, number: true, minlength: 10,maxlength: 10},
+"guests[email_id]": {required: true,  email: "Your email must be in the format of name@domain.com"},
+"guests[status]": {required: true},
+"guests[mg_event_id]": {required: true}
+
+},
+ messages: {
+        "Temporary[pin_code]": {minlength: "Please enter 6 digits.",maxlength: "Please enter only  6 digits"},
+        "Permanent[pin_code]": {minlength: "Please enter 6 digits.",maxlength: "Please enter only  6 digits"},
+        "mobile[phone_number]": {minlength: "Please enter 10 digits.",maxlength: "Please enter only  10 digits"},
+        "phone[phone_number]": {maxlength: "Please enter only  10 digits"},
+        "employee[emergency_contact_number]": {minlength: "Please enter 10 digits.",maxlength: "Please enter only  10 digits"},
+         "employee[photo]": {required: "Please upload a photo."}
+          }
+});
+});
+</script>

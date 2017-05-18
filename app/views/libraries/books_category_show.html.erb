@@ -1,0 +1,21 @@
+<%if flash[:error].present?%>
+<%=flash[:error]%>
+<%end%>
+
+
+
+
+<table border="1" class="mg-showdata-bg mg-show-tbl-width" cellspacing="1" cellpadding="1">
+
+
+
+<tr>
+      <td class="mg-td-width-half" valign="top">
+       <label class="mg-label" for="categoryName"><%= t ('category_name') %></label>
+      </td>
+      <td class="mg-td-width-half" valign="top">
+        <label class="mg-label-inner-form"> <%= @show_data.category_name%></label>
+      </td>
+  </tr>
+
+  </table>

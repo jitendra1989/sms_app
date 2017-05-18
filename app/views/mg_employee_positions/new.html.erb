@@ -1,0 +1,52 @@
+<!-- Sec --> 
+
+<%= form_for @employee_position,  html: {role: :form} do |f| %>
+
+  <%= f.hidden_field :is_deleted, :value => 0 %>
+  <%= f.hidden_field :mg_school_id, :value => session[:current_user_school_id] %>
+    <p>
+     <label class="mg-label"><%= t('selectcategory') %><span class="required-field"> *</span></label><br>
+     <%=f.collection_select(:mg_employee_category_id, MgEmployeeCategory.all, :id, :category_name, {:include_blank => 'Select a Category'},:class=>"mg-select-btn") %>
+    </p>
+       <p>
+    <label class="mg-label"><%= t('profilename') %><span class="required-field"> *</span></label></br>
+    <%= f.text_field :position_name ,:class=>"mg-text-field"%>
+  </p>
+<div style="display:none">
+    <p>
+      <label class="mg-label"><%= t('status') %></label>
+      <br />
+      <%= f.label :status, t("active"), :value => "true" ,:class=>"mg-label-inner-form" %>
+      <%= f.radio_button :status, false , :checked => true%>
+      <%= f.label :status, t("inactive"), :value => "false" ,:class=>"mg-label-inner-form"%>
+      <%= f.radio_button :status, true %> <br />
+    </p>
+</div>
+  <p>
+    <%#= f.submit "Submit" ,:id => "PositionFormID" ,:class=>"mg-small-form-btn"%>
+    <a onclick="$(this).closest('form').submit()" id="PositionFormID" class="mg-small-form-btn"><%=t("save")%></a>
+     <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+  </p>
+  
+<% end %>
+
+<!-- <span class="mg-cncl-btn-align">
+  <button class="cancel-form-dialog btn btn-cancel"><%#= t('cancel') %></button>
+</span>
+ -->
+<!-- <button class="cancel-form-dialog"><%#= t('cancel') %></button> -->
+
+<script>
+  $(document).ready(function(){
+    
+    $("#new_mg_employee_position").validate({
+                      rules: {
+                "mg_employee_position[mg_employee_category_id]": {required: true},
+                "mg_employee_position[position_name]": {required: true},
+                "mg_employee_position[status]": {required: true}
+                }
+    });
+  });
+
+
+</script>

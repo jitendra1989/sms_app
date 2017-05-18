@@ -1,0 +1,54 @@
+<h4 class="mg-h4"><%=t("alumni_list")%></h4>
+ <%if @alumni.size>0%>
+ <div class="mg-scroll-employee-bar mg-tbl-margin">   
+ 
+ <table class="batch-tbl mg-tbl-margin">
+            <tr class="student-table-header">
+              <th><%= t("Name") %></th>
+              <th><%= t("mobile_no") %></th>
+              <th><%= t("gender") %></th>
+             
+              
+             <th class="mg-align-center"><label class="mg-label"><%=t('select')%></label><br/>
+             <a  id="seescheckAllCheckBoxalId" class="mg-pop-link">All</a>
+    <a  id="seesunCheckAllCheckBoxalId" class="mg-pop-link">None</a></th>
+            </tr>
+            <% @alumni.each do |student| %>
+            <tr class="even">
+              <td><%="#{student.first_name} #{student.last_name} " %></td>
+              <td><%= student.mobile_number %></td>
+           
+              <td class="mg-capitalize-text"><%= student.gender %></td>
+               
+              <!-- <td>
+              
+                 <%#= link_to t('show'), {controller: "alumni", action: "alumni_registration_form_show" ,id:student.id },:class=>"new-add-polling mg-btn-bottom-margin mg-custom-form-btn"  %>
+             
+                  </td>    ['Cat', 'Dog', 'Bird'].include? 'Dog' -->
+               <!-- <td><%#=check_box_tag 'select_data[]',student.id,true,:class=>"demo1213334"%></td> -->
+               <td><%=check_box_tag 'select_data[]',student.id,@selected_alumni.present? ? (@selected_alumni.include? student.id) : false,:class=>"demo1213334"%></td>
+               </tr>
+               <%end%>
+           </table>
+           </div>
+<%else%>
+<%="No Data"%>
+<%end%>
+           <script>
+
+            $(document).on("click", "#seescheckAllCheckBoxalId", function(e){
+
+        $(".demo1213334").prop('checked', true);
+        e.preventDefault();
+        
+  });
+
+$(document).on("click", "#seesunCheckAllCheckBoxalId", function(e){
+
+        $(".demo1213334").prop('checked', false);
+        e.preventDefault();
+        
+  });
+
+
+           </script>

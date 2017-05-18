@@ -1,0 +1,98 @@
+
+<%#= render  partial: 'hostel_management_left' %>
+
+
+<table border="1" class="mg-showdata-bg" cellspacing="1" cellpadding="1">
+   <tr>
+     <td class="mg-td-width-half" valign="top">
+   		<label class="mg-label mg-rm-text-trans"> <%= t('hostel')%></label>
+   	 </td>
+   	 <td class="mg-td-width-half" valign="top">
+    	<%= MgHostelDetails.find_by(:id=>@hostel_rooms.mg_hostel_details_id).name %>
+  	 </td>
+ </tr>
+
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+  		<label class="mg-label mg-rm-text-trans"><%=t('floor')%></label>
+  	 </td>
+  	 <td class="mg-td-width-half" valign="top">
+    	<%= MgHostelFloor.find_by(:id=>@hostel_rooms.mg_hostel_floor_id).name %>
+  	 </td>
+ </tr>
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"><%=t('name')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+      <%= @hostel_rooms.try(:name) %>
+     </td>
+ </tr>
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"><%=t('room_type')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+    	<%= MgHostelRoomType.find_by(:id=>@hostel_rooms.mg_hostel_room_type_id).name %>
+     </td>
+ </tr>
+
+
+
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"><%=t('capacity')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+      <%= @hostel_rooms.try(:capacity) %>
+     </td>
+ </tr>
+
+<tr>
+<td class="mg-td-width-half" valign="top">
+      <label class="mg-label"><%=t('is_occupiable?')%></label>
+     </td>
+ 	<% if @hostel_rooms.try(:is_occupiable)==true %>
+      	<td><%= "Yes" %></td>
+      <% else %>
+      	<td><%= "No" %></td>
+      <%end %>
+</tr>
+
+  <% if @hostel_rooms.try(:is_occupiable)==false %>
+
+   <tr>
+
+       <td class="mg-td-width-half" valign="top">
+          <label class="mg-label"><%=t('reason')%></label>
+       </td>
+       <td class="mg-td-width-half" valign="top">
+         <div class="text-scroll-for-log-text-cls comments-space">
+            <%= @hostel_rooms.try(:reason) %>
+          </div>
+       </td>
+   </tr>
+
+
+  <% end %>
+ 
+  
+</table>
+  <p class="mg-p-mgtop">
+      <a class="mg-small-form-btn cancel-form-dialog"><%=t('cancel')%></a>
+  </p>
+    
+
+<script type="text/javascript">
+
+$(document).ready(function () {
+  textSeeMoreLess();
+});
+
+
+
+</script>
+
+
+
+

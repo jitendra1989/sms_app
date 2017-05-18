@@ -1,0 +1,142 @@
+<h4 class="mg-h4"><%=t('show_transport_booking')%></h4>
+
+  <table border="1" class="mg-showdata-bg " cellspacing="1" cellpadding="1">
+   
+    <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label mg-rm-text-trans"><%=t('date_of_booking')%></label>
+     </td>
+      
+
+     <td class="mg-td-width-half" valign="top">
+        <%= @transport_booking_data.date_of_booking.strftime(@timeformat.date_format) %>
+     </td>
+  </tr>
+
+   <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('transport_time')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+      <%= @transport_booking_data.try(:transport_time).try(:strftime,"%l:%M%P") %>
+      
+     </td>
+   </tr>
+
+   <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('place_from')%></label>
+     </td>
+     <td class="mg-td-width-half mg-capitalize-text" valign="top">
+      <%= @transport_booking_data.try(:place_from) %>
+     </td>
+   </tr>
+  
+  <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('place_to')%></label>
+     </td>
+     <td class="mg-td-width-half mg-capitalize-text" valign="top">
+      <%= @transport_booking_data.try(:place_to) %>
+     </td>
+   </tr>
+
+   
+   <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('way_mode')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+      <%= @transport_booking_data.try(:way_mode) %>
+     </td>
+   </tr>
+
+   
+    <tr>
+      <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"><%=t('employee_category')%></label>
+      </td>
+     <% booked_by_data=MgEmployeeCategory.find_by(:id=>@transport_booking_data.mg_employee_category_id)%> 
+
+     <td class="mg-td-width-half" valign="top" >
+       
+         <%= booked_by_data.try(:category_name) %>
+     </td>
+    </tr> 
+
+
+    <tr>
+      <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"><%=t('employee_profile')%></label>
+      </td>
+     <% profile_data=MgEmployeePosition.find_by(:id=>@transport_booking_data.mg_employee_position_id)%> 
+
+     <td class="mg-td-width-half " valign="top">
+       
+         <%= profile_data.try(:position_name) %>
+     </td>
+    </tr>  
+ 
+  <tr>
+      <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"><%=t('employee')%></label>
+      </td>
+     <% employee_data=MgEmployee.find_by(:id=>@transport_booking_data.mg_employee_id)%> 
+
+     <td class="mg-td-width-half " valign="top">
+       
+         <%= employee_data.try(:first_name) %><%=" "%><%= employee_data.try(:last_name) %>
+     </td>
+   </tr>
+
+   <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('purpose')%></label>
+     </td>
+     <td class="mg-td-width-half text-scroll-for-log-text-cls comments-space" valign="top">
+      <%= @transport_booking_data.try(:purpose) %>
+     </td>
+   </tr>
+
+   <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('status')%></label>
+     </td>
+     <td class="mg-td-width-half mg-capitalize-text" valign="top">
+      <%= @transport_booking_data.try(:status) %>
+     </td>
+   </tr>
+   <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('Remark')%></label>
+     </td>
+     <td class="mg-td-width-half mg-capitalize-text  text-scroll-for-log-text-cls comments-space  " valign="top">
+      <%= @transport_booking_data.try(:remark) %>
+     </td>
+   </tr>
+
+      <%if @transport_booking_data.try(:is_cancelled).present?%>
+   <tr>
+     <td class="mg-td-width-half" valign="top">
+     <label class="mg-label"> <%= t('is_cancelled')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+      <%= @transport_booking_data.try(:is_cancelled)==true ? "Yes" : "No" %>
+     </td>
+   </tr>
+   <%end%>
+
+
+ 
+</table>
+<br>
+<br>
+<%= link_to t('back'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+
+<script type="text/javascript">
+$(document).ready(function () {
+//  textSeeMoreLess();
+});
+
+</script>
+  

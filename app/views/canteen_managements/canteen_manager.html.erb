@@ -1,0 +1,131 @@
+<% navigation_add t('canteen_manager'), :controller => 'canteen_managements', :action => 'canteen_manager' %>
+<%=render partial: '/master_settings/master_settings_left'%>
+<h4 class="mg-h4"><%= t('about_canteen_manager') %></h4>
+<%if !@canteen_manager.present?%>
+  <button class="add_canteen_manager mg-btn-bottom-margin mg-custom-form-btn"><%= t('add_canteen_manager')%></button>
+<%end%>
+
+<%if @canteen_manager.length>0%>
+  <table  class="batch-tbl mg-tbl-margin">   <!-- border="2" --> 
+    <tr class="subject-table-header">
+      <th><%= t('user_name') %></th>
+      <th><%= t('actions') %></th>
+    </tr>
+   
+    <% @canteen_manager.each do |canteen_manager| %>
+      <tr>
+        <td><%= canteen_manager.try(:user_name) %></td>
+        <td>
+          <button title="Change Password" id="<%=raw canteen_manager.id %>-showlabBTNID" class="change-canteen-manager-password-btn mg-icon-btn"><i class="fa fa-exchange"></i></button>
+
+          <button title="Edit" id="<%=raw canteen_manager.id %>-editaccountBTNID" class="edit-canteen-manager-detail-btn mg-icon-btn"><i class="fa fa-pencil-square-o"></i></button>
+
+          <button title="Delete" id="<%=raw canteen_manager.id %>-deletelabBTNID" class="delete-canteen-manager-detail-btn mg-icon-btn"><i class="fa fa-trash"></i></button>
+        </td>
+      </tr>
+    <% end %>
+  </table>
+  <br/>
+<%else%>
+  <h5>No Canteen Manager is created</h5>
+<%end%>
+<div id="newCanteenManagerDivId"></div>
+<div id="editCanteenManagerDivId"></div>
+<div id="changePasswordCanteenManagerDIVID"></div>
+
+<%= render  partial: 'application/common_left_close' %>
+
+<script>
+$( document ).ready(function() {
+  focusCurrentTab("canteenManagerLoginAID","CanteenManagerLoginLID");
+});
+
+
+
+$(document).on("click", ".delete-canteen-manager-detail-btn", function(e)
+{
+  e.preventDefault();
+  var myID =$(this).attr('id');
+  var Id=myID.split("-");
+  var retVal = confirm("Are you sure to delete?");
+  if(retVal)
+  {
+    var urlLink = "/canteen_managements/delete_canteen_manager/"+Id[0];
+    $.ajax({
+      url: urlLink ,
+      cache: false,
+      success: function(html)
+      {
+          window.location.reload();
+      }
+    });
+  }else
+  {
+    return false;
+  }
+}); 
+
+
+$(document).on("click", ".edit-canteen-manager-detail-btn", function(e){
+  var myID =$(this).attr('id');
+  var Id=myID.split("-");
+  var urlLink = "/canteen_managements/edit_canteen_manager/"+Id[0];
+  $.ajax({
+      url: urlLink ,
+      cache: false,
+      success: function(html){
+            $('#editCanteenManagerDivId').dialog({
+              modal: true,
+               minHeight: 'auto',
+              minWidth: '250px',
+              title: "Edit Canteen Manager",
+              open: function () {
+                $(this).html(html);
+              }
+          }); 
+      }
+  });
+});
+
+$(document).on("click", ".add_canteen_manager", function(e){
+  var urlLink = "/canteen_managements/new_canteen_manager";
+  $.ajax({
+      url: urlLink ,
+      cache: false,
+      success: function(html){
+            $('#newCanteenManagerDivId').dialog({
+              modal: true,
+               minHeight: 'auto',
+              minWidth: '250px',
+              title: "Add Canteen Manager",
+              open: function () {
+                $(this).html(html);
+              }
+          }); 
+      }
+  });
+});
+
+$(document).on("click", ".change-canteen-manager-password-btn", function(e){
+  var myID =$(this).attr('id');
+  var Id=myID.split("-");
+  var urlLink = "/canteen_managements/change_canteen_manager_password/"+Id[0];
+  $.ajax({
+      url: urlLink ,
+      cache: false,
+      success: function(html){
+            $('#changePasswordCanteenManagerDIVID').dialog({
+              modal: true,
+              minHeight: 'auto',
+              minWidth: '250px',
+              title: "Change Password",
+              open: function () {
+                  $(this).html(html);
+              }
+          }); 
+      }
+  });
+});
+
+
+</script>

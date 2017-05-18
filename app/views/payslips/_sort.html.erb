@@ -1,0 +1,16 @@
+
+
+
+
+<%= form_for :sort_payslip, :controller=> 'payslips', :html => {
+                            :id => 'indexPayslipCreateFormID' } do |f| %>
+
+<label class="mg-label mg-tt-width mg-rm-text-trans"><%=t('select_month_and_year')%></label>   <%=text_field_tag :date_month_approve, "#{Date.new(@year.to_i,@month.to_i,01).strftime('%B')} #{@year}" %>
+<%=hidden_field_tag :date_month_approve_date, "#{@month}-#{@year}"%>
+<br/>
+
+<%= f.submit t('search') ,:class=>"mg-small-form-btn hidden-button-onchange-submit-class", :id=>"payslipIndexSubmitFormID" ,:style=>"display:none"%>
+
+<%end%>
+
+

@@ -1,0 +1,69 @@
+<table border="1" class="mg-showdata-bg" cellspacing="1" cellpadding="1">
+   <tr>
+     <td valign="top">
+      <label class="mg-label"> <%= t('transferred_to')%></label>
+     </td>
+     <td valign="top">
+     <%@accounts=MgAccount.find_by(:id=>@account.mg_to_account_id)%>
+      <%if @account.mg_to_account_id.present?%>
+     <%=@accounts.try(:mg_account_name)%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+     </td>
+ </tr>
+ <tr>
+     <td valign="top">
+      <label class="mg-label"> <%= t('amount')%></label>
+     </td>
+     <td valign="top">
+      <%if @account.amount.present?%>
+     <%=@account.try(:amount)%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+     </td>
+ </tr>
+
+ <tr>
+     <td valign="top">
+      <label class="mg-label"> <%= t('purpose')%></label>
+     </td>
+     <td valign="top">
+      <%if @account.purpose.present?%>
+     <%=@account.try(:purpose)%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+     </td>
+ </tr>
+
+ <tr>
+     <td valign="top">
+      <label class="mg-label"> <%= t('status')%></label>
+     </td>
+     <td valign="top">
+      <%if @account.status.present?%>
+     <%=@account.try(:status)%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+     </td>
+ </tr>
+ 
+ <tr>
+     <td valign="top">
+      <label class="mg-label"> <%= t('reason')%></label>
+     </td>
+     <td valign="top" style="width: 100%;">
+    <%if @account.Reason.present?%>
+     <%=@account.try(:Reason)%>
+     <%else%>
+     <h5><%="No Data"%></h5>
+     <%end%>
+     </td>
+ </tr>
+</table>
+<br/>
+
+<a class="mg-small-form-btn cancel-form-dialog"><%=t("cancel")%></a>

@@ -1,0 +1,57 @@
+<!-- Sec --> 
+<section id="userBodyContentBox" style="margin: 0 auto;">
+    <table width=100% border="0" cellspacing="0" cellpadding="0"  style="margin-bottom: 0px;">
+        <tr>
+            <td valign="top" class="userBodyContentBox1">
+                <aside class="userMenuBoxLeft" style="width: 210px;">
+                    <ul class="menuListHome">
+                        <li class="myAccountMenu"><%=t('vehicle_management')%></li>
+                    
+                       
+                        <li id="vehiclemanagementAssociateLiID">
+                            <a class="menuItemsActivities" href="/vehicles" id="timeTableAssociateAID">
+                                <div class="setMenu"><i class="fa fa-bus">&nbsp;&nbsp;</i><%=t('vehicle')%>
+                                </div>
+                            </a>
+                        </li>
+                        <li id="reportTypesAssociateLiID">
+                            <a class="menuItemsActivities" href="/vehicles/report_type_index" id="reportTypesAssociateAID">
+                                <div class="setMenu"><i class="fa fa-file">&nbsp;&nbsp;</i><%=t('report_types')%>
+                                </div>
+                            </a>
+                        </li>
+                         <li id="paymentTypeAssociateLiID">
+                            <a class="menuItemsActivities" href="/vehicles/payment_type_index" id="paymentTypeAssociateAID">
+                                <div class="setMenu"><i class="fa fa-pie-chart">&nbsp;&nbsp;</i><%=t('payment_types')%>
+                                </div>
+                            </a>
+                        </li>
+                        <li id="vehiclereportAssociateLiID">
+                            <a class="menuItemsActivities" href="/vehicles/vehicle_report_index" id="vehiclereportAssociateAID">
+                                <div class="setMenu"><i class="fa fa-chain">&nbsp;&nbsp;</i><%=t('report_and_payment')%>
+                                </div>
+                            </a>
+                        </li>
+                        <li id="search_vehicleLiID">
+                            <a class="menuItemsActivities" href="/vehicles/search_vehicle_data" id="search_vehicleAID">
+                                <div class="setMenu"><i class="fa fa-chain">&nbsp;&nbsp;</i><%=t('search_vehicle')%>
+                                </div>
+                            </a>
+                        </li>
+                        <!-- <li id="vehiclereportAssociateLiID">
+                            <a class="menuItemsActivities" href="/vehicles/payment_type_report" id="vehiclereportAssociateAID">
+                                <div class="setMenu"><i class="fa fa-chain">&nbsp;&nbsp;</i><%#=t('add_payment')%>
+                                </div>
+                            </a>
+                        </li> -->
+                    </ul>    
+
+                </aside>
+            </td>
+          <td class="mg-table-td-main-2 " valign="top">
+
+<script>
+$(document).ready(function(){
+    focusVehicle();
+});
+</script>

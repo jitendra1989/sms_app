@@ -1,0 +1,198 @@
+<%= render  partial: 'library_left' %>
+<% navigation_add 'Class By Class Report', library_class_by_class_report_path %>
+
+<h4 class="mg-h4"><%= "Class By Class Report"%></h4>
+
+<table class="mg-tbl-margin mg-show-tbl-width">
+<tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="selectCourse"><%= t ('select_class') %><span class="required-field">&nbsp;*</span></label><br/>
+
+   <%course_data=MgCourse.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:course_name,:id)%>
+<%=select_tag :library_report_course,options_for_select(course_data),:prompt=>"Select",:class=>"mg-text-field"%><%#:onchange=>"library_report_data(this.value)%>
+
+</td>
+</tr>
+<tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="selectCourse"><%= t ('select_category') %><span class="required-field">&nbsp;*</span></label><br/>
+
+   <%course_data=MgResourceCategory.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:name,:id)%>
+<%=select_tag :library_category,options_for_select(course_data),:prompt=>"Select",:onchange=>"resourceCategoryId(this.value)",:class=>"mg-text-field"%><%#:onchange=>"library_report_data(this.value)%>
+
+</td>
+</tr>
+<tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="selectCourse"><%= t ('select_resource_type') %><span class="required-field">&nbsp;*</span></label><br/>
+
+ <div id="resources_types_data">
+<%=select_tag :select_type,options_for_select([]),:prompt=>"Select",:class=>"mg-text-field"%>
+</div>
+</td>
+</tr>
+<tr>
+<td>
+     <label class="mg-label" for="from_date"><%= t ('from_date') %><span class="required-field">&nbsp;*</span></label><br/>
+     <%=text_field_tag :library_from_date,nil,:class=>"mg-text-field"%>
+
+</td>
+</tr>
+<tr>
+<td>
+     <label class="mg-label" for="to_date"><%= t ('to_date') %><span class="required-field">&nbsp;*</span></label><br/>
+     <%=text_field_tag :library_to_date,nil,:class=>"mg-text-field"%>
+</td>
+</tr>
+    
+
+</table>
+ <%=submit_tag 'Generate Report', :class=> "submit  library_report_data mg-small-form-btn mg-custom-labels" %>
+
+ 
+<div id="library_report_generation_data">
+</div>
+<%= render  partial: 'schools/school_left_close' %>
+<script>
+$(document).ready(function(){
+focusCurrentTab("classbookReportAID","classbookReportLiID");
+        focusLibrary();
+
+        //focusMasterSettings();
+
+dateFormatStr =  getJsDateFormat();
+
+$('#library_from_date').datepicker({ changeMonth: true,
+                changeYear: true,yearRange: "-100:+0",maxDate: "0",dateFormat: dateFormatStr});
+
+$('#library_to_date').datepicker({ changeMonth: true,
+                changeYear: true,yearRange: "-100:+0",maxDate: "0",dateFormat: dateFormatStr});
+
+});
+$(document).on("click",".library_report_data",function(){
+                    var course_id=$("#library_report_course").val();
+                    var category_id=$("#library_category").val();
+                    var type_id=$("#select_type").val();
+
+            var from_date=$("#library_from_date").val();
+            var to_date=$("#library_to_date").val();
+
+            if(course_id==""||category_id==""||type_id==""||from_date==""||to_date=="") {
+
+              alert("Please Enter The data")
+            }
+
+              else{
+var urlLink="/library/library_report_generation"
+$.ajax({
+    url:urlLink,
+    cache:false,
+    data:{"class_id":course_id,"from_date":from_date,"to_date":to_date,"category_id":category_id,"type_id":type_id},
+    success: function(html){
+        $("#library_report_generation_data").empty();
+        $("#library_report_generation_data").append(html);
+
+
+
+    }
+
+});
+}
+});
+
+function resourceCategoryId(data){
+       $("#library_report_generation_data").empty();
+
+var urlLink="/library/resource_type_data"
+
+$.ajax({
+    url:urlLink,
+    cache:false,
+    data:{"category_id":data},
+    success: function(html){
+        $("#resources_types_data").empty();
+        $("#resources_types_data").html(html);
+
+
+
+    }
+
+});
+}
+
+
+$(document).on("change","#library_from_date",function(e){
+      var end_date=$("#library_to_date").val();
+      if(!(end_date==""))
+      {
+            var start_date=$(this).val();
+
+     // console.log("Changed dob"); 
+     // console.log(new Date(Date.parse(dob,dateFormatStr)).toString());
+     // console.log(new Date(Date.parse(admission_date,dateFormatStr)).toString());
+
+     if(getDateObj(start_date,dateFormatStr)>getDateObj(end_date,dateFormatStr)){
+        alert("From Date should be less than To Date");
+        document.getElementById('library_from_date').value ="";
+      }
+
+      //var temp=$("#fee_schedule_due_date").val();
+//       if(!temp=="")
+//       {
+//       var end_date=$("#fee_schedule_end_date").val();
+//       var start_date=$("#fee_schedule_start_date").val();
+//       var due_date=$("#fee_schedule_due_date").val();
+
+//      if(!(getDateObj(due_date,dateFormatStr)>=getDateObj(start_date,dateFormatStr)&&getDateObj(due_date,dateFormatStr)<=getDateObj(end_date,dateFormatStr))){
+//         alert("Due Date should be between Start Date and End Date");
+//         document.getElementById('fee_schedule_start_date').value ="";
+//       }
+// }
+      }
+      
+   });
+
+
+    $(document).on("change","#library_to_date",function(e){
+      var start_date=$("#library_from_date").val();
+      if(!(start_date==""))
+      {
+        var end_date=$(this).val();
+
+     // console.log("Changed dob"); 
+     // console.log(new Date(Date.parse(dob,dateFormatStr)).toString());
+     // console.log(new Date(Date.parse(admission_date,dateFormatStr)).toString());
+
+     if(getDateObj(start_date,dateFormatStr)>getDateObj(end_date,dateFormatStr)){
+        alert(" To Date should be more than From Date");
+        document.getElementById('library_to_date').value ="";
+      }
+// var temp=$("#fee_schedule_due_date").val();
+//       if(!temp=="")
+//       {
+//       var end_date=$("#fee_schedule_end_date").val();
+//       var start_date=$("#fee_schedule_start_date").val();
+//       var due_date=$("#fee_schedule_due_date").val();
+
+//      if(!(getDateObj(due_date,dateFormatStr)>=getDateObj(start_date,dateFormatStr)&&getDateObj(due_date,dateFormatStr)<=getDateObj(end_date,dateFormatStr))){
+//         alert("Due Date should be between Start Date and End Date");
+//         document.getElementById('fee_schedule_end_date').value ="";
+//       }
+// }
+      }
+      
+   });
+
+    $(document).on("change","#library_report_course",function(){
+       $("#library_report_generation_data").empty();
+
+    });
+
+</script>
+
+
+
+
+
+
+

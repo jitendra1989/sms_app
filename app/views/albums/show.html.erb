@@ -1,0 +1,192 @@
+<%#=@albums.inspect%>
+
+
+<table border="1" class="mg-showdata-bg" cellspacing="1" cellpadding="1">
+   <tr>
+     <td class="mg-td-width-half" valign="top">
+   		<label class="mg-label"> <%= t('album_name')%></label>
+   	 </td>
+
+   	 <td class="mg-td-width-half" valign="top">
+  		<%= @albums.name %>
+  	 </td>
+ </tr>
+
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+  		<label class="mg-label"><%=t('event')%></label>
+  	 </td>
+  	 <td class="mg-td-width-half" valign="top">
+  		<%= @albums.mg_event.title %>
+  	 </td>
+ </tr>
+
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+  		<label class="mg-label"><%=t('description')%></label>
+  	 </td>
+  	 <td class="mg-td-width-half" valign="top">
+  		<%= @albums.description %>
+  	 </td>
+ </tr>
+</table>
+
+<br>
+<table>
+	<tr>
+		<td>
+			<h4 class="mg-h4"><%= t('departments_for_employees')%></h4>
+		</td>
+		<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+		<td>
+			<h4 class="mg-h4"><%= t('departments_for_teachers')%></h4>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<% departments=@albums.mg_user_albums.where(:is_deleted=>0, :mg_school_id=>@mg_school_id) %>
+				
+				<%#if departments.present?%>
+				<%if departments.where("accessable_to_employees"=>1).present?%>
+				<div class="mg-scroll-employee-bar">
+					<table border="1" class="batch-tbl mg-showdata-bg mg-tbl-layout" cellspacing="1" cellpadding="1">
+						<tr>
+							<th><%=t('sl_no')%></th>
+							 <th class="mg-td-width-half" valign="top">
+						   	<label class="mg-label"> <%= t('departments')%></label>
+						 </th>
+						</tr>
+						<%count_dept=1%>
+						<%departments.each do |dep|%>
+							<%if dep.accessable_to_employees%>
+							   		<tr>
+							   		<td><%=count_dept%></td>
+								   	 <td class="mg-td-width-half" valign="top">
+								  		<%= dep.mg_employee_department.department_name%>
+								  	 </td>
+								 	</tr>
+							<%count_dept +=1%>
+							<%end%>
+						<%end%>
+				 	</table>
+				 	</div>
+				<%else%>
+			 			<h5>No data</h5> 
+				 <%end%>
+				 
+		</td>
+		<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+		<td>
+			<% departments=@albums.mg_user_albums.where(:is_deleted=>0, :mg_school_id=>@mg_school_id) %>
+			
+			<%if departments.where(:accessable_teacher=>1).present?%>
+			<div class="mg-scroll-employee-bar">
+				<table border="1" class="batch-tbl mg-showdata-bg mg-tbl-layout" cellspacing="1" cellpadding="1">
+					<tr>
+						<th><%=t('sl_no')%></th>
+						 <th class="mg-td-width-half" valign="top">
+					   	<label class="mg-label"> <%= t('departments')%></label>
+					 </th>
+					</tr>
+					<%count_dept_tech=1%>
+					<%departments.each do |dep|%>
+						<%if dep.accessable_teacher%>
+						   		<tr>
+						   		<td><%=count_dept%></td>
+							   	 <td class="mg-td-width-half" valign="top">
+							  		<%= dep.mg_employee_department.department_name%>
+							  	 </td>
+							 	</tr>
+						<%count_dept_tech +=1%>
+						<%end%>
+					<%end%>
+			 	</table>
+			 	</div>
+			 <%else%>
+			 <h5>No data</h5> 
+			 <%end%>
+			 
+			
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<h4 class="mg-h4"><%= t('class_&_sections_for_students')%></h4>
+		</td>
+		<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+		<td>
+			<h4 class="mg-h4"><%= t('class_&_sections_for_guardians')%></h4>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<% s_batch=@albums.mg_user_albums.where(:is_deleted=>0, :mg_school_id=>@mg_school_id) %>
+			
+			<%if s_batch.where("accessable_to_students"=>1).present?%>
+			<div class="mg-scroll-employee-bar">
+				<table border="1" class="batch-tbl mg-showdata-bg mg-tbl-layout" cellspacing="1" cellpadding="1">
+					<tr>
+						<th><%=t('sl_no')%></th>
+						 <th class="mg-td-width-half" valign="top">
+					   	<label class="mg-label"> <%= t('class_&_section')%></label>
+					 </th>
+					</tr>
+					<%count_std=1%>
+					<%s_batch.each do |dep|%>
+						<%if dep.accessable_to_students%>
+						   		<tr>
+						   		<td><%=count_std%></td>
+							   	 <td class="mg-td-width-half" valign="top">
+							  		<%= dep.mg_batch.course_batch_name%>
+							  	 </td>
+							 	</tr>
+						<%count_std +=1%>
+						<%end%>
+					<%end%>
+			 	</table>
+			 	</div>
+			 <%else%>
+			 <h5>No data</h5> 
+			 <%end%>
+			
+		</td>
+		<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+		<td>
+			<% g_batch=@albums.mg_user_albums.where(:is_deleted=>0, :mg_school_id=>@mg_school_id) %>
+				
+				<%if g_batch.where("accessable_to_guardians"=>1).present?%>
+				<div class="mg-scroll-employee-bar">
+					<table border="1" class="batch-tbl mg-showdata-bg mg-tbl-layout" cellspacing="1" cellpadding="1">
+						<tr>
+							<th><%=t('sl_no')%></th>
+							 <th class="mg-td-width-half" valign="top">
+						   	<label class="mg-label"> <%= t('class_&_section')%></label>
+						 </th>
+						</tr>
+						<%count_gstd=1%>
+						<%s_batch.each do |dep|%>
+							<%if dep.accessable_to_guardians%>
+							   		<tr>
+							   		<td><%=count_gstd%></td>
+								   	 <td class="mg-td-width-half" valign="top">
+								  		<%= dep.mg_batch.course_batch_name%>
+								  	 </td>
+								 	</tr>
+							<%count_gstd +=1%>
+							<%end%>
+						<%end%>
+				 	</table>
+				 	</div>
+				  <%else%>
+			 		<h5>No data</h5> 	
+				 <%end%>
+				
+		</td>
+	</tr>
+</table>
+ 
+ <p class="mg-p-mgtop">
+      <a  class="mg-small-form-btn cancel-form-dialog"><%=t("cancel")%></a>
+  </p>
+
+

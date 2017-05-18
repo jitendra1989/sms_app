@@ -1,0 +1,71 @@
+<%#=@timeings.inspect%>
+
+<%if @timeings.present?%>
+<div>
+<div class="mg-scroll-employee-bar">
+<table class="batch-tbl mg-tbl-layout">   
+ <tr >
+  	<th>Student Name</th>
+     <%if @timeings.present?%>
+          	<% @timeings.each do |commonClassTiming| %>
+        			<th><%=commonClassTiming.start_time.strftime("%k:%M%p")%>-
+        			<%=commonClassTiming.end_time.strftime("%k:%M%p")%>
+        		</th>
+            <%end%>
+            <th style="width: 80px;"><%= t('actions')%></th>
+    <%end%>
+    </tr>
+ <% @students.each do |student| %> 
+	 <tr >
+	  	<td><%=student.first_name%>
+	  		
+	  	</td>
+        <%if @timeings.present?%>
+                	  	<%@timeings.each do |t| %>
+                            <%count=0%>
+                            <%if t.is_break%>
+                                    <%count=2%>
+                            <%end%>
+                            <%@absentDate.each do |check|%>
+                                    <%if t.is_break%>
+                                    <%count=2%>
+                                    <%else%>
+                                        <%if check.mg_student_id==student.id && check.mg_class_timing_id==t.id && check.mg_batch_id==student.mg_batch_id%>
+                                            <%count=1%>
+                                           
+                                        <%end %>
+                                    <%end %>
+                            <%end%>
+                             <%if count==1%>
+                                        <td class="mg-align-center"><a id="<%=t.id%>-<%=student.id%>-timeingsAID" class="click-absent-student-attendance-additional-cls mg-emp-std-a-link"><i class="fa fa-circle"></i></a></td>
+                                        <%count=0%>
+                                    <%elsif count==0%>
+                                        <td class="mg-align-center"><a id="<%=t.id%>-<%=student.id%>-timeingsAID" class="click-absent-student-attendance-additional-cls mg-emp-std-a-link"><i class="fa fa-check"> </i></a></td>
+                                        <%count=0%>
+                                      <%else%>
+                                     <td>Break</td>
+                                      <%count=0%>
+                                    <%end%>
+
+                              
+                    	<%end%>
+                      <td><button id="<%=student.id%>-studentAttendanceBYPeriodWiseBTNID" class="student-attendance-by-period-wise mg-icon-btn" style="font-size: 0.85em;">Mark Absent</button></td>
+        <%end%>
+	</tr>
+    <%end%>
+ </table>
+</div>
+ <%else%>
+ <div class="mg-custom-labels">
+ <h5>Time Table not yet assigned.</h5>
+ </div>
+ <%end%>
+ <div id="absentPeriodWiseStudentAattendanceDIVID"></div>
+  <div id="absentPeriodWiseStudentAattendanceeditDIVID"></div>
+</div>
+ <script type="text/javascript">
+
+
+ </script>
+
+

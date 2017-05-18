@@ -1,0 +1,293 @@
+<!-- Sec --> 
+
+<!--   updation done on 17th to make layout  -->
+<%= form_for :employee, url: employees_path, :html => {
+                            :id => 'elm_id', :class => 'elm_class',
+                            :style => 'elm_style' } do |f| %>
+
+
+<!-- <#%= form_for :subjects, url: subjects_path, :html => {
+                            :id => 'elm_id', :class => 'elm_class',
+                            :style => 'elm_style' } do |f| %>-->
+
+
+
+<!--<#%= form_for(:employee, :url=>{:action=>'create',:controller=>'employees'}, :html=>{:multipart=>true}) do |f| %>-->
+
+
+
+<table align="top">
+    <tr>
+        <!--<td width="30%" >  Create Employee </td>--> 
+        <!--    <td>-->
+                <table >
+                        <tr>
+                                <h1 align = "center">Employee Detail</h1>
+                        </tr>
+
+
+                        <tr>
+                               <td>
+                                   <%=  f.label :Employee_Number %>
+                                </td>
+                                <td>
+                                  <% @art = MgEmployee.count %>
+                                  <% @art = @art+1 %>
+                                  <% @art1 = "E #{@art}" %>
+                 <%= f.text_field :employee_number, :readonly => "readonly",:value => @art1, :class=>"textboxwidth"%>
+                <!--  <#%= f.text_field :employee_number,:value =>"test"%>
+                                   <#%= f.text_field :employee_number, readonly :true, value :@art1 %>-->
+                                </td>
+                                
+                                
+                                <td>
+                                         <%= f.label :Joining_Date %><br>
+                                </td><td>
+                                         <%= f.text_field :joining_date, :class=>"textboxwidth" %>
+                                  
+                                </td>
+                        </tr>
+                        <tr></tr>
+                                    
+                </table>
+                <table border="0">
+                    <tr><h2>General Details</h2></tr>
+                
+                    <tr></tr>
+                    <tr>
+                            <td>
+                                    <%= f.label :First_Name %></br>
+                                    <%= f.text_field :first_name, :class=>"textboxwidth"%>
+                            </td>
+                          
+                            <td>
+                                    <%= f.label :Middle_Name %></br>
+                                    <%= f.text_field :middle_name, :class=>"textboxwidth" %>
+                            </td>
+                            <td>
+                          </td>
+                            
+                            <td>
+                                    <%= f.label :Last_Name %></br>
+                                    <%= f.text_field :last_name, :class=>"textboxwidth" %>
+                            </td>
+                    </tr>
+                    <tr>
+                            <td>
+                                     <%= f.label :Gender %><br>
+                                     <%= f.select :gender, options_for_select([["Select Gender"], ["Male"], ["Female"]]) %>
+
+                            </td>
+                            
+                            <td>
+                                    <%= f.label :Date_Of_Birth %></br>
+                                    <%= f.text_field :date_of_birth, :class=>"textboxwidth" %>
+                            </td><td>
+                          </td>
+                            
+                            <td>
+                            <%= f.label :Employee_Category %><br>
+                            <%= collection_select(:category, 0, MgEmployeeCategory.all, :category_name, {:class=>"category" , :include_blank => 'Please Select'}) %>
+                            </td>
+                            
+                            
+                    </tr>
+                    <tr>
+                            
+                            <td>
+                                     <%= f.label :Employee_Position %></br>
+                                     <%= collection_select(:lang_id, 0, MgEmployeePosition.all, :id, :position_name,{:include_blank => 'Please Select'}) %>
+
+                            </td>
+                            
+                    
+                            <td>
+                                    <%= f.label :Employee_Department %><br>
+                                    <%= collection_select(:mg_employee_department_id, 0, MgEmployeeDepartment.all, :id, :departmentname,{:include_blank => 'Please Select'}) %>
+
+
+                                  <!--   <#%= collection_select(:position, 0, MgPosition.where(category_name: 'okjds').all %>-->
+                                <!--    <#% @output , :id, :position_name, {:class=>"position"}) %>-->
+
+                            </td>
+                           
+                            <td>
+                          </td>
+                            <td>
+                                    <%= f.label :Employee_Grade %><br>
+                                    <%= collection_select(:lang_id, 0, MgEmployeeGrade.all, :id, :gradename,{:include_blank => 'Please Select'}) %>
+                            </td>
+                    </tr>
+                    
+                    <tr>
+                            <td>
+                                    <%= f.label :Job_Title %><br>
+                                    <%= f.text_field :job_title, :class=>"textboxwidth" %>
+
+                            </td>
+                            <td>
+                                <%= f.label :Qualification %><br>
+                                 <%= f.text_field :qualification, :class=>"textboxwidth" %>
+                                    
+                            </td>
+                           <td>
+                          </td>
+                            <td>
+                                    <%= f.label :Total_Experience %><br>
+
+                             <%= f.select :experience_year, options_for_select([["Years"], ["0"], ["1"], ["2"], ["3"], ["4"], ["5"], ["6"], ["7"], ["8"], ["9"], ["10"], ["11"], ["12"], ["13"], ["14"], ["15"], ["16"], ["17"], ["18"], ["19"], ["20"], ["21"]]) %>
+                            <%= f.select :experience_month, options_for_select([["Months"], ["0"], ["1"], ["2"], ["3"], ["4"], ["5"], ["6"], ["7"], ["8"], ["9"], ["10"], ["11"]]) %>
+                        
+                            </td>
+                            
+                            
+
+
+
+                
+                    </tr>
+                    <tr>
+                            <td>
+                                    <%= f.label :Status %><%= f.check_box :status %></td>
+                                   
+                            </td>
+                            <td> 
+                            
+                                    
+                                   
+                            </td>
+                            <td>
+                          </td>
+                            
+                                    
+                            
+
+                            
+                    </tr>
+                    <tr>
+                            
+                
+                    
+
+                 </table>
+                 <table >
+                            <tr><h2>Personal Details</h2></tr>
+                            <tr>
+                                <td>
+                                        <%= f.label :Marital_Status %><br>
+                                        <%= f.select :marital_status, options_for_select([["Single"], ["Married"], ["Divorced"]]) %>
+                                </td>
+                                
+                                <td>
+                                </td>
+                                <td class="td">
+                                        <%= f.label :Children_Count %><br>
+                                        <%= f.text_field :children_count, :class=>"textboxwidth" %>
+                                </td>
+                                <td>
+                                        <%= f.label :Father_Name %><br>
+                                        <%= f.text_field :father_name, :class=>"textboxwidth" %>
+                                </td>
+                                
+                            </tr>
+                            <tr>
+                                
+                                <td>
+                                        <%= f.label :Mother_Name %><br>
+                                        <%= f.text_field :mother_name, :class=>"textboxwidth" %>
+                                </td>
+                                
+                                <td>
+                                </td>
+                                <td class="td">
+                                        <%= f.label :Husband_Name %><br>
+                                        <%= f.text_field :husband_name, :class=>"textboxwidth"  %>
+                                </td>
+                                <td>
+                                <%= f.label :Blood_Group %><br>
+                                <%= f.select :blood_group, options_for_select([["UnKnown"], ["A+"], ["A-"], ["B+"], ["B-"], ["O+"], ["O-"], ["AB+"], ["AB-"]]) %>
+                                </td>
+
+                            </tr>
+                            
+                            <tr>
+
+                                <td>
+                                        <%= f.label :Nationality %><br>
+                                        <%= f.select :nationality_id, options_for_select([["Select_Nationality"], ["India", "2"], ["Sri Lanka", "3"]]) %>
+                                </td>
+                                <td>
+                                </td>
+                                <td>
+                                        <%= f.label :Photo_Upload %><br>
+                                        <%= f.file_field :image_file %>
+                                </td>
+                            </tr>
+                 </table>
+                 
+                 <table>
+                            <tr>
+                                    <!--Rendering Address form-->
+                                            <hr/>
+                                            <div style="float:left;width:50%">
+                                              <b> Correspondance Address </b>
+                                              <%= render :partial => 'adress' , :locals => {:addresstype => "correspondance"}%>
+                                            </div>
+
+                                            <div style="float:right;width:50%">
+                                              <b> PermentAddress Address </b>
+                                              <%=render :partial => 'adress' , :locals => {:addresstype => "perment"}%>
+                                            </div> 
+
+
+
+                            </tr>
+                            
+                     </table>
+                 <%= f.submit %>
+     <!---->
+                </div>
+    </tr>
+    
+</table>
+
+
+
+<% end %>
+
+
+
+<script>
+
+$(document).ready(function () {
+
+
+$('#employee_joining_date').datepicker({ dateFormat: 'dd-mm-yy' });
+
+$('#employee_date_of_birth').datepicker({ dateFormat: 'dd-mm-yy' });
+$("#elm_id").validate({
+
+        rules: {
+        "employee[first_name]": {required: true},
+        "employee[middle_name]": {required: true},
+        "employee[last_name]": {required: true},
+        "employee[gender]": {required: true},
+        "employee[date_of_birth]": {required: true},
+        "employee[department_name]": {required: true},
+        "employee[position_name]": {required: true},
+        "employee[grade_name]": {required: true},
+        "employee[qualification]": {required: true},
+        "employee[status]": {required: true},
+        "employee[experience_year]": {required: true},
+        "employee[experience_month]": {required: true},
+        "employee[marital_status]": {required: true},
+        "employee[father_name]": {required: true},
+        "employee[mother_name]": {required: true},
+        "employee[blood_group]": {required: true}
+
+
+        }
+    });
+});
+</script>
+<!--   updation ended to make layout  -->

@@ -1,0 +1,49 @@
+<table border="1" class="mg-showdata-bg " cellspacing="1" cellpadding="1">
+   <tr>
+     <td class="mg-td-width-half" valign="top">
+   		<label class="mg-label"> <%= t('name')%></label>
+   	 </td>
+     <%#data=MgAlumniPolling.%>
+   	 <td class="mg-td-width-half" valign="top">
+  		<%= @polling.try(:question) %>
+  	 </td>
+ </tr>
+
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+  		<label class="mg-label"><%=t('Options')%></label>
+  	 </td>
+  	 <td class="mg-td-width-half" valign="top">
+     <%datas=MgPollOptionAlumniParticulars.where(:mg_poll_option_alumni_id=>@polling.id,:is_deleted=>0,:mg_school_id=>session[:current_user_school_id])%>
+      <%datas.each_with_index do|datass,i|%>
+     <%i=i+1%>
+  		<%="#{i.to_s}."%><%= datass.try(:paticular) %>
+      <br/>
+      <%end%>
+  	 </td>
+ </tr>
+
+<tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('start_date')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+      <%= @polling.start_date.strftime(date_format(session[:current_user_school_id])) %>
+     </td>
+ </tr>
+
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('end_date')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+      <%= @polling.due_date.strftime(date_format(session[:current_user_school_id])) %>
+     </td>
+ </tr>
+
+   
+</table>
+ <p class="mg-p-mgtop">
+     <a class="mg-small-form-btn cancel-form-dialog"><%=t('cancel')%></a>
+
+  </p>

@@ -1,0 +1,26 @@
+<%= render  partial: 'hostel_details_form' %>
+<script>
+	
+
+	$(document).on("change",".prgm",function(){
+
+   	var data=$(".prgm").size();
+   	var demo=$(this);
+   
+   for(var i=1;i<=data;i++){
+
+   if(demo.attr('id')=="programme_"+i){
+	}
+	else{
+		if($(this).val()==$("#programme_"+i).val()){
+		   alert("This option is already selected please select different Option")
+		   $(this).prop("selectedIndex", 0);
+    }
+    else{
+
+    }
+}
+
+		}
+  });
+</script>

@@ -1,0 +1,43 @@
+<h4 class="mg-h4"><%=t('view notification')%></h4>
+	<div class="container" style="width: 736px; margin-left: -14px;">
+	<p>
+		<label class="mg-label mg-leave-width">Subject </label> 
+		<label class="mg-label-inner-form"><%= @notification.subject %> 
+		<% @user = MgUser.find(@notification.from_user_id) %></label>
+	</p>
+	<p>
+		<label class="mg-label mg-leave-width">From </label> 
+		<label class="mg-label-inner-form"><%= @user.first_name %></label>
+	`</p> 
+	<p>
+		<label class="mg-label mg-leave-width">Description </label>
+		<label class="mg-label-inner-form"><%= @notification.description %> </label>
+	</p>
+
+
+	<%#= @notsification.inspect %>
+    <div class="row">
+     <div class="col-md-6">
+		<span class="mg-button-align" style="margin-right: 3px;">
+			<% if @notification.status %>
+				<%if((@parent_url!=nil) && (@parent_url.include? "show_by_box")) %>
+					<%= button_to "Mark as Unseen", principal_notification_unseen_path(@notification.id), :class => "mg-small-form-btn ",:method => :get %>
+				<% else %>
+					<%= button_to "Mark as Unseen", notification_unseen_path(@notification.id), :class => "mg-small-form-btn ",:method => :get %>
+				<% end %>			    
+			       
+			<% else %>
+					
+					 <%#= button_to "Mark as Seen", notification_seen_path(@notification.id), :class => "mg-small-form-btn ",:method => :get %>
+			<% end %>&nbsp;
+		</span>
+		<span class="mg-button-align" style="position: relative; top:0px;">
+		<%= button_to "Back", show_notification_path, :class => "mg-small-form-btn",:method => :get %>
+		<%#= link_to t('back'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+		</span>
+
+	</div>
+
+	</div>
+
+</div>

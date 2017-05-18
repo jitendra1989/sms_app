@@ -1,0 +1,427 @@
+
+<% navigation_add 'Profile', guardian_profile_path %>
+<!-- Sec --> 
+<%= render partial: 'guardian_dashboard_left' %>
+
+<section id="viewStudentID" style="margin: 0 auto;">
+<div>
+    <table class="mg-tbl-size-width">
+        <tr>
+             <td valign="top">
+              <aside class="userMenuBoxLeft" style="width: 150px;">
+                <div class="empleftbx">
+                    <div class="empimgbx" style="padding:10px 10px 0;">
+                        <%= image_tag  @guardian.photo.url(:medium, timestamp: false),:class => 'mg-img-size'  %>
+                        
+                                <div>
+                                <%= @guardian.first_name %>&nbsp; <%= @guardian.middle_name %> &nbsp;<%= @guardian.last_name %>
+                            </div> 
+                    </div>
+                    <div class="clear"></div>
+                    <div class="prof_detail">
+                        
+                        <span> 
+
+                        <button class="change-password-btn mg-custom-labels mg-custom-form-btn mg-btn-bottom-margin" id="guardianChangePasswordID"><%= t('changepassword')%></button>
+                        <%= link_to 'Download Profile', {:controller => "guardians", :action => "pdf_gen",:id =>@guardian.id } ,:target=>"_blank",:class=>"mg-custom-form-btn mg-custom-labels"%>
+                        </span>
+                    </div>
+                    <div class="clear"></div>
+                    <div class="clear"></div>
+                </div>
+                </aside>
+            </td>
+            <td valign="top">
+                    <h4 class="mg-h4"><%= t('personaldetails') %></h4>
+
+                    <table class="mg-tbl-size-width">
+                    <tr>
+                        <td style="width:250px">
+                            <label class="mg-label" style="width: 90px;"><%= t('firstname') %></label>
+                            <label><%= @guardian.first_name %></label>
+                        </td>
+                        <td style="width:250px">
+                            <label class="mg-label" style="width: 90px;"><%= t('middle_name') %></label>
+                            <%if @guardian.middle_name.present?%>
+                            <label><%= @guardian.middle_name %></label>
+                            <%else%>
+                            <label></label>
+
+                            <%end%>
+                        </td>
+                        <td class=style="width:250px">
+                            <label class="mg-label" style="width:90px;"><%= t('lastname') %></label>
+                            <label><%= @guardian.last_name %></label>
+                        </td>
+                        
+                    </tr>
+                    <tr>
+                        
+                        
+                    </tr>
+                    <tr>
+                        <td class=style="width:250px">
+                            <label class="mg-label"  style="width:90px;"><%= t('Income') %></label>
+                            <label><%= @guardian.income %></label>
+                        </td>
+                        <td class=style="width:250px">
+                            <label class="mg-label" style="width:90px;"><%= t('relation') %></label>
+                            <label><%= @guardian.relation%></label>
+                      
+                        </td>
+                        
+                        <td class=style="width:250px">
+                            <label class="mg-label mg-rm-text-trans" style="width:90px;"><%= t('dateofbirth') %></label>
+                            <%@id=@guardian.mg_school_id %>
+                            <%if @guardian.dob.present? %>
+                                <label> <%= @guardian.dob.strftime(MgSchool.find_by_id(session[:current_user_school_id]).date_format) %></label>
+                            <%else%>
+                                 
+                            <%end%>
+                        </td>
+                        
+                    </tr>
+                    <tr>
+                        <td class="mg-td-width-one-third">
+                            <label class="mg-label"  style="width:90px;"><%= t('ocupation') %></label>
+                            <label><%= @guardian.occupation %></label>
+                        </td>
+
+
+
+                        <td class="mg-td-width-one-third">
+                            <label class="mg-label"  style="width:90px;"><%= t('annual_income') %></label>
+                            <%if @guardian.dob.present? %>
+                            <label><%= @guardian.income %></label>
+                            <%else%>
+                            <label>   </label>
+
+                            <%end%>
+                        </td>
+
+                        
+                         <td class="mg-td-width-one-third">
+                            <label class="mg-label"  style="width:90px;"><%= t('Education') %></label>
+                            <label><%= @guardian.education %></label>
+                        </td>
+                    </tr>
+                    <tr>
+                        
+                    </tr>
+                    </table>
+
+                    <h4 class="mg-h4"><%= t('address') %>
+                        <button class="mg-edit-right-btn mg-icon-btn mg-edit-right-btn" id="guardianAddressEditID"><i class="fa fa-pencil-square-o"></i></button></h4>
+                    <table class="mg-tbl-size-width">
+                    <tr>
+                        <td class="mg-td-width-half">
+                            <label class="mg-label mg-form-width"><%= t('addressline1') %></label>
+                            <label><%= @address[0].address_line1 %></label>
+                        </td>
+                        <td class="mg-td-width-half">
+                            <label class="mg-label mg-form-width"><%= t('addressline2') %></label>
+                            <label><%= @address[0].address_line2 %></label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td sclass="mg-td-width-half">
+                            <label class="mg-label" style="width:140px"><%= t('street') %></label>
+                            <label><%= @address[0].street %></label>
+                        </td>
+                        <td class="mg-td-width-half">
+                            <label class="mg-label" style="width:140px"><%= t('landmark') %></label>
+                            <label><%= @address[0].landmark %></label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="mg-td-width-half">
+                            <label class="mg-label mg-form-width"><%= t('city') %></label>
+                            <label><%= @address[0].city %></label>
+                        </td>
+                        <td class="mg-td-width-half">
+                            <label class="mg-label mg-form-width"><%= t('state') %></label>
+                            <label><%= @address[0].state %></label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="mg-td-width-half">
+                            <label class="mg-label mg-form-width"><%= t('pincode') %></label>
+                            <label><%= @address[0].pin_code %></label>
+                        </td>
+                        <td class="mg-td-width-half"> 
+                            <label class="mg-label mg-form-width"><%= t('country') %></label>
+                            <label><%= @address[0].country %></label>
+                        </td>
+                    </tr>
+                    </table>
+                    <h4 class="mg-h4"><%= t('contacts') %>
+                        <button class="mg-edit-right-btn mg-icon-btn mg-edit-right-btn" id="guardianContactEditID"><i class="fa fa-pencil-square-o"></i></button>
+                    </h4>
+                    <table class="mg-tbl-size-width">
+                    <tr>
+                        <td class="mg-td-width-half">
+                            <label class="mg-label mg-form-width"><%= t('phonenumber') %></label>
+                            <!-- <label><%#= @contact[0].phone_number %></label> -->
+                            <label><%= @phone_number[0].phone_number %></label>
+                        </td>
+                       
+                    </tr>
+
+                    <tr>
+                            <td class="mg-td-width-half">
+                                <label class="mg-label mg-form-width"><%= t('mobilenumber') %></label>
+                                <!-- <label>+91-<%#= @contact[1].phone_number %></label> -->
+                                <label>+91-<%= @mobile_number[0].phone_number %></label>
+                            </td>  
+                    </tr>
+                    <tr>
+                            <td class="mg-td-width-half">
+                                    <label class="mg-label" style="width:140px"><%= t('notification') %></label>
+                                        <%if @mobile_number[0].notification.present?%>
+                                          <%if @mobile_number[0].notification==true%>
+                                          <label> Yes </label>
+                                          <%else%>
+                                          <label> No </label>
+                                          <%end%>
+                                    <%else%>
+                                    <label> No </label>
+                                    <%end%>
+                            </td>
+                            <td class="mg-td-width-half">
+                            <label class="mg-label" style="width:140px"><%= t('subscription') %></label>
+                            <%if @mobile_number[0].subscription.present?%>
+                                  <%if @mobile_number[0].subscription==true%>
+                                  <label> Yes </label>
+                                  <%else%>
+                                  <label> No </label>
+                                  <%end%>
+                            <%else%>
+                            <label> No </label>
+                            <%end%>
+                            </td>    
+                    </tr>
+                    </table>
+                    <table>
+                    <tr>
+                        <td style="width:400px;">
+                            <label class="mg-label mg-form-width"><%= t('emailid') %></label>
+                            <label><%= @email[0].mg_email_id %></label>
+                        </td>
+                    </tr>
+                    <tr>
+                            <td class="mg-td-width-one-third">
+                                    <label class="mg-label" style="width:140px"><%= t('notification') %></label>
+                                    <%if @email[0].notification.present?%>
+                                          <%if @email[0].notification==true%>
+                                          <label> Yes </label>
+                                          <%else%>
+                                          <label> No </label>
+                                          <%end%>
+                                    <%else%>
+                                    <label> No </label>
+                                    <%end%>
+                            </td> 
+
+
+
+                            <td class="mg-td-width-one-third">
+                                    <label class="mg-label" style="width:140px"><%= t('subscription') %></label>
+                                    <%if @email[0].subscription.present?%>
+                                          <%if @email[0].subscription==true%>
+                                          <label> Yes </label>
+                                          <%else%>
+                                          <label> No </label>
+                                          <%end%>
+                                    <%else%>
+                                    <label> No </label>
+                                    <%end%>
+                            </td>    
+                        </tr>
+                </table>
+
+
+                <%if @customData.present? %>
+
+                <h4 class="mg-h4"><%= t('Custom Fields') %></h4>
+                <table class="mg-tbl-size-width">
+                <tr>
+                <td style="width:250px">
+                <% @dbdatas.each do |dbdata| %>
+               
+             <%@customData.each do |custDatas|%>
+
+            <%if dbdata.id.to_s==custDatas.mg_custom_field_id%>
+
+
+              <%custom_data=Array.new%>
+            <% hidden_field_tag 'custom_data[]', dbdata.id%>
+
+
+             
+
+
+             <%
+
+               @customData.each do |custData| 
+
+               if custData.mg_custom_field_id == dbdata.id.to_s
+                  @custValue = custData.value
+               
+               end
+             end
+              %> 
+
+        <label class="mg-label" style="width:140px"><%= t(dbdata.name) %></label>
+                <label> <%=@custValue%></label>
+               
+
+              
+    <%end%>
+
+ <%end%>                 
+                <%end%>
+
+                        </td>
+                    </tr>
+
+
+
+
+
+
+
+                </table>
+                <%end%>
+
+
+
+
+                
+            </td>
+        </tr>
+    </table>
+</div>
+
+
+
+<%= render partial: 'guardian_dashboard_close' %>
+
+<div id="guardianChangePasswordDialogID"></div>
+
+<div id="guardianProfileEditDialogID" class="mg-pop-up-padding" style="overflow: hidden;"></div>
+
+
+
+<script>
+ $(document).ready(function(){
+
+    focusCurrentTab("viewGuardianProfile","viewGuardianProfileLiID");
+    focusDashboards();
+
+
+    $(document).on("click","#guardianChangePasswordID",function(){
+                        //alert("setting btn clicked");
+            var urlLink = "/dashboards/guardian_change_password";
+           // alert(urlLink);
+            $.ajax({
+                url: urlLink ,
+                cache: false,
+                success: function(html){
+                      $('#guardianChangePasswordDialogID').dialog({
+                        modal: true,
+                        minHeight: 260,
+                        minWidth:310,
+                        title: "Change Password",
+
+                        open: function () {
+                            $(this).html(html);
+                        }
+                    }); 
+                }
+            });
+    });
+
+            
+
+
+
+
+
+    $(document).on("click","#guardianAddressEditID",function(){
+                        //alert("setting btn clicked");
+            var urlLink = "/dashboards/guardian_profile_address_edit";
+           // alert(urlLink);
+            $.ajax({
+                url: urlLink ,
+                cache: false,
+                success: function(html){
+                      $('#guardianProfileEditDialogID').dialog({
+                        modal: true,
+                        minHeight: 300,
+                        minWidth:680,
+                        title: "Edit Address",
+
+                        open: function () {
+                            $(this).html(html);
+                        }
+                    }); 
+                }
+            });
+    });
+
+            
+
+
+    $(document).on("click","#guardianContactEditID",function(){
+                        //alert("setting btn clicked");
+            var urlLink = "/dashboards/guardian_profile_contact_edit";
+           // alert(urlLink);
+            $.ajax({
+                url: urlLink ,
+                cache: false,
+                success: function(html){
+                      $('#guardianProfileEditDialogID').dialog({
+                        modal: true,
+                        minHeight: 300,
+                        minWidth:680,
+                        title: "Edit Address",
+
+                        open: function () {
+                            $(this).html(html);
+                        }
+                    }); 
+                }
+            });
+    });
+
+});
+
+</script>
+<style type="text/css">
+    .edit-btn{
+        color: #000000;
+        float: right;
+        margin-left: 80%;
+        padding: 3px 9px;
+        position: relative;
+        top: -10px;
+    }
+</style>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

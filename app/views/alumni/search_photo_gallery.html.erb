@@ -1,0 +1,41 @@
+</br>
+<div class="mg-scroll-employee-bar">
+ <%if @photo_gallery.present?%>
+  <div class="mg_pagination">
+  </br><table class="batch-tbl mg-tbl-margin">   
+   <tr >
+      <th><%=t('name')%></th>
+      <th><%=t('description')%></th>
+      <th><%=t('actions')%></th>
+    </tr>
+    <% @photo_gallery.each do |f| %>
+      <tr>
+        <td><%= f.name %></td>
+        <td><%=truncate(f.description.to_s, :length => 25, :separator => ' ') %></td>
+        <td>
+          <%if session[:user_type]=="Alumni"%>
+            <button title="Show" id="<%=raw f.id %>-showAlbumsBTNID" class="show-photo_gallery-btn mg-icon-btn"><i class="fa fa-eye"></i></button>
+            <button title="Edit" id="<%=raw f.id %>-editAlbumsBTNID" class="edit-photo_gallery-btn mg-icon-btn"><i class="fa fa-pencil-square-o"></i></button>
+          <%end%>
+          <button title="upload photos" id="<%=raw f.id %>-uploadPhotoAlbumsBTNID" class="upload-photo-gallery-btn mg-icon-btn"><i class="fa fa-upload"></i></button>
+          <button title="upload videos" id="<%=raw f.id %>-uploadVideoAlbumsBTNID" class="upload-video-gallery-btn mg-icon-btn"><i class="fa fa-file-video-o"></i></button>
+          <%if session[:user_type]=="Alumni"%>
+            <button title="Delete" id="<%=raw f.id %>-deleteAlbumsBTNID" class="delete-photo_gallery-btn mg-icon-btn"><i class="fa fa-trash"></i></button>
+          <%end%>
+        </td>
+      </tr>
+    <% end %>
+  </table>
+   <%#= will_paginate @photo_gallery, :container => false %>
+    </div>
+  <div id="ShowPhotoGalleryDivID"></div>
+  <%else%>
+  <h5><%="Photo gallery not available...."%> </h5>
+  <%end%>
+</div>
+
+<script type="text/javascript">
+  $(document).ready(function () {
+    focusCurrentTab("PhotoGalleryAID","PhotoGalleryLiID");
+  });
+</script>

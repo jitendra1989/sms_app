@@ -1,0 +1,223 @@
+<% navigation_add t('payroll_deduction'),:controller=>'sports_management', 
+:action=>'payroll_deduction_index' %>
+<% navigation_add t('edit_payroll_deduction'),:controller=>'sports_management', :action=>'payroll_deduction_edit' %>
+
+<%= render  partial: 'sports_left' %>
+<%= form_for :payroll_deduction_data ,  :url=>{:controller=>'sports_management',:action=>'payroll_deduction_update',:id=>@pay_deduction.id}, :html=>{:id=>'pay_deduction_data'} do |f| %>
+   
+  <h4 class="mg-h4"><%= t('Edit_employee_payroll_deduction')%></h4>
+  <table class="mg-tbl-margin mg-show-tbl-width">
+    <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="date"><%= t ('date') %><span class="required-field">&nbsp;*</span></label><br/>
+          <%@dateFormat = MgSchool.find_by(:id=>session[:current_user_school_id]).date_format %>
+          <%= f.text_field :mm_yyyy ,:value=>@pay_deduction.try(:mm_yyyy),:class=>"mg-text-field"%>
+        </td>
+    </tr>
+    <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="date"><%= t ('name') %><span class="required-field">&nbsp;*</span></label><br/>
+        <%= f.text_field :name,:value=>@pay_deduction.try(:name),:class=>"mg-text-field"%>
+      </td>
+    </tr>
+
+    <%= hidden_field_tag :previous_amount,@account.try(:amount) %>
+    <%= hidden_field_tag :previous_account_id,@account_data_id %>
+    <%
+      account=Array.new
+      account.push("Central","central")
+      accounts=MgAccount.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:mg_account_name,:id)
+      accounts.insert(0,account)
+    %>
+
+    <!-- <label class="mg-label mg-tt-width" style="width:185px"><%#= t('select_account') %><span class="required-field">&nbsp;*</span></label><br/> -->
+
+    <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="date"><%= t ('select_account') %><span class="required-field">&nbsp;*</span></label><br/>
+        <%#= f.text_field :name,:class=>"mg-text-field"%>
+        <%=f.select :mg_account_id,options_for_select(accounts,@account_data_id),{:include_blank => t('Select')},:class=> "mg-select-btn", :disabled=>true %><br/>
+      </td>
+    </tr>
+
+    <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="date"><%= t ('amount_deduction') %><span class="required-field">&nbsp;*</span></label><br/>
+        <%=text_field_tag :amount,@pay_deduction.amount,:class=>"mg-text-field", :disabled=>true%>
+      </td>
+    </tr>
+
+    <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="date"><%= t ('to_be_shown_in_payslip') %><span class="required-field">&nbsp;</span></label>
+        <%= f.check_box :deduction,:checked=>@pay_deduction.deduction %>
+      </td>
+    </tr>
+  </table>
+  <h4 class="mg-h4"><%= t('payroll_deduction_report')%></h4>
+  <div class="text-scroll-for-log-text-payroll-cls">
+
+  <table class="mg-tbl-margin mg-show-tbl-width mg-inner-table-align" style="width: 836px;">
+    <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="selectDepartment"><%= t('select_category') %>
+        <span class="required-field">&nbsp;*</span></label><br/>
+        <span style="margin-right:1px; vertical-align: top;">
+          <%emp_category=MgEmployeeCategory.where(:is_deleted=>0, :mg_school_id=>session[:current_user_school_id]).pluck(:category_name,:id)%>
+  
+          <%=select_tag :notSelected, options_for_select(emp_category),:multiple => true,:size =>10, :class=>"mg-add-library-particular"%>
+        </span>
+ 
+        <span id="selected_employees" style="vertical-align: top;">
+          <%=select_tag :selectedDept,options_for_select([]),:multiple => true,:size =>10 ,:class=>"mg-add-library-particular"%>
+        </span>
+        <span id="selected_students" style="vertical-align: top;">
+          <%=select_tag :selectedEmp,options_for_select([]),:multiple => true,:size =>10 ,:class=>"mg-add-library-particular"%>
+        </span>
+        <a  id="editaddingemployeedatas" class="mg-custom-form-btn mg-add-rem-btn">Add</a> 
+
+        <span id="removing_employees" style="display: inline-block;">
+          <%list_data=MgSportsPayDeductiionList.where(:mg_pay_deduction_details_id=>@pay_deduction.id,:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:mg_employee_id).uniq
+          employee_data=MgEmployee.where(:id=>list_data,:is_deleted=>0,:mg_school_id=>session[:current_user_school_id])
+          array1=Array.new
+          employee_data.each do |data|
+            array2=Array.new
+            array2.push("(#{data.employee_number})#{data.first_name} #{data.last_name}",data.id)
+            array1.push(array2)
+          end
+          %>
+          <%=select_tag :selected_employees_final,options_for_select(array1,:selected=>list_data),:multiple => true,:size =>10 ,:class=>"mg-add-library-particular"%>
+        </span>
+        <a  id="removingdata" class="mg-custom-form-btn mg-add-rem-btn">Remove</a>
+      </td>
+    </tr>
+  </table>
+  </div>
+  <br/>
+
+  <p class="mg-p-mgtop">
+    <a onclick="$(this).closest('form').submit()" class="inputsss_fieldsss_data mg-small-form-btn"><%=t("save")%></a>
+      <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+  </p>
+<%end%>
+<%= render  partial: 'application/common_left_close' %>
+
+<script>
+  $(document).ready(function () {
+    focusCurrentTab("payrollDeductionAID","payrollDeductionLiID");
+    $("#pay_deduction_data").validate({
+      rules: {     
+        "payroll_deduction_data[mm_yyyy]": {required: true},
+        "payroll_deduction_data[name]": {required: true},
+        "selected_employees_final[]": {required: true}
+      }
+    });
+
+    dateFormatStr =  getJsDateFormat();
+
+    $(function() {
+      $('#payroll_deduction_data_mm_yyyy').datepicker( {
+        changeMonth: true,
+        changeYear: true,
+        minDate: '0',
+        yearRange: '+0:+50',
+        showButtonPanel: true,
+        dateFormat: 'MM yy',
+        onClose: function(dateText, inst) { 
+            $(this).datepicker('setDate', new Date(inst.selectedYear, inst.selectedMonth, 1));
+        }
+      });
+    });
+  });
+  $(document).on("click",".inputsss_fieldsss_data",function(e){
+    $("#selected_employees_final option").prop('selected',true)
+  });
+
+  $(document).on("click","#editaddingemployeedatas",function(e){
+    var demo=$("#selectedEmp").val();
+    var texts=$("#selectedEmp :selected").text();
+    // alert("demo="+demo+" text="+texts)
+    var text=texts.split("  ")
+    var array=[];
+    $("#selected_employees_final option").each(function(){
+      array.push(this.value);
+    });
+
+    for(var i=0;i<demo.length;i++){
+      var a =false;
+      for(var j=0;j<array.length;j++){
+        if(demo[i]==array[j]){
+          a=true;
+        }
+      }
+      if(a){
+      }else{
+        var addselectedOption=$("#selectedEmp option:selected")
+        var str="<option value="+demo[i]+">"+text[i]+"</option>"
+        $("#selected_employees_final").append(str);
+        $("#selected_employees_final option").prop('selected',true);
+      }
+    }
+  });
+
+  $(document).on("click","#removingdata",function(e){
+    var selectedOption=$("#selected_employees_final option:selected").remove();
+    $("#selected_employees_final option").prop('selected',true)
+  });
+
+  $(document).on("click","#notSelected",function(e){
+    var dept_values=$("#notSelected").val();
+   
+    $.ajax({
+      url: "/sports_management/payroll_deduction_ajax",
+      type: "GET",
+      data: {"floor_data":dept_values,"floor":"floor"},
+      success: function(data) {
+      
+       $("#selectedDept").empty();
+       $("#selectedDept").html(data.main);
+       },
+      error:function(){
+        alert("Something went wrong!");
+      }
+    });
+  });
+
+  $(document).on("click","#selectedDept",function(e){
+    var dept_values=$("#notSelected").val();
+    var room_id=$("#selectedDept").val();
+    $.ajax({
+      url: "/sports_management/payroll_deduction_ajax",
+      type: "GET",
+      data: {floor_data:dept_values,room:"room",room_id:room_id},
+      success: function(data) {
+      $("#selectedEmp").empty();
+      $("#selectedEmp").html(data.main);
+       console.log(data.main);
+        
+      },
+      error:function(){
+        alert("Something went wrong!");
+      }
+    });
+  });
+</script>
+
+
+<style>
+.ui-datepicker-calendar {
+    display: none;
+    }
+
+.ui-datepicker-current  {
+    display: none;
+}  
+
+
+.text-scroll-for-log-text-payroll-cls {
+    height: 195px;
+    overflow: scroll;
+    text-align: initial;
+    width: 734px;
+}    
+</style>

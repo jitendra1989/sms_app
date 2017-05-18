@@ -1,0 +1,76 @@
+<!-- Sec --> 
+<section id="userBodyContentBox" style="margin: 0 auto;">
+    <table width=100% border="0" cellspacing="0" cellpadding="0"  style="margin-bottom: 0px;">
+        <tr>
+            <td valign="top" class="userBodyContentBox1">
+                <aside class="userMenuBoxLeft" style="width: 210px;">
+                    <ul class="menuListHome">
+                     <li class="myAccountMenu"><%= t('employee')%></li>
+                       
+                        <li id="viewEmployeeDashboardLiID">
+
+                            <a class="Employee-dashboard" href="/dashboards/employee/" id="viewEmployeeDashboard">
+                                <div class="setMenu"><i class="fa fa-user">&nbsp;&nbsp;</i><%=t('mydashboard')%><!-- <i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i> -->
+                                </div>
+                            </a>
+                        </li>
+
+                        <li id="viewEmployeeAttendances_demoLiID">
+                            <a class="Employee-Attendances" href="/employees_attendances/employee_index/" id="viewEmployeeAttendances_demo">
+                                <div class="setMenu"><i class="fa fa-shield">&nbsp;&nbsp;</i><%=t('attendances')%><!-- <i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i> -->
+                                </div>
+                            </a>
+                        </li>
+                        <li id="viewEmployeeLeaveLiID">
+                            <a class="employee-leave" href="/mg_employee_leave_types/from_emp/" id="viewEmployeeLeave">
+                                <div class="setMenu"><i class="fa fa-tag">&nbsp;&nbsp;</i><%=t('applyleave')%><!-- <i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i> -->
+                                </div>
+                            </a>
+                        </li>
+                        <li id="viewEmployeeEventsLiID">
+
+                            <a class="Employee-Events" href="/dashboards/employee_events/" id="viewEmployeeEvents" >
+                                <div class="setMenu"><i class="fa fa-tasks">&nbsp;&nbsp;</i><%=t('events')%><!-- <i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i> -->
+                                </div>
+                            </a>
+                        </li>
+<!--                         <li id="viewEmployeeMessagesLiID">
+                            <a class="Employee-Messages" href="#" id="viewEmployeeMessages">
+                                <div class="setMenu"><i class="fa fa-envelope-o">&nbsp;&nbsp;</i>Messages<i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i>
+                                </div>
+                            </a>
+                        </li> -->
+                         <li id="viewEmployeeNewsLiID" >
+                            <a class="Employee-News" href="/dashboards/employee_news/" id="viewEmployeeNews">
+                                <div class="setMenu"><i class="fa fa-newspaper-o">&nbsp;&nbsp;</i><%=t('news')%><!-- <i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i> -->
+                                </div>
+                            </a>
+                        </li>
+
+                        <li id="viewEmployeeProfileLiID">
+
+                            <a class="Employee-Profile" href="/dashboards/employee_profile/" id="viewEmployeeProfile">
+                                <div class="setMenu"><i class="fa fa-user">&nbsp;&nbsp;</i><%= t('profile')%><!-- <i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i> -->
+                                </div>
+                            </a>
+                        </li>
+
+                          <!-- <li id="viewEmployeeAttendancesLiID">
+                            <a class="Employee-Attendances" href="#" id="viewEmployeeAttendances_demo">
+                                <div class="setMenu"><i class="fa fa-shield">&nbsp;&nbsp;</i>Attendances<i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i>
+                                </div>
+                            </a>
+                        </li> -->
+
+                         <li id="viewEmployeeSubjectsLiID">
+
+                            <a class="Employee-Subjects" href="/employees_attendances/subjects_for_employee/" id="viewEmployeeSubjects">
+                                <div class="setMenu"><i class="fa fa-user">&nbsp;&nbsp;</i><%= t('subjects')%><!-- <i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i> -->
+                                </div>
+                            </a>
+                        </li>
+                    </ul>    
+
+                </aside>
+            </td>
+            <td  valign="top" id="manageEmployeeCategoryID" class="mg-table-td-main-2">

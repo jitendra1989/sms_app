@@ -1,0 +1,44 @@
+<%=render partial:"entrance_exam_details/entrance_exam_left" %>
+<% navigation_add t('exam_marks'), :controller=>'entrance_exam_details', :action=>'exam_marks' %>
+<h4 class="mg-h4"><%=t('classlist')%></h4>
+<%= form_for :marks_obtained, url: update_student_marks_path,:html=>{:id=>"marksObtainedFormID", :multipart=>true} do |f| %>
+  <label class="mg-label mg-custom-labels" for="select_class"><%= t('select_class') %><span class="required-field"> *</span></label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <%=select_tag "mg_course_id[]",options_for_select(@course_name),:prompt=>t('select'),:onchange=>"examMarksFunction(this.value)",:style=>"margin-bottom: 4px;"%><br/>
+  <div id="selecttudentMarksID"></div>
+<%end%>
+
+  
+<%=render partial:"common_left_close" %>
+
+<script>
+$(document).ready(function(){
+
+  focusCurrentTab("entranceExmMarksLID","entranceEXMMarksID");        
+
+ $("#marksObtainedFormID").validate({
+    rules: {     
+      "index[]": {required: true, number: true},
+    }
+  });
+});
+
+
+
+  function examMarksFunction(course_id)
+  {
+    if(course_id!=''){
+      urlLink = "/entrance_exam_details/student_marks_obtain";
+      $.ajax({
+        url: urlLink,
+        data: {"mg_course_id":course_id},
+        cache: false,
+        success: function(html){
+          $("#selecttudentMarksID").html(html);
+        }
+      });
+    }else{
+      $("#selecttudentMarksID").empty();    //   
+    }
+  }
+
+</script>

@@ -1,0 +1,56 @@
+<%if @search.present?%>
+<div class="mg-scroll-employee-bar">
+<table border="1" class="mg-showdata-bg mg-homework-tbl" cellspacing="1" cellpadding="1">
+<tr>
+	<th>
+		<label class="mg-label mg-td-width-half" valign="top"> <%= t('item_name')%></label>    
+	</th>
+	<th>
+		<label class="mg-label mg-td-width-half" valign="top"> <%= t('item_code')%></label>
+	</th>
+	<th>
+		<label class="mg-label mg-td-width-half" valign="top"> <%= t('status')%></label>
+	</th>
+	<th style="width: 100px;">
+		<label class="mg-label mg-td-width-half" valign="top"> <%= t('reference')%></label>
+	</th>
+	</tr>
+	<%
+	@search.each do |search|
+	%>
+	<tr>
+		<td class="mg-td-width-half" valign="top"><%=search.try(:item_name)%></td>
+		<td class="mg-td-width-half" valign="top"><%=search.try(:item_identification_number)%></td>
+		<%if search.quantity.present?%>
+<!-- ============================================================================ -->
+		<%
+			consumed_quantity=0
+			total_quantity=search.quantity
+			consumption=MgItemConsumption.where(:mg_item_id=>search.id,:is_deleted=>0,:mg_school_id=>session[:current_user_school_id])
+			consumption.each do |cons|
+				consumed_quantity=consumed_quantity+cons.quantity_consumption
+			end
+			resultant=total_quantity-consumed_quantity
+		%>
+				<%if resultant>0%>
+				<td class="mg-td-width-half" valign="top"><%=t("available")%></td>
+				<%else%>
+				<td class="mg-td-width-half" valign="top"><%=t("out_of_stock")%></td>
+				<%end%>
+<!-- ============================================================================ -->
+		<%else%>
+				<td class="mg-td-width-half" valign="top"><%=t("no_data")%></td>
+
+		<%end%>
+
+		<td class="mg-td-width-half" valign="top"><%=search.try(:item_location)%></td>
+</tr>
+	<%end%>
+</table>
+</div>
+<br/>
+<%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+<%else%>
+<br/>
+<h4>No Results found<h4>
+<%end%>

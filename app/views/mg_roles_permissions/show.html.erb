@@ -1,0 +1,15 @@
+<!-- Sec --> 
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Mg role:</strong>
+  <%= @mg_roles_permission.mg_role_id %>
+</p>
+
+<p>
+  <strong>Mg permission:</strong>
+  <%= @mg_roles_permission.mg_permission_id %>
+</p>
+
+<%= link_to "<i class=\"fa fa-pencil-square-o\"></i>".html_safe, edit_mg_roles_permission_path(@mg_roles_permission) ,:title=>"Edit" ,:class=>"mg-icon-btn"%> |
+<%= link_to "<i class=\"fa fa-fast-backward\"></i>".html_safe, mg_roles_permissions_path ,:title=>"Back" ,:class=>"mg-icon-btn"%>

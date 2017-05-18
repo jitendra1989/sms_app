@@ -1,0 +1,284 @@
+<%= render  partial: 'dashboards/employee_left' %>
+
+ <%#= render  partial: 'homework/homework_left' %> 
+<h4 class="mg-h4"><%= t('edit_assignment') %></h4>
+ <div class="mg-custom-labels">
+
+ <%= form_for :assignment, url:homework_update_path(@assignment.id), :html => {:id => 'assignmentUpdateID',:multipart => true } do |f| %>
+<%= f.hidden_field :is_deleted, :value => 0 %>
+<%= f.hidden_field :mg_employee_id, :value => @emp[0].id %>
+<%= f.hidden_field :mg_school_id, :value => session[:current_user_school_id] %>
+<%= f.hidden_field :created_by, :value => session[:user_id] %>
+<%= f.hidden_field :updated_by, :value => session[:user_id] %>
+<p>
+    <label class="mg-label" style="width:140px"><%= t('select_subject') %><span class="required-field">&nbsp;*</span></label>
+    <br/>
+    <%
+    	batch=MgTimeTableEntry.select(:mg_batch_id,:mg_subject_id).where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id],:mg_employee_id=>@emp[0].id).uniq
+    	batch_array=Array.new
+    	batch.each do |batch_obj|
+    		small_array=Array.new
+    						  batches=MgBatch.find(batch_obj.mg_batch_id)
+                              courseObj = MgCourse.find(batches.mg_course_id)
+							  subject=MgSubject.find(batch_obj.mg_subject_id)
+							  small_array.push("#{subject.subject_name}-#{courseObj.course_name}-#{batches.name}")
+							  small_array.push("#{batch_obj.mg_subject_id} #{batch_obj.mg_batch_id}")
+                               batch_array.push(small_array)
+                          end
+    %>
+     <%=select_tag :batch_subject_id, options_for_select(batch_array, :selected => "#{@assignment.mg_subject_id} #{@assignment.mg_batch_id}"),:prompt=>"Select",:class=>"mg-select-btn select-student-class",:onchange=>"addStudentAssignment()" %>
+</p>
+
+<p>
+    <label class="mg-label" style="width:140px"><%= t('select_category') %><span class="required-field">&nbsp;*</span></label>
+    <br/>
+    <%= f.collection_select(:mg_homework_category_id,MgHomeworkCategory.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]), :id, :name,{:include_blank => t("select")},:id => "libraryHomeworkCategoryId" ,:class => "library-homework-category-new-class")%>
+</p>
+
+
+
+<p>
+    <label class="mg-label" style="width:140px"><%= t('title') %><span class="required-field">&nbsp;*</span></label>
+    <br/>
+   <%= f.text_field :title,:class=>"mg-text-field" %>
+</p>
+
+<div id="addStudentListDivID"></div>
+
+<p>
+    <label class="mg-label" style="width:140px"><%= t('due_date') %><span class="required-field ">&nbsp;*</span></label><br/>
+   <%= f.text_field :due_date,:class=>"mg-text-field",:id=>"assignment_due_date_ID" %>
+</p>
+
+<p>
+    <label class="mg-label" style="width:140px"><%= t('carry_marks') %><span class="required-field">&nbsp;</span></label>
+   <%= f.check_box :is_carring_marks,:class=>"hmg-text-field" %>
+</p>
+
+<!-- ========================================================================= -->
+ <p>
+    <label class="mg-label" style="width:140px"><%= t('details') %><span class="required-field">&nbsp;</span></label>
+    <br/>
+    <%= f.cktext_area :detail, rows: 10 %>
+  </p>
+<!-- ========================================================================= -->
+
+<p>
+<%@document=MgAssignmentDocumentation.where(:mg_assignment_id=>@assignment.id,:user_type=>"employee",:is_deleted=>0,:mg_school_id=>session[:current_user_school_id])
+
+        if @document.length>0
+%>
+
+<label class="mg-label" style="width:140px"><%= t('attached_assignment') %><span class="required-field">&nbsp;*</span></label><br/>
+
+<%html_icon='<span title="Download" class="mg-icon-btn"><i class="fa fa-download"></i></span>'
+
+@document.each do |doc|%>
+<p>
+    <%= link_to_if doc.file.url, html_icon.html_safe, doc.file.url , :target=>"_blank"%>
+    <%=doc.file_file_name%>
+
+
+<button title="Delete" id="<%=raw doc.id %>-deleteBTNID" class="delete-attachment-btn mg-icon-btn employeefile-upload mg-custom-form-btn mg-icon-btn" style="color: #297ACC; font-size:0.8em; float: right; position: relative; right: 449px; margin-top: 3px;"><i class="fa fa-trash " ></i></button>
+</p>
+<%end
+end%>
+</p>
+
+<p>
+<%if @document.length>0%>
+<label class="mg-label mg-rm-text-trans" for="upload_file" ><%= t('add_attachment') %></label>
+<%else%>
+<label class="mg-label mg-rm-text-trans" for="upload_file" ><%= t('add_attachment') %></label>
+<%end%>
+<div>
+   <div class="teacher_file_file_div" id="dueFineDivId" style="float: left; width: 100%;">
+   <span style="float: left;">
+ <%= file_field_tag 'file[]'%>
+</span>
+  <a class="employeefile-upload mg-custom-form-btn mg-icon-btn" style="color: #297ACC; font-size:0.8em; float: left; position: relative; right: 0px; margin-top: 3px;"><i class="fa fa-trash"></i></a>
+ </div>
+ <a id="add_homework_employee_uploads" class="mg-label-inner-form mg-custom-form-btn mg-icon-btn" style="color: #297ACC; font-size:0.8em;" ><i class="fa fa-plus">&nbsp;Add File</i></a> <br/>
+  </div>
+
+</p>
+
+<P>
+    <%= f.submit t('save') ,:class=>"mg-small-form-btn"%>
+    <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+</p>
+<% end %>
+</div>
+ <%= render  partial: 'application/common_left_close' %> 
+<script>
+$(document).ready(function(){
+
+focusCurrentTab("viewCreateHomework","viewCreateHomeworkLiID");
+
+  dateFormatStr =  getJsDateFormat();
+
+$('#assignment_due_date_ID').datepicker({ changeMonth: true,
+                changeYear: true,yearRange: "-50:+50",minDate: "0",dateFormat: dateFormatStr});
+
+var dates =  $.datepicker.formatDate(dateFormatStr,new Date($('#assignment_due_date_ID').val()));
+
+$('#assignment_due_date_ID').val(dates);
+
+  var student=$(".select-student-class").val();
+  var batch_id=student.split(" ");
+  var assig_id="<%=@assignment.id%>"
+  if(batch_id[1]>0)
+  {
+        var urlLink = "/homework/homework_new/";
+        $.ajax({
+            url: urlLink ,
+            data:{"mg_batch_id":batch_id[1],"assig_id":assig_id},
+            cache: false,
+            success: function(html)
+            {
+                $("#addStudentListDivID").empty();
+                $("#addStudentListDivID").append(html);
+            }
+        });
+  }
+
+
+  
+
+})
+// function myCoCourseFunction(courseid){
+//     var urlLink = "/examination/Co_ScholasticCourseObservation_new/";
+      
+//         $.ajax({
+//             url: urlLink ,
+//             data:{"mg_course_id":courseid},
+//             cache: false,
+//             success: function(html){
+//                 //alert("hii")
+//             //console.log(html);
+//             $("#CoexaminationClassID").empty();
+//             $("#CoexaminationClassID").append(html);
+            
+//         }
+//                 }); 
+//     };
+
+$(document).on("click", ".delete-attachment-btn", function(e){
+     e.preventDefault();
+                var myID =$(this).attr('id');
+            var Id=myID.split("-");
+                var retVal = confirm("Are you sure to delete?");
+                if(retVal){
+                  //  alert(retVal);
+                     var urlLink = "/homework/employee_attachment_delete/"+Id[0];
+
+                      $.ajax({
+                        url: urlLink ,
+                        cache: false,
+                        success: function(html){
+                            window.location=window.location;           
+                        }
+                    });
+
+                }else{
+                   // alert(retVal);     
+                   return false;
+                }
+
+        });
+
+function addStudentAssignment()
+{
+  var student=$(".select-student-class").val();
+  var batch_id=student.split(" ");
+  if(batch_id[1]>0)
+  {
+        var urlLink = "/homework/homework_new/";
+        $.ajax({
+            url: urlLink ,
+            data:{"mg_batch_id":batch_id[1]},
+            cache: false,
+            success: function(html)
+            {
+                $("#addStudentListDivID").empty();
+                $("#addStudentListDivID").append(html);
+            }
+        });
+  }
+  else{
+        $("#addStudentListDivID").empty();
+  }
+}
+
+$(function () {
+    $.validator.addMethod('dateFormat',
+    function (value, element) {
+      dateFormatStr =  getJsDateFormat();
+        if (this.optional(element)) {
+            return true;
+        }
+        var ok = true;
+        try {
+            $.datepicker.parseDate(dateFormatStr, value);
+        }
+        catch (err) {
+            ok = false;
+        }
+        return ok;
+    },
+      "Please enter a date in the format "+ getDateFormat(dateFormatStr) +".");
+      dateFormatStr =  getJsDateFormat();
+
+    $(".datefield").datepicker({ dateFormat: dateFormatStr, changeYear: true });
+});
+
+// $("#assignmentUpdateID").validate({
+//         rules: {        
+//         "batch_subject_id": {required: true},
+//         "assignment[title]": {required: true, name_validate: true, maxlength: 35},
+//         "mg_student_id[]": {required: true},
+//         //"assignment[detail]": {required: true},
+//         "assignment[due_date]": {required: true,dateFormat: true},
+//        // "#cke_assignment_detail":{required: true}
+//       }
+//     });
+
+$("#assignmentUpdateID").validate({
+        rules: {        
+        "batch_subject_id": {required: true},
+        "assignment[title]": {required: true, name_validate: true, maxlength: 35},
+        "mg_student_id[]": {required: true},
+        "assignment[due_date]": {required: true,dateFormat: true},
+       // "#cke_assignment_detail":{required: true}
+      },
+      errorPlacement: function(error, element) {
+        if (element.attr("name") == "mg_student_id[]")
+            {
+                $("#error_for_validation").empty();
+                $("#error_for_validation").append("<p>No student selected</p>");
+                $("#error_for_validation").addClass("error");
+            }  else
+            {
+                error.insertAfter(element);
+            }
+    }
+    });
+
+$(document).on("click", "#add_homework_employee_uploads", function(e){
+    var lastRepeatingGroup = $('.teacher_file_file_div').last();
+    var cloned = lastRepeatingGroup.clone();
+    cloned.find('input').val('');
+    cloned.insertAfter( lastRepeatingGroup );
+    return false;
+}); 
+
+
+$(document).on("click", ".employeefile-upload", function(e){
+   var total = $('.employeefile-upload').length
+   if(total!=1)
+   {
+        $(this).parent('div').remove();
+    }
+  
+});
+</script>

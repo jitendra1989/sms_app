@@ -1,0 +1,94 @@
+<%= form_for :events, url: event_update_path(@events), method: :patch, :html => {
+                            :id => 'editEventsFormID' } do |f| %>
+
+  <p>
+    <%= f.label :Title, t('title') ,:class=>"mg-label"%><span class="required-field"> *</span><br>
+    <%= f.text_field :title   %>
+  </p>
+
+
+   <p>
+    <%= f.label :mg_event_type_id, t('eventtype') ,:class=>"mg-label"%><span class="required-field"> *</span><br>
+   <%= f.collection_select(:mg_event_type_id, MgEventType.where(:is_deleted=>0), :id, :name,{:include_blank => 'Select Type'} ,:class=>"mg-select-btn")  %>
+  
+  </p>
+   <p>
+    <%= f.label :event_privacy, t('eventprivacy') ,:class=>"mg-label"%><span class="required-field"> *</span><br>  
+    <%= f.select :event_privacy, options_for_select([["Teacher" ,"Teacher"],["Admin","Admin"],["Guardian","Guardian"],["Student","Student"]], :selected => @events.event_privacy),:prompt => 'Select'%>
+  </p>
+   <p>
+    <%= f.label :event_description, t('eventdescription') ,:class=>"mg-label"%><span class="required-field"> *</span><br>
+    <%= f.text_area :event_description   %>
+  </p>
+  
+  <p>
+    <table>
+      <tr>
+        <td><%= f.label :start_date, t('startdate') ,:class=>"mg-label"%><span class="required-field"> *</span></td>
+        <td> <%= f.label :start_time, t('starttime') ,:class=>"mg-label"%> <span class="required-field"> *</span></td>
+      </tr>
+      <tr>
+        <td><%= f.text_field :event_date, :readonly => true, :id=>"clickDateID", :value=>@events.event_date.strftime('%d-%m-%Y')%>
+        </td><td><%= f.text_field :start_time , :value=>@events.start_time.strftime('%I:%M%p') %></td>
+      </tr>
+    </table>
+  </p>
+  <p>
+    <table>
+      <tr>
+        <td><%= f.label :end_date, t('enddate') ,:class=>"mg-label"%><span class="required-field"> *</span></td>
+        <td><%= f.label :end_time, t('endtime') ,:class=>"mg-label"%><span class="required-field"> *</span></td>
+      </tr>
+      <tr>
+        <td><%= f.text_field :end_date, :value=>@events.end_date.strftime('%d-%m-%Y')%></td>
+        <td> <%= f.text_field :end_time, :value=>@events.end_time.strftime('%I:%M%p') %></td>
+      </tr>
+    </table>
+  </p>
+<p>
+  <%#= f.label :is_deleted, t('isactive') %><br />
+    <%#= f.label :is_deleted,t('yes')%>
+    <%#= f.radio_button :is_deleted, false  , :checked => true %>
+    <%#= f.label :is_deleted,t('no') %>
+    <%#= f.radio_button :is_deleted, true%>
+</p>
+
+
+<%=f.hidden_field :is_deleted, :value=>0%>
+  <p style="float: left; margin-right:3px;">
+    <%= f.submit t('save') ,:class=>"mg-small-form-btn"%>
+  </p>
+<% end %>
+<span style="float: left;">
+  <button title="Delete" class="delete-event-BTN btn btn-cancel" id="<%= @events.id%>">Delete</button>
+</span>
+         
+
+
+
+
+<SCRIPT TYPE="text/javascript">
+
+
+
+$(document).ready(function(){
+  $('#events_start_time').timepicker({ 'scrollDefault': 'now' });
+  $('#events_end_time').timepicker({ 'scrollDefault': 'now' });
+   var date=$("#clickDateID").val();
+ $( "#events_end_date" ).datepicker({  minDate: new Date(date), dateFormat: 'dd-mm-yy' });
+   $("#editEventsFormID").validate({
+  rules: {
+  "events[title]": {required: true},
+  "events[mg_event_type_id]": {required: true},
+  "events[event_privacy]": {required: true},
+  "events[event_description]": {required: true},
+  "events[start_time]": {required: true},
+  "events[end_time]": {required: true},
+  "events[end_date]": {required: true}
+
+  }
+  });
+  
+});
+</SCRIPT>
+

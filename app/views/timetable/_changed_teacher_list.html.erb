@@ -1,0 +1,200 @@
+<br/>
+<br/>
+<h4 class="mg-h4"><%=t('changed_teacher_list')%></h4>
+ <%= form_for :time_table, :html => {
+                            :id => 'changeTeacherChangeDateFormID' } do |f| %>
+<label class="mg-label mg-custom-labels mg-tt-width mg-tbl-margin"><%=t('select_date')%> </label>
+<%=text_field_tag :changed_date,params[:changed_date].present? ? params[:changed_date] : Date.today.strftime(@school.date_format), :class=>"validate_date", :onchange=>"$(this).closest('form').submit()" , :class=>"mg-text-field"%>
+<%end%>
+<%if @change_teacher_list.present?%>
+	<div class="mg-scroll-employee-bar">
+		<table class="batch-tbl mg-tbl-layout">
+		<tr>
+			<th><%=t('class_&_section')%></th>
+			<th><%=t('start_time')%></th>
+			<th><%=t('end_time')%></th>
+			<th><%=t('weekday')%></th>
+			<th><%=t('changed_date')%></th>
+			<th><%=t('subject')%></th>
+			<th><%=t('employee')%></th>
+			<%if @permanent_check !="permanent"%>
+				<th><%=t('action')%></th>
+			<%else%>
+				<th><%=t('action')%></th> 
+			<%end%>
+
+		</tr>
+		<%@change_teacher_list.each do |list|%>
+		<tr>
+			<td><%=list.mg_batch.course_batch_name%></td>
+			<td><%=list.mg_class_timing.try(:start_time).strftime("%k:%M%p")%></td>
+			<td><%=list.mg_class_timing.try(:end_time).strftime("%k:%M%p")%></td>
+			<td><%=list.mg_class_timing.try(:weekday_name)%></td>
+
+			<td><%=list.try(:date).strftime(@school.date_format)%></td>
+			<td><%=list.mg_subject.try(:subject_name)%></td>
+			<td><%=list.mg_employee.try(:employee_name)%></td>
+			<%if  @permanent_check!="permanent"%>
+				<td class="mg-align-center">
+				 <button title="Edit" id="<%=raw list.id %>-editChangeTeacherEntryBTNID" class="edit-change-teacher-entry-btn mg-icon-btn"><i class="fa fa-pencil-square-o"></i></button> 
+				 <button title="Delete" id="<%=raw list.id %>-deletechangeTeacherEntryBTNID" class="delete-change-teacher-entry-btn mg-icon-btn"><i class="fa fa-trash"></i></button>
+
+				</td>
+			<%else%>
+				
+				 <td class="mg-align-center"> 
+				 <button title="Edit" id="<%=raw list.id %>-editChangeTeacherEntryBTNID" class="edit-change-teacher-entry-btn mg-icon-btn"><i class="fa fa-pencil-square-o"></i></button> 
+				 <button title="Revert & Delete" id="<%=raw list.id %>-reStorechangeTeacherEntryBTNID" class="restore-change-teacher-entry-btn mg-icon-btn"><i class="fa fa-recycle"></i></button></td> 
+			<%end%>
+		</tr>
+		<%end%>
+		
+		</table>
+	</div>
+<%else%>
+<h5>No data</h5>
+<%end%>
+
+<div id="editChangeTeacherDialogDIVID"></div>
+
+<script type="text/javascript">
+	$(document).ready(function(){
+		var dateFormatStr =  getJsDateFormat();
+		$(function () {
+		   $.validator.addMethod('dateFormat',
+		    function (value, element) {
+		      dateFormatStr =  getJsDateFormat();
+		        if (this.optional(element)) {
+		            return true;
+		        }
+		        var ok = true;
+		        try {
+		            $.datepicker.parseDate(dateFormatStr, value);
+		        }
+		        catch (err) {
+		            ok = false;
+		        }
+		        return ok;
+		    },
+		      "Please enter a date in the format "+ getDateFormat(dateFormatStr) +".");
+		      dateFormatStr =  getJsDateFormat();
+
+		    $(".datefield").datepicker({ dateFormat: dateFormatStr, changeYear: true });
+		});
+
+
+   	 $("#changeTeacherChangeDateFormID").validate({
+        rules: {
+        "changed_date": {dateFormat: true,required: true}
+        }
+      });
+
+  	});
+
+  	$(document).on("click", ".delete-change-teacher-entry-btn", function(e){
+  		var myID =$(this).attr('id');
+        var Id=myID.split("-");
+  		
+
+		 var retVal = confirm("Are you sure to delete?");
+                if(retVal){
+                     var urlLink = "/timetable/class_timings_for_selected_batch/";
+                      $.ajax({
+                        url: urlLink ,
+                        data:{
+                        	id: Id[0],
+                        	"key_select": "delete"
+                        },
+                        cache: false,
+                        success: function(html){
+                           window.location.reload();
+                        }
+                    });
+                }else{    
+                   return false;
+               }
+
+  	// $(this).closest('form').submit();
+
+  	});
+  	  	$(document).on("click", ".restore-change-teacher-entry-btn", function(e){
+  		var myID =$(this).attr('id');
+        var Id=myID.split("-");
+  		
+
+		 var retVal = confirm("Are you sure to revert & delete?");
+                if(retVal){
+                     var urlLink = "/timetable/class_timings_for_selected_batch/";
+                      $.ajax({
+                        url: urlLink ,
+                        data:{
+                        	id: Id[0],
+                        	"key_select": "restore"
+                        },
+                        cache: false,
+                        success: function(html){
+                           window.location.reload();
+                        }
+                    });
+                }else{    
+                   return false;
+               }
+
+  	// $(this).closest('form').submit();
+
+  	});
+
+  	$(document).on("click", ".edit-change-teacher-entry-btn", function(e){
+  		var myID =$(this).attr('id');
+        var Id=myID.split("-");
+        var urlLink = "/timetable/edit_change_teacher/";
+          $.ajax({
+            url: urlLink ,
+            data:{
+            	id: Id[0]
+            },
+            cache: false,
+            success: function(html){
+            	$('#editChangeTeacherDialogDIVID').dialog({
+                    modal: true,
+                    minHeight: 450,
+                    minWidth:400,
+                    title: "Edit Change Teacher",
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+            }
+        });
+  	});
+
+function editTeacherForSelectedSubject(mg_subject_id){
+  	var mg_class_timing_id=$("#mg_class_timing_id").val();
+	var mg_batch_id=$("#mg_batch_id").val();
+	var mg_timetable_id=$("#acadamic_year").val();
+	
+		$.ajax({
+			url:"/timetable/class_timings_for_selected_batch",
+			data:{ 
+					"mg_subject_id":mg_subject_id,
+					"mg_class_timing_id":mg_class_timing_id,
+					"mg_batch_id": mg_batch_id,
+					"mg_timetable_id": mg_timetable_id,
+					"key_select": "subject"
+					},
+			type:"GET",
+			success:function(data){
+				// 
+				console.log(data);
+				var str="<option value=''>Select</option>";
+				for(var i in data){
+					// if (data[i].weekday_id)
+					str +="<option value="+data[i].id+">"+data[i].name+"</option>";
+				}
+				$("#editEmployeeSelectTagChangeTeacherSTAGID").html(str);
+			}
+		});
+	
+  	}
+</script>

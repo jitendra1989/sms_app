@@ -1,0 +1,39 @@
+
+<% navigation_add t('hostel_warden'), :controller => 'hostel_management', :action => 'hostel_warden_login_index' %>
+<%= render  partial: 'master_settings/master_settings_left' %>
+<h4 class="mg-h4"><%= t('about_hostel_warden') %></h4>
+<button class="add-hostel-warden-user mg-btn-bottom-margin mg-custom-form-btn"><%= t('add_hostel_warden')%></button>
+
+<%if @users.present?%>
+
+  <%= render  partial: 'login_warden_index' %>
+<%else%>
+  <h5>No Records created</h5>
+<%end%>
+<%= render  partial: 'application/common_left_close' %>
+<div id="newhosteladminHeadDivIdss"></div>
+
+<script>
+  $( document ).ready(function() {
+    focusCurrentTab("hostel_wardenAID","hostel_wardenLID");
+  });
+
+  $(document).on("click", ".add-hostel-warden-user", function(e){
+    var urlLink = "/hostel_management/new_hostel_warden_user";
+    $.ajax({
+      url: urlLink ,
+      cache: false,
+      success: function(html){
+        $('#newhosteladminHeadDivIdss').dialog({
+          modal: true,
+          minHeight: 'auto',
+          minWidth: '250px',
+          title: "New Hostel Warden",
+          open: function () {
+          $(this).html(html);
+          }
+        }); 
+      }
+    });
+  });
+</script>

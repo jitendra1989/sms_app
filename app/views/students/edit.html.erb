@@ -1,0 +1,1023 @@
+<!-- Sec --> 
+ <%= form_for :student, url: student_path(@student), method: :patch,:html => { :id => "studentEditFormID" ,:multipart => true } do |f| %>
+
+
+      <div class="form-content" style=" width:100%; border:0px #fac94a solid; color:#000; ">
+          <div class="form-content-inner" style="padding:5px;">
+            <table width="100%" cellspacing="0" cellpadding="0" border="0" class="mg-table-pop-up-mod">
+              <tbody>
+                <tr>
+                  <td valign="top" class="mg-td-width-half">
+                   <label for="admission_number" class="mg-label"><%= t('admission_number') %></label>
+                  
+                     <%= f.text_field :admission_number, :readonly => "readonly", :class=>"textboxwidth mg-phn-text-field"%>
+                    <%= tooltip '<i class="fa fa-question"></i>'.html_safe, { :tooltip => 'Admission number is auto generated. ' }, :class => 'mytooltip mg-icon-btn' ,:style=>"font-size: 0.85em;"%>
+                  </td>
+                  <td valign="top" class="mg-td-width-half">
+                    <label for="admission_date" class="mg-label"><%= t('admission_date') %><span class="required-field">&nbsp;*</span></label>
+                  
+                    <%= f.text_field :admission_date ,:class => 'admission_date mg-phn-text-field'%>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+
+        <div class="form-content">
+          <div class="form-content-inner">
+            <h4 class="mg-h4"><span style="margin-left:4px;"><%= t('personaldetails') %></span></h4>
+            <table width="100%" cellspacing="0" cellpadding="0" border="0" class="student-form-cls mg-inner-table-align">
+              <tbody>
+                <tr>
+                  <td width="33%" valign="top">
+                    <label for="first_name"  class="mg-label"><%= t('firstname') %>
+                      <span class="required-field">*</span> 
+                    </label>
+                  </td>
+
+                  <td> </td>
+                  <td width="33%" valign="top">
+                    <label for="middle_name" class="mg-label"><%= t('middlename') %></label>
+                  </td>
+                  <td> </td>
+                  <td width="33%" valign="top">
+                    <label for="last_name" class="mg-label"><%= t('lastname') %>
+                    <span class="required-field">*</span>
+                    </label>
+                  </td>
+                </tr> 
+                <tr>
+                  <td width="33%" valign="top">
+                    <%= f.text_field :first_name  %>
+                  </td>
+                  <td> </td>
+                  <td width="33%" valign="top">
+                    <%= f.text_field :middle_name %>
+                  </td>
+                  <td> </td>
+                  <td width="33%" valign="top">
+                    <%= f.text_field :last_name %>
+                  </td>
+                </tr>
+<!--                 <tr>
+                  <td colspan="5"> </td>
+                </tr> -->
+              
+               <tr>
+                  <td width="33%" valign="top">
+                    <label for="batch_name" class="mg-label"> <%= t('course')%>&nbsp;&&nbsp;<%= t('batch') %>
+                      <span class="required-field">*</span>
+                    </label>
+                  </td>
+
+                  <td> </td>
+                  <td width="33%" valign="top">
+                    <label for="date_of_birth" class="mg-label mg-rm-text-trans"><%= t('dateofbirth') %>
+                      <span class="required-field">*</span>
+                    </label>
+                  </td>
+                  <td> </td>
+                  <td width="33%" valign="top">
+                    <label for="gender" class="mg-label"><%= t('gender') %></label>
+                  </td>
+                </tr>
+                <tr> 
+                  <td width="33%" valign="top">
+
+                     <% 
+                          @batchList =   MgBatch.where(:is_deleted => 0,:mg_school_id=>session[:current_user_school_id]).order("mg_course_id ASC")
+                          %>
+                          <%#= @batchList.inspect %>
+                      <%                             
+                          @batchList.each do |batchObj|
+
+                              @courseObj = MgCourse.find_by_id(batchObj.mg_course_id)
+
+                              batchObj.name = (@courseObj.course_name) +"-"+ batchObj.name
+                          end
+                     %>
+                     <%#= @batchList.inspect %>
+                     <%=f.collection_select(:mg_batch_id, @batchList , :id, :name, {:include_blank => 'Select'} ,:class=>"mg-select-btn") %>
+                     <%#=f.collection_select(:mg_batch_id, MgBatch.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]), :id, :name, :prompt => 'Select') %>
+                  </td>
+                  <td> </td>
+                  <td width="33%" valign="top">
+                    <%= f.text_field :date_of_birth  ,:class => 'dateofbirth'%>
+                  </td>
+                  <td> </td>
+                  <td width="33%" valign="top">
+                    <%= f.select :gender, options_for_select([[t("male"), "male"], [t("female"), "female"]],:selected=>@student.gender), :prompt => 'Select' %>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td width="33%" valign="top">
+                    <label for="blood_group" class="mg-label"><%= t('bloodgroup') %></label>
+                  </td>
+
+                  <td> </td>
+                  <td width="33%" valign="top">
+                    <label for="birth_place" class="mg-label"><%= t('birthplace') %></label>
+                  </td>
+                  <td> </td>
+                  <td width="33%" valign="top">
+                    <label for="nationality" class="mg-label"><%= t('nationality') %>
+                      <span class="required-field">*</span>
+                    </label>
+                  </td>
+                </tr>
+                <tr>
+                  <td width="33%" valign="top">
+                     <%= f.select :blood_group, [ 'A+' ,'A-','B+','B-','O+','O-','AB+','AB-'], :prompt => 'Select' %>
+                  </td>
+                  <td> </td>
+                  <td width="33%" valign="top">
+                    <%= f.text_field :birth_place  ,:class => 'birth_place'%>
+                  </td>
+                  <td> </td>
+
+
+                  <td width="33%" valign="top">
+                        <!-- <#%= f.select :mg_nationality_id, options_for_select([[t("select"), ""], ["India", "2"], ["Sri Lanka", "3"]]) %> -->
+                        <%= f.country_select :nationality, ["India"], {}, { :class => "form-control" } %>
+                      </td>
+
+
+
+
+                  <!-- <td valign="top">
+                  <#%= f.text_field :mg_nationality_id  %>
+                    
+                  </td> -->
+                </tr>
+
+                <tr>
+                  <td width="33%" valign="top">
+                    <label for="language" class="mg-label"><%= t('mothertongue') %></label>
+                  </td>
+
+                  <td> </td>
+                  <td width="33%" valign="top">
+                    <label for="religion" class="mg-label"><%= t('religion') %></label>
+                  </td>
+                  <td> </td>
+                  <td width="33%" valign="top">
+                    
+                    <label for=" Category" class="mg-label"><%= t('category') %>
+                      <span class="required-field">*</span>
+                    </label>
+
+
+                  </td>
+                </tr>
+                <tr>
+                  <td width="33%" valign="top">
+                     <%= f.text_field :language  %>
+                     
+                  </td>
+                  <td> </td>
+                  <td width="33%" valign="top">
+                    <!-- <#%=f.collection_select(:mg_student_catagory_id, MgStudentCategory.where( is_deleted: 0 ), :id, :name, :prompt => 'Select') %> -->
+
+                    <%= f.text_field :religion  ,:class => 'religion'%>
+                  </td>
+                  <td> </td>
+                  <td width="33%" valign="top">
+                    <%=f.collection_select(:mg_student_catagory_id, MgStudentCategory.where( is_deleted: 0,mg_school_id: session[:current_user_school_id] ), :id, :name, {:include_blank => 'Select'} ,:class=>"mg-select-btn mg-category-class")   %>
+                  </td>
+                </tr>
+
+              </tbody>
+            </table>
+          </div>
+      </div>
+
+
+      <div id="studentEmployeeChildId" class= "Student-Employee-Child-Class mg-mrgn-left18" style="display: none;">   
+              <%= render :partial => "employee_child_new" %>  
+          </div>
+
+          <div id="studentManagementQuotaId" class= "Student-Management-Quota-Class mg-mrgn-left18" style="display: none;">   
+              <%= render :partial => "management_quota_new" %>  
+          </div>
+
+          <div id="studentScholarshipId" class= "Student-Scholarship-Class mg-mrgn-left18" style="display: none;">   
+              <%= render :partial => "scholarship_new" %>  
+          </div>
+
+
+
+
+
+      <h4 class="mg-h4"><b>Sibiling</b></h4>
+      <%= render :partial => "sibling_new" %> 
+
+
+  
+
+
+
+
+
+      <!-- Address Will Come here -->
+       <h4 class="mg-h4" ><span style="margin-left:4px;">Current Address</span> </h4>
+       <%=render :partial => 'address_with_street' , :locals => {:addresstype => "Correspondance"}%>
+
+
+       <h4 class="mg-h4" ><span style="margin-left:4px;">Permanent Address </span></h4>
+       <%=render :partial => 'address_with_street' , :locals => {:addresstype => "Permanent"}%>
+
+
+
+      <h4 class="mg-h4" ><span style="margin-left:4px;">Contacts</span></h4>
+      <%= render :partial => "contact_inline" ,:locals => {:phone_types => "phone"} %>
+      <%= render :partial => "contact_inline" ,:locals => {:phone_types => "mobile"} %>
+
+      <%= render :partial => "email_inline" %>
+     
+     <!--  <div class="form-content" style=" width:100%; border:0px #fac94a solid; color:#000; ">
+          <div class="form-content-inner" style="padding:5px;">
+            <table width="100%" cellspacing="0" cellpadding="0" border="0">
+              <tbody>
+                <tr>
+                  <td align="left">
+                    <label for="upload_file" class="mg-label"><%#= t('Upload Image:') %></label> 
+                  </td>
+                  
+                </tr>
+              </tbody>
+            </table>
+          </div>
+      </div> -->
+
+<h4 class="mg-h4"><b>Image</b></h4>
+  <table class="mg-tbl-margin">
+    <tr>
+        <td width="30%">
+          <label class="mg-custom-labels mg-label" ><%= t 'Upload Image' %><span class="required-field">&nbsp;*</span></label><br/>
+          <%= image_tag  @student.avatar.url(:medium, timestamp: false),:class => 'mg-img-size mg-btn-bottom-margin mg-custom-labels',:id=>"studentImageTagID"  %>
+          </td>
+          <td>
+          <%= f.file_field :avatar,:onchange =>"validateStudent(this.value,this);"%>
+          <%#= file_field 'user_pic', accept: 'image/png,image/gif,image/jpeg'%>
+          <%#= @school.logo_file_name %>
+        </td>
+      </tr>
+  </table>
+
+          
+<h4 class="mg-h4"><%= t('previousedcuation') %></h4>
+
+ <%= render :partial => "previous_education_det" %>
+
+      <!-- ############################################################################################ -->
+
+
+
+
+<h4 class="mg-h4"><%= t('activities') %></h4>
+            <div class="form-content mg-custom-labels">
+        <div class="form-content-inner">
+            <table width="100%" cellspacing="0" cellpadding="0" border="0" class="employee-form-cls mg-left-align-nil">
+                <tbody>
+                    <tr>
+                       <td width="33%" valign="top">
+                        <label class="mg-label" for="sport_activity" ><%= t('sport_activity') %>
+                        </label>
+                      </td>
+                    </tr>
+                    <tr>
+                        <td valign="top" colspan="3">
+                        <%= f.text_area :sport_activity, :rows=>"5", :cols=>"70", :maxlength=>"4000", :class=>"textboxwidths mg-text-fields" %>
+                        </td>
+                        <tr>
+                        <td>
+                        <%@document=MgDocumentManagement.where(:mg_user_id=>@student.mg_user_id,:document_type=>"SportsActivity")%>
+                   
+                    <%@document.each_with_index do |user,i|%>
+                    
+                      <li data-index="<%= i %>" class="mg-custom-labels">
+                      <div delete-index="<%= i %>">
+                          <label class="mg-file-clr mg-label-inner-form"><%= user.file_file_name %></label>
+                          
+                         <a class="delete-operation mg-icon-btn" style="cursor: pointer; text-decoration: none; color: #363131; font-size: 0.85em;" id="<%=user.id %>" title="Delete"><i class="fa fa-trash"></i></a>
+                         </div>
+                      </li>
+                     
+                   <%end%>
+                   </td>
+                   </tr>
+                    </tr>
+                    <tr>
+                  <%= form_for :document_managements, url: document_managements_path, :html => {:id => 'documentManagementsFormID' } do |f| %>
+                      <td>
+                        <label class="mg-label mg-rm-text-trans" for="upload_file" ><%= t('upload_file') %></label>
+                       <div>
+   <div class="edit_file_div" id="dueFineDivId" style="float: left; width: 100%;">
+    <span style="float: left;">
+ <%= file_field_tag 'file[]'%>
+</span>
+  <a href="#" class="edit-remove-file-upload mg-custom-form-btn mg-icon-btn" style="color: #297ACC; font-size:0.8em; float: left; position: relative; right: 0px; margin-top: 3px;"><i class="fa fa-trash"></i></a>
+ </div>
+ <a href="#" id="editaddfileuploads" class="mg-label-inner-form mg-custom-form-btn mg-icon-btn" style="color: #297ACC; font-size:0.8em;" ><i class="fa fa-plus">&nbsp;Add File</i></a> <br/>
+  </div>
+                      </td>
+                    </tr>
+                  <% end %>  
+                    </tbody>
+            </table>
+        
+      
+              <table width="100%" cellspacing="0" cellpadding="0" border="0" class="employee-form-cls  mg-left-align-nil">
+                <tbody>
+                  <tr>
+                      <td width="33%" valign="top">
+                        <label class="mg-label" for="extra_curricular" ><%= t("extra_curricular") %>
+                          
+                        </label>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td valign="top">
+                         <%= f.text_area :extra_curricular, :rows=>"5", :cols=>"70", :maxlength=>"4000", :class=>"textboxwidths mg-text-fields" %>
+                      </td>
+                      <tr>
+                        <td>
+                          <%@document=MgDocumentManagement.where(:mg_user_id=>@student.mg_user_id,:document_type=>"ExtraCurricular")%>
+                          <%@document.each_with_index do |user,i|%>
+                          
+                              <li data-index="<%= i %>"  class="mg-custom-labels">
+                              <div delete-index="<%= i %>">
+                                <label class="mg-file-clr mg-label-inner-form"><%= user.file_file_name %></label>
+                                <a class="delete-operation mg-icon-btn" style="cursor: pointer; text-decoration: none; color: #363131; font-size: 0.85em;" id="<%=user.id %>" title="Delete"><i class="fa fa-trash"></i></a>
+                              </div>
+                              </li> 
+                          
+                          <%end%>
+                        </td>
+                      </tr>
+                    </tr>
+                    <tr>
+                      <td>
+                        <label class="mg-label mg-rm-text-trans" for="upload_file" ><%= t('upload_file') %></label>
+                        <div>
+    <%files=Array.new()%>
+     <div class="edits_uploads_div" id="dueFineDivId" style="float: left; width: 100%;">
+     <span style="float: left;">
+    <%= file_field_tag 'files[]' %>
+    </span>
+   <a href="#" class="edit-removes-files-upload mg-custom-form-btn mg-icon-btn" style="color: #297ACC; font-size:0.8em; float: left; position: relative; right: 0px; margin-top: 3px;"><i class="fa fa-trash"></i></a>
+ </div>
+ <a href="#" id="editaddfilesuploads" class="mg-label-inner-form mg-custom-form-btn mg-icon-btn" style="color: #297ACC; font-size:0.8em;" ><i class="fa fa-plus">&nbsp;Add File</i></a> <br/>
+  </div>
+ 
+                      </td>
+                    </tr>
+            </tbody>
+            </table>
+            <table width="100%" cellspacing="0" cellpadding="0" border="0" class="employee-form-cls  mg-left-align-nil">
+                <tbody>
+                     <tr>
+                      <td width="33%" valign="top">
+                      <label class="mg-label" for="hobby" ><%= t("hobbies") %>
+                        <span class="required-field"></span>
+                        </label>
+                      </td>
+                    </tr> 
+                    <tr>
+                      <td width="33%" valign="top">
+                       <%= f.text_area :hobby, :rows=>"5", :cols=>"70", :maxlength=>"4000", :class=>"textboxwidths mg-text-fields" %>
+                      </td>
+                    </tr>
+                    </tbody>
+            </table>
+            <table width="100%" cellspacing="0" cellpadding="0" border="0" class="employee-form-cls mg-left-align-nil">
+                <tbody>
+                    <tr>
+                      <td width="33%" valign="top">
+                        <label class="mg-label" for="helath_record" ><%= t("health_record") %>
+                          <span class="required-field"></span> 
+                        </label>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td width="33%" valign="top">
+                         <%= f.text_area :health_record, :rows=>"5", :cols=>"70", :maxlength=>"4000", :class=>"textboxwidths mg-text-fields" %>
+                      </td>
+                    <tr>
+                        <td>
+                        <%@document=MgDocumentManagement.where(:mg_user_id=>@student.mg_user_id,:document_type=>"HealthRecords")%>
+                        <%@document.each_with_index do |user,i|%>
+                        
+                            <li data-index="<%= i %>" class="mg-custom-labels">
+                            <div delete-index="<%= i %>">
+                                <label class="mg-file-clr mg-label-inner-form"><%= user.file_file_name %></label>
+                                
+                               <a class="delete-operation mg-icon-btn" style="cursor: pointer; text-decoration: none; color: #363131; font-size: 0.85em;" id="<%=user.id %>" title="Delete"><i class="fa fa-trash"></i></a>
+                            </div>
+                            </li>
+                        
+                       <%end%>
+                      </td>
+                   </tr>
+                  </tr>
+                  <tr>
+                    <td>
+                      <label class="mg-label mg-rm-text-trans" for="upload_file" ><%= t('upload_file') %></label>
+                     <div >
+     <div class="files-edit-div" id="dueFineDivId" style="float: left; width: 100%;">
+     <span style="float: left;">
+    <%= file_field_tag 'healthrecordfiles[]',:multiple => true %>
+    </span>
+    <a href="#" class="edit-remove-files-uploads mg-custom-form-btn mg-icon-btn" style="color: #297ACC; font-size:0.8em; float: left; position: relative; right: 0px; margin-top: 3px;"><i class="fa fa-trash"></i></a>
+ </div>
+ <a href="#" id="editaddsfileuploads" class="mg-label-inner-form mg-custom-form-btn mg-icon-btn" style="color: #297ACC; font-size:0.8em;" ><i class="fa fa-plus">&nbsp;Add File</i></a> <br/>
+  </div>
+                    </td>
+                  </tr>
+              </tbody>
+
+            </table>
+            <table width="100%" cellspacing="0" cellpadding="0" border="0" class="employee-form-cls mg-left-align-nil">
+                <tbody>
+                     <tr>
+                      <td width="33%" valign="top">
+                      <label class="mg-label" for="hobby" ><%= t("class_record") %>
+                        <span class="required-field"></span>
+                        </label>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td valign="top">
+                       <%= f.text_area :class_record, :rows=>"5", :cols=>"70", :maxlength=>"4000", :class=>"textboxwidths mg-text-fields" %>
+                      </td>
+                      <tr>
+                        <td>
+                          <%@document=MgDocumentManagement.where(:mg_user_id=>@student.mg_user_id,:document_type=>"ClassRecords")%>
+                          <%@document.each_with_index do |user,i|%>
+                          
+                            <li data-index="<%= i %>" class="mg-custom-labels">
+                            <div delete-index="<%= i %>">
+                              <label class="mg-file-clr mg-label-inner-form"><%= user.file_file_name %></label>
+                              <a class="delete-operation mg-icon-btn" style="cursor: pointer; text-decoration: none; color: #363131; font-size: 0.85em;" id="<%=user.id %>" title="Delete"><i class="fa fa-trash"></i></a>
+                           </div>
+                           </li> 
+                          
+                          <%end%>
+                        </td>
+                      </tr>
+                    </tr>
+                    <tr>
+                      <td>
+                        <label class="mg-label mg-rm-text-trans" for="upload_file" ><%= t('upload_file') %></label>
+                        <div>
+   <div class="due-fine-div" id="dueFineDivId" style="float: left; width: 100%;">
+   <span style="float: left;">
+    <%= file_field_tag 'classfiles[]',:multiple => true %>
+    </span>
+    <a href="#" class="edits-removes-files-uploadsmg-custom-form-btn mg-icon-btn" style="color: #297ACC; font-size:0.8em; float: left; position: relative; right: 0px; margin-top: 3px;"><i class="fa fa-trash"></i></a>
+ </div>
+ <a href="#" id="editsaddfileupload" class="mg-label-inner-form mg-custom-form-btn mg-icon-btn" style="color: #297ACC; font-size:0.8em;" ><i class="fa fa-plus">&nbsp;Add File</i></a> <br/>
+ </div>
+                      </td>
+                    </tr>
+                 </tbody>
+            </table>
+        </div>
+      </div>
+
+<!-- ############################################################################################### -->
+
+
+
+
+      <!--custom fields-->
+<%if @dbdatas.size>0%>
+<h4 class="mg-h4" ><span style="margin-left:4px;">Custom Fields </span></h4>
+              <div class="mg-custom-labels">
+               <% @dbdatas.each do |dbdata| %>
+
+              <%custom_data=Array.new%>
+            <%= hidden_field_tag 'custom_data[]', dbdata.id%>
+
+
+              <label class="mg-capitalize-lbl mg-label"><%= dbdata.name%></label><br>
+
+              
+
+             <%
+
+               @customData.each do |custData| 
+
+               if custData.mg_custom_field_id == dbdata.id.to_s
+                  @custValue = custData.value
+               
+               end
+             end
+              %> 
+
+              <% @data=dbdata.text_data.split(",")
+               for i in 0..@data.length-1
+
+                 if dbdata.data_type=="check_box"
+
+                      custom_field=Array.new%>
+
+                      <%= check_box_tag 'custom_field_'+dbdata.id.to_s+'[]', @data[i],
+                      if @custValue.nil? then false else @custValue.include?(@data[i]) end
+                        %>
+                      <%=@data[i] %>
+                  <br/>
+
+               <%elsif dbdata.data_type=="radio_button" 
+                      custom_field=Array.new%>
+                      <%= radio_button_tag 'custom_field_'+dbdata.id.to_s+'[]', @data[i], (@data[i]==@custValue) %>
+                       <%=@data[i] %>
+                 <br/>
+
+
+               <%elsif dbdata.data_type=="drop_down" 
+                      custom_field=Array.new%>
+                      <%= select_tag 'custom_field_'+dbdata.id.to_s+'[]', options_for_select(@data, :selected => @custValue ) ,:class=>"mg-select-btn"%><br/>
+                 <%break
+
+
+                elsif dbdata.data_type=="input_type" 
+
+                    custom_field=Array.new%>
+
+                     <%= text_field_tag 'custom_field_'+dbdata.id.to_s+'[]',@custValue ,:class=>"mg-text-field"%><br/>
+
+                <%end%>
+
+                 <%end%>
+
+                  <%end%>
+<%end%>
+<br>
+</div>
+<p>
+      <%#= submit_tag t('save'), id: "editStudentRecordID", class: "submit mg-small-form-btn"%>
+      <a onclick="$(this).closest('form').submit()" id="editStudentRecordID" class="mg-small-form-btn"><%=t("save")%></a>
+      <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+</p>   
+<% end %>
+<!-- 
+<span class="mg-cncl-btn-align">
+      <button class="cancel-form-dialog btn btn-delete"><%#= t('cancel') %></button>
+</span> -->
+
+
+
+<script type="text/javascript">
+
+ $(document).ready(function(){
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  var date = new Date();
+var cur_date = date.getFullYear(); 
+
+//category js starts
+var categoryvalue=$( ".mg-category-class option:selected" ).text();
+if (categoryvalue=="Employee Child")
+{
+  $('#studentEmployeeChildId').show();
+}
+if (categoryvalue=="Management")
+{
+  $('#studentManagementQuotaId').show();
+}
+if (categoryvalue=="On Scholarship")
+{
+  $('#studentScholarshipId').show();
+}
+
+$(".mg-category-class").change(function(){
+        var category=$( ".mg-category-class option:selected" ).text();
+        if (category=="Employee Child")
+        {
+          if ($('#studentManagementQuotaId').is(':visible')) 
+          {   
+            //$(".mg-management-field").val('');
+            $('#studentManagementQuotaId').hide();
+            //$('#studentEmployeeChildId').show();
+          }
+          if ($('#studentScholarshipId').is(':visible')) 
+          {   
+            //$(".mg-scholarship-field").val('');
+            $('#studentScholarshipId').hide();
+            //$('#studentEmployeeChildId').show();
+          }
+          // else 
+          // {
+            $('#studentEmployeeChildId').show();
+          // };
+        }
+        if (category=="Management")
+        {
+          if ($('#studentEmployeeChildId').is(':visible')) 
+          {   
+            $('#studentEmployeeChildId').hide();
+            //$(".mg-emp-child-field").val('');
+            //$('#studentManagementQuotaId').show();
+          }
+
+          if ($('#studentScholarshipId').is(':visible')) 
+          {   
+            $('#studentScholarshipId').hide();
+            //$(".mg-scholarship-field").val('');
+            //$('#studentManagementQuotaId').show();
+          }
+          // else 
+          // {
+            $('#studentManagementQuotaId').show();
+          // };
+        }
+        if (category=="On Scholarship")
+        {
+          if ($('#studentEmployeeChildId').is(':visible')) 
+          {   
+            $('#studentEmployeeChildId').hide();
+            //$(".mg-emp-child-field").val('');
+           // $('#studentScholarshipId').show();
+          }
+
+          if ($('#studentManagementQuotaId').is(':visible')) 
+          {   
+            $('#studentManagementQuotaId').hide();
+            //$(".mg-management-field").val('');
+           // $('#studentScholarshipId').show();
+          }
+
+          // else 
+          // {
+            $('#studentScholarshipId').show();
+          // };
+        }
+        if (category=="General")
+        {
+          if ($('#studentEmployeeChildId').is(':visible')) 
+          {   
+            $('#studentEmployeeChildId').hide();
+            //$(".mg-emp-child-field").val('');
+           // $('#studentScholarshipId').show();
+          }
+
+          if ($('#studentManagementQuotaId').is(':visible')) 
+          {   
+            $('#studentManagementQuotaId').hide();
+            //$(".mg-management-field").val('');
+           // $('#studentScholarshipId').show();
+          }
+
+          if ($('#studentScholarshipId').is(':visible')) 
+          {   
+            $('#studentScholarshipId').hide();
+           //$(".mg-scholarship-field").val('');
+           // $('#studentScholarshipId').show();
+          }
+
+          // else 
+          // {
+            //$('#studentScholarshipId').show();
+          // };
+        }
+       
+      });
+
+
+
+
+// category js ends
+
+
+ dateFormatStr =  getJsDateFormat();
+      
+        $( ".dateofbirth" ).datepicker({ 
+            changeMonth: true,
+            changeYear: true,yearRange: "-100:+0",
+            maxDate: "0",dateFormat: dateFormatStr,
+            onSelect: function(dateText, obj) {
+                var selectedDate = $(this).datepicker('getDate');
+                var currentDate=new Date();
+                var b_check=getYearDifference(selectedDate,currentDate, dateFormatStr);
+                if(b_check){
+                  $( ".dateofbirth" ).val("");
+                  alert("Please check the age");
+                }
+            }
+        });
+
+
+        $( ".dateofbirth" ).datepicker({ 
+            changeMonth: true,
+            changeYear: true,yearRange: "-100:+0",maxDate: "0",
+            dateFormat: dateFormatStr,
+            onSelect: function(dateText, obj) {
+                var selectedDate = $(this).datepicker('getDate');
+                var currentDate=new Date();
+                var b_check=getYearDifference(selectedDate,currentDate, dateFormatStr);
+                if(b_check){
+                  $( ".dateofbirth" ).val("");
+                  alert("Please check the age.");
+                }else{
+
+                var admission_date=$("#student_admission_date").val();
+                if(admission_date){
+                  /*if(compareDate($(this).val(), admission_date, dateFormatStr)==false){
+                    alert("Date of Birth should be earlier than Admission Date");
+                    document.getElementById('student_date_of_birth').value ="";
+                  }*/
+
+                  // alert(admission_date);
+                  if(getDateObj($(this).val(),dateFormatStr) >getStudentAdmissionDateObj(admission_date,dateFormatStr)){
+                        alert("Please check the age");
+                        document.getElementById('student_date_of_birth').value ="";
+                    }
+                }
+              }
+            }
+      });
+
+
+         $( "#student_admission_date" ).datepicker({ changeMonth: true,
+                changeYear: true,yearRange: "-50:+0",maxDate: "0" ,dateFormat: dateFormatStr});
+         var admission_date =  $.datepicker.formatDate(dateFormatStr,new Date($('#student_admission_date').val()));
+
+//alert(joiningDate);
+$('#student_admission_date').val(admission_date);
+
+        var dobDate =  $.datepicker.formatDate(dateFormatStr,new Date($('.dateofbirth').val()));
+
+        
+        if(Date.parse( $('#scholarship_start_date').val() ) ) {
+          var scholarshipStartDate =  $.datepicker.formatDate(dateFormatStr,new Date($('#scholarship_start_date').val()));
+          $('#scholarship_start_date').val(scholarshipStartDate); 
+        }
+
+        if(Date.parse( $('#scholarship_end_date').val() ) ) { 
+
+          var scholarshipEndDate =  $.datepicker.formatDate(dateFormatStr,new Date($('#scholarship_end_date').val()));
+          $('#scholarship_end_date').val(scholarshipEndDate); 
+        }
+
+        if(Date.parse( $('#sibling_admission_date').val() ) ) { 
+          var siblingAdDate =  $.datepicker.formatDate(dateFormatStr,new Date($('#sibling_admission_date').val()));
+          $('#sibling_admission_date').val(siblingAdDate); 
+        }
+
+        if(Date.parse( $('#managementquota_joining_date').val() ) ) { 
+          var mgtJoiningDate =  $.datepicker.formatDate(dateFormatStr,new Date($('#managementquota_joining_date').val()));
+          $('#managementquota_joining_date').val(mgtJoiningDate); 
+        }   
+
+        if(Date.parse( $('#employeechild_joining_date').val() ) ) { 
+          var empChildJoiningDate =  $.datepicker.formatDate(dateFormatStr,new Date($('#employeechild_joining_date').val()));
+          $('#employeechild_joining_date').val(empChildJoiningDate); 
+        }
+
+
+        
+
+
+        $('.dateofbirth').val(dobDate);
+
+
+        $(document).on("change","#scholarship_start_date",function(e){
+        var end_date=$("#scholarship_end_date").val();
+        var start_date=$(this).val();
+
+        if(start_date && end_date){
+             if(!compareDate(start_date,end_date,dateFormatStr)){
+                alert("Start Date should be lesser than End Date");
+                document.getElementById('scholarship_start_date').value ="";
+              }
+        }      
+
+     });
+     $(document).on("change","#scholarship_end_date",function(e){
+      
+        var end_date=$(this).val();
+        var start_date=$("#scholarship_start_date").val();
+        if(start_date && end_date){
+          if(!compareDate(start_date,end_date,dateFormatStr)){
+            alert("End Date should be greater than Start Date");
+            document.getElementById('scholarship_end_date').value ="";
+          }
+        }  
+     });
+
+
+
+    $(function () {
+    $.validator.addMethod('dateFormat',
+    function (value, element) {
+      dateFormatStr =  getJsDateFormat();
+        if (this.optional(element)) {
+            return true;
+        }
+        var ok = true;
+        try {
+            $.datepicker.parseDate(dateFormatStr, value);
+        }
+        catch (err) {
+            ok = false;
+        }
+        return ok;
+    },
+      "Please enter a date in the format "+ getDateFormat(dateFormatStr) +".");
+      dateFormatStr =  getJsDateFormat();
+
+    $(".datefield").datepicker({ dateFormat: dateFormatStr, changeYear: true });
+});
+
+
+
+
+
+        $("#studentEditFormID").validate({
+          //debug: true,
+            rules: {
+                      "student[admission_date]": {dateFormat: true,required: true},
+                      "student[first_name]": {required: true, maxlength: 20, name_validate: true},
+                      "student[middle_name]": {name_validate: true},
+                      "student[last_name]": {required: true, maxlength: 20, name_validate: true},
+                      "student[id]": {required: true}, 
+                      "student[date_of_birth]": {dateFormat: true,required: true},
+                      "student[mg_batch_id]": {required: true},
+
+                      "student[language]": {character_validate: true},
+                      "student[religion]": {character_validate: true},
+
+                      "student[student_birth_place]": {maxlength: 25, character_validate: true},
+                     "student[mg_student_catagory_id]": {required: true},
+
+                      "sibling[name]": {required: true,name_validate: true},
+                      "sibling[relation]": {character_validate: true},
+                      "employeechild[employee_name]": {required: true, maxlength: 25, name_validate: true},
+                      "employeechild[employee_type]": {required: true, maxlength: 25, character_validate: true},
+
+                      "scholarship[name]": {required: true, maxlength: 25, name_validate: true},
+                      "scholarship[amount]": {required: true,number: true},
+                      "scholarship[frequency]": {required: true, maxlength: 25, character_validate: true},
+
+                      "managementquota[name]": {required: true, maxlength: 25, name_validate: true},
+                      "managementquota[position]": {required: true, maxlength: 25, character_validate: true},
+
+                      "Correspondance[address_line1]": {required: true},
+                      "Correspondance[state]": {required: true}, 
+                      "Correspondance[pin_code]": {required: true, number: true, minlength: 6,maxlength: 6}, 
+                      "Correspondance[country]": {required: true},
+                      "Correspondance[city]": {required: true},    
+                      
+
+
+                      "previous_education[school_name]": {name_validate: true},
+                      // "previous_education[course]": {required: true},
+                      "previous_education[year]": {number: true, min:2000,max:cur_date},
+                      "previous_education[marks_obtained]": {number: true, min:0},
+                      "previous_education[total_marks]": {number: true, min:0},
+
+                      "Permanent[address_line1]": {required: true},
+                      "Permanent[state]": {required: true}, 
+                      "Permanent[pin_code]": {required: true, number: true, minlength: 6,maxlength: 6}, 
+                      "Permanent[country]": {required: true},
+                      "Permanent[country]": {required: true},
+                       // "student[avatar]": {required: true},
+                      "mobile[phone_number]": {required: true, number: true, minlength: 10,maxlength: 10},
+                      "phone[phone_number]": {number: true, maxlength: 10},
+                      "email[mg_email_id]": {required: true,  email: "Your email must be in the format of name@domain.com"}
+              },
+       messages: {
+        "Correspondance[pin_code]": {minlength: "Please enter 6 digits.",maxlength: "Please enter only 6 digits"},
+        "Permanent[pin_code]": {minlength: "Please enter 6 digits.",maxlength: "Please enter only 6 digits"},
+        "mobile[phone_number]": {minlength: "Please enter 10 digits.",maxlength: "Please enter only 10 digits"},
+        "phone[phone_number]": {maxlength: "Please enter only 10 digits"},
+        "previous_education[year]": {minlength: "Please enter 4 digits.",maxlength: "Please enter only 4 digits"},
+        "previous_education[year]": {maxlength: "Please enter 4 digits.",maxlength: "Please enter only 4 digits"}
+          }
+        });
+
+});
+  
+
+
+
+$(document).on("click", ".delete-operation", function(e){
+    var myID =$(this).attr('id');
+    //alert(myID)
+
+    var splString = myID.split("-");
+    var retVal = confirm("Are you sure to delete?");
+    if(retVal){
+       // alert(retVal);
+         var urlLink = "students/delete_record"
+
+          $.ajax({
+            url: urlLink ,
+            cache: false,
+            data:{"documentID":myID},
+
+            success: function(html){
+              alert("SuccessFully Deleted");
+              console.log("$(this)");
+           console.log($("#"+myID));
+           console.log("$(this).parent()");
+           console.log($("#"+myID).parent().parent());
+           $("#"+myID).parent().parent().hide();
+
+               
+
+                           
+            }
+        });
+
+
+
+
+
+    }else{
+       // alert(retVal);     
+       return false;
+    }
+   
+});   
+function validateStudent(inputFile, that) {
+
+  if ( that.files && that.files[0]) {
+    //alert("inside if");
+    var reader = new FileReader();
+    reader.onload = imageIsLoaded;
+    reader.readAsDataURL(that.files[0]);
+  }
+  var allowedExtension = ["jpg", "jpeg", "gif", "png"];
+  var extName = inputFile.split('.');
+  if ($.inArray(extName[1], allowedExtension) == -1){
+     window.alert("Only image file with extension: .jpg, .jpeg, .gif or .png is allowed");
+     $("#student_avatar").val('');
+  }
+  else{
+    // $("#schoolImageTagID").attr("src","ssc.jpeg.url");
+
+  }
+ 
+}
+
+function imageIsLoaded(e) {
+    $('#studentImageTagID').attr('src', e.target.result);
+};
+
+$(document).on("change","#previous_education_total_marks",function(){
+  var marks_obtained=$("#previous_education_marks_obtained").val();
+  var total_marks=$(this).val();
+  validateMarks(marks_obtained, total_marks, $(this) );
+});
+
+$(document).on("change","#previous_education_marks_obtained",function(){
+  var total_marks=$("#previous_education_total_marks").val();
+  var marks_obtained=$(this).val();  
+  validateMarks(marks_obtained, total_marks ,$(this) );
+  
+});
+
+
+function validateMarks(marks_obtained, total_marks, currentObj ){
+  //alert(marks_obtained+"/"+total_marks);
+  if(parseInt(marks_obtained) > parseInt(total_marks)){
+    alert("Total marks should be greater than marks obtained ");
+    currentObj.val("");
+   //document.getElementById('previous_education_total_marks').value="";
+  }
+}
+
+
+
+</script>
+<style>
+.forms-textbox {
+
+height: 26px !important;
+
+width: -1px !important;
+
+font-size: 14px !important;
+
+}
+</style>

@@ -1,0 +1,30 @@
+<h4 class="mg-h4"><%= t('employee_subject_association') %></h4>
+<%= form_for :curriculum, url: curriculum_employee_subject_create_path, :html => {
+                            :id => 'employeeSubjectCurriculamManagementsID' } do |f| %>
+
+<%= f.hidden_field :is_deleted, :value => 0 %>
+<%= f.hidden_field :mg_school_id, :value => session[:current_user_school_id] %>
+
+<div class="mg-curriculum-labels">
+	<table>
+		<tr>
+			<td>
+			<%@employee=MgEmployee.pluck(:first_name, :id)%>
+				<%=select_tag :mg_employee_id, options_for_select(@employee),:prompt=>"Select A Employee",:onchange=>"myEmployeeSubjectFunction(this.value)" %><br>
+			</td>
+		</tr>
+	</table>
+</div>
+
+<div id="EmployeeClassID">
+</div>
+
+<div id="EmploTopicID">
+</div>
+
+<div id="SubID">
+
+</div>
+
+      <%= f.submit t('submit') %>
+<% end %>

@@ -1,0 +1,85 @@
+
+<%= fields_for :managementquota do |f| %>
+<!-- <#%= fields_for (language) do |f| %> -->
+
+<%= f.hidden_field :is_deleted, :value => 0 %>
+<%= f.hidden_field :mg_school_id, :value => session[:current_user_school_id] %>
+<%= f.hidden_field :mg_user_id, :value => @student.mg_user_id%>
+<%= f.hidden_field :created_by, :value => session[:user_id] %>
+<%= f.hidden_field :updated_by, :value => session[:user_id] %>
+
+            <div id="studentManagementDivId" class="Student-Management-Child-Div-Class">
+            <table width="100%" cellspacing="0" cellpadding="0" border="0" class="employee-form-cls mg-btn-bottom-margin">
+                <tbody>
+                        <tr>
+                          <td valign="top" class="mg-td-width-34">
+                            <label class="mg-label" for="name" ><%= t('name') %>
+                            <span class="required-field">*</span> 
+                            </label>
+                          </td>
+
+                          <td valign="top" class="mg-td-width-34">
+                            <label class="mg-label" for="position" ><%= t("position") %>
+                            <span class="required-field">*</span> 
+                            </label>
+                          </td>
+
+                          <td valign="top" class="mg-td-width-34">
+                            <label class="mg-label" for="employee_id" ><%= t("employee_id") %>
+                            <span class="required-field"></span>
+                            </label>
+                          </td>
+                      </tr>
+                    <tr>
+                        <td valign="top">
+                        <%= f.text_field :name  ,:class => ' mg-text-field mg-management-field'%>
+                        </td>
+                  
+                        <td valign="top">
+                          <%= f.text_field :position  ,:class => ' mg-text-field mg-management-field'%>
+                        </td>
+                          
+                        <td valign="top">
+                         <%= f.text_field :employee_id  ,:class => ' mg-text-field mg-management-field'%>
+                        </td>
+                    </tr>
+                    <tr>
+                     
+                        <td valign="top" class="mg-td-width-34">
+                            <label class="mg-label" for="joining_date" ><%= t("joining_date") %>
+                              <span class="required-field"></span> 
+                            </label>
+                        </td>
+                    </tr>
+                      <tr>
+                          <td valign="top">
+                             <%= f.text_field :joining_date  ,:class => ' mg-text-field joining_date mg-management-field'%>
+                          </td>
+                          
+                        
+                          <td valign="top">
+                                
+                          </td>
+                        
+                          <td valign="top">
+                             
+                          </td>
+                      </tr>
+                    
+                    </tbody>
+                    </table>
+                    </div>
+
+
+      <%end%>
+<!-- </div> -->
+<script>
+$(document).ready(function(){
+
+
+
+  dateFormatSt =  getJsDateFormat();
+      $( ".joining_date" ).datepicker({ changeMonth: true,
+                changeYear: true,yearRange: "-50:+0",maxDate: "0",dateFormat: dateFormatSt });
+});
+</script>

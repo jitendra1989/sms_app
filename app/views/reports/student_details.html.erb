@@ -1,0 +1,25 @@
+<h4 class="mg-h4">Student Details</h4>
+<table class="batch-tbl">
+	<tr>
+		<th>Admission Number</th>
+		<th>Student Name</th>
+		<th>Gender</th>
+		<th>Batch</th>
+		<th>Student Category</th>
+		
+	</tr>
+	<%@students.each do |student|%>
+	<tr>
+		<td><%=student.admission_number%></td>
+		<td><%=student.first_name%> <%=student.last_name%></td>
+		<td class="mg-capitalize-text"><%=student.gender%></td>
+		<%
+			@batch_name=MgBatch.where(:id=>student.mg_batch_id,:is_deleted=>0).pluck(:name)
+			@category_name=MgStudentCategory.where(:id=>student.mg_student_catagory_id,:is_deleted=>0).pluck(:name)
+		%>
+		
+		<td><%=@batch_name[0]%></td>
+		<td><%=@category_name[0]%></td>
+	</tr>
+	<%end%>
+</table>

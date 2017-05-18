@@ -1,0 +1,12 @@
+<% navigation_add t('job_apply'), :controller=>'placements', :action=>'job_apply' %>
+<% navigation_add t('edit_applied_job'), job_apply_edit_path(@placement_application.id) %>
+<%= render  partial: 'dashboards/student_dashboard_left' %>
+<h4 class="mg-h4"><%= t('edit_applied_job_details')%></h4>
+
+<%= render  partial: 'job_apply_edit' %>
+
+<%= render  partial: 'application/common_left_close' %>
+<script>
+  $( document ).ready(function() {
+  });
+</script>

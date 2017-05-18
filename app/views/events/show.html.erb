@@ -1,0 +1,85 @@
+<%school=MgSchool.find(session[:current_user_school_id])%>
+<table border="1" class="mg-showdata-bg " cellspacing="1" cellpadding="1">
+   <tr>
+      <td class="mg-td-width-half" valign="top">
+        <label class="mg-label"><%=t('title')%></label>
+      </td>
+      <td class="mg-td-width-half" valign="top">
+        <label class="mg-label-inner-form"><%= @events.title %></label>
+      </td>
+  </tr>
+  <tr>
+      <td class="mg-td-width-half" valign="top">
+        <label class="mg-label"><%=t('eventtype')%></label>
+      </td>
+      <td class="mg-td-width-half" valign="top">
+        <%@eventName=MgEventType.find(@events.mg_event_type_id)%>
+        <label class="mg-label-inner-form"><%= @eventName.name %></label>
+      </td>
+  </tr>
+<!--  
+<p>
+   <strong> Event Privacy:</strong>
+  <%#= @events.event_privacy %>
+ </p>
+ -->
+
+  <tr>
+     <td class="mg-td-width-half" valign="top">
+       <label class="mg-label"><%=t('eventdescription')%></label>
+     </td>
+     <td class="mg-td-width-half mg-desc-text-justify" valign="top">
+       <label class="mg-label-inner-form"><%= @events.event_description %></label>
+     </td>
+  </tr>
+   
+  <tr>
+     <td class="mg-td-width-half" valign="top">
+        <label class="mg-label"><%=t('startdate')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+      <%if @events.event_date.present?%>
+        <label class="mg-label-inner-form"><%= @events.event_date.strftime(school.date_format) %></label>
+      <%end%>
+     </td>
+  
+  </tr>
+
+  <tr>
+       <td class="mg-td-width-half" valign="top">
+        <label class="mg-label"><%=t('starttime')%></label>
+       </td>
+       <td class="mg-td-width-half" valign="top">
+          <%if @events.start_time.present?%>
+            <label class="mg-label-inner-form"><%= @events.start_time.strftime('%I:%M%p') %></label>
+          <%end%>
+       </td>
+   </tr>
+
+
+  <tr>
+       <td class="mg-td-width-half" valign="top">
+        <label class="mg-label"><%=t('enddate')%> </label>
+       </td>
+       <td class="mg-td-width-half" valign="top">
+        <%if @events.end_date.present?%>
+          <label class="mg-label-inner-form"><%= @events.end_date.strftime(school.date_format) %></label>
+        <%end %>
+     </td>
+  </tr>
+
+  <tr>
+       <td class="mg-td-width-half" valign="top">
+        <label class="mg-label"><%=t('endtime')%></label>
+       </td>
+       <td class="mg-td-width-half" valign="top">
+        <%if @events.end_time.present?%>
+          <label class="mg-label-inner-form"><%= @events.end_time.strftime('%I:%M%p') %></label>
+        <%end%>
+     </td>
+  </tr>
+</table>
+
+  <p class="mg-p-mgtop">
+      <a class="mg-small-form-btn cancel-form-dialog"><%=t('cancel')%></a>
+  </p>

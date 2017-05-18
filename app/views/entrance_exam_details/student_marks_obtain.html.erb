@@ -1,0 +1,108 @@
+<% if @student_marks_list.length>0 %>
+  <h4 class="mg-h4"><%=t('student_list')%></h4>
+  <div class="mg-scroll-employee-bar mg-btn-bottom-margin">
+  
+    
+    <table class="batch-tbl mg-tbl-margin table-batchs-tbl">
+      <tr class="subject-table-header">
+        <th rowspan="2"><%= t('student_id') %></th>
+        <th rowspan="2"><%= t('name') %></th>
+        <th rowspan="2" class="mg-rm-text-trans"><%= t('dateofbirth') %></th>
+        <th colspan="2"><%=t('previous_examination_marks')%></th>
+        <th colspan="2"><%= t('entrance_exam_marks') %></th>
+        <!-- <th rowspan="2"><%#= t('index') %></label></th>   -->
+      </tr>
+      <tr>
+        <td class="mg-align-center"><%=t('obtained_marks')%></td>
+        <td class="mg-align-center"><%=t('total_marks')%></td>
+        <td class="mg-align-center"><%=t('obtained_marks')%></td>
+        <td class="mg-align-center"><%=t('total_marks')%></td>
+      </tr>
+      <tbody id="studentObtainMarksID">  
+        <% @student_marks_list.each do |f| %>
+          <%= hidden_field_tag "student_admisstion_id[]" , f.id %>
+
+          <tr class="student-marks-cls">
+            <% @mg_id=params[:mg_course_id] %>
+            <td class="mg-align-center"><%= f.try(:student_temporary_id) %></td>            
+            <td class="mg-capitalize-text"><%= f.try(:first_name) %>&nbsp;<%= f.try(:middle_name) %>&nbsp;<%= f.try(:last_name) %></td>
+            <% @dateFormat = MgSchool.find_by(:id=>session[:current_user_school_id]).date_format %>
+            <td class="mg-align-center"><%= f.try(:date_of_birth).try(:strftime,@dateFormat) %></td>   
+            <td class="mg-align-center"><%= f.marks_obtained %></td>
+            <td class="mg-align-center"><%= f.total_marks %></td>
+            <td class="mg-align-center">
+              <%= text_field_tag "obtained_marks[]",f.obtained_marks,:placeholder => "Obtained Marks",:id=>"studentmarks_#{f.id}", class: 'student-obtain-marks-cls mg-text-field', :onchange=>"obtainedMarks(this);"%></td>
+            <td class="mg-align-center">
+              <%= text_field_tag "exam_total_marks[]",f.exam_total_marks,:placeholder => "Obtained Marks",:id=>"studentmarks_#{f.id}", class: 'student-total-marks-cls mg-text-field', :onchange=>"totalMarks(this);"%>
+            </td>
+            
+            <!-- <td class="mg-align-center"> -->
+              <%#= f.selection_index %>
+            <!-- </td> -->
+          </tr>                      
+        <% end %>
+      </tbody>      
+    </table>
+  </div>  
+  <p class="mg-p-mgtop">
+    <!-- <a class="submit-student-obtained-marks submit mg-small-form-btn"><%#= t("save")%></a> -->
+
+    <a onclick="$(this).closest('form').submit()" id="" class="submit mg-small-form-btn"><%=t("save")%></a> 
+
+    <%=link_to t('cancel'),:back,:class=>"mg-small-form-btn"%>
+  </p>
+<% else %>
+    <h5 class="mg-custom-labels"><%= t('no_student_display') %></h5>
+<% end %>
+
+<script>
+  // $(document).ready(function(){
+  //   $("#exam_total_marks").val('');
+  //   var total_mark = 0.00;
+  //   $("#exam_total_marks").val(parseInt(total_mark));
+  // })
+
+  function obtainedMarks(that){
+    
+    if(isNaN(that.value)){
+      alert("Please enter number");
+        that.value=0.00;
+    }else{
+      if(parseInt($(that).parents(".student-marks-cls").find(".student-total-marks-cls").val())>=parseInt(that.value)){
+      }else{
+        alert("Obtained Marks should less than total marks");
+        that.value=0.00;
+      }
+    }
+  }
+
+  function totalMarks(that){
+    //alert(that.value);
+    var obtain_val=$(that).parents(".student-marks-cls").find(".student-obtain-marks-cls")
+    if(isNaN(that.value)){
+      alert("Please enter number");
+        that.value=0.00;
+    }else{
+      if(that.value==""){
+        that.value=0.00;
+
+        if(parseInt($(that).parents(".student-marks-cls").find(".student-obtain-marks-cls").val())<=parseInt(that.value)){
+        }else{
+          alert("Total Marks should greater than obtained marks");
+          obtain_val.val(0.00);
+          that.value=0.00;
+        }
+      }else{
+
+        if(parseInt($(that).parents(".student-marks-cls").find(".student-obtain-marks-cls").val())<=parseInt(that.value)){
+        }else{
+          alert("Total Marks should greater than obtained marks");
+          obtain_val.val(0.00);
+          that.value=0.00;
+        }
+      }
+    }
+  }
+  
+</script>
+

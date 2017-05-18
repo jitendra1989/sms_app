@@ -1,0 +1,150 @@
+
+
+
+  
+<%= render  partial: 'library_left' %>
+<% navigation_add 'Books Inventory', books_inventory_index_path %>
+
+
+
+<h4 class="mg-h4"><%= t('edit_books_inventory')%></h4>
+
+<%=form_for :books_inventory, :url=>{:controller=>'libraries',:action=>'books_inventory_update',:id=>@books_inventory.id},:html=>{:id=>"edit_books_inventory_create_data"} do |f|%>
+
+      
+
+
+
+        <%= f.hidden_field :is_deleted ,:value=>0%>
+        <%= f.hidden_field :mg_school_id ,:value=>@school_id%>
+       
+        
+<table class="mg-tbl-margin mg-show-tbl-width">
+    
+    <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="bookName"><%= t ('book_name') %><span class="required-field">&nbsp;*</span></label><br/>
+        <%= f.text_field :book_name,:class=>"mg-text-field"%>
+      </td>
+    </tr>
+    
+    <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="Author"><%= t ('author') %><span class="required-field">&nbsp;*</span></label><br/>
+        <%= f.text_field :author ,:class=>"mg-text-field"%>
+      </td>
+    </tr>
+    
+    <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="publisher"><%= t ('publisher') %><span class="required-field">&nbsp;*</span></label><br/>
+        <%= f.text_field  :publisher,:class=>"mg-text-field"%>
+      </td>
+    </tr>
+    <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="edition"><%= t ('edition') %><span class="required-field">&nbsp;*</span></label><br/>
+        <%= f.text_field :edition ,:class=>"mg-text-field"%>
+      </td>
+       <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="cost"><%= t ('cost') %><span class="required-field">&nbsp;*</span></label><br/>
+        <%= f.text_field :cost ,:class=>"mg-text-field"%>
+      </td>
+    </tr>
+    <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="bookNo"><%= t ('isbn_number') %><span class="required-field">&nbsp;*</span></label><br/>
+        <%= f.text_field :book_no,:class=>"mg-text-field"%>
+      </td>
+    </tr>
+    <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="selectCategory"><%= t('select_category') %><span class="required-field">&nbsp;*</span></label><br/>
+        <%
+        books_Category=MgBooksCategory.where(:is_deleted=>0,:mg_school_id=>@school_id).pluck(:category_name,:id)
+        %>
+    <%=f.select :mg_books_category_id, options_for_select(books_Category,:selected=>@books_inventory.mg_books_category_id),:prompt=>t('select')%>
+    </td>
+    </tr>
+
+    <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="selectClass"><%= t('select_class') %><span class="required-field">&nbsp;*</span></label><br/>
+        <%
+        course_data=MgCourse.where(:is_deleted=>0,:mg_school_id=>@school_id).pluck(:course_name,:id)
+        %>
+    <%=f.select :mg_course_id, options_for_select(course_data,:selected=>@books_inventory.mg_course_id),:prompt=>t('select')%>
+    </td>
+    </tr>
+
+<tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="nonIssuable"><%= t('non_issuable') %></label><br/>
+    <%= f.check_box :non_issuable  %>
+
+    </td>
+    </tr>
+
+<tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="isDamaged"><%= t('is_damaged') %></label><br/>
+    <%= f.check_box :is_damaged %>
+
+    </td>
+    </tr>
+
+<tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="isLost"><%= t('is_lost') %></label><br/>
+   <%= f.check_box :is_lost %>
+
+    </td>
+    </tr>
+
+     <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="status"><%= t ('status') %></label><br/>
+        <%#= f.text_field :status ,:class=>"mg-text-field"%>
+        <%= f.select :status, options_for_select([@books_inventory.status]),{},{:disabled => true}%>
+      </td>
+       <tr>
+      <%=f.hidden_field :status,:value=>@books_inventory.status%>
+    </table>
+    <br/>
+    
+ <%#= f.submit t('save'), class: "submit mg-small-form-btn mg-custom-labels" %>
+ <a onclick="$(this).closest('form').submit()" class="submit mg-small-form-btn"><%=t("Submit")%></a>
+
+      <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+<%end%>
+
+<%= render  partial: 'schools/school_left_close' %>
+
+
+
+<script>
+$(document).ready(function(e){
+  focusCurrentTab("bookinventoryAID","bookinventoryLiID");
+        focusLibrary();
+
+
+
+  $("#edit_books_inventory_create_data").validate({
+    rules: {
+
+      "books_inventory[book_no]":{required:true},
+      "books_inventory[book_name]":{required:true},
+      "books_inventory[author]":{required:true},
+      "books_inventory[publisher]":{required:true},
+      "books_inventory[edition]":{required:true},
+      "books_inventory[cost]":{required:true},
+      "books_inventory[mg_books_category_id]":{required:true},
+      "books_inventory[mg_course_id]":{required:true},
+
+    }
+
+  });
+
+});
+</script>

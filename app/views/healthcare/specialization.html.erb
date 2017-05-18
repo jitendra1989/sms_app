@@ -1,0 +1,115 @@
+<% navigation_add t('specialization'), :controller => 'healthcare', :action => 'specialization' %>
+<%=render partial: '/master_settings/master_settings_left'%>
+<h4 class="mg-h4"><%= t('specialization_list') %></h4>
+  <button class="add_health_specialist mg-btn-bottom-margin mg-custom-form-btn"><%= t('add_specialization')%></button>
+
+<%if @specialization.length>0%>
+  <table  class="batch-tbl mg-tbl-margin">   <!-- border="2" --> 
+    <tr class="subject-table-header">
+      <th><%= t('name') %></th>
+      <th><%= t('description') %></th>
+      <th><%= t('actions') %></th>
+    </tr>
+   
+    <% @specialization.each do |specialization| %>
+      <tr>
+        <td><%= specialization.try(:name) %></td>
+        <td><%= truncate(specialization.description.to_s, :length => 25, :separator => ' ') %></td>
+        <td>
+          <button title="Show" id="<%=raw specialization.id %>-showlabBTNID" class="show-health-specialist-btn mg-icon-btn"><i class="fa fa-eye"></i></button>
+
+          <button title="Edit" id="<%=raw specialization.id %>-editaccountBTNID" class="edit-health-specialist-btn mg-icon-btn"><i class="fa fa-pencil-square-o"></i></button>
+
+          <button title="Delete" id="<%=raw specialization.id %>-deletelabBTNID" class="delete-health-specialist-btn mg-icon-btn"><i class="fa fa-trash"></i></button>
+        </td>
+      </tr>
+    <% end %>
+  </table>
+  <br/>
+<%else%>
+  <h5>No Specialization is created</h5>
+<%end%>
+<div id="newHealthSpecialistDivId"></div>
+<div id="showHealthSpecialistDivId"></div>
+<div id="editHealthSpecialistDivId"></div>
+
+<%= render  partial: 'application/common_left_close' %>
+
+<script>
+  $( document ).ready(function() {
+    focusCurrentTab("doctorSpecializationAID","doctorSpecializationLiID");
+  });
+
+  $(document).on("click", ".add_health_specialist", function(e){
+    var urlLink = "/healthcare/new_specialization";
+    $.ajax({
+      url: urlLink ,
+      cache: false,
+      success: function(html){
+          $('#newHealthSpecialistDivId').dialog({
+            modal: true,
+            minHeight: 'auto',
+            minWidth: '250px',
+            title: "Add Specialization",
+            open: function () {
+              $(this).html(html);
+            }
+        }); 
+      }
+    });
+  });
+
+  $(document).on("click", ".show-health-specialist-btn", function(e){
+    var myID =$(this).attr('id');
+    var Id=myID.split("-");
+    var urlLink = "/healthcare/show_specialization/"+Id[0];
+    $.ajax({
+      url: urlLink ,
+      cache: false,
+      success: function(html){
+          $('#showHealthSpecialistDivId').dialog({
+            modal: true,
+            minHeight: 'auto',
+            width: 'auto',
+            title: "Show Specialization",
+            open: function () {
+              $(this).html(html);
+            }
+        }); 
+      }
+    });
+  });
+
+
+  $(document).on("click", ".edit-health-specialist-btn", function(e){
+    var myID =$(this).attr('id');
+    var Id=myID.split("-");
+    var urlLink = "/healthcare/edit_specialization/"+Id[0];
+    $.ajax({
+        url: urlLink ,
+        cache: false,
+        success: function(html){
+              $('#editHealthSpecialistDivId').dialog({
+                modal: true,
+                 minHeight: 'auto',
+                minWidth: '250px',
+                title: "Edit Specialization",
+                open: function () {
+                  $(this).html(html);
+                }
+            }); 
+        }
+    });
+  });
+
+  $(document).on("click", ".delete-health-specialist-btn", function(e){
+    e.preventDefault();
+    var myID =$(this).attr('id');
+    var Id=myID.split("-");
+    var retVal = confirm("Are you sure to delete?");
+    var urlLink = "/healthcare/delete_specialization/"+Id[0];
+    if(retVal){
+      window.location = urlLink;
+    }
+  }); 
+</script>

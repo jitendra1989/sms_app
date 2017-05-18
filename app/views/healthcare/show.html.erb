@@ -1,0 +1,90 @@
+<%=render partial: 'healthcare_left'%>
+
+<% navigation_add t('checkup_type'),:controller=>'healthcare',:action=>'index' %>
+<% navigation_add  t('show_checkup_type'), :controller=>'healthcare', :action=>'show',:id=>params[:id] %>
+<h4 class="mg-h4"><%=t('show_checkup_type')%></h4>
+<table border="1" class="mg-showdata-bg " cellspacing="1" cellpadding="1">
+  <tr>
+    <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('name')%></label>
+    </td>
+    <td class="mg-td-width-half" valign="top">
+      <%= @checkup_type_data.name %>
+   </td>
+ </tr>
+ <tr>
+   <td class="mg-td-width-half" valign="top">
+     <label class="mg-label"><%=t('description')%></label>
+    </td>
+    <td class="mg-td-width-half " valign="top">
+      <div class="text-scroll-for-log-text-cls comments-space">
+        <%= @checkup_type_data.description %>
+      </div>
+    </td>
+  </tr>
+</table>
+<table border="1" cellspacing="1" cellpadding="1" class="mg-showdata-bg">
+  <tr>
+    <th class="mg-td-width-half" valign="top">
+      <label class="mg-label"><%=t('Particulars')%></label>
+    </th>
+    <th class="mg-align-center" valign="top">
+      <label class="mg-label"><%=t('normal')%></label>
+    </th>
+    <th class="mg-align-center" valign="top">
+        <label class="mg-label"><%=t('Applicable')%></label>
+    </th>
+    <th class="mg-td-width-half" valign="top">
+        <label class="mg-label"><%=t('show_in_healthcard')%></label>
+    </th>
+   </tr>
+   <tr>
+     <td>
+        <%@particularTypeData.each do |particulars|%>
+          <ul>
+            <li><%= particulars.try(:particulars) %></li>
+          </ul>
+        <%end%>
+      </td>
+      <td>
+        <%@particularTypeData.each do |particulars|%>
+          <ul>
+            <li><%= particulars.try(:normal) %></li>
+          </ul>
+        <%end%>
+      </td>
+      <td>
+        <%@particularTypeData.each do |particulars|%>
+          <ul>
+            <li><%= particulars.try(:applicable) %></li>
+          </ul>
+        <%end%>
+      </td>
+      <td>
+        <%@particularTypeData.each do |particulars|%>
+          <% if particulars.show_in_healthcard==true%>
+            <ul>
+              <li><%= t("yes") %></li>
+            </ul>
+          <%else%>
+            <ul>
+              <li><%= t("no") %></li>
+            </ul>
+          <%end%>
+        <%end%>
+      </td>
+    </tr>
+  </table>
+ <p class="mg-p-mgtop">
+     <a class="mg-small-form-btn cancel-form-dialog" href="/healthcare"><%=t('cancel')%></a>
+  </p>
+<%= render  partial: 'application/common_left_close' %>
+
+
+<script type="text/javascript">
+  $(document).ready(function () {
+    textSeeMoreLess();
+    focusCurrentTab("checkupAID","checkupliId");
+  });
+</script>
+	

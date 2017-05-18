@@ -1,0 +1,298 @@
+<% navigation_add t('discipline_report'), :controller=>'hostel_management', :action=>'discipline_report' %>
+<% navigation_add t('edit_discipline_report'), :controller=>'hostel_management', :action=>'disciplanary_report_edit',:id=>params[:id] %>
+
+<%= render  partial: 'hostel_management_left' %>
+
+
+
+<%= form_for :discipline_report_data ,  :url=>{:controller=>'hostel_management',:action=>'discipline_report_update',:id=>@discipline_report.id}, :html=>{:id=>'hostel_rooms_data'} do |f| %>
+   <h4 class="mg-h4"><%= t('discipline_report')%></h4>
+
+<table class="mg-tbl-margin mg-show-tbl-width">
+    <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="hostel_name"><%= t ('hostel_name') %><span class="required-field">&nbsp;*</span></label><br/>
+        <%@hostel_warden=MgHostelWarden.find_by(:mg_user_id=>session[:user_id],:is_deleted=>0,:mg_school_id=>session[:current_user_school_id])
+        hostel_details=MgHostelDetails.find_by(:id=>@hostel_warden.mg_hostel_details_id)
+
+        %>
+         <%= f.hidden_field :hostel_id ,:value=>@hostel_warden.mg_hostel_details_id%>
+        <%= text_field_tag :hostel_name ,hostel_details.try(:name),:readonly=>true,:class=>"mg-text-field"%>
+      </td>
+    </tr>
+<tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="date"><%= t ('date') %><span class="required-field">&nbsp;*</span></label><br/>
+        
+          <%@dateFormat = MgSchool.find_by(:id=>session[:current_user_school_id]).date_format %>
+        <%= text_field_tag :date_of_app ,@discipline_report.date_of_report.strftime(@dateFormat),:readonly=>true,:class=>"mg-text-field"%>
+      </td>
+    </tr>
+
+    <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="date"><%= t ('reason') %><span class="required-field">&nbsp;*</span></label><br/>
+        
+
+        <%=text_area_tag :reason,@discipline_report.reason,:class=>"mg-text-field"%>
+      </td>
+    </tr>
+    <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="date"><%= t('action_to_be_taken') %><span class="required-field">&nbsp;*</span></label><br/>
+        
+
+        <%= text_area_tag "action_to_be_taken",@discipline_report.action_to_be_taken,:readonly=>true,:class=>"mg-text-field"%>
+      </td>
+    </tr>
+    </table>
+<h4 class="mg-h4"><%= t('discipline_report')%></h4>
+
+<!-- <div class="mg-td-width-full mg-td-width-full comments-space"> -->
+           
+<div id="attendanceCalendarScroll">
+  <table class="mg-tbl-margin mg-show-tbl-width mg-inner-table-align">
+    <tr>
+      <td>
+        <label class="mg-label" for="selectDepartment"><%= t('select_floor') %><span class="required-field">&nbsp;</span></label><br/>
+        <span style="margin-right:50px; vertical-align: top;">
+          <%
+            hostel_data=MgHostelRoom.where(:is_deleted=>0, :mg_school_id=>session[:current_user_school_id],:mg_hostel_details_id=>@hostel_warden.mg_hostel_details_id).pluck(:mg_hostel_floor_id).uniq
+
+            floor_data=MgHostelFloor.where(:id=>hostel_data).pluck(:name,:id)
+          %>
+          <%=select_tag :notSelected, options_for_select(floor_data),:multiple => true,:size =>10, :class=>"mg-add-library-particular"%>
+        </span>
+      </td>
+      <td>  
+        <label class="mg-label" for="selectDepartment"><%= t('select_room') %><span class="required-field">&nbsp;</span></label><br/>
+        <!--  <a  id="addingdatas" class="mg-custom-form-btn mg-fee-btn">Select Dept</a>  -->
+        <span id="selected_students" style="vertical-align: top;">
+          <%=select_tag :selectedEmployeesdata,options_for_select([]),:multiple => true,:size =>10 ,:class=>"mg-add-library-particular"%>
+        </span>
+      </td>
+      <td>
+        <label class="mg-label" for="selectDepartment"><%= t('select_students') %><span class="required-field">&nbsp;</span></label><br/>
+        <span id="selected_students" style="vertical-align: top;">
+          <%=select_tag :selectedEmployees,options_for_select([]),:multiple => true,:size =>10 ,:class=>"mg-add-library-particular"%>
+        </span>
+      </td>
+      <td style="padding-top: 124px;">
+        <a  id="editaddingemployeedatas" class="mg-custom-form-btn mg-add-rem-btn"  style="margin-left: 10px; margin-right: 10px;">Add</a> </td>
+      <td>
+        <label class="mg-label" for="selectDepartment"><%= t('selected_students') %><span class="required-field">&nbsp;</span></label><br/>
+        <span id="removing_employees" style="display: inline-block;">
+          <%list_data=MgHostelDisciplineReportList.where(:mg_hostel_discipline_report=>@discipline_report.id,:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:mg_student_id).uniq
+            student_data=MgStudent.where(:id=>list_data,:is_deleted=>0,:mg_school_id=>session[:current_user_school_id])
+            array1=Array.new
+            student_data.each do |data|
+              array2=Array.new
+              array2.push("(#{data.admission_number})#{data.first_name} #{data.last_name}",data.id)
+              array1.push(array2)
+            end
+          %>
+          <%=select_tag :selected_employees,options_for_select(array1,:selected=>list_data),:multiple => true,:size =>10 ,:class=>"mg-add-library-particular"%>
+        </span>
+      </td>
+      <td style="padding-top: 124px;"><a  id="removingdata" class="mg-custom-form-btn mg-add-rem-btn" style="margin-left: 10px; margin-right: 10px;">Remove</a></td>
+    </tr>
+  </table>
+</div>
+<br/>
+
+<p>
+	
+<label class="mg-label" for="status"><%= t ('status') %><span class="required-field">&nbsp;*</span></label><br/>
+        
+
+        <%=select_tag :status,options_for_select([["#{@discipline_report.status}"]]),:class=>"mg-text-field"%>
+
+</p>
+<br/>
+<p class="mg-p-mgtop">
+  <%if @discipline_report.status!="Closed" %>
+    <a onclick="$(this).closest('form').submit()" class="inputsss_fieldsss_data mg-small-form-btn"><%=t("save")%></a>
+  <%end%>
+  <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+</p>
+
+
+<%end%>
+
+
+<%= render  partial: 'application/common_left_close' %>
+
+
+
+
+
+
+
+<script>
+$(document).ready(function () {
+
+        focusCurrentTab("disciplane_listAID","disciplane_listLiID");
+        
+    });
+
+$(document).on("click",".inputsss_fieldsss_data",function(e){
+  //alert("asdfh");
+$("#selected_employees option").prop('selected',true)
+ 
+});
+
+
+
+$(document).on("click","#editaddingemployeedatas",function(e){
+
+
+ var demo=$("#selectedEmployees").val();
+ 
+ var texts=$("#selectedEmployees :selected").text();
+var text=texts.split("  ")
+ 
+ var array=[];
+
+$("#selected_employees option").each(
+
+function() {
+array.push(this.value);
+
+}
+
+);
+
+
+ for(var i=0;i<demo.length;i++)
+ {
+var a =false;
+
+for(var j=0;j<array.length;j++){
+  
+ if (demo[i]==array[j]){
+ a=true;
+  
+}
+
+}
+
+if (a){
+
+  }
+else{
+
+ var addselectedOption=$("#selectedEmployees option:selected")
+ 
+var str="<option value="+demo[i]+">"+text[i]+"</option>"
+
+  $("#selected_employees").append(str);
+ $("#selected_employees option").prop('selected',true);
+
+}
+
+}
+
+
+ });
+
+
+
+
+$(document).on("click","#removingdata",function(e){
+
+var selectedOption=$("#selected_employees option:selected").remove();
+$("#selected_employees option").prop('selected',true)
+
+//$("#selectedEmployees").append(selectedOption);
+
+  });
+
+
+
+
+ $(document).on("click","#notSelected",function(e){
+    
+    var dept_values=$("#notSelected").val();
+    var hostel_id=$("#discipline_report_data_hostel_id").val();
+
+   
+ $.ajax({
+            url: "/hostel_management/discipline_report_ajax",
+            type: "GET",
+            data: {"floor_data":dept_values,hostel_id:hostel_id,"floor":"floor"},
+            success: function(data) {
+               // $(".fee-particular-admission-number-cls").empty();
+               // $(".fee-particular-admission-number-cls").append(data);
+             $("#selectedEmployeesdata").empty();
+
+             $("#selectedEmployeesdata").html(data.main);
+             
+              
+            },
+            error:function(){
+              alert("Something went wrong!");
+            }
+        });
+    
+});
+ $(document).on("click","#selectedEmployeesdata",function(e){
+    
+    var dept_values=$("#notSelected").val();
+    var hostel_id=$("#discipline_report_data_hostel_id").val();
+    var room_id=$("#selectedEmployeesdata").val();
+
+
+   
+ $.ajax({
+            url: "/hostel_management/discipline_report_ajax",
+            type: "GET",
+            data: {floor_data:dept_values,hostel_id:hostel_id,room:"room",room_id:room_id},
+            success: function(data) {
+               // $(".fee-particular-admission-number-cls").empty();
+               // $(".fee-particular-admission-number-cls").append(data);
+             $("#selectedEmployees").empty();
+
+             $("#selectedEmployees").html(data.main);
+             console.log(data.main);
+              
+            },
+            error:function(){
+              alert("Something went wrong!");
+            }
+        });
+    
+});
+
+
+</script>
+
+<style>
+
+.error {
+  display: block;
+  font-size: 12px;
+}
+
+.mg-add-rem-btn {
+  cursor: pointer;
+  position: relative;
+  top: -6em;
+  vertical-align: middle;
+}
+
+
+/*.mg-td-width-full {
+  width: 100%
+}*/
+
+.mg-td-width-full{
+       width: 100%;
+       height: 100%;
+     }
+
+  #attendanceCalendarScroll{
+    border: 1px solid #bcbcbc;
+    overflow-x: scroll;
+    max-width: 719px;
+  }
+</style>

@@ -1,0 +1,54 @@
+    <%=render partial: "dashboards/student_dashboard_left"%>
+    <h4 class="mg-h4"><%= @action=='new' ? t('add_training_required') : 
+    t('edit_training_required')%></h4>
+
+    <%= form_for :training_required, :url=>@action=='new' ? 
+    'placement_training_required_create' : '/placements/'+
+    @training_required.try(:id).to_s+'/placement_training_required_update', 
+     :method=> @action=='new' ? "post" : "patch", :html => 
+     {:id => 'trainingRequiredNewEditFormId' } do |f| %>
+
+   <%= f.hidden_field :mg_school_id, :value => session[:current_user_school_id]%>
+   <%if @action=='new'%>
+    <%= f.hidden_field :created_by, :value => session[:user_id]%> 
+   <%end%>
+   <%= f.hidden_field :updated_by, :value => session[:user_id]%> 
+   <%= f.hidden_field :is_deleted, :value => 0%>
+
+   <p>
+    <%= f.label :area_of_training_required, t('area_of_training_required') ,
+    :class=>"mg-label mg-rm-text-trans"%><span class="required-field"> *</span><br>
+    <%= f.text_field :area_of_training_required ,:class=> 'mg-text-field'  %>
+   </p>
+
+   <p>
+    <%= f.label :description, t('description') ,:class=>"mg-label"%><br>
+    <%= f.text_area :description ,:class=> 'mg-text-field'  %>
+   </p>
+
+   <p>
+    <%= f.label :status, 'status' ,:class=>"mg-label"%><span class="required-field"> *</span><br>
+    
+    <%= f.select :status, options_for_select([["Pending", "Pending"], ["Accepted", "Accepted"], ["Rejected", "Rejected"]],:selected=>@training_required.try(:status)),{},{:disabled=>true} %>
+    <%=f.hidden_field :status,:value=>"Pending"%>
+
+  </p>
+
+  <p class="mg-p-mgtop">
+		<a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("save")%></a>
+	    <%= link_to t('cancel'),placement_training_required_index_path,{:class=>"mg-small-form-btn cancel-form-dialog"} %>
+	</p>
+  <% end %>
+  <%= render  partial: 'common_left_close' %>
+  
+  <script type="text/javascript">
+
+     $(document).ready(function(){
+ 	     $("#trainingRequiredNewEditFormId").validate({
+           rules: {
+      	          "training_required[area_of_training_required]": {required: true},"training_required[status]": {required: true},
+                   }
+                 });
+      });
+   </script>
+

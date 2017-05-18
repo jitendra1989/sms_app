@@ -1,0 +1,58 @@
+
+<table border="1" class="mg-showdata-bg mg-tbl-layout" cellspacing="1" cellpadding="1">
+   <tr>
+      <td class="mg-td-width-half" valign="top">
+        <label class="mg-label"><%=t('route_name')%></label>
+      </td>
+      <td class="mg-td-width-half" valign="top">
+      <%
+          transport_data=MgTransport.find(@show_transport_time_management.mg_transport_id)
+         %>
+        <label class="mg-label-inner-form"><%= transport_data.route_name %></label>
+      </td>
+  </tr>
+  <tr>
+      <td class="mg-td-width-half" valign="top">
+        <label class="mg-label"><%=t('bus_stop_name')%></label>
+      </td>
+      <td class="mg-td-width-half" valign="top">
+        <label class="mg-label-inner-form"><%= @show_transport_time_management.bus_stop_name %></label>
+      </td>
+  </tr>
+  
+
+  
+   
+  <tr>
+     <td class="mg-td-width-half" valign="top">
+        <label class="mg-label"><%=t('pick_up_time')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+      
+        <label class="mg-label-inner-form"><%= @show_transport_time_management.pick_up_time.strftime("%k:%M%p") %></label>
+     	
+     </td>
+  
+  </tr>
+
+  <tr>
+     <td class="mg-td-width-half" valign="top">
+        <label class="mg-label"><%=t('drop_time')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+      
+        <label class="mg-label-inner-form"><%= @show_transport_time_management.drop_time.strftime("%k:%M%p") %></label>
+      
+     </td>
+  
+  </tr>
+
+
+  
+
+
+  
+</table><br/>
+
+       <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+

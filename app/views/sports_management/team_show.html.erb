@@ -1,0 +1,136 @@
+<% navigation_add t('team'), :controller=>'sports_management', :action=>'team' %>
+<% navigation_add  t('show_team_details'), :controller=>'sports_management', :action=>'team_show',:id=>params[:id] %>
+
+<%= render  partial: 'sports_left' %>
+
+<h4 class="mg-h4"><%= t('show_team_details')%></h4>
+
+<table border="1" class="mg-showdata-bg " cellspacing="1" cellpadding="1">
+   
+
+ 
+  <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('activity')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+      <%= @team.game_type %>
+     </td>
+   </tr>
+
+   <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('team_name')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+      <%= @team.team_name %>
+     </td>
+   </tr>
+
+
+   <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('game')%></label>
+     </td>
+     <% game_data=MgSportGame.find_by(:id=>@team.mg_sport_game_id,:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).name%>
+     <td class="mg-td-width-half" valign="top">
+      <%=  game_data %>
+     </td>
+   </tr>
+</table>
+
+<% student_data= MgSportTeamStudent.where(:is_deleted=>0,:mg_sport_team_id=>@team.id)%>
+<% if student_data.present?%>
+<br/>
+<h4 class="mg-h4"><%= t('student_details')%></h4>
+
+<table border="1" class="mg-showdata-bg " cellspacing="1" cellpadding="1">
+ <tr>
+    
+     <td class="mg-td-width-half" valign="top">
+        <label class="mg-label"> <%= t('student_name')%></label>
+     </td>
+
+    <td class="mg-td-width-half" valign="top">
+        <label class="mg-label"> <%= t('admission_number')%></label>
+     </td>
+
+     
+ </tr>
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+        <% student_data.each do |prgm| %>
+            <% prgm_name=MgStudent.find_by(:is_deleted=>0,:id=>prgm.mg_student_id) %>  
+           <%= "#{prgm_name.try(:first_name)} #{prgm_name.try(:last_name)}"   %>
+			<% puts prgm_name.inspect%>
+            <br>
+        <% end %>
+     </td>
+
+     <td class="mg-td-width-half" valign="top">
+        <% student_data.each do |prgm| %>
+        	<% prgm_name=MgStudent.find_by(:is_deleted=>0,:id=>prgm.mg_student_id) %>
+            <%= prgm_name.try(:admission_number) %>
+            <br>
+        <% end %>
+     </td>
+ </tr>
+</table>
+<% end%>
+<% employee_data= MgSportTeamEmployee.where(:is_deleted=>0,:mg_sport_team_id=>@team.id)%>
+<% if employee_data.present?%>
+	<h4 class="mg-h4"><%= t('employee_details')%></h4>
+	<% puts employee_data.inspect%>
+	<table border="1" class="mg-showdata-bg " cellspacing="1" cellpadding="1">
+	 <tr>
+	    
+	     <td class="mg-td-width-half" valign="top">
+	        <label class="mg-label"> <%= t('employee_name')%></label>
+	     </td>
+
+	    <td class="mg-td-width-half" valign="top">
+	        <label class="mg-label"> <%= t('admission_number')%></label>
+	     </td>
+
+	     
+	 </tr>
+	 <tr>
+	     <td class="mg-td-width-half" valign="top">
+	        <% employee_data.each do |prgm| %>
+	        	<% puts prgm.inspect%>
+	            <% prgm_name=MgEmployee.find_by(:is_deleted=>0,:id=>prgm.mg_employee_id) %>  
+	           <%= "#{prgm_name.try(:first_name)} #{prgm_name.try(:last_name)}"   %>
+	            <br>
+	        <% end %>
+	     </td>
+
+	     <td class="mg-td-width-half" valign="top">
+	        <% employee_data.each do |prgm| %>
+	        	<% prgm_name=MgEmployee.find_by(:is_deleted=>0,:id=>prgm.mg_employee_id) %>
+	            <%= prgm_name.try(:employee_number) %>
+	            <br>
+	        <% end %>
+	     </td>
+	 </tr>
+	</table>
+<% end %>
+
+
+<br>
+
+ 
+ <table>
+        <tr>
+            <td>
+               <%= link_to t('cancel'), {:controller=>'sports_management',:action=>'team'}, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+            </td>
+        </tr> 
+    </table>
+
+ <%= render  partial: 'application/common_left_close' %>
+
+<script type="text/javascript">
+	 $(document).ready(function () {
+    focusCurrentTab("teamAID","teamLiID");
+  });
+</script>

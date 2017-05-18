@@ -1,0 +1,17 @@
+<% navigation_add t('albums'), albums_path %>
+
+<%= render partial: 'dashboards/employee_left' %>
+<%= render partial: 'album_list' %>
+
+
+<%= render partial: 'application/common_left_close' %>
+
+
+<script>
+	$(document).ready(function () {
+
+ focusCurrentTab("viewEmployeeAlbumAID","viewEmployeeAlbumLiID");
+      focusDashboards();
+
+});
+</script>

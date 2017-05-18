@@ -1,0 +1,36 @@
+<% navigation_add t('corporate'), :controller => 'placements', :action => 'index_corporate_login' %>
+<%= render  partial: 'master_settings/master_settings_left' %>
+<h4 class="mg-h4"><%= t('about_corporate') %></h4>
+<button class="add_user mg-btn-bottom-margin mg-custom-form-btn"><%= t('add_corporate')%></button>
+<%if @users.length>0%>
+  <%= render  partial: 'login_index' %>
+<%else%>
+  <h5>No Corporate created</h5>
+<%end%>
+<%= render  partial: 'application/common_left_close' %>
+<div id="newUserDivId"></div>
+
+<script>
+  $( document ).ready(function() {
+    focusCurrentTab("corporateLoginAID","corporateLoginLID");
+  });
+
+  $(document).on("click", ".add_user", function(e){
+    var urlLink = "/placements/new_user";
+    $.ajax({
+      url: urlLink ,
+      cache: false,
+      success: function(html){
+        $('#newUserDivId').dialog({
+          modal: true,
+          minHeight: 'auto',
+          minWidth: '250px',
+          title: "New Corporate",
+          open: function () {
+          $(this).html(html);
+          }
+        }); 
+      }
+    });
+  });
+</script>

@@ -1,0 +1,2 @@
+<label class="mg-label mg-tt-width mg-tbl-margin">Select Section</label>
+<%=select_tag :batch,options_for_select(@batches),:prompt=>"Select",:onchange=>"selectBatch(this.value)"	%>

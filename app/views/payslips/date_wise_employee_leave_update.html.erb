@@ -1,0 +1,39 @@
+
+<%start_date=Date.today%>
+<%end_date=Date.today+45%>
+
+
+
+<%=start_date%>...<%=end_date%><br>
+
+
+<%count=0%>
+<%date=start_date%>
+<%for i in start_date...end_date%>
+<%if Date.parse(start_date.to_s) < Date.parse((start_date+1).to_s)%>
+<%#="yes"%>
+<%else%>
+<!-- no -->
+<%end%>
+<%date=start_date+=1%>
+<!-- <%#="dates -- #{count+=1}"%>-><%#=start_date+=1%><br> -->
+<%end%>
+
+<%count=0%>
+<%date_array=((Date.today )..Date.today+90).map{|d|
+
+
+ [d.year, d.month]
+
+
+ }%>
+
+<%=date_array%>
+
+<br><%count=0%>
+<%for date in 0...date_array.size%>
+<br>
+
+<%=count+=1%>--<%=date_array[date]==date_array[date+1]%>
+
+<%end%>

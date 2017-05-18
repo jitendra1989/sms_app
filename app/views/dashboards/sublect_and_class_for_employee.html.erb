@@ -1,0 +1,27 @@
+<!-- <h4 class="mg-h4">Subject & Class</h4>  -->
+<!-- <br> -->
+<div class="mg-custom-labels">
+<%if @subject.present?%>
+	 <table class="batch-tbl" border="">
+		 <tr class="subject-table-header">
+			 <th>Subject </th>
+			 <th>Subject Code </th>
+			 <th>Class </th>
+		 </tr>
+		<%@subject.each do |t|%>            
+			<tr>
+				<td><%=t.subject_name%></td>
+				<td><%=t.subject_code%></td>
+				<td><%=MgCourse.find(t.mg_course_id).course_name%></td>
+			</tr>
+		<%end%>
+	</table>
+<%else%>
+	<h5>Subject not yet assigned.</h5>
+<%end%>
+
+<br>
+<p>
+ <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+ </p>
+</div>

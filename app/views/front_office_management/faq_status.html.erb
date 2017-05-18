@@ -1,0 +1,94 @@
+<%if @faq.present?%>
+	<%if @sub_category=="selected"%>
+	<!-- #==================When both are present====================== -->
+		<div class="mg-scroll-faq-bar">
+		<h4 class="mg-h5"><%#= t('frequently_asked_questions')%>
+		<%tempCategory=MgFaqSubCategory.find_by(:id=>@faq[0].try(:mg_faq_sub_category_id))%>
+		<%=tempCategory.try(:sub_category_name)%><span style="margin-left: 398px;"><%#=@faq.size%>&nbsp;&nbsp;<%#= t('record_found') %></span></h4>
+			<div class="faq-margin-div"><%
+			recordSize=@faq.size
+			tempVar=0
+			@faq.each do |faqQA|
+				tempVar+=1
+				if faqQA.question.present? || faqQA.answer.present?%>
+					<p style="color:#4169E1 cursor:pointer" class="paraQuestionClass">
+					<a class="hyperlinkQuesTag"><label class="mg-label msg-td-width-half" valign="top" style="color: #157CE5;"> Q<%=tempVar%>&nbsp;&nbsp;<%= strip_tags(faqQA.try(:question))%></label></a>  
+					</p>  
+					<p style="display:none;" class="paraAnswerClass">
+					<td class="mgs-td-width-half" valign="top"><span style="font-weight: bold;">Answer:</span>&nbsp;&nbsp;<%=strip_tags(faqQA.try(:answer))%></td>
+					</p>
+				<%end%>
+			<%end%>
+			</div>
+		</div>
+	<%end%>
+<!-- #=====================When Sub Category is not selected======= -->
+	<%if @sub_category=="not_selected"%>
+<div class="mg-scroll-faq-bar">
+		<%@faq.each do |sub_cate|%><%
+		sub_category=MgFaqSubCategory.find_by(:id=>sub_cate,:is_deleted=>0,:mg_school_id=>session[:current_user_school_id])%>
+			<h4 class="mg-h5"><%= sub_category.try(:sub_category_name)%><span style="margin-left: 398px;"><%#=@faq.size%>&nbsp;&nbsp;<%#= t('record_found') %></span></h4>
+			<%
+      @faqs=MgFaq.where(:mg_faq_category_id=>@category_id,:mg_faq_sub_category_id=>sub_cate,:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).order('created_at DESC')
+		%>
+				<div class="faq-margin-div"><%
+				recordSize=@faqs.size
+				tempVar=0
+				@faqs.each do |faqQA|
+				
+					tempVar+=1
+					if faqQA.question.present? || faqQA.answer.present?%>
+						<p style="color:#4169E1 cursor:pointer" class="paraQuestionClass">
+						<a class="hyperlinkQuesTag"><label class="mg-label msg-td-width-half" valign="top" style="color: #157CE5;"> Q<%=tempVar%>&nbsp;&nbsp;<%= strip_tags(faqQA.try(:question))%></label></a>  
+						</p>  
+						<p style="display:none;" class="paraAnswerClass">
+						<td class="mgs-td-width-half" valign="top"><span style="font-weight: bold;">Answer:</span>&nbsp;&nbsp;<%=strip_tags(faqQA.try(:answer))%></td>
+						</p>
+					<%end%>
+				<%end%>
+				</div>
+		<%end%>
+</div>
+	<%end%>
+<!-- #============================================================== -->
+	<br/>
+<%else%>
+	<br/>
+	<h4>No Questions are present to show for particular category.<h4>
+<%end%>
+
+<script>
+
+$(".hyperlinkQuesTag").click(function(){
+	$(".paraAnswerClass").each(function(){
+		$(this).hide();
+	})
+	$(this).parent(".paraQuestionClass").next(".paraAnswerClass").show();
+});
+</script>
+
+<style>
+p {
+    text-align: justify;
+    text-justify: inter-word;
+    max-width: 678px;
+    /*font-size: 2em;*/
+}
+
+.mg-scroll-faq-bar {
+    border: 1px solid #B2B2B2;
+  /*  display: inline-block;*/
+    height: 572px;
+    max-width: 900px;
+    overflow-y: scroll;
+    width: auto;
+}
+.faq-margin-div {
+    margin-left: 0.2cm;
+} 
+
+
+.hyperlinkQuesTag {
+    cursor: help;
+}
+</style>

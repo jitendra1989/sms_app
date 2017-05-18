@@ -1,0 +1,190 @@
+<% navigation_add t('alumni_job_posting'),"/alumni/alumni_job_posting_index" %>
+
+
+
+<%# navigation_add t('new_alumni_job_post'),"/alumni/alumni_job_posting_new" %>
+
+<%=render partial: "alumni_left"%>
+
+<% if @action=='new'%>
+  <h4 class="mg-h4"><%=t('new_alumni_job_post')%></h4>
+  <% navigation_add t('new_alumni_job_post'),"/alumni/alumni_job_posting_new" %>
+<%else %>
+  <h4 class="mg-h4"><%=t('edit_alumni_job_post')%></h4>
+  <% navigation_add t('edit_alumni_job_post'),:controller=>'alumni', :action=>'alumni_job_posting_edit',:id=>params[:id] %>
+<%end%>
+
+
+<%= form_for :alumni_job_posting, :url=>@action=='new' ? 'alumni_job_posting_create' : '/alumni/'+@alumni_job_posting.try(:id).to_s+'/alumni_job_posting_update', :method=> @action=='new' ? "post" : "patch", :html => {:id => 'alumniJobPostingFormId' } do |f| %>
+
+	<%= f.hidden_field :is_deleted, :value => 0 %>
+	<%= f.hidden_field :mg_school_id, :value => session[:current_user_school_id] %>
+  <%if @action=='new'%>
+    <%= f.hidden_field :created_by, :value => session[:user_id] %>
+  <%end%>
+  <%= f.hidden_field :updated_by, :value => session[:user_id] %>
+  
+  <label class="mg-label mg-tt-width" style="width:185px"><%= t('position') %><span class="required-field">&nbsp;*</span></label>
+  <%= f.text_field :position,:class =>"mg-select-btn"%><br/>
+
+  <p class="formfield">
+  <label class="mg-label mg-tt-width" style="width:185px"><%= t('job_description') %></label>
+  <%= f.text_area :job_description,:class =>"mg-select-btn"%><br/>
+  </p>
+  <label class="mg-label mg-tt-width" style="width:185px"><%= t('functional_area') %><span class="required-field">&nbsp;*</span></label>
+  <%= f.text_field :functional_area,:class =>"mg-select-btn"%><br/>
+
+  <label class="mg-label mg-tt-width" style="width:185px"><%= t('educational_qualification') %><span class="required-field">&nbsp;*</span></label>
+  <%= f.text_field :minimum_qualification,:class =>"mg-select-btn"%><br/>
+
+  <label class="mg-label mg-tt-width" style="width:185px"><%= t('minimum_experience_required') %><span class="required-field">&nbsp;*</span></label>
+  <%= f.text_field :minimum_experience_required,:class =>"mg-select-btn"%><br/>
+
+  <label class="mg-label mg-tt-width" style="width:185px"><%= t('technical_skills') %><span class="required-field">&nbsp;*</span></label>
+  <%= f.text_field :technical_skills,:class =>"mg-select-btn"%><br/>
+  </div>
+
+  <label class="mg-label mg-tt-width" style="width:185px"><%= t('soft_skills') %><span class="required-field">&nbsp;*</span></label>
+  <%= f.text_field :soft_skills,:class =>"mg-select-btn"%><br/>
+  </div>
+  <label class="mg-label mg-tt-width" style="width:185px"><%= t('salary') %></label>
+  <%= f.text_field :salary,:class =>"mg-select-btn"%><br/>
+  </div>
+  
+  <p class="formfield">
+  <label class="mg-label mg-tt-width" style="width:185px"><%= t('company') %><span class="required-field">&nbsp;*</span></label>
+  <%= f.text_area :company,:class =>"mg-select-btn"%><br/>
+  </p>
+
+	<label class="mg-label mg-tt-width" style="width:185px"><%= t('company_website') %><span class="required-field">&nbsp;*</span></label>
+	<%= f.text_field :company_website,:class =>"mg-select-btn"%><br/>
+  </div>
+
+  <label class="mg-label mg-tt-width" style="width:185px"><%= t('relevant_experience') %><span class="required-field">&nbsp;*</span></label>
+  <%= f.text_field :relevant_experience,:class =>"mg-select-btn"%><br/>
+  </div>
+
+  <label class="mg-label mg-tt-width" style="width:185px"><%= t('alumni_id') %><span class="required-field">&nbsp;*</span></label>
+  <%user=MgUser.find(session[:user_id])%>
+  <%alumni_data=MgAlumni.find_by(:mg_user_id=>user.id)%>
+  <%= text_field_tag :alumni_id_data,user.user_name,:readonly=>true,:class =>"mg-select-btn"%>
+  <%= f.hidden_field :alumni_id,:value=>alumni_data.id,:readonly=>true,:class =>"mg-select-btn"%><br/>
+  
+
+  </div>
+
+  <label class="mg-label mg-tt-width" style="width:185px"><%= t('referral_code') %><span class="required-field">&nbsp;*</span></label>
+  <%= f.text_field :referral_code,:class =>"mg-select-btn"%><br/>
+   <label class="mg-label mg-tt-width" style="width:185px"><%= t('interview_date') %><span class="required-field">&nbsp;*</span></label>
+  <%= f.text_field :interview_date,:class =>"mg-select-btn"%><br/>
+   <label class="mg-label mg-tt-width mg-label-text-transform-none" style="width:185px"><%= t('last_date_of_application') %><span class="required-field">&nbsp;*</span></label>
+  <%=f.text_field :last_date_of_application,:class =>"mg-select-btn"%><br/>
+   <label class="mg-label mg-tt-width" style="width:185px"><%= t('status') %><span class="required-field">&nbsp;*</span></label>
+ <%if @action=='new' %> 
+ <%=f.select :status, [["Active", "active"],["InActive", "inactive"]], {}, {:class=> "mg-select-btn", :disabled=>true}%><br/> 
+
+ <%=f.hidden_field :status,:value=>"active"%> 
+ <%else%>
+ <%if Date.today>@alumni_job_posting.interview_date%>
+
+<%=f.select :status, [["InActive", "inactive"]], {}, {:class=> "mg-select-btn", :disabled=>true}%><br/> 
+ <%=f.hidden_field :status,:value=>"inactive"%> 
+
+<%else%>
+<%=f.select :status,[["Active", "active"]], {}, {:class=> "mg-select-btn", :disabled=>true}%>
+ <%=f.hidden_field :status,:value=>"active"%> 
+
+ <%end%>
+ <%end%>
+  <p class="mg-p-mgtop">
+		<a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("save")%></a>
+    <%= link_to t('cancel'),alumni_job_posting_index_path ,{:class=>"mg-small-form-btn cancel-form-dialog"} %>
+	</p>
+
+<%end%>
+
+<%= render  partial: 'common_left_close' %>
+
+<script>
+$( document ).ready(function() {
+
+  focusCurrentTab("alumniJobPostingAId","alumniJobPostingLiId");
+
+
+  $("#alumniJobPostingFormId").validate({
+    rules: {     
+
+      "alumni_job_posting[position]": {required: true},
+      "alumni_job_posting[minimum_qualification]": {required: true},
+      "alumni_job_posting[minimum_experience_required]": {required: true, number: true,min: 0},
+      "alumni_job_posting[company]": {required: true},
+      "alumni_job_posting[company_website]": {required: true},
+      "alumni_job_posting[relevant_experience]": {required: true, number: true,min: 0},
+      "alumni_job_posting[alumni_id]": {required: true},
+      "alumni_job_posting[referral_code]": {required: true},
+      "alumni_job_posting[functional_area]": {required: true},
+      "alumni_job_posting[technical_skills]": {required: true},
+      "alumni_job_posting[soft_skills]": {required: true},
+      "alumni_job_posting[salary]": {number: true,min: 0},
+      "alumni_job_posting[interview_date]": {required: true},
+      "alumni_job_posting[last_date_of_application]": {required: true},
+
+
+
+    }
+  });
+});
+
+    dateFormatStr =  getJsDateFormat();
+      $( "#alumni_job_posting_interview_date" ).datepicker({ changeMonth: true,
+                changeYear: true,yearRange: "-50:+0",maxDate: "1000" ,dateFormat: dateFormatStr});
+
+      $("#alumni_job_posting_last_date_of_application").datepicker({ changeMonth: true,
+                changeYear: true,yearRange: "-50:+0",maxDate: "1000" ,dateFormat: dateFormatStr});
+
+    
+         var interview_date =  $.datepicker.formatDate(dateFormatStr,new Date($('#alumni_job_posting_interview_date').val()));
+           var last_date_of_interview =  $.datepicker.formatDate(dateFormatStr,new Date($('#alumni_job_posting_last_date_of_application').val()));
+
+//alert(joiningDate);
+if(interview_date=="NaN/NaN/NaN") {
+
+}
+else{
+  $('#alumni_job_posting_interview_date').val(interview_date);
+$('#alumni_job_posting_last_date_of_application').val(last_date_of_interview);
+  
+}
+
+    $(function () {
+    $.validator.addMethod('dateFormat',
+    function (value, element) {
+      dateFormatStr =  getJsDateFormat();
+        if (this.optional(element)) {
+            return true;
+        }
+        var ok = true;
+        try {
+            $.datepicker.parseDate(dateFormatStr, value);
+        }
+        catch (err) {
+            ok = false;
+        }
+        return ok;
+    },
+      "Please enter a date in the format "+ getDateFormat(dateFormatStr) +".");
+      dateFormatStr =  getJsDateFormat();
+
+    $(".datefield").datepicker({ dateFormat: dateFormatStr, changeYear: true });
+});
+
+</script>
+
+
+
+
+<style>
+.formfield * {
+    vertical-align: middle;
+}
+</style>

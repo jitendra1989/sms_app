@@ -1,0 +1,399 @@
+<%= render  partial: 'library/library_left' %>
+<% navigation_add 'Resource Inventory', library_inventory_path %>
+
+<h4 class="mg-h4"><%= t('edit_resource_inventory') %></h4>
+<%= form_for :library, :url=>{:controller=>'library',:action=>'inventory_update',:id=>@library.id},:html => {:id => 'libraryinventoryUpdateID' } do |f| %>
+
+
+<%= f.hidden_field :is_deleted, :value => 0 %>
+<%= f.hidden_field :mg_school_id, :value => session[:current_user_school_id] %>
+<%#= f.hidden_field :created_by, :value => session[:user_id] %>
+<%= f.hidden_field :updated_by, :value => session[:user_id] %>
+<table width="100%" cellspacing="0" cellpadding="0" border="0" class="employee-form-cls">
+              <tbody>
+                <tr>
+                  <td width="33%" valign="bottom">
+                    <label class="mg-label" for="first_name" ><%= t('select_resource_category') %>
+                      <span class="required-field">*</span> 
+                    </label>
+                  </td>
+
+                  <td> </td>
+                  <td width="33%" valign="bottom">
+                    <label class="mg-label" for="middle_name"><%= t('select_resource_type') %></label>
+                      <span class="required-field">*</span> 
+
+                  </td>
+                  <td> </td>
+                  
+                </tr> 
+                <tr>
+                  <td valign="top">
+                   <%= f.collection_select(:mg_resource_category_id,MgResourceCategory.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]), :id, :name,{:include_blank => t("select")},:id => "libraryResourceCategoryId",:class => "library-resource-inventory-edit-category-class", :disabled => "disabled")%>
+                  </td>
+                  <td> </td>
+                  <td valign="top">
+                   <%= f.collection_select(:mg_resource_type_id,MgResourceType.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]), :id, :name,{:include_blank => t("select")},:id => "libraryResourceTypeId",:class => "library-resource-inventory-edit-type-class",:selected=>@library.mg_resource_type_id, :disabled => "disabled")%>
+                  </td>
+                  <td> </td>
+                  
+                </tr>
+                <tr>
+                  <td width="33%" valign="bottom">
+                    <label class="mg-label" for="first_name" ><%= t('resource_number') %>
+             
+                    </label>
+                  </td>
+
+                  <td> </td>
+                  <td width="33%" valign="bottom">
+                    <label class="mg-label" for="middle_name"><%= t('name/title') %></label>
+                      <span class="required-field">*</span> 
+
+                  </td>
+                  <td> </td>
+                  
+                </tr> 
+                <tr>
+                  <td valign="top">
+                  <%= f.text_field :resource_number,:class=>"mg-text-field",:id=>"library_new_resource_number_ID",:readonly=>true %>
+                  </td>
+                  <td> </td>
+                  <td valign="top">
+                    <%= f.text_field :name,:class=>"mg-text-field" %>
+                  </td>
+                  <td> </td>
+                  
+                </tr>
+                <tr>
+                  <td width="33%" valign="bottom">
+                    <label class="mg-label" for="first_name" ><%= t('author') %>
+                      <span class="required-field">*</span> 
+                    </label>
+                  </td>
+
+                  <td> </td>
+                  <td width="33%" valign="bottom">
+                    <label class="mg-label" for="middle_name"><%= t('volume/edition') %></label>
+                  </td>
+                  <td> </td>
+                  
+                </tr> 
+                <tr>
+                  <td valign="top">
+            <%= f.text_field :author,:class=>"mg-text-field" %>
+                 
+                  </td>
+                  <td> </td>
+                  <td valign="top">
+                    <%= f.text_field :volume,:class=>"mg-text-field" %>
+                  </td>
+                  <td> </td>
+                  
+                </tr>
+                <tr>
+                  <td width="33%" valign="bottom">
+                    <label class="mg-label" for="first_name" ><%= t('year') %>
+                     
+                    </label>
+                  </td>
+
+                  <td> </td>
+                  <td width="33%" valign="bottom">
+                    <label class="mg-label" for="middle_name"><%= t('publication/company') %></label>
+                  </td>
+                  <td> </td>
+                  
+                </tr> 
+                <tr>
+                  <td valign="top">
+   <%= f.text_field :year,:class=>"mg-text-field" %>
+            
+                 
+                  </td>
+                  <td> </td>
+                  <td valign="top">
+   <%= f.text_field :publication,:class=>"mg-text-field" %>
+                   
+                  </td>
+                  <td> </td>
+                  
+                </tr>
+
+                <tr>
+                  <td width="33%" valign="bottom">
+                    <label class="mg-label" for="first_name" ><%= t('isbn') %>
+                     
+                    </label>
+                  </td>
+
+                  <td> </td>
+                  <td width="33%" valign="bottom">
+                    <label class="mg-label" for="middle_name"><%= t('subjectes') %> <span class="required-field">*</span> </label>
+                  </td>
+                  <td> </td>
+                  
+                </tr> 
+                <tr>
+                  <td valign="top">
+   <%= f.text_field :isbn,:class=>"mg-text-field" %>
+  
+                  </td>
+                  <td> </td>
+                  <td valign="top">
+   <%manage_subject_data=MgManageSubject.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:name,:id)%>
+                   <%demo=Array.new()
+                   demo.push("General Reading",0)
+                   %>
+                   <%manage_subject_data.push(demo)%>
+                    <%=f.select :mg_subject_id,options_for_select(manage_subject_data,:selected=>@library.mg_subject_id),:prompt=>"Select"%>
+                   
+                  </td>
+                  <td> </td>
+                  
+                </tr>
+                <tr>
+                  <td width="33%" valign="bottom">
+                    <label class="mg-label" for="first_name" ><%= t('class') %>
+                      <span class="required-field">*</span> 
+                    </label>
+                  </td>
+
+                  <td> </td>
+                  <td width="33%" valign="bottom">
+                    <label class="mg-label" for="middle_name"><%= t('stack_reference') %> <span class="required-field">*</span> </label>
+                  </td>
+                  <td> </td>
+                  
+                </tr> 
+                <tr>
+                  <td valign="top">
+   <%#= f.collection_select(:mg_subject_id,MgManageSubject.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]), :id, :name,{:include_blank => t("select")},:id => "libraryResourceInventoryCourseId")%>
+    <%= f.collection_select(:mg_course_id,MgCourse.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]), :id, :course_name,{:include_blank => t("select")})%>
+  
+                  </td>
+                  <td> </td>
+                  <td valign="top">
+   <%#= f.text_field :stack_reference,:class=>"mg-text-field" %>
+   <%arr_data=Array.new%>
+      <%data=MgLibraryStackManagement.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id])
+                      data.each do |demo|
+                        arr_demo=Array.new
+                        room_data=demo.room_no
+                        rack_data=demo.rack_no
+                        title=demo.first_letter_of_title
+                        arr_demo.push("#{room_data}/#{rack_data}/#{title}",demo.id)
+                        
+                        arr_data.push(arr_demo)
+                      end
+                  %>
+                  <%=f.select :stack_reference,options_for_select(arr_data,:selected=>@library.stack_reference),:prompt=>"select"%>
+                   
+                  </td>
+                  <td> </td>
+                  
+                </tr>
+                <tr>
+                  <td width="33%" valign="bottom">
+                    <label class="mg-label" for="first_name" ><%= t('cost') %>
+                      <span class="required-field">*</span> 
+                    </label>
+                  </td>
+
+                  <td> </td>
+                  <td width="33%" valign="bottom">
+                    <label class="mg-label" for="middle_name"><%= t('non_issuable') %></label>
+                    <%= f.check_box :non_issuable %>
+                  </td>
+                  <td> </td>
+                  
+                </tr> 
+                <tr>
+                  <td valign="top">
+   <%= f.text_field :cost,:class=>"mg-text-field" %>
+   
+  
+                  </td>
+                  <td> </td>
+                  <td valign="top">
+    <label class="mg-label" for="middle_name"><%= t('is_lost') %></label>
+                   <%= f.check_box :is_lost %>
+              
+                   
+                  </td>
+                  <td> </td>
+                  
+                </tr>
+
+               
+
+                </tr>
+<tr>
+                  <td width="33%" valign="bottom">
+                    <label class="mg-label" for="first_name" ><%= t('status') %>
+                      <span class="required-field">*</span> 
+                    </label>
+                  </td>
+
+                  
+                  <td></td>
+                 <td width="33%" valign="bottom">
+                    <label class="mg-label" for="first_name" ><%= t('is_damaged') %>
+                   <%= f.check_box :is_damaged %>
+                      
+                    </label>
+                  </td>
+                </tr> 
+                <tr>
+                  <td valign="top">
+    <%= select_tag :status_data, options_for_select([[@library.status]]),{:disabled=>true} %>
+   <%=f.hidden_field :status,:value=>@library.status%>
+                  </td>
+                
+                  
+                </tr>
+
+</tbody>
+</table>
+
+
+<p class="mg-p-mgtop">
+    <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("save")%></a>
+    <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+</p>
+<% end %>
+<%= render  partial: 'application/common_left_close' %>
+
+<!-- <%#= render  partial: 'application/common_left_close' %> -->
+<script>
+$( document ).ready(function() {
+            focusCurrentTab("viewlibraryresourceinventory","viewlibraryresourceinventoryLiID");
+           
+var value_data=$("#library_mg_subject_id").val();
+      if(value_data==0)
+      {
+     // alert(value_data);
+         $("#library_mg_course_id").attr('disabled','disabled');
+       // $("#").attr("disabled","disabled");
+
+      }
+      else{
+        $("#library_mg_course_id").removeAttr('disabled');
+     }
+            // =======================================================================================
+         //   $(document).on('change','.library-resource-inventory-new-category-class',function(){
+    //   var labID = $('.library-resource-inventory-edit-category-class').val();
+    //   var apdStr = '<option value="">Choose Category</option>';
+    //   $(".library-resource-inventory-edit-type-class").empty().append(apdStr);
+    //   if(labID > 0) {
+    //        var urlLink = "/library/resource_type_list/"+labID;
+
+    //        $.ajax({ 
+    //            url: urlLink,
+    //            cache: false,
+    //            success: function(data){
+    //               if(data.length > 0){
+    //                   var apdStr = '<option value="select">Select</option>';
+    //                  for(key in data){
+    //                     apdStr += '<option value="'+data[key].id+'">'+data[key].name+'</option>'
+    //                   }
+    //                   $(".library-resource-inventory-edit-type-class").empty().append(apdStr);
+    //               }
+    //            }
+    //        });
+    // }else{
+    //   var apdStr = '<option value="">Choose Category</option>';
+    //   $(".library-resource-inventory-edit-type-class").empty().append(apdStr);
+    // }
+ // });
+            // =======================================================================================
+          //focusStudentHeaderBox();
+});
+
+
+
+$("#libraryinventoryUpdateID").validate({
+        rules: {        
+        "library[mg_resource_category_id]": {required: true},
+        "library[mg_resource_type_id]": {required: true},
+        "library[name]": {required: true},
+        "library[author]": {required: true},
+        // "library[volume]": {required: true},
+         "library[year]": {minlength: 4,maxlength: 4,number:true},
+        // "library[publication]": {required: true},
+        // "library[isbn]": {required: true},
+        "library[mg_course_id]": {required: true},
+        "library[mg_subject_id]": {required: true},
+        "library[stack_reference]": {required: true},
+        "library[cost]": {required: true,number:true},
+       // "library[status]": {required: true},
+
+      }
+    });
+
+
+$(document).on('change','.library-resource-inventory-edit-category-class',function(){
+      var labID = $(this).val();
+      var apdStr = '<option value="">Choose Category</option>';
+      $(".library-resource-inventory-edit-type-class").empty().append(apdStr);
+      if(labID > 0) {
+           var urlLink = "/library/resource_type_list/"+labID;
+           $.ajax({ 
+               url: urlLink,
+               cache: false,
+               success: function(data){
+                  if(data.length > 0){
+                      var apdStr = '<option value="select">Select</option>';
+                     for(key in data){
+                        apdStr += '<option value="'+data[key].id+'">'+data[key].name+'</option>'
+                      }
+                      $(".library-resource-inventory-edit-type-class").empty().append(apdStr);
+                  }
+               }
+           });
+    }else{
+      var apdStr = '<option value="">Choose Category</option>';
+      $(".library-resource-inventory-edit-type-class").empty().append(apdStr);
+    }
+  });
+
+$(document).on('change','.library-resource-inventory-edit-type-class',function(){
+      var type_id = $(this).val();
+      if(type_id > 0) {
+           var urlLink = "/library/auto_resource_number/"+type_id;
+           $.ajax({ 
+               url: urlLink,
+               cache: false,
+               success: function(data){
+                if (!(data==""))
+                {
+                  $("#library_new_resource_number_ID").val(data);
+                }
+                else
+                {
+                  $("#library_new_resource_number_ID").val("");
+                }
+               }
+           });
+    }else{
+       $("#library_new_resource_number_ID").val("");
+    }
+  });
+$(document).on("change","#library_mg_subject_id",function(){
+ 
+      var value_data=$(this).val();
+      if(value_data==0)
+      {
+     // alert(value_data);
+    // $("#library_mg_course_id").empty();
+         $("#library_mg_course_id").attr('disabled','disabled');
+       // $("#").attr("disabled","disabled");
+
+      }
+      else{
+        $("#library_mg_course_id").removeAttr('disabled');
+     }
+
+});
+
+</script>

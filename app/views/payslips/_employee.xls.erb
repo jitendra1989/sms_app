@@ -1,0 +1,65 @@
+<?xml version="1.0"?>
+<ss:Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
+  xmlns:o="urn:schemas-microsoft-com:office:office"
+  xmlns:x="urn:schemas-microsoft-com:office:excel"
+  xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"
+  xmlns:html="http://www.w3.org/TR/REC-html40">
+  <ss:Worksheet ss:Name="Sheet1">
+    <ss:Table>
+    <%for i in 0...20%>
+          <ss:Column ss:Width="150"/>  
+    <%end%>
+      <ss:Row >
+        <ss:Cell ss:MergeAcross="25" ><ss:Data ss:Type="String"><%=t('report')%></ss:Data></ss:Cell>
+      </ss:Row>
+       <ss:Row  >
+        <ss:Cell ss:MergeAcross="5" ><ss:Data ss:Type="String"><%=t('employee_details')%></ss:Data></ss:Cell>
+       
+        <ss:Cell  ss:MergeAcross="<%=@salary_components.where(:is_deduction=>false).count-1%>"><ss:Data ss:Type="String"><%=t('components')%></ss:Data></ss:Cell>
+        <ss:Cell  ss:MergeAcross="<%=@salary_components.where(:is_deduction=>true).count-1%>"><ss:Data ss:Type="String"><%=t('deduction')%></ss:Data></ss:Cell>
+
+
+      </ss:Row>
+
+      <ss:Row>
+        <ss:Cell ><ss:Data ss:Type="String"><%=t('name')%></ss:Data></ss:Cell>
+        <ss:Cell ><ss:Data ss:Type="String"><%=t('employee_number')%></ss:Data></ss:Cell>
+        <ss:Cell ><ss:Data ss:Type="String"> <%=t('department')%></ss:Data></ss:Cell>
+        <ss:Cell ><ss:Data ss:Type="String"> <%=t('month')%></ss:Data></ss:Cell>
+        <ss:Cell ><ss:Data ss:Type="String"> <%=t('year')%></ss:Data></ss:Cell>
+        <ss:Cell ><ss:Data ss:Type="String"><%=t('no_of_unpaid_leaves_(in_the_month)')%></ss:Data></ss:Cell>
+        <%=@salary_components.where(:is_deduction=>false).each do |components|%>
+            <ss:Cell><ss:Data ss:Type="String"> <%=components.name%></ss:Data></ss:Cell>
+        <%end%>
+        <%=@salary_components.where(:is_deduction=>true).each do |components|%>
+            <ss:Cell><ss:Data ss:Type="String"> <%=components.name%></ss:Data></ss:Cell>
+        <%end%>
+        <ss:Cell><ss:Data ss:Type="String"><%=t('net_amount_payable')%></ss:Data></ss:Cell>
+      </ss:Row>
+       <% @employee_all.where( :is_approved=>'approved').each do |emp| %>
+          <%total=0.0%>
+          <ss:Row>
+            <ss:Cell><ss:Data ss:Type="String"><%= emp.mg_employee.employee_name.capitalize %></ss:Data></ss:Cell>
+            <ss:Cell><ss:Data ss:Type="String"><%= emp.mg_employee.employee_number %></ss:Data></ss:Cell>
+            <ss:Cell ><ss:Data ss:Type="String"><%= emp.mg_employee.dept_name %></ss:Data></ss:Cell>
+            <ss:Cell ><ss:Data ss:Type="String"><%=Date.new(emp.year.to_i,emp.month.to_i,01 ).strftime("%B") %></ss:Data></ss:Cell>
+            <ss:Cell ><ss:Data ss:Type="Number"><%= emp.year%></ss:Data></ss:Cell>
+            <ss:Cell ><ss:Data ss:Type="Number"><%= emp.extra_leave_taken.to_f %></ss:Data></ss:Cell>
+            <%=@salary_components.where(:is_deduction=>false).each do |components|%>
+              <%object=emp.mg_employee_payslip_components.find_by(:mg_salary_component_id=>components.id)%>
+              <ss:Cell><ss:Data ss:Type="Number"><%=object.present? ? object.amount.to_f.round(2) : 0.0%></ss:Data></ss:Cell>
+            <%end%>
+
+            <%=@salary_components.where(:is_deduction=>true).each do |components|%>
+              <%object=emp.mg_employee_payslip_components.find_by(:mg_salary_component_id=>components.id)%>
+              <ss:Cell><ss:Data ss:Type="Number"><%=object.present? ? object.amount.to_f.round(2) : 0.0%></ss:Data></ss:Cell>
+            <%end%>
+            
+            <ss:Cell><ss:Data ss:Type="Number"><%=emp.total_net_amount.round(2)%></ss:Data></ss:Cell>
+            
+          </ss:Row>
+    <% end %> 
+    
+    </ss:Table>
+  </ss:Worksheet>
+</ss:Workbook>

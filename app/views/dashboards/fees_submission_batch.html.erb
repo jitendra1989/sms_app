@@ -1,0 +1,105 @@
+<!-- Sec --> 
+ <%#= render  partial: 'fee_left' %>
+<% if(@collection_particular_list.size>0) %>
+<table  class="mg-fees-submission-batch-tbl" cellpadding="0" cellspacing="0"  >
+  <tr class="mg-tbl-tr mg-fee-bg">
+    <th class="md-tbl-th mg-align-center">Sl no. </th>
+    <th class="md-tbl-th mg-align-center" colspan="5">Particulars</th>
+    <th class="md-tbl-th mg-align-center">Amount</th>
+  </tr>
+ <% i=0 %>
+ <% totalFee=0%>
+ <% totalDiscount=0%>
+ 
+	 <% @collection_particular_list.each do |particular| %>
+	 	<% totalFee += particular.mg_fee_particular_amount.to_i%>
+	    <tr>
+	      <td class="mg-tbl-td mg-align-center"><%= i +=1 %></td>
+	      <td class="mg-tbl-td" colspan="5"><%= particular.mg_fee_particular_name %></td>
+	      <td class="mg-tbl-td mg-align-center"><%= particular.mg_fee_particular_amount %></td>
+	    </tr>
+	 <% end %>
+ 
+   <tr class="mg-fee-bg">
+
+   	 
+   	 <td></td>
+   	 <td colspan="5" align="center"><span class="mg-font-bold">Discount</span></td>
+   	 <td></td>
+   	 
+   </tr>   
+
+  <% if(@particular_discount_list!='') %>
+	  <% @particular_discount_list.each do |discount| %>
+	  	<% totalDiscount += discount.mg_discount.to_i%>
+	    <tr>
+	      <td class="mg-tbl-td"><%= i +=1 %></td>
+	      <td class="mg-tbl-td" colspan="5"><%= discount.mg_discount_name %></td>
+	      <td class="mg-tbl-td"><%= discount.mg_discount %></td>
+	    </tr>
+	  <% end %>
+  <% end %>
+
+  <tr>
+  	<td colspan="7"></td>
+  </tr>
+  <tr>
+  	<td class="mg-tbl-td"></td>
+  	<td colspan="5" class="mg-tbl-td" align="right">Total Discount&nbsp;</td>
+  	<td class="mg-tbl-td mg-align-center"><%= totalDiscount %></td>
+  </tr>
+
+  <tr>
+  	<td class="mg-tbl-td"></td>
+  	<td colspan="5" class="mg-tbl-td" align="right">Total Fees&nbsp;</td>
+  	<td class="mg-tbl-td mg-align-center"><%= totalFee-totalDiscount %></td>
+  </tr>
+
+  <tr>
+  	<td class="mg-tbl-td"></td>
+  	<td colspan="5" class="mg-tbl-td" align="right">Amount to pay&nbsp;</td>
+  	<td class="mg-tbl-td mg-align-center"><%= totalFee-totalDiscount %></td>
+  </tr>
+
+  <tr>
+  	<td colspan="7" >
+  		<div id="page-yield" align="right">
+		 	<div class="box">
+		 		<%= form_for :fees_submission_batch, url: fees_fees_submission_batch_path, method: :post  do |f| %>
+		 			<%= f.hidden_field :is_deleted, :value=> session[:current_user_student_id]%>
+		 			<%= f.hidden_field :student_id, :value=> @studentId%>
+		 			<%= f.hidden_field :transaction_date, :value=> Date.today%>
+
+					<%= f.text_field :fee_amount , :readonly => "readonly", value: totalFee-totalDiscount ,:class=>"mg-fee-width" %>
+          <%if@checkForFeePaid.size>0%>
+             <%if@checkForFeePaid[0].is_paid%>
+             <label>Fee Paid</label>
+             <%else%>
+					     <%#= submit_tag 'Submit', id: "savePayFeeID", value: "Pay Fee" %>
+               <label>Fee Unpaid</label>
+             <% end %>
+          <% end %>
+		 		<% end %>
+		 	</div>
+		</div>
+
+  	</td>
+  </tr>
+
+</table>
+<%else%>
+<h5>No Fee Record Found</h5>
+
+<% end %>
+<%#= render  partial: 'fee_left_close' %>
+
+<script type="text/javascript">
+     $(document).ready(function(){
+
+      /*$("li").removeClass( "active" );
+      $("a").removeClass( "activeMenu" );
+
+      $("#feeCollectionLiID").addClass("active");
+      $("#feeCollectionID").addClass("activeMenu");*/
+   });
+</script>

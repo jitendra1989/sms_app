@@ -1,0 +1,204 @@
+<%= render  partial: 'inventory_left' %>
+<% navigation_add 'Goods Purchased Report', inventory_inventory_goods_purchased_path %>
+
+<h4 class="mg-h4"><%= "Goods Purchased Report"%></h4>
+<%= form_for :inventory_date_validate ,  url:"#", :html=>{:id=>'inventoryGoodsPurchaseForm'} do |f| %>
+  <table class="mg-tbl-margin mg-show-tbl-width">
+    <tr>
+      <td>
+        <label class="mg-label" for="from_date"><%= t ('from_date') %><span class="required-field">&nbsp;*</span></label><br/>
+        <%=text_field_tag :library_from_date,nil,:class=>"mg-text-field date_format_clss"%>
+
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <label class="mg-label" for="to_date"><%= t ('to_date') %><span class="required-field">&nbsp;*</span></label><br/>
+        <%=text_field_tag :library_to_date,nil,:class=>"mg-text-field date_format_clss"%>
+      </td>
+    </tr>
+  </table>
+<%end%>
+ <%=submit_tag 'Generate Report', :class=> "submit  inventory_goods_report_data mg-small-form-btn mg-custom-labels" %>
+
+ <div id="showInventoryProposalDIVID"></div>
+ <div id="library_report_generation_data"></div>
+
+<%= render  partial: 'schools/school_left_close' %>
+
+
+
+
+
+<script>
+$(document).ready(function(){
+  focusCurrentTab("goods_purchasedAid","goods_purchasedLiID");
+  dateFormatStr =  getJsDateFormat();
+
+  $('#library_from_date').datepicker({ changeMonth: true,
+                changeYear: true,yearRange: "-100:+0",maxDate: "0",dateFormat: dateFormatStr});
+
+  $('#library_to_date').datepicker({ changeMonth: true,
+                changeYear: true,yearRange: "-100:+0",maxDate: "0",dateFormat: dateFormatStr});
+
+
+  $.validator.addClassRules({
+        date_format_clss:{
+        dateFormat: true
+      }
+    });
+   $("#inventoryGoodsPurchaseForm").validate();
+});
+
+
+$(function () {
+  $.validator.addMethod('dateFormat',
+  function (value, element) {
+    dateFormatStr =  getJsDateFormat();
+      if (this.optional(element)) {
+          return true;
+      }
+      var ok = true;
+      try {
+          $.datepicker.parseDate(dateFormatStr, value);
+      }
+      catch (err) {
+          ok = false;
+      }
+      return ok;
+  },
+
+  "Please enter a date in the format "+ getDateFormat(dateFormatStr) +".");
+  dateFormatStr =  getJsDateFormat();
+
+  $(".datefield").datepicker({ dateFormat: dateFormatStr, changeYear: true });
+});
+
+
+
+
+$(document).on("click",".inventory_goods_report_data",function(){
+                    
+
+            var from_date=$("#library_from_date").val();
+            var to_date=$("#library_to_date").val();
+
+            if(from_date==""||to_date=="") {
+
+              alert("Please Enter The data")
+            }
+
+              else{
+var urlLink="/inventory/inventory_goods_report_generation"
+$.ajax({
+    url:urlLink,
+    cache:false,
+    data:{"from_date":from_date,"to_date":to_date},
+    success: function(html){
+        $("#library_report_generation_data").empty();
+        $("#library_report_generation_data").append(html);
+
+
+
+    }
+
+});
+}
+});
+
+function resourceCategoryId(data){
+       $("#library_report_generation_data").empty();
+
+var urlLink="/library/resource_type_data"
+
+$.ajax({
+    url:urlLink,
+    cache:false,
+    data:{"category_id":data},
+    success: function(html){
+        $("#resources_types_data").empty();
+        $("#resources_types_data").html(html);
+
+
+
+    }
+
+});
+}
+
+
+$(document).on("change","#library_from_date",function(e){
+      var end_date=$("#library_to_date").val();
+      if(!(end_date==""))
+      {
+            var start_date=$(this).val();
+
+     // console.log("Changed dob"); 
+     // console.log(new Date(Date.parse(dob,dateFormatStr)).toString());
+     // console.log(new Date(Date.parse(admission_date,dateFormatStr)).toString());
+
+     if(getDateObj(start_date,dateFormatStr)>getDateObj(end_date,dateFormatStr)){
+        alert("From Date should be less than To Date");
+        document.getElementById('library_from_date').value ="";
+      }
+
+      //var temp=$("#fee_schedule_due_date").val();
+//       if(!temp=="")
+//       {
+//       var end_date=$("#fee_schedule_end_date").val();
+//       var start_date=$("#fee_schedule_start_date").val();
+//       var due_date=$("#fee_schedule_due_date").val();
+
+//      if(!(getDateObj(due_date,dateFormatStr)>=getDateObj(start_date,dateFormatStr)&&getDateObj(due_date,dateFormatStr)<=getDateObj(end_date,dateFormatStr))){
+//         alert("Due Date should be between Start Date and End Date");
+//         document.getElementById('fee_schedule_start_date').value ="";
+//       }
+// }
+      }
+      
+   });
+
+
+    $(document).on("change","#library_to_date",function(e){
+      var start_date=$("#library_from_date").val();
+      if(!(start_date==""))
+      {
+        var end_date=$(this).val();
+
+     // console.log("Changed dob"); 
+     // console.log(new Date(Date.parse(dob,dateFormatStr)).toString());
+     // console.log(new Date(Date.parse(admission_date,dateFormatStr)).toString());
+
+     if(getDateObj(start_date,dateFormatStr)>getDateObj(end_date,dateFormatStr)){
+        alert(" To Date should be more than From Date");
+        document.getElementById('library_to_date').value ="";
+      }
+// var temp=$("#fee_schedule_due_date").val();
+//       if(!temp=="")
+//       {
+//       var end_date=$("#fee_schedule_end_date").val();
+//       var start_date=$("#fee_schedule_start_date").val();
+//       var due_date=$("#fee_schedule_due_date").val();
+
+//      if(!(getDateObj(due_date,dateFormatStr)>=getDateObj(start_date,dateFormatStr)&&getDateObj(due_date,dateFormatStr)<=getDateObj(end_date,dateFormatStr))){
+//         alert("Due Date should be between Start Date and End Date");
+//         document.getElementById('fee_schedule_end_date').value ="";
+//       }
+// }
+      }
+      
+   });
+
+    $(document).on("change","#library_report_course",function(){
+       $("#library_report_generation_data").empty();
+
+    });
+
+</script>
+
+
+
+
+
+
+

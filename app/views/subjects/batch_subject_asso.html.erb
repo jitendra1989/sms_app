@@ -1,0 +1,76 @@
+<% navigation_add 'Subjects ', subjects_path %>
+
+<% navigation_add 'Section List', :controller => 'subjects', :action => 'batch_subject_asso' %>
+
+<!-- Sec --> 
+<!-- Render subject left -->
+
+<%= render  partial: 'subject_left' %>
+
+<!-- Multiline chart starts-->
+
+	<%@batchList=MgBatch.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id])
+
+		dataHash=Hash.new
+		admission_hash=Hash.new
+		
+		
+		@batchList.each do |batch|
+			 @student_count=MgStudent.where(:mg_batch_id=>batch.id, :is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).size
+			@admission_month=MgStudent.where(:mg_batch_id=>batch.id, :is_deleted=>0,:mg_school_id=>session[:current_user_school_id])
+			 @admission_month.each do |date|
+			 	array=Array.new
+			 	if(date.admission_date.present?)
+				array.push(batch.name,date.admission_date.strftime("%b"))
+				 admission_hash[array]=@student_count
+				end
+			  end
+		end
+	%>
+	<%#=column_chart(admission_hash)%>
+	<%#	=admission_hash%>
+<!-- Multiline chart ends-->
+
+
+<h4 class="mg-h4"><%=t("batchlist")%></h4>
+<div class="mg_pagination">
+	<table padding="10" class="batch-tbl">   <!-- border="2" --> 
+	  <tr class="subject-table-header">
+	      <th><%=t("coursebatchname")%></th>
+	      <th><%=t("actions")%></th>
+	      
+	  </tr>
+	  <% @batches.each do |batch| %><!--alldata.each_with_index { |(key, value), index| -->
+	     <tr>
+	      <%@temp=MgCourse.find_by_id(batch.mg_course_id)%>
+	       <td><%= @temp.course_name%>-<%=batch.name %></td>
+	       <td class="mg-align-center">
+	           <a class="link-pagination" style="border:none; background: none;" href="select_subject/<%= batch.id%>"><button title="Manage Subject" class="add-subject-to-batch-a link-pagination mg-icon-btn" id="addSubjectToBatchID-<%= batch.id%>"><i class="fa fa-wrench"></i>
+</button></a>
+	       </td> 
+	     
+	     
+	    </tr>
+	  <% end %>
+	</table>
+	<div class="pagination-align" style="margin: 1em 0 4em 0;">
+		<%= will_paginate @batches, :container => false %>
+	</div>
+</div>
+<!-- Render subject left close-->
+
+<%= render  partial: 'subject_left_close' %>
+
+
+<script type="text/javascript">
+     $(document).ready(function(){
+
+     	$("li").removeClass( "active" );
+        $("a").removeClass( "activeMenu" );
+
+             focusSubject();
+     	 $("#batchSubjectAssoLiID").addClass("active");
+         $("#batchSubjectAssoID").addClass("activeMenu");
+
+   });
+</script>

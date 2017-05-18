@@ -1,0 +1,137 @@
+<% navigation_add t('upload_CV'),"/placements/student_uploaded_resume_index" %>
+<%=render partial: "dashboards/student_dashboard_left"%>
+<h4 class="mg-h4 mg-rm-text-trans"><%=t('CV_list')%></h4>
+<%#=link_to t("upload_CV"),{:controller=>"placements",:action=>"student_resume_upload_new"},:class=>"mg-custom-form-btn"%>
+ <button title="Upload CV" class="upload-cv-btn mg-custom-form-btn mg-rm-text-trans"><%=t("upload_CV")%></button>
+<div id="resumeListDivID">
+	<%if @resume_list.length>0%>
+		<div class="mg_pagination">
+		  <table  class="batch-tbl mg-tbl-margin">
+		    <tr class="subject-table-header">
+		      <th><%= t('name') %></th>
+		      <th><%= t('is_default') %></th>
+		      <th><%= t('actions') %></th>
+		    </tr>
+		   
+		    <% @resume_list.each do |resume| %>
+		      <tr>
+		        <td class='mg-capitalize-text'><%= resume.try(:file_file_name) %></td>
+		        <td class="mg-align-center"><%= check_box_tag "is_default_resume",resume.id,resume.is_default ? true : false,:onclick=>"changeDefaultResume(this,this.value)"%></td>
+		        <td class="mg-align-center">
+				   <!--  <button title="Show" id="<%#=raw resume.id %>-showResumeBTNID" class="show-resume-btn mg-icon-btn" style="float: left;"><i class="fa fa-eye"></i></button> -->
+				    <span style="position: relative; float: left; top: -2px;">
+		      			<%= link_to_if resume.try(:file).url,'<i class="fa fa-download" style="padding: 5px 2px 2px;"></i>'.html_safe,resume.try(:file).url,:class=>"mg-icon-btn mg-download-icon-font",:title=>"Download" %>
+		      			<a title="Edit" id="<%=raw resume.id %>-editBTNID" class="edit-doc-name-btn mg-icon-btn"><i class="fa fa-pencil-square-o"></i></a>
+		      			<%= link_to "<i class=\"fa fa-trash\"></i>".html_safe, {:controller => "placements", :action => "delete_student_resume",:id =>resume.id} , :method=>'delete',data: { confirm: 'Are you sure to delete?' },:title=>"delete" ,:class=>"mg-icon-btn"%>
+
+			     	</span>
+		        </td>
+		      </tr>
+		    <% end %>
+		  </table>
+		  <br/>
+		  <%= will_paginate @resume_list, :container => false %>
+		</div>
+	<%else%>
+	  <h5>No CV uploaded</h5>
+	<%end%>
+</div>
+
+
+<div id="studentResumeUploadNewDIVID"></div>
+<div id="studentResumeShowDIVID"></div>
+<div id="editNameDIVID"></div>
+<%=render partial: "common_left_close"%>
+
+<script>
+$(document).ready(function(){
+	focusCurrentTab("studentUploadResumeAID","studentUploadResumeLiID");
+});
+
+$(document).on("click", ".upload-cv-btn", function(e){
+  	var urlLink = "/placements/student_resume_upload_new/";
+  	$.ajax({
+      url: urlLink ,
+      cache: false,
+      success: function(html){
+            $('#studentResumeUploadNewDIVID').dialog({
+              modal: true,
+              title: "Upload CV",
+              open: function () {
+                  $(this).html(html);
+              }
+          }); 
+      }
+  	});
+});
+
+$(document).on("click", ".show-resume-btn", function(e){
+	var myID =$(this).attr('id');
+	var Id=myID.split("-");
+  	var urlLink = "/placements/student_resume_upload_show/"+Id[0];
+  	$.ajax({
+      url: urlLink ,
+      cache: false,
+      success: function(html){
+            $('#studentResumeShowDIVID').dialog({
+              modal: true,
+              title: "Show CV",
+              width: '500px',
+              open: function () {
+                  $(this).html(html);
+              }
+          }); 
+      }
+  	});
+});
+
+
+$(document).on("click", ".edit-doc-name-btn", function(e){
+			var id=$(this).attr("id").split("-")[0];
+	        var urlLink = "/placements/"+id+"/student_doc_edit";
+	        $.ajax({
+	            url: urlLink ,
+	            cache: false,
+	            success: function(html){
+	                  $('#editNameDIVID').dialog({
+	                    modal: true,
+	                    minHeight: '300px',
+              			width: '250px',
+	                    title: "Edit Document's Name",
+	                    open: function () {
+	                        
+	                        $(this).html(html);
+	                    }
+	                }); 
+	               
+	            }
+	        });
+	});
+
+
+
+function changeDefaultResume(that,resume_id){
+	var is_checked=$("input#is_default_resume").is(':checked');
+	if (is_checked) {
+		$.ajax({
+	      url: "/placements/change_default_resume/"+resume_id,
+	      dataType: "html",
+	      success: function(html){
+	      	$("#resumeListDivID").html(html);
+	      	alert("Default Resume Changed Successfully");
+	      }
+	  });
+	}
+	else{
+		alert("Atleast One Resume should be default");
+		$.ajax({
+	      url: "/placements/change_default_resume/"+resume_id,
+	      dataType: "html",
+	      success: function(html){
+	      	$("#resumeListDivID").html(html);
+	      }
+	  });
+	}
+	
+}
+</script>

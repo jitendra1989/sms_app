@@ -1,0 +1,58 @@
+
+
+<h4 class="mg-h4"><%= t('student_list')%></h4>
+<%=hidden_field_tag :mg_event_committee_id, @mg_event_committee_id%>
+<%=hidden_field_tag :mg_batch_id, @mg_batch_id%>
+<div class="mg-scroll-employee-bar">
+	<table class="batch-tbl mg-tbl-margin">
+	<tr>
+		<th><%=t('name')%></th>
+		<th><%=t('admission_number')%></th>
+
+		<th><%=t('actions')%>
+		 <div class="mg-text-margin">
+        <a class="select-all-student-for-commitee mg-pop-link"><%=t('all')%></a>&nbsp;<a class="select-none-student-for-commitee mg-pop-link"><%=t('none')%></a>
+      </div></th>
+	</tr>
+		<%@student_list.each do |student|%>
+			<tr>
+				<td><%=student.first_name%> <%=student.last_name%> </td>
+				<td><%=student.admission_number%></td>
+				<%if  @event_committee_member_list.include? student.id%>
+				 	<td class="mg-align-center"><%= check_box_tag 'mg_student_id[]', student.id, true ,{:class=>"class-event-committee-class"}%></td>
+				 <%else%>
+				 	<td class="mg-align-center"><%= check_box_tag 'mg_student_id[]', student.id, false ,{:class=>"class-event-committee-class"}%></td>
+				 <%end%>
+			  </tr>
+		<%end%>
+	</table>
+</div>
+<!-- <p>
+ <input class="mg-small-form-btn" type="submit" value="Submit" name="commit"> 
+ <%#= submit_tag  t('save') ,:class=>"mg-small-form-btn", :id=>"addStudentCommitteeSubmitFormID"%>
+<%#= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+</p> -->
+
+<p class="mg-p-mgtop">
+    <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"  id="addStudentCommitteeSubmitFormID"><%=t("save")%></a>
+       <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+      <!-- <a  class="mg-small-form-btn cancel-form-dialog"><%#=t("cancel")%></a> -->
+  </p>
+
+
+<script>
+
+$(document).ready(function () {
+  $('#addStudentCommitteeSubmitFormID').attr("disabled", true);
+});
+
+	 $(document).on("click", ".select-all-student-for-commitee", function(e){
+
+    $(".class-event-committee-class").prop('checked', true);
+        e.preventDefault();
+  });
+   $(document).on("click", ".select-none-student-for-commitee", function(e){
+    $(".class-event-committee-class").prop('checked', false);
+        e.preventDefault();
+  });
+</script>

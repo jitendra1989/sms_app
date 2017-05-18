@@ -1,0 +1,162 @@
+
+<table border="1" class="mg-showdata-bg mg-tbl-layout" cellspacing="1" cellpadding="1">
+
+<tr>
+      <td class="mg-td-width-half" valign="top">
+        <label class="mg-label"><%=t("vehicle_number")%></label>
+      </td>
+      <td class="mg-td-width-half" valign="top">
+        <label class="mg-label-inner-form"> <%=@vehicle.vehicle_number%></label>
+      </td>
+  </tr>
+  <tr>
+      <td class="mg-td-width-half" valign="top">
+        <label class="mg-label"><%=t("make")%></label>
+      </td>
+      <td class="mg-td-width-half" valign="top">
+      <%if @vehicle.make.present?%>
+        <label class="mg-label-inner-form"> <%=@vehicle.make%></label>
+        <%else%>
+     <label class="mg-label-inner-form"><%="No Data"%></label>
+     <%end%>
+      </td>
+  </tr>
+  <tr>
+      <td class="mg-td-width-half" valign="top">
+        <label class="mg-label"><%=t("model")%></label>
+      </td>
+      <td class="mg-td-width-half" valign="top">
+      <%if @vehicle.model.present?%>
+        <label class="mg-label-inner-form"> <%=@vehicle.model%></label>
+        <%else%>
+     <label class="mg-label-inner-form"><%="No Data"%></label>
+     <%end%>
+      </td>
+  </tr>
+
+<tr>
+      <td class="mg-td-width-half" valign="top">
+        <label class="mg-label mg-label-text-transform-none"><%=t("date_of_purchase")%></label>
+      </td>
+      <td class="mg-td-width-half" valign="top">
+      <%if @vehicle.date_of_purchase.present?%>
+      <% school_id = @vehicle.mg_school_id %>
+       <% dateFormat = MgSchool.find(school_id).date_format %>    
+        <% if dateFormat.present?%>
+        <label class="mg-label-inner-form"> <%= @vehicle.date_of_purchase.strftime(dateFormat) %></label>
+         <% end %>
+         <%else%>
+     <label class="mg-label-inner-form"><%="No Data"%></label>
+     <%end%>
+      </td>
+  </tr>
+
+  <tr>
+      <td class="mg-td-width-half" valign="top">
+        <label class="mg-label mg-label-text-transform-none"><%=t("no_of_seats")%></label>
+      </td>
+      <td class="mg-td-width-half" valign="top">
+        <label class="mg-label-inner-form"> <%=@vehicle.no_of_seats%></label>
+      </td>
+  </tr>
+
+ <tr>
+      <td class="mg-td-width-half" valign="top">
+        <label class="mg-label"><%=t("current_insurance_due_date")%></label>
+      </td>
+      <td class="mg-td-width-half" valign="top">
+      <%if @vehicle.Current_insurance_due_date.present?%>
+     <% school_id = @vehicle.mg_school_id %>  
+        <% dateFormat = MgSchool.find(school_id).date_format %>    
+        <% if dateFormat.present?%>
+        <label class="mg-label-inner-form">  <%= @vehicle.Current_insurance_due_date.strftime(dateFormat) %></label>
+         <% end %>
+         <%else%>
+      <label class="mg-label-inner-form"><%="No Data"%></label>
+     <%end%>
+      </td>
+  </tr>
+
+ <tr>
+      <td class="mg-td-width-half" valign="top">
+        <label class="mg-label"><%=t("last_service_date")%></label>
+      </td>
+      <td class="mg-td-width-half" valign="top">
+      <%if @vehicle.last_service_date.present?%>
+     <% school_id = @vehicle.mg_school_id %>  
+        <% dateFormat = MgSchool.find(school_id).date_format %>    
+        <% if dateFormat.present?%>
+        <label class="mg-label-inner-form">  <%= @vehicle.last_service_date.strftime(dateFormat) %></label>
+         <% end %>
+         <%else%>
+     <label class="mg-label-inner-form"><%="No Data"%></label>
+     <%end%>
+      </td>
+  </tr>
+
+  <tr>
+      <td class="mg-td-width-half" valign="top">
+        <label class="mg-label"><%=t("next_service_date")%></label>
+      </td>
+      <td class="mg-td-width-half" valign="top">
+      <%if @vehicle.next_service_date.present?%>
+     <% school_id = @vehicle.mg_school_id %>  
+        <% dateFormat = MgSchool.find(school_id).date_format %>    
+        <% if dateFormat.present?%>
+        <label class="mg-label-inner-form">  <%= @vehicle.next_service_date.strftime(dateFormat) %></label>
+         <% end %>
+         <%else%>
+     <label class="mg-label-inner-form"><%="No Data"%></label>
+     <%end%>
+      </td>
+  </tr>
+  <tr>
+      <td class="mg-td-width-half" valign="top">
+        <label class="mg-label"><%=t("is_under_repair")%></label>
+      </td>
+      <td class="mg-td-width-half" valign="top">
+      <%@vehicle_under_repair=@vehicle.is_under_repair%>
+     <%if @vehicle_under_repair==true%>
+        <label class="mg-label-inner-form">  <%="Yes"%></label>
+         <%else%>
+      <label class="mg-label-inner-form"><%="No"%></label>
+     <%end%>
+     
+        
+      </td>
+  </tr>
+    <tr>
+    <%if @vehicle_under_repair==true%>
+
+      <td class="mg-td-width-half" valign="top">
+        <label class="mg-label"><%=t("repair_completion_date")%></label>
+      </td>
+      <td class="mg-td-width-half" valign="top">
+      <%if @vehicle.repair_completion_date.present?%>
+     <% school_id = @vehicle.mg_school_id %>  
+        <% dateFormat = MgSchool.find(school_id).date_format %>    
+        <% if dateFormat.present?%>
+        <label class="mg-label-inner-form">  <%= @vehicle.repair_completion_date.strftime(dateFormat) %></label>
+         <% end %>
+         <%else%>
+     <label class="mg-label-inner-form"><%="No Data"%></label>
+     <%end%>
+      </td>
+      <%end%>
+  </tr>
+ 
+<tr>
+     <td class="mg-td-width-half" valign="top">
+        <label class="mg-label" for="vehicleStatus"><%= t ('vehicle_status') %></label><br/>
+      </td>
+      <td class="mg-td-width-half" valign="top">
+        <label class="mg-label-inner-form"> <%=@vehicle.vehicle_status%></label>
+      </td>
+    </tr>
+   
+</table>
+
+<br/>
+
+       <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+

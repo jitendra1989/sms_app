@@ -1,0 +1,288 @@
+<% navigation_add t('results'), :controller=>'sports_management', :action=>'results' %>
+<%= render  partial: 'sports_left' %>
+
+<h4 class="mg-h4"><%= t('show_results')%></h4>
+
+<table border="1" class="mg-showdata-bg " cellspacing="1" cellpadding="1">
+   
+
+ 
+  <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('game_type')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+      <%= @event_committees.committee_name %>
+     </td>
+   </tr>
+
+   <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('team_name')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+      <%= @events.title %>
+     </td>
+   </tr>
+
+
+   <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('event_date')%></label>
+     </td>
+    
+     <td class="mg-td-width-half" valign="top">
+<%
+         @school_id=session[:current_user_school_id]
+
+    @dateFormat = MgSchool.find(@school_id).date_format
+%>
+
+      <%=  @results.date_of_event.strftime(@dateFormat) %>     </td>
+   </tr>
+
+   <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('game')%></label>
+     </td>
+     <% game_data=MgSportGame.find_by(:id=>@results.mg_sport_game_id,:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).name%>
+     <td class="mg-td-width-half" valign="top">
+
+      <%= game_data %>     </td>
+   </tr>
+
+      
+
+
+</table><br/>
+<h4 class="mg-h4"><%= t('results')%></h4>
+<table border="1" class="mg-showdata-bg " cellspacing="1" cellpadding="1">
+   
+        <%[1,2,3].each do |i|%>
+
+           <%if i==1%>
+<tr>
+      <td class="mg-td-width-half" valign="top">
+          <label class="mg-label"> <%= t('position')%></label>
+     </td>
+<td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('team')%></label>
+     </td>
+      <td class="mg-td-width-half" valign="top">
+          <label class="mg-label"> <%= t('winner')%></label>
+     </td>
+
+      <td class="mg-td-width-half" valign="top">
+          <label class="mg-label"> <%= t('semester/department')%></label>
+     </td>
+
+
+</tr>
+
+  <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('1st Place')%></label>
+     </td>
+     <%student_data=MgSportStudentDataResult.where(:mg_sports_result_id=>@results.id)
+              employee_data=MgSportEmployeeDataResult.where(:mg_sports_result_id=>@results.id)
+
+%>
+         <% student_data.each do |data|%>
+                   <% if data.rank=="1st rank"%>
+                    <%      student_data1=MgStudent.find_by(:id=>data.mg_students_id)
+%>
+ <td class="mg-td-width-half" valign="top"><% team_data=MgSportTeam.find_by(:id=>data.mg_sports_team_id,:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).team_name%>
+           <%=team_data%>
+
+ </td>
+     <td class="mg-td-width-half" valign="top">
+      <%= "(#{student_data1.admission_number}) #{student_data1.first_name} #{student_data1.last_name}"%>
+      </td>
+      <%end%>
+        <%end%>
+          <%employee_data.each do |data|%>
+           <% if data.rank=="1st rank"%>
+           <td class="mg-td-width-half" valign="top">
+           <% team_data=MgSportTeam.find_by(:id=>data.mg_sports_team_id,:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).team_name%>
+           <%=team_data%>
+           </td>
+             <%  employee_data1=MgEmployee.find_by(:id=>data.mg_employee_id)%>
+ <td class="mg-td-width-half" valign="top">
+ <%= "(#{employee_data1.employee_number}) #{employee_data1.first_name} #{employee_data1.last_name}"%>
+ </td>
+
+          <%end%>
+        <%end%>
+
+     </td>
+     <td class="mg-td-width-half" valign="top">
+     <%student_data=MgSportStudentDataResult.where(:mg_sports_result_id=>@results.id)
+              employee_data=MgSportEmployeeDataResult.where(:mg_sports_result_id=>@results.id)
+
+%>
+         <% student_data.each do |data|%>
+                   <% if data.rank=="1st rank"%>
+                    <%      student_data1=MgStudent.find_by(:id=>data.mg_students_id)
+                    batch_data=MgBatch.find_by(:id=>student_data1.mg_batch_id)
+                    course_data=MgCourse.find_by(:id=>batch_data.mg_course_id)
+%>
+      <%= "(#{course_data.course_name} #{batch_data.name}) #{"Semester"}"%>
+      <%end%>
+        <%end%>
+          <%employee_data.each do |data|%>
+           <% if data.rank=="1st rank"%>
+             <%      employee_data1=MgEmployee.find_by(:id=>data.mg_employee_id)
+
+                department_data=MgEmployeeDepartment.find_by(:id=>employee_data1.mg_employee_department_id)
+             %>
+ <%= "(#{department_data.department_name}) #{"Department"}"%>
+
+          <%end%>
+        <%end%>
+
+     </td>
+   </tr>
+         <%elsif i==2%>
+
+   <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('2nd Place')%></label>
+     </td>
+      <%student_data=MgSportStudentDataResult.where(:mg_sports_result_id=>@results.id)
+              employee_data=MgSportEmployeeDataResult.where(:mg_sports_result_id=>@results.id)
+
+%>
+         <% student_data.each do |data|%>
+                   <% if data.rank=="2nd rank"%>
+                    <%      student_data1=MgStudent.find_by(:id=>data.mg_students_id)
+%>
+<td class="mg-td-width-half" valign="top"><% team_data=MgSportTeam.find_by(:id=>data.mg_sports_team_id,:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).team_name%>
+           <%=team_data%>
+  
+ </td>
+     <td class="mg-td-width-half" valign="top">
+      <%= "(#{student_data1.admission_number}) #{student_data1.first_name} #{student_data1.last_name}"%>
+      </td>
+      <%end%>
+        <%end%>
+          <%employee_data.each do |data|%>
+           <% if data.rank=="2nd rank"%>
+           <td class="mg-td-width-half" valign="top">
+           <% team_data=MgSportTeam.find_by(:id=>data.mg_sports_team_id,:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).team_name%>
+           <%=team_data%>
+           </td>
+                           <td class="mg-td-width-half" valign="top">
+     <%      employee_data1=MgEmployee.find_by(:id=>data.mg_employee_id)%>
+
+ <%= "(#{employee_data1.employee_number}) #{employee_data1.first_name} #{employee_data1.last_name}"%>
+</td>
+          <%end%>
+        <%end%>
+<td class="mg-td-width-half" valign="top">
+     <%student_data=MgSportStudentDataResult.where(:mg_sports_result_id=>@results.id)
+              employee_data=MgSportEmployeeDataResult.where(:mg_sports_result_id=>@results.id)
+
+%>
+         <% student_data.each do |data|%>
+                   <% if data.rank=="2nd rank"%>
+                    <%      student_data1=MgStudent.find_by(:id=>data.mg_students_id)
+                    batch_data=MgBatch.find_by(:id=>student_data1.mg_batch_id)
+                    course_data=MgCourse.find_by(:id=>batch_data.mg_course_id)
+%>
+      <%= "(#{course_data.course_name} #{batch_data.name}) #{"Semester"}"%>
+      <%end%>
+        <%end%>
+          <%employee_data.each do |data|%>
+           <% if data.rank=="2nd rank"%>
+             <%      employee_data1=MgEmployee.find_by(:id=>data.mg_employee_id)
+
+                department_data=MgEmployeeDepartment.find_by(:id=>employee_data1.mg_employee_department_id)
+             %>
+ <%= "(#{department_data.department_name}) #{"Department"}"%>
+
+          <%end%>
+        <%end%>
+
+     </td>
+   </tr>
+            <%elsif i==3%>
+
+<tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('3rd Place')%></label>
+     </td>
+ <%student_data=MgSportStudentDataResult.where(:mg_sports_result_id=>@results.id)
+              employee_data=MgSportEmployeeDataResult.where(:mg_sports_result_id=>@results.id)
+
+%>
+         <% student_data.each do |data|%>
+                   <% if data.rank=="3rd rank"%>
+                    <%      student_data1=MgStudent.find_by(:id=>data.mg_students_id)
+%><td class="mg-td-width-half" valign="top"><% team_data=MgSportTeam.find_by(:id=>data.mg_sports_team_id,:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).team_name%>
+           <%=team_data%>
+  
+ </td>
+     <td class="mg-td-width-half" valign="top">
+      <%= "(#{student_data1.admission_number}) #{student_data1.first_name} #{student_data1.last_name}"%>
+      </td>
+      <%end%>
+        <%end%>
+          <%employee_data.each do |data|%>
+           <% if data.rank=="3rd rank"%>
+           <td class="mg-td-width-half" valign="top">
+           <% team_data=MgSportTeam.find_by(:id=>data.mg_sports_team_id,:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).team_name%>
+           <%=team_data%>
+           </td>
+                           <td class="mg-td-width-half" valign="top">
+           <%      employee_data1=MgEmployee.find_by(:id=>data.mg_employee_id)%>
+ <%= "(#{employee_data1.employee_number}) #{employee_data1.first_name} #{employee_data1.last_name}"%>
+</td>
+          <%end%>
+        <%end%>     
+        <td class="mg-td-width-half" valign="top">
+     <%student_data=MgSportStudentDataResult.where(:mg_sports_result_id=>@results.id)
+              employee_data=MgSportEmployeeDataResult.where(:mg_sports_result_id=>@results.id)
+
+%>
+         <% student_data.each do |data|%>
+                   <% if data.rank=="3rd rank"%>
+                    <%      student_data1=MgStudent.find_by(:id=>data.mg_students_id)
+                    batch_data=MgBatch.find_by(:id=>student_data1.mg_batch_id)
+                    course_data=MgCourse.find_by(:id=>batch_data.mg_course_id)
+%>
+      <%= "(#{course_data.course_name} #{batch_data.name}) #{"Semester"}"%>
+      <%end%>
+        <%end%>
+          <%employee_data.each do |data|%>
+           <% if data.rank=="3rd rank"%>
+             <%      employee_data1=MgEmployee.find_by(:id=>data.mg_employee_id)
+
+                department_data=MgEmployeeDepartment.find_by(:id=>employee_data1.mg_employee_department_id)
+             %>
+ <%= "(#{department_data.department_name}) #{"Department"}"%>
+
+          <%end%>
+        <%end%>
+
+     </td>
+   </tr>
+   <%end%>
+<%end%>
+
+   </table>
+
+<br/>
+
+
+<%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>   </p>
+    
+
+<%= render  partial: 'application/common_left_close' %>
+
+<script>
+      $(document).ready(function(){
+                 focusCurrentTab("resultsAID","resultsLiID");
+
+             });
+
+                 </script>

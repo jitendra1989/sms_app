@@ -1,0 +1,408 @@
+<%=render partial: 'healthcare_left'%>
+<%if params[:action]=='new_check_up_schedule'%>
+  <h4 class="mg-h4"><%= t('new_checkup_schedule') %></h4>
+<%else%>
+  <h4 class="mg-h4"><%= t('edit_checkup_schedule') %></h4>
+<%end%>
+
+<div class="row">
+  <%= form_for :checkup_schedule, :url=>@action=='new' ? 'create_check_up_schedule' : '/healthcare/update_check_up_schedule?id='+@checkup_schedule.try(:id).to_s, :method=> @action=='new' ? "post" : "patch" , :html => {:id => 'checkUpScheduleFormID'} do |f| %>    
+    <%=hidden_field_tag "action_url",params[:action]%>
+    <%=hidden_field_tag "start_time",@checkup_schedule.try(:start_time).try(:strftime,"%l:%M%P")%>
+    <%=hidden_field_tag "end_time",@checkup_schedule.try(:end_time).try(:strftime,"%l:%M%P")%>
+    <%=hidden_field_tag "check_type",@checkup_schedule.try(:checkup_for)%>
+    <%if params[:action]=='new_check_up_schedule'%>
+      <%= f.hidden_field :created_by, :value => session[:user_id]%> 
+    <%end%>
+    <%= f.hidden_field :mg_school_id , :value=> session[:current_user_school_id]%>
+    <%= f.hidden_field :updated_by, :value => session[:user_id]%> 
+    <%= f.hidden_field :is_deleted, :value => 0%> 
+    <div class="col-md-4">
+     <p>
+        <%= f.label :mg_doctor_id , t('select_doctor'), :class=> "mg-label"%> <span
+          class="required-field"> *</span><br>
+        <%@mg_user_obj=MgUser.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id],:user_type=>"doctor")%>
+        <%@mg_user_obj.each do |user|%>
+          <%specialization_obj=MgSpecialization.find_by(:id=>user.try(:mg_specialization_id),:is_deleted=>0,:mg_school_id=>session[:current_user_school_id])%>
+          <%if specialization_obj.present?%>
+            <%user.user_name=user.user_name+" ("+specialization_obj.name+")"%>
+          <%else%>
+            <%user.user_name=user.user_name%>
+          <%end%>
+        <%end%>
+
+        <%= f.select :mg_doctor_id,options_from_collection_for_select(@mg_user_obj,"id","user_name",:selected=>@checkup_schedule.mg_doctor_id),{include_blank: "Select"}%>
+
+        <%#= f.select :mg_doctor_id,options_from_collection_for_select(MgUser.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id],:user_type=>"doctor"),"id","user_name",:selected=>@checkup_schedule.mg_doctor_id),{include_blank: "Select"}%>
+      </p>
+      <!-- Commented by bindhu for changing into select doctor ends -->
+      <p>
+        <%= f.label :mg_check_up_type_id , t('checkup_type'), :class=> "mg-label"%> <span
+          class="required-field"> *</span><br>
+        <%= f.select :mg_check_up_type_id,options_from_collection_for_select(MgCheckupType.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]),"id","name",:selected=>@checkup_schedule.mg_check_up_type_id),{include_blank: "Select"},{:onchange=>""}%>
+      </p>
+
+      <p>
+       <%= f.label :date , t('date'), :class=> "mg-label"%> <span class="required-field"> *</span><br>
+       <%= f.text_field :date,:class=>"mg-text-field" %>
+      </p>
+      <p>
+        <%= f.label :start_time , t('start_time'), :class=> "mg-label"%> <span class="required-field"> *</span><br>
+        <%= f.text_field :start_time ,:class=>"mg-text-field start-time-schedule-cls"%>
+        <span id="start_time_errorID" class="error" style="font-weight: bold;"></span>
+      </p>
+
+       <p>
+       <%= f.label :end_time , t('end_time'), :class=> "mg-label"%> <span class="required-field"> *</span><br>
+       <%= f.text_field :end_time,:class=>"mg-text-field end-time-schedule-cls" %>
+       <span id="end_time_errorID" class="error" style="font-weight: bold;"></span>
+      </p>
+    </div>
+    <div class="col-md-7">
+      <p>
+       <%= f.label :checkup_for , t('user_checkup'), :class=> "mg-label"%> <span class="required-field"> *</span>&nbsp;&nbsp;
+
+        <%= f.radio_button :checkup_for, 'student',:checked=>true,:class=>'checked-for-student' %> 
+        <%= f.label :checkup_for , t('student'), :class=> "mg-label"%> 
+        <%= f.radio_button :checkup_for, 'employee',:class=>'checked-for-employee'%>
+        <%= f.label :checkup_for , t('employee'), :class=> "mg-label"%> 
+      </p>
+      <%if params[:action]=='new_check_up_schedule'%>
+
+        <div id="batchListDivId" style=";">
+          <!-- <h4 class="mg-h4"><%#= t('semester') %></h4> -->
+
+          <div class="mgdiv-divscroll-bar mg-btn-bottom-margin">
+            <% @batchList = MgBatch.where(:is_deleted => 0,:mg_school_id=>session[:current_user_school_id]).order(:mg_course_id)%>
+            <table  class="batch-tbl mg-tbl-margin">   <!-- border="2" --> 
+              <tr class="subject-table-header">
+                <th><%= t('class_section') %></th>
+                <th>
+                  <a id="checkAllCheckBoxForSchedule" class="mg-pop-link">All</a>
+                  <a id="unCheckAllCheckBoxForSchedule" class="mg-pop-link">None</a>
+                </th>
+              </tr>
+              <%@batchList.each do |batchObj| %>
+                <tr>
+                  <%@courseObj = MgCourse.find_by_id(batchObj.mg_course_id)%>
+                  <td>
+                    <%= (@courseObj.course_name) +"-"+ batchObj.name %>
+                  </td>
+                  <td class="mg-align-center">
+                    <%= check_box_tag("mg_batch_id[]", name=batchObj.id, false, :onclick=>"",:class=>"student-checkbox-cls checked-checkbox-for-schedule")%>
+                  </td>
+                </tr>
+              <%end%>
+            </table>
+          </div>
+         <!--  </p> -->
+        </div>
+
+        <div id="employeeDepartmentListDivId" style="display:none;">
+          <!-- <h4 class="mg-h4"><%#= t('employey_department') %></h4> -->
+          <div class="mgdiv-divscroll-bar mg-btn-bottom-margin">
+          <table  class="batch-tbl mg-tbl-margin">   <!-- border="2" --> 
+            <tr class="subject-table-header">
+              <th><%= t('department_name') %></th>
+              <th>
+                <a id="checkAllCheckBoxForEmployeeSchedule" class="mg-pop-link">All</a>
+                <a id="unCheckAllCheckBoxForEmployeeSchedule" class="mg-pop-link">None</a>
+              </th>
+            </tr>
+            <% employee_department = MgEmployeeDepartment.where(:is_deleted => 0,:mg_school_id=>session[:current_user_school_id])%>
+            <%employee_department.each do |department_obj| %>
+              <tr>
+                <td>
+                  <%= (department_obj.department_name) %>
+                </td>
+                <td class="mg-align-center">
+                  <%= check_box_tag("mg_employee_department_id[]", name=department_obj.id, false, :onclick=>"",:class=>"employee-checkbox-cls checked-checkbox-for-empschedule")%>
+                </td>
+              </tr>
+            <%end%>
+          </table>
+          </div>
+        </div>
+      <%else%>
+        <div id="batchListDivId",class="mgdiv-divscroll-bar" style=";">
+          <!-- <h4 class="mg-h4"><%#= t('semester') %></h4> -->
+          <div class="mgdiv-divscroll-bar mg-btn-bottom-margin">
+          <table  class="batch-tbl mg-tbl-margin">   <!-- border="2" --> 
+            <tr class="subject-table-header">
+              <th><%= t('semester') %></th>
+              <th>
+                <a id="checkAllCheckBoxForSchedule" class="mg-pop-link">All</a>
+                <a id="unCheckAllCheckBoxForSchedule" class="mg-pop-link">None</a>
+              </th>
+            </tr>
+            <% @batchList = MgBatch.where(:is_deleted => 0,:mg_school_id=>session[:current_user_school_id]).order(:mg_course_id)%>
+            <%@batchList.each do |batchObj| %>
+            <tr>
+              <%@courseObj = MgCourse.find_by_id(batchObj.mg_course_id)%>
+              <td>
+                <%= (@courseObj.course_name) +"-"+ batchObj.name %>
+              </td>
+              <td>
+                <%if @schedule_record.include?(batchObj.id)%>
+                  <%= check_box_tag("mg_batch_id[]", name=batchObj.id, true, :onclick=>"",:class=>"student-checkbox-cls checked-checkbox-for-schedule")%><br/>
+                <%else%>
+                  <%= check_box_tag("mg_batch_id[]", name=batchObj.id, false, :onclick=>"",:class=>"student-checkbox-cls checked-checkbox-for-schedule")%><br/>
+                <%end%>
+              </td>
+            </tr>
+            <%end%>
+          </table>
+          </div>
+        </div>
+
+        <div id="employeeDepartmentListDivId" style="display:none;">
+          <!-- <h4 class="mg-h4"><%#= t('employey_department') %></h4> -->
+          <div class="mgdiv-divscroll-bar mg-btn-bottom-margin">
+          <table  class="batch-tbl mg-tbl-margin">   <!-- border="2" --> 
+            <tr class="subject-table-header">
+              <th><%= t('department_name') %></th>
+              <th>
+                <a id="checkAllCheckBoxForEmployeeSchedule" class="mg-pop-link">All</a>
+                <a id="unCheckAllCheckBoxForEmployeeSchedule" class="mg-pop-link">None</a>
+              </th>
+            </tr>
+            <% employee_department = MgEmployeeDepartment.where(:is_deleted => 0,:mg_school_id=>session[:current_user_school_id])%>
+            <%employee_department.each do |department_obj| %>
+              <tr>
+                <td>
+                  <%= (department_obj.department_name) %>
+                </td>
+                <td>
+                  <%if @schedule_record.include?(department_obj.id)%>
+                    <%= check_box_tag("mg_employee_department_id[]", name=department_obj.id, true, :onclick=>"",:class=>"employee-checkbox-cls checked-checkbox-for-empschedule")%><br/>
+                  <%else%> 
+                    <%= check_box_tag("mg_employee_department_id[]", name=department_obj.id, false, :onclick=>"",:class=>"employee-checkbox-cls checked-checkbox-for-empschedule")%><br/>
+                  <%end%> 
+                </td>
+              </tr>
+            <%end%>
+          </table>
+          </div>
+        </div>
+      <%end%>
+    </div>
+    <div class="col-md-1"></div>
+    <div class="row col-md-12">
+      <p class="mg-p-mgtop" style="margin-left: 15px;">
+        <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"> <%= t('save') %></a>
+        <%= link_to t('cancel'), {:controller=>'healthcare',:action=>'check_up_schedule'}, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+      </p>
+    </div>
+  <% end %>
+</div><!-- end row -->
+
+<%= render  partial: 'application/common_left_close' %>
+
+
+
+<script>
+  $(document).ready(function () {
+    dateFormatStr =  getJsDateFormat();
+    focusCurrentTab("checkUpScheduleAID","checkUpScheduleLID");
+
+    $("#checkup_schedule_date" ).datepicker({changeMonth: true,changeYear: true,yearRange: "-0:+50",minDate: "0",dateFormat: dateFormatStr});
+    $('#checkup_schedule_start_time').timepicker({ 'scrollDefault': 'now' });
+    $('#checkup_schedule_end_time').timepicker({ 'scrollDefault': 'now'}); 
+
+    var url_action = $("#action_url").val();
+    var start_time = $("#start_time").val();
+    var end_time = $("#end_time").val();
+    if(url_action == 'edit_check_up_schedule'){
+      var start_date =  $.datepicker.formatDate(dateFormatStr,new Date($('#checkup_schedule_date').val()));
+      $('#checkup_schedule_date').val(start_date);
+
+      $('#checkup_schedule_start_time').val(start_time);
+      $('#checkup_schedule_end_time').val(end_time);
+      var check_type =$("#check_type").val();
+      if(check_type=='student'){
+        $("#employeeDepartmentListDivId").hide();
+        $("#batchListDivId").show();
+      }else{
+        $("#batchListDivId").hide();
+        $("#employeeDepartmentListDivId").show();
+      }
+      // var user_id =$("#bed_assign_detail_user_id").val();
+      // var urlLink = "/healthcare/bed_assigned_record/";
+      // if(user_id!=''){
+      //   $.ajax({
+      //     url: urlLink ,
+      //     cache: false,
+      //     data:{"user_id":user_id},
+      //     success: function(data){
+      //       console.log(data);
+      //       if(data=='no_data'){
+      //         $("#student_employee_information").empty();
+      //         $("#invalid_user_id_errorID").text("Invalid user id");
+      //       }else{
+      //         $("#invalid_user_id_errorID").text("");
+      //         $("#student_employee_information").empty();
+      //         $("#student_employee_information").append(data);
+      //       }
+      //     }
+      //   });
+      // }
+    }
+
+
+    $(function () {
+      $.validator.addMethod('dateFormat',
+      function (value, element) {
+        dateFormatStr =  getJsDateFormat();
+        if (this.optional(element)) {
+            return true;
+        }
+        var ok = true;
+        try {
+            $.datepicker.parseDate(dateFormatStr, value);
+        }
+        catch (err) {
+            ok = false;
+        }
+        return ok;
+      },
+        "Please enter a date in the format "+ getDateFormat(dateFormatStr) +".");
+      dateFormatStr =  getJsDateFormat();
+
+      $(".datefield").datepicker({ dateFormat: dateFormatStr, changeYear: true });
+    });
+
+   $("#checkUpScheduleFormID").validate({
+      rules: {     
+        "checkup_schedule[mg_doctor_id]": {required: true},
+        "checkup_schedule[mg_check_up_type_id]": {required: true},
+        "checkup_schedule[date]": {required: true, dateFormat: true},
+        "checkup_schedule[start_time]": {required: true},
+        "checkup_schedule[end_time]": {required: true},
+        "checkup_schedule[mg_batch_id]": {required: true},
+        "checkup_schedule[mg_employee_department_id]": {required: true},
+        "mg_batch_id[]": {required: true},
+        "mg_employee_department_id[]": {required: true},
+        "checkup_schedule[checkup_for]": {required: true}
+      }
+    });
+  });
+
+  
+  $(document).on("click",".checked-for-student",function(){
+    // $(".employee-checkbox-cls").each(function(){
+    //   $(this).prop('checked', false);
+    // });
+    if($(this).is(':checked')){
+      $("#employeeDepartmentListDivId").hide();
+      $("#batchListDivId").show();
+    }
+  });
+
+  $(document).on("click",".checked-for-employee",function(){
+    // $(".student-checkbox-cls").each(function(){
+    //   $(this).prop('checked', false);
+    // });
+
+    if($(this).is(':checked')){
+      $("#employeeDepartmentListDivId").show();
+      $("#batchListDivId").hide();
+    }
+  });
+
+
+  
+
+  $("#checkAllCheckBoxForSchedule").on("click", function(){
+    $(".checked-checkbox-for-schedule").prop('checked', true);
+  });
+
+  $("#unCheckAllCheckBoxForSchedule").on("click", function(){
+    $(".checked-checkbox-for-schedule").prop('checked', false);
+  });
+
+  $(document).on("click","#checkAllCheckBoxForEmployeeSchedule", function(){
+    $(".checked-checkbox-for-empschedule").prop('checked', true);
+  });
+
+  $(document).on("click","#unCheckAllCheckBoxForEmployeeSchedule", function(){
+    $(".checked-checkbox-for-empschedule").prop('checked', false);
+  });
+  
+  //time_validation
+
+  $(document).on("blur","#checkup_schedule_start_time",function(){
+    var dateFormatStr =  getJsDateFormat();
+    var start_time = $('#checkup_schedule_start_time').val();
+    var regexprsn = /^([1-9]|1[0-2]):([0-5]\d)\s?(AM|PM)?$/i;
+
+    if(start_time.match(regexprsn)){
+      $("#start_time_errorID").text("");
+
+      var from = $('#checkup_schedule_start_time').val();
+      var to = $('#checkup_schedule_end_time').val();
+      var from_time=minFromMidnight(from);
+      var to_time=minFromMidnight(to);
+      if(from_time && to_time){
+        if(from_time > to_time){
+         alert("Start Time must be less than End Time");
+         $('#checkup_schedule_start_time').val('');
+        } 
+      }
+    }else{      
+      $("#start_time_errorID").text("Please enter a time in the format am/pm.");
+      $('#checkup_schedule_start_time').val('');
+    }
+  });
+
+  $(document).on("blur",".end-time-schedule-cls",function(){
+    //$(".end-time-schedule-cls").blur(function(){
+    var dateFormatStr =  getJsDateFormat();
+    var end_time = $('#checkup_schedule_end_time').val();
+    var regexprsn = /^([1-9]|1[0-2]):([0-5]\d)\s?(AM|PM)?$/i;
+    if(end_time!=''){
+      if(end_time.match(regexprsn)){
+        $("#end_time_errorID").text("");
+
+        var from = $('#checkup_schedule_start_time').val();
+        var to = $('#checkup_schedule_end_time').val();
+        var from_time=minFromMidnight(from);
+        var to_time=minFromMidnight(to);
+        console.log("from_time="+from_time+"to_time="+to_time)
+        if(from_time && to_time){
+          if(from_time > to_time){
+           alert("End Time must be greater than Start Time");
+           $('#checkup_schedule_end_time').val('');
+          } 
+        }
+      }else{      
+        $("#end_time_errorID").text("Please enter a time in the format am/pm.");
+        $('#checkup_schedule_end_time').val('');
+      }
+    }
+  });
+
+
+function minFromMidnight(tm){
+  if (tm){
+   var ampm= tm.substr(-2)
+   var clk = tm.substr(0, 4);
+   var m  = parseInt(clk.match(/\d+$/)[0], 10);
+   var h  = parseInt(clk.match(/^\d+/)[0], 10);
+   h += (ampm.match(/pm/i))? 12: 0;
+  }
+
+  return h*60+m;
+}  
+
+</script>
+
+<style type="text/css">
+  .mgdiv-divscroll-bar {
+    border: 1px solid #b2b2b2;
+    display: inline-block;
+    max-height: 310px;
+    max-width: 735px;
+    overflow-y: scroll;
+    width: auto;
+}
+</style>

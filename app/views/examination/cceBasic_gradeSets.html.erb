@@ -1,0 +1,59 @@
+<!-- breadcrumbs Work -->
+<% navigation_add 'Examinations', examinations_path %>
+<% navigation_add 'CCE', examination_cce_new_path %>
+<% navigation_add 'Basic Settings', examination_cceBasic_Settings_path %>
+<% navigation_add 'CCE Grades', examination_cceBasic_gradeSets_path %>
+
+<!-- breadcrumbs Work -->
+
+
+
+
+<!--<%#=button_to "New",{ controller: 'examination',action:"cceBasic_gradeSetsData"},{:class => 'grade-sets-data' }%><br/>-->       
+<%= render  partial: 'examination_table_left' %>
+<h4 class="mg-h4">CCE Grade Sets</h4>
+<div>
+  <button class="grade-sets-data mg-custom-form-btn">New </button><br/>
+
+
+  <div id="gradeSetsData">
+  </div>
+  <div id="gradeEditSetsData">
+  </div>
+
+
+
+  <table class="batch-tbl mg-tbl-margin" cellspacing="0" style="padding:0; border-collapse:collapse;">
+
+   
+  <%if  @cceData[0].to_s.empty? %>
+  <h5><%="No Records Found"%></h5>
+  <%else%>
+
+    <tr>
+      <th>Grade Sets</th>
+      <th><%=t('actions')%></th>
+    </tr>
+    <% @cceData.each do |data| %>
+      <tr>
+        <td><a href="/examination/addGradeSet_new/<%=raw data.id%>"><%= data.name %></a></td>
+        
+
+        <td>
+          <a title="Edit" href="#" id="<%=raw data.id%>" class="cceGradesset-edit-class"><button class="mg-text-exam mg-icon-btn"><i class="fa fa-pencil-square-o"></i></button></a>
+          <a title="Delete" href="#" id="<%=raw data.id%>" class="cceGradesset-delete-class" ><button class="mg-text-exam mg-icon-btn"><i class="fa fa-trash"></i></button></a>
+        </td>
+      </tr>
+    <% end %>
+    <%end%>
+  </table>
+</div>
+<%= render  partial: 'examination_table_close' %><br/>
+
+<script type="text/javascript">
+  $(document).ready(function() {
+        focusCurrentTab("viewStudentListAId","viewStudentListLiId");
+        focusExaminationHeaderBox();
+  });
+
+</script>

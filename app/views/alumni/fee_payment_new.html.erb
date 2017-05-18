@@ -1,0 +1,103 @@
+<%=render partial: "alumni_left"%>
+<% navigation_add t('payment'),"/alumni/fee_payment" %>
+<% navigation_add t('new_payment'),"/alumni/fee_payment_new" %>
+
+
+<h4 class="mg-h4"><%=t('new_payment')%></h4>
+<%= form_for :alumni_pay, :url=>'create_payment',:html => {:id => 'alumniNewEditFormId' } do |f| %>
+
+	<%= f.hidden_field :is_deleted, :value => 0 %>
+	<%= f.hidden_field :mg_school_id, :value => session[:current_user_school_id] %>
+  <%#if @action=='new'%>
+    <%= f.hidden_field :created_by, :value => session[:user_id] %>
+  <%#end%>
+  <%#= f.hidden_field :updated_by, :value => session[:user_id] %>
+  <%#if @action=='new'%>
+  	<%=hidden_field_tag "action",'new'%>
+  <%#else%>
+  	<%#=hidden_field_tag "action",'edit'%>
+  <%#end%>
+
+   <label class="mg-label mg-tt-width" style="width:185px"><%= t('select_payment_type') %><span class="required-field">&nbsp;*</span></label><br/>
+
+   <%@payment_type=MgMasterPaymentType.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:name,:id)%>
+   <%= select_tag :mg_master_payment_type,options_for_select(@payment_type),:prompt=>"Select"%><br/>
+
+   <label class="mg-label mg-tt-width" style="width:185px"><%= t('select_programme') %><span class="required-field">&nbsp;*</span></label><br/>
+   <%@wing_data=MgWing.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:wing_name,:id)%>
+   <%= select_tag :mg_wing_id,options_for_select(@wing_data),:prompt=>"Select"%><br/>
+
+   <label class="mg-label mg-tt-width" style="width:185px"><%= t('select_graduated_year') %><span class="required-field">&nbsp;*</span></label><br/>
+   <%= select_tag  :time_table_year, options_for_select((1994..Time.now.year).to_a), :prompt=>"Select", :onchange=>"selectAlumniForSpecialization(this.value)"%><br/>
+
+   <!-- <label class="mg-label mg-tt-width" style="width:185px"><%#= t('select_specialization') %><span class="required-field">&nbsp;*</span></label><br/> -->
+   <%#@employee_specialization_data=MgEmployeeSpecialization.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:name,:id)%>
+   <!-- <%#= select_tag :mg_employee_specialization_id,options_for_select(@employee_specialization_data),:prompt=>"Select",:onchange=>"selectAlumniForSpecialization(this.value)"%><br/> -->
+
+   <label class="mg-label mg-tt-width" style="width:185px"><%= t('select_alumni') %><span class="required-field">&nbsp;*</span></label>
+   <div id="alumni_data_change">
+      <%= select_tag :mg_alumni_id_data,options_for_select([]),:prompt=>"Select"%><br/>
+   </div>
+
+   <!-- Added By Bindhu for accounts starts -->
+   <%
+    account=Array.new
+    account.push("Central","central")
+    accounts=MgAccount.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:mg_account_name,:id)
+    accounts.insert(0,account)
+  %>
+
+  <label class="mg-label mg-tt-width" style="width:185px"><%= t('select_account') %><span class="required-field">&nbsp;*</span></label><br/>
+  <%=f.select :mg_account_id,options_for_select(accounts),{:include_blank => t('Select')},:class=> "mg-select-btn" %><br/>
+  <!-- Added By Bindhu for accounts ends -->
+
+   <label class="mg-label mg-tt-width" style="width:185px"><%= t('amount') %><span class="required-field">&nbsp;*</span></label><br/>
+   <%= f.text_field :amount,:class =>"mg-select-btn"%><br/>
+
+  <p class="mg-p-mgtop">
+    <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("save")%></a>
+    <%= link_to t('cancel'),:back ,{:class=>"mg-small-form-btn cancel-form-dialog"} %>
+  </p>
+
+
+<%end%>
+
+<%= render  partial: 'common_left_close' %>
+
+<script>
+  $( document ).ready(function() {
+
+    focusCurrentTab("paymentAID","paymentAIDLId");
+    $("#alumniNewEditFormId").validate({
+      rules: {     
+        // Added By Bindhu for accounts starts
+        "alumni_pay[amount]": {required: true,number: true},
+        "alumni_pay[mg_account_id]": {required: true},
+        "mg_alumni_id": {required: true},
+        // Added By Bindhu for accounts ends
+        "mg_master_payment_type": {required: true},
+        "mg_wing_id": {required: true},
+        "time_table_year": {required: true, number: true},
+        "mg_employee_specialization_id": {required: true},
+        "mg_alumni_id_data": {required: true}
+        
+      }
+    });
+  });
+  function selectAlumniForSpecialization(time_table_year){
+    var wing_data=$("#mg_wing_id").val();
+    var pay_year=time_table_year;
+    var urlLink = "/alumni/alumni_data";
+
+    $.ajax({
+      url: urlLink,
+      cache: false,
+      data:{"mg_wing_id":wing_data,"year":pay_year},
+      success: function(html){  
+        $("#alumni_data_change").empty();
+        $("#alumni_data_change").html(html);
+      }
+    }); 
+  }
+
+  </script>

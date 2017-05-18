@@ -1,0 +1,37 @@
+<div class="mg-custom-labels">
+<%= form_for :room_management, :url=>{:controller=>'inventory',:action=>'inventory_room_management_create'}, :html => {
+                            :id => 'room_management_validation' } do |f| %>
+<%= f.hidden_field :is_deleted, :value => 0 %>
+<%= f.hidden_field :mg_school_id, :value => session[:current_user_school_id] %>
+<%= f.hidden_field :created_by, :value => session[:user_id] %>
+<%= f.hidden_field :updated_by, :value => session[:user_id] %>
+<p>
+    <label class="mg-label" style="width:140px"><%= t('select_store') %><span class="required-field">&nbsp;*</span></label>
+    <br/>
+    <%store_data=MgInventoryStoreManagement.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:store_name,:id)%>
+    <%=f.select :mg_inventory_store_management_id,options_for_select(store_data),{:include_blank => t('select')},:class=>"mg-select-btn"%>
+</p>
+<p>
+    <label class="mg-label" style="width:140px"><%= t('room_no') %><span class="required-field">&nbsp;*</span></label>
+    <br/>
+   <%= f.text_field :room_no,:class=>"mg-text-field" %>
+</p>
+
+<p class="mg-p-mgtop">
+    <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("save")%></a>
+    <!-- <%#= f.submit t('save') ,:class=>"mg-small-form-btn"%> -->
+    <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+</p>
+<% end %>
+</div>
+<!-- <%#= render  partial: 'application/common_left_close' %> -->
+<script>
+$( document ).ready(function() {
+    $("#room_management_validation").validate({
+            rules: {        
+            "room_management[mg_inventory_store_management_id]": {required: true},
+            "room_management[room_no]": {required: true}
+          }
+        });
+});
+</script>

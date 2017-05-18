@@ -1,0 +1,13 @@
+<% navigation_add t('trainings_required'), :controller=>'placements', :action=>'placement_training_required_index' %>
+<% navigation_add t('edit_required_training'), :controller=>'placements', :action=>'placement_training_required_edit' %>
+
+
+<%=render partial:"placement_training_required_form"%>
+
+
+<script>
+  $( document ).ready(function() {
+    focusCurrentTab("trainingRequestsAID","trainingRequestsLiID");
+  });
+</script>
+

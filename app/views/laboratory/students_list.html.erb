@@ -1,0 +1,36 @@
+ <label class="mg-label mg-tt-width"><%=t("select_student")%><span class="required-field">&nbsp;*</span></label>
+<div class="mg-scroll-subjectlist-bar">
+ 
+  <table class="batch-tbl">
+  <tr>
+  <th class="mg-align-center"><label class="mg-label"><%=t('select')%></label><br/><a  id="sscheckAllCheckBoxInFeeParticularId" class="mg-pop-link">All</a>
+    <a  id="ssunCheckAllCheckBoxInFeeParticularId" class="mg-pop-link">None</a>
+  </th>
+  <th>Name</th>
+  </tr>
+
+
+    <%@student_list.each do |data|%>
+    <tr>
+
+    <td class="mg-align-center"><%=check_box_tag 'studentids[]',data.id,false,:class=>"demo1213"%><%#=check_box_tag :studentids,data.id,:class=>"auto-ckeckbox-fee-particular-batch-cls", :name=>"studentids[]"%></td>
+    <td><%=data.first_name%></td>
+</tr>
+<%end%>
+  </table>
+</div>
+  <script>
+
+ $(document).on("click", "#sscheckAllCheckBoxInFeeParticularId", function(e){
+
+        $(".demo1213").prop('checked', true);
+        e.preventDefault();
+        
+  });
+
+  $(document).on("click", "#ssunCheckAllCheckBoxInFeeParticularId", function(e){
+
+        $(".demo1213").prop('checked', false);
+        e.preventDefault();
+  });
+  </script>

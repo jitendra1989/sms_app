@@ -1,0 +1,40 @@
+<table border="1" class="mg-showdata-bg" cellspacing="1" cellpadding="1"> 
+  <tr>
+    <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('bed_number')%></label>
+    </td>
+    <td class="mg-td-width-half" valign="top">
+      <%= @bed.try(:bed_no) %>
+    </td>
+  </tr>
+
+ <tr>
+    <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"><%=t('description')%></label>
+    </td>
+    <td class="mg-td-width-half " valign="top" style="padding: 0px 0 0 0px;">
+      <div class="text-scroll-for-log-text-cls comments-space" style="padding: 5px 40 0 10px">
+        <%= @bed.try(:description) %>
+      </div>
+    </td>
+  </tr>
+
+  <tr>
+    <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('status')%></label>
+    </td>
+    <td class="mg-td-width-half mg-capitalize-text" valign="top">
+      <%= @bed.try(:status) %>
+    </td>
+  </tr>
+</table>
+<p class="mg-p-mgtop">
+  <a class="mg-small-form-btn cancel-form-dialog"><%=t('cancel')%></a>
+</p>
+
+<script type="text/javascript">
+  $(document).ready(function () {
+    textSeeMoreLess();
+  });
+</script>
+  

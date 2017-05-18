@@ -1,0 +1,39 @@
+<div class="mg-custom-labels">
+<%= form_for :store_management, :url=>{:controller=>"inventory",:action=>"inventory_store_management_update",:id=>@store_management.id}, :html => {
+                            :id => 'edit_store_management_validation' } do |f| %>
+
+<p>
+    <label class="mg-label" style="width:140px"><%= t('store_name') %><span class="required-field">&nbsp;*</span></label>
+    <br/>
+   <%= f.text_field :store_name,:class=>"mg-text-field" %>
+</p>
+<p>
+    <label class="mg-label" style="width:140px"><%= t('description') %></label>
+    <br/>
+   <%= f.text_area :description,:class=>"mg-text-field" %>
+</p>
+
+
+<p class="mg-p-mgtop">
+    <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("save")%></a>
+   
+      <a class="mg-small-form-btn cancel-form-dialog"><%=t('cancel')%></a>
+
+</p>
+<% end %>
+</div>
+<!-- <%#= render  partial: 'application/common_left_close' %> -->
+<script>
+$( document ).ready(function() {
+          
+          
+$("#edit_store_management_validation").validate({
+        rules: {        
+       "store_management[store_name]": {required: true},
+       
+  
+      }
+    });
+});
+
+</script>

@@ -1,0 +1,36 @@
+<% navigation_add t('timetable'), timetable_index_path %>
+<% navigation_add 'View Subject '+t('timetable'), timetable_view_subject_time_table_path %>
+
+<%= render  partial: 'timetable_left' %>
+<h4 class="mg-h4">View Subject <%t('timetable')%></h4>
+<div class="mg-btn-bottom-margin">
+<label class="mg-label mg-tt-width">Select Subject</label>
+	<%=select_tag :batch,options_for_select(@subject),:prompt=>"Select Subject",:onchange=>"selectSubjectForTimeTable(this.value)"%>
+</div>
+
+<div id="subjectTimeTableDivID"></div>
+
+<%= render  partial: 'timetable_left_close' %>
+<script>
+function selectSubjectForTimeTable(subjectID){
+	$.ajax({
+			url:"/timetable/view_subject_time_table_index",
+			data:{"mg_subject_id":subjectID, sub: "subjectTimeTable"},
+			success:function(html){
+				
+				$("#subjectTimeTableDivID").html(html);
+			},
+			error:function(){
+				alert("inside error");
+			}
+		});
+}
+
+
+$(document).ready(function () {
+        focusCurrentTab("viewEmployeeSubjectTimeTableAID","viewEmployeeSubjectTimeTableLiID");
+        focusTimeTable();
+
+    });
+
+</script>

@@ -1,0 +1,30 @@
+<% navigation_add 'Fees', fees_path %>
+<%navigation_add 'Fees Receipt',fee_recept_path %>
+<%= render  partial: 'fee_left' %>
+<%= form_for :fee_collection, url: fees_fee_collection_path,  method: :post  do |f| %>
+<h4 class="mg-h4">Fee Receipt </h4>
+<div>
+<label class="mg-label mg-tt-width mg-tbl-margin">Select Class</label>
+<%=f.collection_select(:course_report, MgCourse.where( is_deleted: 0, :mg_school_id => session[:current_user_school_id]), :id, :course_name, {:include_blank => t('Select') ,:class=>"mg-select-btn"} ) %><br>
+<label class="mg-label mg-tt-width mg-tbl-margin">Select Section</label>
+
+<%= f.select :batch_report, [ ], {:include_blank => t('Select') ,:class=>"mg-select-btn"} %>
+
+<%end%>
+
+<!-- <div id="feeCollectionReportStudentListID"></div> -->
+<table cellspacing="0" cellpadding="0" border="0" id="feeCollectionReportStudentListID" class="mg-text-margin batch-tbl"></table>
+</div>
+<%= render  partial: 'application/common_left_close' %>
+
+
+<script type="text/javascript">
+     $(document).ready(function(){
+
+     
+
+      focusCurrentTab("feeRecepterAID","feeRecepterLiID");
+
+      focusFees();
+   });
+</script>

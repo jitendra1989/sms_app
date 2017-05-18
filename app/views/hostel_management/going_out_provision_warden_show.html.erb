@@ -1,0 +1,130 @@
+  
+
+
+  <%= form_for :provision_show, :url=>{:action=>"going_out_provision_warden_update",:id=>@provision.id},:html => {
+                            :id => 'provisionWardenFormId' } do |f| %>
+  <table border="1" class="mg-showdata-bg " cellspacing="1" cellpadding="1">
+
+  <% student_data=MgStudent.find_by(:id=>@provision.mg_student_id,:mg_school_id=>session[:current_user_school_id])%>
+ 
+      <tr>
+         <td class="mg-td-width-half" valign="top">
+          <label class="mg-label"> <%= t('student_name')%></label>
+         </td>
+         <td class="mg-td-width-half" valign="top">
+          <%="#{student_data.try(:first_name)} #{student_data.try(:last_name)}"%>
+         </td>
+      </tr>
+
+      <tr>
+         <td class="mg-td-width-half" valign="top">
+          <label class="mg-label"> <%= t('placement_student_admission_id')%></label>
+         </td>
+         <td class="mg-td-width-half" valign="top">
+            <%=student_data.try(:admission_number)%>
+         </td>
+      </tr>
+
+
+   
+
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"><%=t('description')%></label>
+     </td>
+     <td class="mg-td-width-half " valign="top">
+        <div class="text-scroll-for-log-text-cls comments-space" style="padding: 5px 40 0 10px">
+          <%= @provision.reason %>
+        </div>
+     </td>
+ </tr>
+
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('from_date')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+      <%= @provision.from_date.strftime(@timeformat.date_format) %>
+     </td>
+   </tr>
+
+   <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('start_time')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+      <%= @provision.start_time.try(:strftime,"%l:%M%P") %>
+     </td>
+   </tr>
+
+
+   <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('to_date')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+      <%= @provision.to_date.strftime(@timeformat.date_format) %>
+     </td>
+   </tr>
+
+   <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('end_time')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+      <%= @provision.end_time.try(:strftime,"%l:%M%P") %>
+     </td>
+   </tr>
+
+   
+<tr>
+      
+        
+                        
+       <tr>
+         <td class="mg-td-width-half" valign="top">
+            <label class="mg-label"> <%= t('status')%></label>
+         </td>
+
+          <td class="mg-td-width-half " valign="top">
+            
+            <%= select_tag "status",options_for_select([['Approve','approved'],['Reject','rejected']],:selected=>@provision.status),{prompt: "Select"} %><br/>
+
+         </td>
+       </tr>
+         
+
+
+
+
+</tr>
+
+</table><br/>
+    <p>
+         
+     <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("save")%></a>
+
+  
+
+     <a class="mg-small-form-btn cancel-form-dialog"><%=t('cancel')%></a>
+     </p>
+
+    <% end %>
+ 
+ 
+<script type="text/javascript">
+$(document).ready(function () {
+//  textSeeMoreLess();
+$("#provisionWardenFormId").validate({
+
+    rules: {
+      "status": {required: true}
+      }
+  });
+});
+
+
+
+
+</script>
+  

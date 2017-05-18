@@ -1,0 +1,251 @@
+
+ <%= form_for :placement_training , url: @request=="new" ? training_offered_create_path :
+ training_offered_update_path,:html => {:id => 'placement_TrainingID' } do |f| %>
+  <p>
+
+    <%if session[:user_type]=="Company"%>
+       <%= f.label :select_company, t('company') ,:class=>"mg-label mg-rm-text-trans"%><span class="required-field"> </span><br>
+    <%else%>
+       <%= f.label :select_company, t('select_company') ,:class=>"mg-label mg-rm-text-trans"%><span class="required-field"> *</span><br>
+    <%end%>
+    <%#= f.select :mg_placement_registration_id,options_for_select(@placement_registration,:selected=>@selected_data),:prompt=>"Select" ,:class=> 'mg-text-field'  %>
+    <%if session[:user_type]=="Company"%>
+
+        <% company_data=MgPlacementRegistration.find_by(:mg_user_id=>session[:user_id])%>
+        <%#= f.text_field :company, :class=> 'mg-text-field',:readonly => "readonly",:value=>company_data.id%>
+        <%#= f.select :mg_placement_registration_id,options_for_select(@placement_registration,:selected=>company_data.id),:prompt=>"Select" ,:class=> 'mg-text-field',{:disabled=>true} %>
+         <%=select_tag :mg_placement_registration,options_for_select(@placement_registration,company_data.id),:prompt=>"Select",:class=>"mg-text-field disabled-accounts-class", :disabled => "disabled"%>
+
+         <%=f.hidden_field :mg_placement_registration_id, :value =>company_data.id%>
+      <% else %>
+        <% companies_data=MgPlacementRegistration.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id],:status=>"Active").pluck(:name_of_the_company,:id) %>
+        <% if @action=='new'%>
+          <%= f.select :mg_placement_registration_id,options_for_select(@placement_registration,:selected=>@selected_data),:prompt=>"Select" ,:class=> 'mg-text-field'  %>
+        <% else %>
+          <%= f.select :mg_placement_registration_id,options_for_select(@placement_registration,:selected=>@selected_data),:prompt=>"Select" ,:class=> 'mg-text-field'  %>
+        <%end%>
+      <%end%>
+
+  </p>
+
+
+   <p>
+
+    <%= f.label :area_of_training, t('area_of_training') ,:class=>"mg-rm-text-trans mg-label"%><span class="required-field"> *</span><br>
+    <%= f.text_area :area_of_training   ,:class=> 'mg-text-field'%>
+
+  </p>
+<%if @request=="new"%>
+ <p>
+    <%= f.label :start_date, t('start_date') ,:class=>"mg-label"%><span class="required-field"> *</span><br>
+    <%= f.text_field :start_date ,:class=> 'mg-text-field'  %>
+  </p>
+   
+     <p>
+
+    <%= f.label :end_date, t('end_date') ,:class=>"mg-label"%><span class="required-field"> *</span><br>
+    <%= f.text_field :end_date ,:class=> 'mg-text-field'  %>
+
+  </p>
+  <p>
+
+    <%= f.label :status, t('status') ,:class=>"mg-rm-text-trans mg-label"%><span class="required-field"> *</span><br>
+    <%= select_tag :is_active,options_for_select([["Pending","Pending"],["Approved","Approved"],["Rejected","Rejected"],["Cancelled","Cancelled"]]),:class=> 'mg-text-field'%>
+  </p>
+  <%else%>
+<p>
+
+    <%= f.label :start_date, t('start_date') ,:class=>"mg-label"%><span class="required-field"> *</span><br>
+    <%=text_field_tag :start_date_data11,@placement_training.start_date.strftime(@dateFormat)  %>
+
+  </p>
+   
+     <p>
+
+    <%= f.label :end_date, t('end_date') ,:class=>"mg-label"%><span class="required-field"> *</span><br>
+    <%= text_field_tag :end_date_data11,@placement_training.end_date.strftime(@dateFormat) %>
+      <%= hidden_field_tag :id_data, @placement_training.id%>
+
+  </p>
+   <p>
+
+    <%= f.label :status, t('status') ,:class=>"mg-rm-text-trans mg-label"%><span class="required-field"> *</span><br>
+    <%#= select_tag :is_active,options_for_select([["Active","pending"],["Inactive","inactive"]],:selected=>@placement_training.status),:class=> 'mg-text-field'%>
+    <%= select_tag :is_active,options_for_select([["Pending","Pending"],["Approved","Approved"],["Rejected","Rejected"],["Cancelled","Cancelled"]],:selected=>@placement_training.is_active),:class=> 'mg-text-field'%>
+
+  </p>
+  <%end%>
+
+  <%= f.hidden_field :mg_school_id, :value => session[:current_user_school_id]%>
+  <%= f.hidden_field :created_by, :value => session[:user_id]%> 
+  <%= f.hidden_field :updated_by, :value => session[:user_id]%> 
+  <%= f.hidden_field :is_deleted, :value => 0%>
+
+  <p class="mg-p-mgtop">
+<!--      <a id="clickTrainingButtonId" class="mg-custom-labels mg-small-form-btn"><%=t("save")%></a>
+ -->       <!-- <input type="submit" id="submitEmployeeFormBtnId"  style="display:none"/> -->
+       <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("save")%></a>
+       <%#=f.submit t("save") ,:id=>"submitEmployeeFormBtnId" , :style=>"display:none"%>
+      <%= link_to t('cancel'), {:controller=>'placements',:action=>'training_offered'}, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+  </p>
+
+<% end %>
+
+<script>
+
+ dateFormatStr =  getJsDateFormat();
+
+ $( "#placement_training_start_date" ).datepicker({ 
+            changeMonth: true,
+            changeYear: true,yearRange: "-50:+10",maxDate: "10000",
+            dateFormat: dateFormatStr})
+ $( "#placement_training_end_date").datepicker({ 
+            changeMonth: true,
+            changeYear: true,yearRange: "-50:+10",maxDate: "10000",
+            dateFormat: dateFormatStr})
+  $( "#start_date_data11").datepicker({ 
+            changeMonth: true,
+            changeYear: true,yearRange: "-50:+10",maxDate: "10000",
+            dateFormat: dateFormatStr})
+ $( "#end_date_data11").datepicker({ 
+            changeMonth: true,
+            changeYear: true,yearRange: "-50:+10",maxDate: "10000",
+            dateFormat: dateFormatStr})
+$(document).ready(function () {
+ 
+  $("#placement_TrainingID").validate({
+
+    rules: {
+    "placement_training[start_date]": {required: true,dateFormat: true},
+    "placement_training[end_date]": {required: true,dateFormat: true},
+    "placement_training[area_of_training]": {required: true},
+    "placement_training[mg_placement_registration_id]": {required: true},
+    "end_date_data11": {required: true,dateFormat: true},
+    "start_date_data11": {required: true,dateFormat: true},
+    }
+  });
+});
+
+
+        $(document).on("change","#placement_training_start_date",function(e){
+        var end_date=$("#placement_training_end_date").val();
+        var start_date=$(this).val();
+
+        if(start_date && end_date){
+             if(!compareDate(start_date,end_date,dateFormatStr)){
+                alert("Start Date should be lesser than End Date");
+                document.getElementById('placement_training_start_date').value ="";
+              }
+        }      
+
+     });
+     $(document).on("change","#placement_training_end_date",function(e){
+      
+        var end_date=$(this).val();
+        var start_date=$("#placement_training_start_date").val();
+        if(start_date && end_date){
+          if(!compareDate(start_date,end_date,dateFormatStr)){
+            alert("End Date should be greater than Start Date");
+            document.getElementById('placement_training_end_date').value ="";
+          }
+        }  
+     });
+
+
+        $(document).on("change","#start_date_data11",function(e){
+        var end_date=$("#end_date_data11").val();
+        var start_date=$(this).val();
+
+        if(start_date && end_date){
+             if(!compareDate(start_date,end_date,dateFormatStr)){
+                alert("Start Date should be lesser than End Date");
+                document.getElementById('start_date_data11').value ="";
+              }
+        }      
+
+     });
+     $(document).on("change","#end_date_data11",function(e){
+      
+        var end_date=$(this).val();
+        var start_date=$("#start_date_data11").val();
+        if(start_date && end_date){
+
+          if(!compareDate(start_date,end_date,dateFormatStr)){
+            alert("End Date should be greater than Start Date");
+            document.getElementById('end_date_data11').value ="";
+          }
+        }  
+     });
+
+$(function () {
+    $.validator.addMethod('dateFormat',
+    function (value, element) {
+      dateFormatStr =  getJsDateFormat();
+        if (this.optional(element)) {
+            return true;
+        }
+        var ok = true;
+        try {
+            $.datepicker.parseDate(dateFormatStr, value);
+        }
+        catch (err) {
+            ok = false;
+        }
+        return ok;
+    },
+      "Please enter a date in the format "+ getDateFormat(dateFormatStr) +".");
+      dateFormatStr =  getJsDateFormat();
+
+    $(".datefield").datepicker({ dateFormat: dateFormatStr, changeYear: true });
+});
+$(document).on("click", "#clickTrainingButtonId", function(e){
+  alert("data");
+
+        var company_id=$("#placement_training_mg_placement_registration_id").val();
+        var start_date=$("#placement_training_start_date").val();
+        var end_date=$("#placement_training_end_date").val();
+        var start_date1=$("#start_date_data11").val();
+        var end_date1=$("#end_date_data11").val();
+        var urlLink = "/placements/training_offered_validation/";
+        alert(start_date);
+        alert(start_date1);
+
+          if(start_date!=null && start_date1==undefined){
+                   
+
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            data:{"start_date":start_date,"end_date":end_date,"company_id":company_id},
+            success: function(html){
+                 if (html.name>0){
+                  alert("asd1");
+
+
+                 }
+                 else{
+
+                  alert("asd");
+                 }
+               
+            }
+        });
+      }
+      else if(start_date1!=null&&start_date=="undefined") {
+
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            data:{"start_date":start_date1,"end_date":end_date1,"company_id":company_id},
+            success: function(html){
+                  
+               
+            }
+        });
+      
+      }
+});
+
+
+</script>
+

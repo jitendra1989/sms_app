@@ -1,0 +1,10 @@
+<!-- Sec --> 
+<tr>
+  <td><%= mg_action.try(:action_name) %></td>
+  <td><%= mg_action.try(:description) %></td>
+  <td>
+   <button title="Edit" class="edit-mg-action mg-icon-btn" id="editMgActionID-<%= mg_action.id%>"><i class="fa fa-pencil-square-o"></i></button>
+   <button title="Delete" class="delete-mg-action mg-icon-btn" id="deleteMgActionID-<%= mg_action.id%>"><i class="fa fa-trash"></i></button>
+  </td>
+
+</tr>

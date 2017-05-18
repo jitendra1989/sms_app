@@ -1,0 +1,412 @@
+<% navigation_add t('placement_report'), placements_placement_report_path%>
+<%= render  partial: 'dashboards/principle_dashboard_left' %>
+<h4 class="mg-h4"><%= t('placement_report')%></h4>
+<table class="mg-btn-bottom-margin">
+    <tr>
+        <td>
+         <label for="date_of_birth"class="mg-label"><%= t('placement_report_by') %></label>
+            
+        </td>
+        </tr>
+        <tr>
+        <td>
+       
+        <%=select_tag :mg_course, options_for_select([["Select",""],["Year","year"],["Company","company"],["Semester","semester"]]),:class=>"mg-select-btn",:onchange=>"selectsPlacementfunctionsforPrinciple_data(this.value)"%>
+           <br/>
+        </td>
+    </tr>
+
+<tr>
+<td>
+<div id="library_tes" class="library_test1" style="display:none;">
+
+
+ <label for="date_of_birth"class="mg-label"><%= t('select_semester') %>
+
+ </div>
+
+</td>
+</tr>
+<tr>
+<td>
+
+<div id="library_te" class="library_test1" style="display:none;">
+
+<%=select_tag :mg_batch_id_data,options_for_select(@array2),:prompt=>"Select",:class=>"mg-select-btn data123",:onchange=>"selectsPlacementfunctionsforPrinciple(this.value)"%>
+<%#=text_field_tag 'library_search_name' ,nil,:class=>"mg-text-field"%><br/><br/>
+</div>
+</td>
+</tr>
+<tr>
+<td>
+<div id="library_tes" class="library_test2" style="display:none;">
+
+
+ <label for="date_of_birth"class="mg-label"><%= t('select_year') %>
+
+ </div>
+
+</td>
+</tr>
+<tr>
+<td>
+
+<div id="library_te" class="library_test2" style="display:none;">
+
+<%= select_tag 'time_table_year', options_for_select((1994..Time.now.year).to_a.reverse), :prompt=>"Select",:class=>"mg-select-btn data123",:onchange=>"selectsPlacementfunctionsforPrinciple(this.value)" %><br/>
+
+
+
+</div>
+</td>
+</tr>
+<tr>
+<td>
+<div id="library_tes" class="library_test3" style="display:none;">
+
+
+ <label for="date_of_birth"class="mg-label"><%= t('select_company') %>
+
+ </div>
+
+</td>
+</tr>
+<tr>
+<td>
+
+<div id="library_te" class="library_test3" style="display:none;">
+ <%regi_data=MgPlacementRegistration.where(:is_deleted=>0, :mg_school_id=>session[:current_user_school_id]).pluck(:name_of_the_company,:id)%>
+<%= select_tag 'time_table_year', options_for_select(regi_data), :prompt=>"Select",:class=>"mg-select-btn data123",:onchange=>"selectsPlacementReportByCompany(this.value)"%><br/>
+    
+<%#= collection_select_tag(:mg_placement_registration_id, MgPlacementRegistration.where(:is_deleted=>0, :mg_school_id=>session[:current_user_school_id]), :id, :name_of_the_company,{:include_blank => 'Select'} ,:class=>"mg-select-btn")%><%#=text_field_tag 'library_search_name' ,nil,:class=>"mg-text-field"%><br/>
+
+
+
+</div>
+</td>
+</tr>
+
+</table>
+
+<div id="placement_particular_job_data">
+</div>
+
+<div id="shot_student_login_placement_data">
+</div>
+
+
+<%= render  partial: 'application/common_left_close' %>
+<script>
+  $( document ).ready(function() {
+    focusCurrentTab("placementReportAID","placementReportLiID");
+  });
+
+
+  function selectsPlacementfunctionsforPrinciple(data123){
+  var data=$("#mg_course").val();
+  var year=$("#time_table_year").val();
+  //$('#time_table_year option:contains("Select")').prop('selected',true);
+if (data==""){
+
+$('#placement_particular_job_data').empty();
+
+}
+
+  if (data=="semester"){
+    $(".library_test2").show();
+
+    // $('#placement_particular_job_data').empty()
+    // $('#time_table_year option:contains("Select")').prop('selected',true);
+
+    if ($("#time_table_year").val()==""){
+$('#placement_particular_job_data').empty();
+
+    }
+    else{
+
+  var urlLink = "/placements/select_data_based_on_semester_graph/";
+
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            data:{data:data,year:year},
+            success: function(html){
+               
+                  $('#placement_particular_job_data').empty().html(html);
+               
+            },
+            error: function(){
+              
+
+                  $('#placement_particular_job_data').empty();
+
+            }
+        });
+    }
+    }
+    else if(data=="year"){
+      $(".library_test2").hide();
+ var urlLink = "/placements/select_data_based_on_semester_graph/";
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            data:{year:data},
+            success: function(html){
+                  $('#placement_particular_job_data').empty().html(html);
+               
+            },
+            error: function(){
+
+                  $('#placement_particular_job_data').empty();
+
+            }
+        });
+    }
+
+else if(data=="company"){
+$(".library_test2").show();
+// $('#placement_particular_job_data').empty()
+//     $('#time_table_year option:contains("Select")').prop('selected',true);
+if ($("#time_table_year").val()==""){
+$('#placement_particular_job_data').empty();
+
+    }
+    else{
+    
+
+            
+var urlLink = "/placements/select_data_based_on_semester_graph/";
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            data:{company:data,year:year},
+            success: function(html){
+                  $('#placement_particular_job_data').empty().html(html);
+               
+            },
+            error: function(){
+
+                  $('#placement_particular_job_data').empty();
+
+            }
+        });
+}
+
+
+}
+
+//  $("#placement_particular_job_data").empty();
+
+
+// if (data==""){
+//  $(".library_test1").hide();
+//  $(".library_test2").hide();
+//  $(".library_test3").hide();
+
+// }
+// else if(data=="semester"){
+//   //$('#library_search_name').val("");
+//  $(".library_test2").hide();
+//  $(".library_test3").hide();
+//  $('.data123 option:contains("Select")').prop('selected',true);
+//  $(".library_test1").show();
+
+
+
+// }
+// else if(data=="year"){
+//  //$('#library_search_name').val("");
+//  $(".library_test1").hide();
+//  $(".library_test3").hide();
+//  $('.data123 option:contains("Select")').prop('selected',true);
+
+//  $(".library_test2").show();
+
+
+// }
+// else if(data=="company"){
+//  // $('#library_search_name').val("");
+//  $(".library_test1").hide();
+//  $(".library_test2").hide();
+//  $('.data123 option:contains("Select")').prop('selected',true);
+
+//  $(".library_test3").show();
+
+
+// }
+
+
+}
+
+  function selectsPlacementfunctionsforPrinciple_data(data123){
+  var data=$("#mg_course").val();
+  var year=$("#time_table_year").val();
+  //$('#time_table_year option:contains("Select")').prop('selected',true);
+if (data==""){
+
+$('#placement_particular_job_data').empty();
+$(".library_test2").hide();
+}
+
+  if (data=="semester"){
+    $(".library_test2").show();
+
+     $('#placement_particular_job_data').empty();
+     $('#time_table_year option:contains("Select")').prop('selected',true);
+
+    if ($("#time_table_year").val()==""){
+$('#placement_particular_job_data').empty();
+
+    }
+    else{
+
+  var urlLink = "/placements/select_data_based_on_semester_graph_data/";
+
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            data:{data:data,year:year},
+            success: function(html){
+               
+                  $('#placement_particular_job_data').empty().html(html);
+               
+            },
+            error: function(){
+              
+
+                  $('#placement_particular_job_data').empty();
+
+            }
+        });
+    }
+    }
+    else if(data=="year"){
+      $(".library_test2").hide();
+ var urlLink = "/placements/select_data_based_on_semester_graph/";
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            data:{year:data},
+            success: function(html){
+                  $('#placement_particular_job_data').empty().html(html);
+               
+            },
+            error: function(){
+
+                  $('#placement_particular_job_data').empty();
+
+            }
+        });
+    }
+
+else if(data=="company"){
+$(".library_test2").show();
+$('#placement_particular_job_data').empty();
+$('#time_table_year option:contains("Select")').prop('selected',true);
+if ($("#time_table_year").val()==""){
+$('#placement_particular_job_data').empty();
+
+    }
+    else{
+    
+
+            
+var urlLink = "/placements/select_data_based_on_semester_graph/";
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            data:{company:data,year:year},
+            success: function(html){
+                  $('#placement_particular_job_data').empty().html(html);
+               
+            },
+            error: function(){
+
+                  $('#placement_particular_job_data').empty();
+
+            }
+        });
+}
+
+
+}
+}
+
+function selectsPlacementReportBySemester(data){
+
+	 var urlLink = "/placements/select_data_based_on_semester/";
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            data:{data:data},
+            success: function(html){
+                  $('#placement_particular_job_data').empty().html(html);
+               
+            },
+            error: function(){
+
+                  $('#placement_particular_job_data').empty();
+
+            }
+        });
+}
+function selectsPlacementReportByYear(data){
+
+	 var urlLink = "/placements/select_data_based_on_semester/";
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            data:{year:data},
+            success: function(html){
+                  $('#placement_particular_job_data').empty().html(html);
+               
+            },
+            error: function(){
+
+                  $('#placement_particular_job_data').empty();
+
+            }
+        });
+}
+function selectsPlacementReportByCompany(data){
+
+	 var urlLink = "/placements/select_data_based_on_semester/";
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            data:{company:data},
+            success: function(html){
+                  $('#placement_particular_job_data').empty().html(html);
+               
+            },
+            error: function(){
+
+                  $('#placement_particular_job_data').empty();
+
+            }
+        });
+}
+$(document).on("click", ".show-job-upload-fom-btn-student-login", function(e){
+        var myID =$(this).attr('id');
+        var Id=myID.split("-");
+
+
+        var urlLink = "/placements/"+Id[0]+"/job_upload_show_student/";
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(html){
+                  $('#shot_student_login_placement_data').dialog({
+                    modal: true,
+                    minHeight: 'auto',
+                    title: "Job Details",
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+});
+</script>

@@ -1,0 +1,96 @@
+<%= render partial: 'front_office_management_left' %>
+<% navigation_add "Meeting Details", :controller=>'front_office_management', :action=>'meeting_detail' %>
+<h4 class="mg-h4"><%= t('meeting_details') %></h4>
+<button class="add_meeting_details mg-btn-bottom-margin mg-custom-form-btn"><%= t('add_meeting_details')%></button><br/>
+<%if @meeting_detail.present? %>
+  <div class="mg_pagination">
+    <table class="batch-tbl mg-tbl-margin table-batchs-tbl">
+      <tr class="subject-table-header">
+        <th><%= t('room_no_name') %></th>
+        <th><%= t('start_date') %></th>
+        <th><%= t('start_time') %></th>
+        <th><%= t('end_date') %></th>
+        <th><%= t('end_time') %></th>
+        <th><%= t('booked_by') %></th>
+        <th style="width:117px"><%= t('actions') %></th>  
+      </tr>
+      <% @meeting_detail.each do |f| %> 
+        <%@dateFormat = MgSchool.find_by(:id=>session[:current_user_school_id]).date_format %>
+        <%room =MgMeetingRoom.find_by(:id=>f.mg_meeting_room_id) %>
+        <%employee =MgEmployee.find_by(:id=>f.mg_employee_id) %>
+        <tr class="export-excel-class">
+          <td class="mg-align-center"><%= room.try(:room_no) %></td>
+          <td class="mg-align-center"><%= f.try(:start_date).try(:strftime, @dateFormat) %> </td>
+          <td class="mg-align-center"><%= f.try(:start_time).try(:strftime,"%l:%M%P") %> </td>
+          <td class="mg-align-center"><%= f.try(:end_date).try(:strftime, @dateFormat) %> </td>
+          <td class="mg-align-center"><%= f.try(:end_time).try(:strftime,"%l:%M%P") %> </td>
+          <td class="mg-align-center"><%= employee.try(:first_name) %><%=" " %><%= employee.try(:last_name) %></td>   
+           
+          <td style="width: 103px;">
+            <span style="margin-right: -8px;">
+              <button title="show" id="<%= raw f.id %>-showexmBTNID" class="show-meeting_detail mg-icon-btn"><i class="fa fa-eye"></i></button>
+            </span>
+            <span style="margin-right: -8px;">
+              <button title="Edit" id="<%= raw f.id %>-editexmBTNID" class="edit-meeting_detail mg-icon-btn"><i class="fa fa-pencil-square-o"></i></button>
+            </span>
+            <span>
+              <button title="<%= t('delete') %>" id="<%= raw f.id %>-deleteexmBTNID" class="delete-meeting_detail mg-icon-btn"><i class="fa fa-trash"></i></button>
+            </span>
+          </td>
+        </tr> 
+      <% end %>
+    </table>
+    <div class="pagination-align" style="position: relative; bottom: 00px;">
+      <%= will_paginate @meeting_detail, :container => false %>
+    </div>
+  </div>
+<%else%>
+  <%="No meeting created"%>
+<%end%>
+
+<%= render  partial: 'application/common_left_close' %>
+
+
+<script>
+  $(document).ready(function(){   
+    focusCurrentTab("roomBookingAID","roomBookingLID");
+  });
+
+  $(document).on("click",".add_meeting_details",function(e){   
+    e.preventDefault();   
+    var urlLink = "/front_office_management/room_book";
+    window.location = urlLink;
+  });
+
+  $(document).on("click",".show-meeting_detail",function(e){   
+    e.preventDefault();   
+
+    var showID = $(this).attr('id');
+    var id = showID.split("-");
+    var urlLink = "/front_office_management/show_meeting_detail/"+id[0];
+    window.location = urlLink;
+  });
+
+  $(document).on("click",".edit-meeting_detail",function(e){   
+    e.preventDefault();   
+
+    var showID = $(this).attr('id');
+    var id = showID.split("-");
+    var urlLink = "/front_office_management/edit_booking/"+id[0];
+    window.location = urlLink;
+  });
+
+  $(document).on("click",".delete-meeting_detail",function(e){   
+    e.preventDefault();   
+
+    var showID = $(this).attr('id');
+    var id = showID.split("-");
+    var result = confirm("Are you sure to delete?");
+    if (result) {
+      var urlLink = "/front_office_management/delete_booking/"+id[0];
+      window.location = urlLink;
+    }
+  });
+
+  
+</script>

@@ -1,0 +1,113 @@
+<%if session[:user_type]=="principal"%>
+  <% navigation_add t('transport_booking_review'), :controller=>'front_office_management' ,:action=> 'transport_booking_index' %>
+<%= render partial: 'dashboards/principle_dashboard_left' %>
+
+<%else%>
+  <% navigation_add t('transport_booking'), :controller=>'front_office_management' ,:action=> 'transport_booking_index' %>
+  <%=render partial: 'front_office_management_left'%>
+<%end%>
+
+<div id="edittransport_bookingfomdata">
+<h4 class="mg-h4"><%=t('transport_booking_list')%></h4>
+
+<%if session[:user_type]=='front_office_manager'%>
+  <%= button_to 'Add Transport Booking', {:controller=>'front_office_management',:action=>'transport_booking_new'}, :class=> 'mg-custom-form-btn' %>
+<%end%>
+
+<% if @transport_booking_data.present? %>
+  <table  class="batch-tbl mg-tbl-margin">   <!-- border="2" --> 
+    <tr class="subject-table-header">
+      <th><label class="mg-rm-text-trans"><%=t('date_of_booking')%></label></th>
+      <th><%= t('transport_time') %></th>
+      <th><%= t('place_from') %></th>
+      <th><%= t('place_to') %></th> 
+      <th><%= t('way_mode') %></th>
+      <th><%= t('employee') %></th>
+      <!-- <th><%#= t('purpose') %></th> -->
+      <th><%= t('status') %></th>
+      <th><%= t('actions') %></th>
+    </tr>
+
+
+    <% @timeformat=MgSchool.find_by(:id=>session[:current_user_school_id])%>    
+    <% @transport_booking_data.each do |s| %>
+
+      <tr>      
+        <td class="mg-align-center"><%= s.date_of_booking.strftime(@timeformat.date_format) %></td>
+        <td class="mg-align-center"><%= s.try(:transport_time).try(:strftime,"%l:%M%P") %></td>
+        <td class="mg-capitalize-text"><%= s.place_from %></td>
+        <td class="mg-capitalize-text"><%= s.place_to %></td>
+        <td class="mg-capitalize-text"><%= s.way_mode   %></td>
+        <%booked_by_data=MgEmployeeCategory.find_by(:id=>s.mg_employee_category_id  )%>
+        <% profile_data=MgEmployeePosition.find_by(:id=>s.mg_employee_position_id)%>
+        <% employee_data=MgEmployee.find_by(:id=>s.mg_employee_id)%>
+        <td><%= employee_data.try(:first_name) %></td>
+        <td class="mg-capitalize-text"><%= s.status %></td>
+        <td>  
+          <button title="Show" id="<%=raw s.id %>-showtransport_bookingFomBTNID" class="show-transport-booking-fom-btn mg-icon-btn"><i class="fa fa-eye"></i></button>
+          <button title="Edit" id="<%=raw s.id %>-edittransport_bookingFomBTNID" class="edit-transport-booking-fom-btn mg-icon-btn"><i class="fa fa-pencil-square-o"></i></button>
+          <%if session[:user_type]=="front_office_manager"%>
+            <button title="Delete" onclick="confirm('Are you sure to delete?') ? window.location='/front_office_management/transport_booking_delete/<%=s.id%>' : ''" class="mg-icon-btn"><i class="fa fa-trash"></i></button>
+          <%end%>
+        </td>
+        </tr>
+  <% end %>
+  </table>
+  <br/>
+
+<%else%>
+  <h5>No records are created </h5>
+<%end%>
+<div id="showtransport_bookingfomdata"></div>
+</div>
+
+<%= render  partial: 'application/common_left_close' %>
+
+
+<script type="text/javascript">
+  $(document).ready(function () {
+        focusCurrentTab("transport_bookingAID","transport_bookingLiID");
+
+    });
+
+  $(document).on("click", ".show-transport-booking-fom-btn", function(e){
+        var myID =$(this).attr('id');
+        var Id=myID.split("-");
+        
+        var urlLink = "/front_office_management/transport_booking_show";
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            data:{"id":Id[0]},
+            success: function(html){
+                  
+                  
+          
+                        
+                       $("#edittransport_bookingfomdata").html(html);
+                    
+               
+            }
+        });
+  });
+
+  $(document).on("click", ".edit-transport-booking-fom-btn", function(e){
+        var myID =$(this).attr('id');
+         var Id=myID.split("-");
+
+        var urlLink = "/front_office_management/transport_booking_edit";
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            data:{id:Id[0]},
+            success: function(html){
+                 
+                   
+                         $("#edittransport_bookingfomdata").html(html);
+                  
+            }
+        });
+});
+
+
+</script>

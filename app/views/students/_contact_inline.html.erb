@@ -1,0 +1,93 @@
+<!-- Sec --> 
+
+<%= fields_for (phone_types) do |cnt| %>
+
+      <%= cnt.hidden_field :is_deleted, :value => 0 %>
+      <%= cnt.hidden_field :mg_school_id, :value => session[:current_user_school_id] %>
+      <%if phone_types=="home"%>
+        <%= cnt.hidden_field :phone_type, :value => "home" %>
+      <%end%>
+
+      <%if phone_types=="personal"%>
+       <%= cnt.hidden_field :phone_type, :value => "personal" %>
+      <%end%>
+
+      <%if phone_types=="phone"%>
+         
+         <%= cnt.hidden_field :phone_type, :value => "phone" %>
+         <%= cnt.hidden_field :notification, :value => 0 %>
+         <%= cnt.hidden_field :subscription, :value => 0 %>
+
+          <table style="margin-left: 14px;">
+            <tbody>
+              <tr>
+                <td width="33%" valign="bottom">
+                  <label class="mg-label"  for="phone_number"><%= t('phonenumber') %>
+                      </label>
+                      <%= tooltip '<i class="fa fa-question"></i>'.html_safe, { :tooltip => 'Can enter digits only. No arbitrary symbols like -,*,#,etc are allowed. Phone Number should not be initialised with 0, eg: If your number is 06542-2651XX, then enter it like 65422651XX. No need to mention \'0\' in the beginning.' }, :class => 'mytooltip mg-icon-btn' ,:style=>"font-size: 0.85em;"%><br/>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top">
+                  <%= cnt.text_field :phone_number ,:class=>"mg-text-field"%>
+           
+                </td>
+              </tr>
+            </tbody> 
+          </table>
+
+      <%end%> 
+
+      <%if phone_types=="mobile"%>
+             
+       <%= cnt.hidden_field :phone_type, :value => "mobile" %>
+        <table width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-left: 14px;">
+          <tbody>
+            <tr>
+              <td width="33%" valign="bottom">
+                <label class="mg-label" for="phone_number" class="mg-label" ><%= t('mobilenumber') %><span class="required-field"> *</span>
+                </label>
+              </td>
+              <td> </td>
+              <td width="33%" valign="bottom">
+                <label class="mg-label" for="notification" class="mg-label" ><%= t('notification') %>
+                </label>
+              </td>
+              <td> </td>
+              <td width="33%" valign="bottom">
+                <label class="mg-label" for="subscription" class="mg-label" ><%= t('subscription') %>
+                </label>
+              </td>
+            </tr>
+            <tr>
+              <td valign="top">
+                +91-<%= cnt.text_field :phone_number ,:class=>"textboxwidth mg-phn-text-field valid"%>
+              </td>
+              <td> </td>
+              <td valign="top">
+                <%= cnt.check_box :notification %>
+              </td>
+              <td> </td>
+              <td valign="top">
+                <%= cnt.check_box :subscription %>
+              </td>
+            </tr>
+          </tbody> 
+        </table>
+      <%end%>
+
+<% end %>  
+
+<script type="text/javascript">
+$(document).ready(function () {
+    $("#guardianPrincipleProfileContactEditFormID").validate({
+
+    rules: {
+
+    "mobile[phone_number]": {required: true},
+
+    "email[mg_email_id]": {required: true}
+    }
+    });
+});
+</script>

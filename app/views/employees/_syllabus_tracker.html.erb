@@ -1,0 +1,113 @@
+
+ <h4 class="mg-h4"><%= t('syllabus_progress') %></h4>
+ <div>
+  <%= form_for :syllabus, url: syllabus_tracker_create_path, :html => {
+                              :id => 'syllabusTrackerFormID' } do |f| %>
+
+  <%
+    emp=MgEmployee.where(:mg_user_id=>session[:user_id]).pluck(:id)
+     emp=MgEmployee.find_by_mg_user_id(session[:user_id])
+     emp=emp.id
+    puts "======================="
+    puts session[:user_id]
+   puts emp
+   puts "===================="
+  %>
+
+  <%= f.hidden_field :is_deleted, :value => 0 %>
+  <%= f.hidden_field :mg_employee_id, :value => emp %>
+  <%= f.hidden_field :mg_school_id, :value => session[:current_user_school_id] %>
+  <!--#Syllabus.where(:is_deleted => '0')-->
+
+  <p>
+  <label class="mg-label"><%= t('selectsyllabus') %></label><span class="required-field">&nbsp;*</span><br/>
+  <%= f.collection_select(:mg_syllabus_id,MgSyllabus.where(:is_deleted=>0, :mg_school_id=>session[:current_user_school_id]), :id, :name,{:include_blank => t("select")},:class => "unit-syllabus-tracker-class mg-select-btn")%>
+  </p>
+
+  <p>
+  <label class="mg-label"><%= t('selectunit') %></label><span class="required-field">&nbsp;*</span><br/>
+      <%= f.collection_select(:mg_unit_id,MgUnit.where(:is_deleted=>0, :mg_school_id=>session[:current_user_school_id]), :id, :unit_name,{:include_blank => t("select")},:class => "unit-syllabus-id-class mg-select-btn")%>
+  </p>
+  <p>
+  <label class="mg-label"><%= t('selecttopic') %></label><br/>
+      <%= f.collection_select(:mg_topic_id,MgTopic.where(:is_deleted=>0, :mg_school_id=>session[:current_user_school_id]), :id, :topic_name,{:include_blank => t("select")},:class => "unit-syllabus-id-class mg-select-btn")%>
+   </p>
+   <p>
+  
+      <label class="mg-label"> <%= t('coursebatch') %></label>
+        <span class="required-field">*</span>
+      <br/>
+                  
+       <% 
+            @batchList =   MgBatch.where(:is_deleted => 0, :mg_school_id=>session[:current_user_school_id])
+            %>
+        <%                             
+            @batchList.each do |batchObj|
+            @courseObj = MgCourse.find_by_id(batchObj.mg_course_id)
+            batchObj.name = (@courseObj.course_name) +"-"+ batchObj.name
+            end
+        %>
+        <%=f.collection_select(:mg_batch_id, @batchList , :id, :name, {:include_blank => 'Select'} ,:class=>"mg-select-btn") %>
+   </p>
+   <p>
+     <label class="mg-label"><%= t('expected_class') %></label><span class="required-field">&nbsp;*</span>
+     <br/>
+     <%= f.text_field :expected_class,:class=>"mg-text-field" %>
+   </p>
+   <p>
+     <!-- <label class="mg-label" for="date"><#%= t('date') %><br/> -->
+     <%= f.label :date ,:class=> "mg-label"%><span class="required-field">&nbsp;*</span><br>
+     <%= f.text_field :date, :class=>"textboxwidth mg-text-field", :id=>"dateSyllabusId" %>
+   </p>
+   <p class="mg-p-mgtop">
+      <%#= f.submit t('submit') ,:class=>"mg-small-form-btn"%>
+      <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("save")%></a>
+      <%= link_to t('cancel'), '/employees/syllabus_tracker_show/', {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+    </p>
+  <% end %>
+</label>
+
+
+
+<script>
+  $(document).ready(function () {
+
+    dateFormatStr =  getJsDateFormat();
+    $('#dateSyllabusId').datepicker({ changeMonth: true,
+                    changeYear: true,yearRange: "-50:+50",dateFormat: dateFormatStr});
+
+    $(function () {
+      $.validator.addMethod('dateFormat',
+      function (value, element) {
+        dateFormatStr =  getJsDateFormat();
+        if (this.optional(element)) {
+            return true;
+        }
+        var ok = true;
+        try {
+            $.datepicker.parseDate(dateFormatStr, value);
+        }
+        catch (err) {
+            ok = false;
+        }
+        return ok;
+      },
+        "Please enter a date in the format "+ getDateFormat(dateFormatStr) +".");
+      dateFormatStr =  getJsDateFormat();
+
+      $(".datefield").datepicker({ dateFormat: dateFormatStr, changeYear: true });
+    });
+
+    $("#syllabusTrackerFormID").validate({
+
+      rules: {
+        "syllabus[mg_syllabus_id]": {required: true},
+        "syllabus[mg_unit_id]": {required: true},
+        "syllabus[expected_class]": {required: true,number:true,min:1},
+        "syllabus[date]": {required: true,dateFormat: true},
+        "syllabus[mg_batch_id]": {required: true}
+      }
+    });
+    focusCurrentTab("viewEmployeeSyllabus","viewEmployeesyllabusLiID");
+  });
+</script>

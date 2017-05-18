@@ -1,0 +1,35 @@
+
+<div class="box">
+  <div class="box">
+    <%= form_for @exam_venue, :url=>{:controller=>"entrance_exam_details",:action=>"update_exam_venue",:id=>params[:id]},:html => { :id => "examVenueFormID" ,:multipart => true } do |f| %>
+
+      <%= f.hidden_field :is_deleted, :value=>0 %>  
+      <%= f.hidden_field :mg_school_id, :value =>session[:current_user_school_id]%>
+      <%= f.hidden_field :created_by, :value =>session[:user_id] %>
+      <%= f.hidden_field :updated_by, :value =>session[:user_id] %>         
+    
+      <label class="mg-label mg-custom-labels" for="institute_name"><%= t('institute_name') %><span class="required-field"> *</span></label>
+      <div class="input-container">
+        <%= f.text_field :institute_name, :class=>"mg-text-field mg-custom-labels" %>
+      </div>
+      
+      <label class="mg-label mg-custom-labels" for="exam_venue"><%= t('address') %><span class="required-field"> *</span></label>
+      <div class="input-container">
+        <%= f.text_area :exam_venue, :class=>"mg-text-field mg-custom-labels" %>
+      </div>
+      <p class="mg-p-mgtop">
+        <a onclick="$(this).closest('form').submit()" id="saveStudentRecordID" class="submit mg-small-form-btn"><%=t("save")%></a> 
+        <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>       
+      </p>
+    <% end %>
+  </div>
+</div>
+
+<script>
+  $("#examVenueFormID").validate({
+    rules: {     
+        "mg_entrance_exam_venue[institute_name]": {required: true},
+        "mg_entrance_exam_venue[exam_venue]":{required :true}
+      }
+  });
+</script>

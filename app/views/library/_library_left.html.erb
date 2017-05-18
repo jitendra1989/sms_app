@@ -1,0 +1,95 @@
+<!-- Sec --><section id="userBodyContentBox" >
+    <table width=100% border="0" cellspacing="0" cellpadding="0">
+        <tr>
+            <td valign="top" class="userBodyContentBox1">
+                <div class="userMenuBoxLeft" style="width: 210px;">
+                    <ul class="menuListHome">
+                        <li class="myAccountMenu mg-toggle-plus"><%=t('Library')%></li>
+                        <div class="mg-left-sub-menu-title">
+                            <li id="viewlibraryLiID">
+                                <a class="menuItemsActivities" href="/library" id="viewlibrary">
+                                    <div class="setMenu"><i class="fa fa-sitemap">&nbsp;&nbsp;</i><%=t('resource_category')%><!-- <i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i> -->
+                                    </div>
+                                </a>
+                            </li>
+                            <li id="viewlibraryresourceLiID">
+                                <a class="menuItemsActivities" href="/library/resource/" id="viewlibraryresource">
+                                    <div class="setMenu"><i class="fa fa-wrench">&nbsp;&nbsp;</i><%=t('manage_resource_type')%><!-- <i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i> -->
+                                    </div>
+                                </a>
+                            </li>
+                            <li id="viewlibrarymanagesubjectLiID">
+                                <a class="menuItemsActivities" href="/library/subject/" id="viewlibrarymanagesubject">
+                                    <div class="setMenu"><i class="fa fa-book">&nbsp;&nbsp;</i><%=t('manage_subject')%><!-- <i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i> -->
+                                    </div>
+                                </a>
+                            </li>
+                            <li id="stackManagementLiID">
+                                <a class="menuItemsActivities" href="/library/stack_management/" id="stackManagementAID">
+                                <div class="setMenu"><i class="fa fa-book">&nbsp;&nbsp;</i><%=t('stack_Management')%><!-- <i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i> -->
+                                    </div>
+                                </a>
+                            </li>
+                            <li id="viewlibraryresourcepurchaseLiID">
+                                <a class="menuItemsActivities" href="/library/purchase/" id="viewlibraryresourcepurchase">
+                                    <div class="setMenu"><i class="fa fa-credit-card">&nbsp;&nbsp;</i><%=t('resource_purchase')%><!-- <i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i> -->
+                                    </div>
+                                </a>
+                            </li>
+                            <li id="viewlibraryresourceinventoryLiID">
+                                <a class="menuItemsActivities" href="/library/inventory/" id="viewlibraryresourceinventory">
+                                    <div class="setMenu"><i class="fa fa-cubes">&nbsp;&nbsp;</i><%=t('resource_inventory')%><!-- <i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i> -->
+                                    </div>
+                                </a>
+                            </li>
+
+                            <li id="library_card_issueLiID">
+                                <a class="menuItemsActivities" href="/library/library_card_issue_new/" id="library_card_issueAID">
+                                    <div class="setMenu"><i class="fa fa-list-alt">&nbsp;&nbsp;</i><%=t('library_card_issue')%><!-- <i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i> -->
+                                    </div>
+                                </a>
+                            </li>
+
+
+                            <li id="issue_return_renewLiID">
+                                <a class="menuItemsActivities" href="/library/library_book_issue_index/" id="issue_return_renewAID">
+                                    <div class="setMenu"><i class="fa fa-outdent">&nbsp;&nbsp;</i><%=t('issue/return/renew')%><!-- <i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i> -->
+                                    </div>
+                                </a>
+                            </li>
+                        </div>
+                        
+                         <li class="myAccountMenu mg-toggle-plus">Library Reports</li>
+                         <div class="mg-left-sub-menu-title">
+                            <li id="classbookReportLiID">
+                                <a class="menuItemsActivities" href="/library/class_by_class_report" id="classbookReportAID">
+                                    <div class="setMenu"><i class="fa fa-users">&nbsp;&nbsp;</i>Class By Class Report
+                                    </div>
+                                </a>
+                            </li>
+                            <li id="damagedBooksListLiID">
+                                <a class="menuItemsActivities" href="/library/damaged_book_list" id="damagedBooksListAID">
+                                    <div class="setMenu"><i class="fa fa-scissors">&nbsp;&nbsp;</i>Damaged Books List
+                                    </div>
+                                </a>
+                            </li>
+                            
+                            <li id="borrowedBooksListLiID">
+                                <a class="menuItemsActivities" href="/library/borrowed_book_list" id="borrowedBooksListAID">
+                                    <div class="setMenu"><i class="fa fa-file-text-o">&nbsp;&nbsp;</i>Borrowed Books List
+                                    </div>
+                                </a>
+                            </li>
+                        </div>
+                    </ul>    
+
+                </div>
+            </td>
+            <td  valign="top" id="manageAdminCategoryID" class="mg-table-td-main-2">
+              
+<script>
+$( document ).ready(function() {
+    collapseLeftMenu();
+    focusLibrary();
+});
+</script>

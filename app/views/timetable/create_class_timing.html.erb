@@ -1,0 +1,68 @@
+<%= form_for :addClass,:html => { :id => "createClasstimingsFormID" ,:multipart => true } do |f| %>
+	<h5 style="color: #363131;"><strong><%=t('selectweekday')%> <span class="required-field"> *</span></strong></h5>
+
+
+	<label class="mg-label">Select</label> <a href="#" id="checkAllCheckBoxInTimingId" class="mg-pop-link">All</a>
+    <a href="#" id="unCheckAllCheckBoxInTimingId" class="mg-pop-link">None</a>
+
+	<table>
+		<%@weekdays.each do |dayid|%>
+		<tr>
+			<td class="mg-leave-width">
+				<% if dayid.weekday=="0"%>
+			    	<% @day="Sunday"%>
+			      <% elsif dayid.weekday=="1"%>
+			        <% @day="Monday"%>
+			      <% elsif dayid.weekday=="2"%>
+			       <%  @day="Tuesday"%>
+			      <% elsif dayid.weekday=="3"%>
+			       <%  @day="Wednesday"%>
+			      <% elsif dayid.weekday=="4"%>
+			        <% @day="Thursday"%>
+			      <% elsif dayid.weekday=="5"%>
+			       <%  @day="Friday"%>
+			      <% else%>
+			       <%  @day="Saturday"%>
+			      <% end%>
+				 <%=@day%>
+			</td>
+			<td id="selectedWeekdayforClassTimingsTdID">
+			<input type="checkbox" id="selectedWeekday_<%=raw dayid.id%>" class="auto-checkbox-timing-cls" name="selectedWeekday[]"/><br>
+		</td>
+		</tr>
+		<%end%>
+	</table>
+	
+	<label class="mg-label mg-tbl-margin"><%=t('name')%><span class="required-field"> *</span></label><br>	
+	<%= f.text_field :name,:class=>"mg-text-field" %><br>
+	<label class="mg-label mg-leave-width mg-tbl-margin"><%=t('starttime')%><span class="required-field"> *</span></label>
+	<%=time_select 'start_time','game_time',{ampm: true}%><br>
+	<label class="mg-label mg-leave-width mg-tbl-margin"><%=t('endtime')%><span class="required-field"> *</span></label>
+	<%=time_select 'end_time','game_time',{ampm: true} %><br>
+	<label class="mg-label mg-leave-width mg-tbl-margin"><%=t('isbreak')%></label>
+	 <%=f.check_box :is_break %><br>
+	 <%=f.hidden_field :is_deleted,:value=>0 %>
+	 <%=f.hidden_field :mg_batch_id,:value=>@batchID %>
+	  <%#=f.hidden_field :batch_id,:value=>@batchID %>
+<br>
+
+  <%#= link_to t('save'), "#", {:class=>"btn btn-default",:id => "addClassTimingSaveBtn"} %>
+<%end%>
+<p>
+<!-- <button id="addClassTimingSaveBtn" class="mg-submit-form-btn"><%#=t('save')%></button> -->
+<a onclick="$(this).closest('form').submit()" id="addClassTimingSaveBtn" class="mg-small-form-btn"><%=t("save")%></a>
+<%#= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+<a class="mg-small-form-btn cancel-form-dialog"><%=t('cancel')%></a>
+</p>
+<script>
+     $(document).ready(function(){
+         $("#createClasstimingsFormID").validate({
+	      rules:{
+	        // "addClass[name]":{required:true}
+	      }
+    	});
+   });
+</script>
+
+
+

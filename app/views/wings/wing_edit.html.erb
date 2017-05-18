@@ -1,0 +1,58 @@
+<% navigation_add 'Wings', :controller => 'wings', :action => 'index' %>
+<% navigation_add 'Edit Wing', :controller => 'wings', :action => 'wing_edit' %>
+
+
+
+<%= render  partial: 'master_settings/master_settings_left' %>
+
+<h4 class="mg-h4"><%= t('edit_wing') %></h4>
+
+<div>
+<%= form_for :wings, :url=>{:controller=>'wings',:action=>'wing_update',:id=>@wings.id}, :html => {:id => 'wingManagementsID' } do |f| %>
+  <%= f.hidden_field :is_deleted, :value => 0 %>
+  <%= f.hidden_field :mg_school_id, :value => session[:current_user_school_id] %>
+  <%= f.hidden_field :created_by, :value => session[:user_id] %>
+  <%= f.hidden_field :updated_by, :value => session[:user_id] %>
+
+
+    <p>
+     <%= f.label :Wing_Name,:class=>"mg-label"%><span class="required-field"> *</span><br>
+    <%= f.text_field :wing_name ,:class=>"mg-text-field"%>
+    </p>
+       <!-- <p>
+    <#%= f.label :Department_Code ,:class=>"mg-label"%><span class="required-field"> *</span><br>
+    <#%= f.text_field :department_code ,:class=>"mg-text-field"%>
+  </p>-->
+   <!--  <p>
+   
+      <#%= f.label :Status ,:class=>"mg-label"%>       <br />
+      <#%= f.label :status, t("active"), :value => "true" ,:class=>"mg-label-inner-form"  %>
+      <#%= f.radio_button :status, false , :checked => true%>
+      <#%= f.label :status, t("inactive"), :value => "false" ,:class=>"mg-label-inner-form" %>
+      <#%= f.radio_button :status, true %> <br />
+    </p>  -->
+  
+  <p class="mg-p-mgtop">
+    <%#= f.submit t('save'),:class=>"curriculum-managements-form-btn mg-small-form-btn" %>
+    <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn curriculum-managements-form-btn"><%=t("save")%></a>
+     <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+  </p>
+<% end %>
+</div>
+
+<!-- Partial Section close-->
+<%= render partial: 'schools/school_left_close' %>
+
+<script>
+$(document).ready(function () {
+  
+ focusCurrentTab("wingListAID","schoolWingLiID");
+        focusMasterSettings();
+$("#wingManagementsID").validate({
+
+rules: {
+"wings[wing_name]": {required: true}
+}
+});
+});
+ </script>

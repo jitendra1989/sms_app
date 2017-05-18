@@ -1,0 +1,21 @@
+<!-- Sec --> 
+<table>
+  <tr>
+    <th><%=t("employeenumber")%></th>
+    <th><%=t("firstname")%></th>
+  
+    <th><%=t("categoryposition")%></th>
+  
+  </tr>
+ 
+  <% @employees.each do |emp| %>
+    <tr>
+      <td><%= emp.employee_number %></td>
+      <td><%= emp.first_name %></td>
+
+      <td><%= emp.mg_employee_category_id %></td>
+
+      <td><a href='#', id='<%=raw emp.id %>' class="select_batch_class"><%=t("selectsubject")%></a></td>
+    </tr>
+  <% end %>
+</table>

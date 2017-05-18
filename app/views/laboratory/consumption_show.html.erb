@@ -1,0 +1,303 @@
+<table border="1" class="mg-showdata-bg mg-tbl-layout" cellspacing="1" cellpadding="1">
+   <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('subject_name')%></label>
+      </td>
+      <td class="mg-td-width-half" valign="top">
+      <%if @laboratry.mg_laboratory_subject_id.present?%>
+      <%subject=MgLaboratorySubject.find_by(:id=>@laboratry.mg_laboratory_subject_id)%>
+     <%=subject.name%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+      </td>
+ </tr>
+
+   <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('lab_name')%></label>
+      </td>
+      <td class="mg-td-width-half" valign="top">
+     <%if @laboratry.mg_lab_id.present?%>
+      <%lab=MgLab.find(@laboratry.mg_lab_id)%>
+     <%=lab.lab_name%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+      </td>
+ </tr>
+
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('room_no')%></label>
+      </td>
+      <td class="mg-td-width-half" valign="top">
+      <%if @laboratry.mg_laboratory_room_id.present?%>
+      <%room=MgLab.find_by(:id=>@laboratry.mg_laboratory_room_id)%>
+     <%=room.room_no%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+      </td>
+ </tr>
+
+
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('issuable_item_type')%></label>
+      </td>
+      <td class="mg-td-width-half" valign="top">
+      <%if @laboratry.mg_laboratory_item_type_id.present?%>
+      <%lab=MgLaboratoryItem.find_by(:id=>@laboratry.mg_laboratory_item_type_id)%>
+     <%=lab.name%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+      </td>
+ </tr>
+
+
+ 
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('category_name')%></label>
+      </td>
+      <td class="mg-td-width-half" valign="top">
+     <%if @laboratry.mg_category_id.present?%>
+      <%labcat=MgLabInventory.find(@laboratry.mg_category_id)%>
+     <%=labcat.category_name%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+      </td>
+ </tr>
+
+  <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('item_name')%></label>
+      </td>
+      <td class="mg-td-width-half" valign="top">
+      <%if @laboratry.mg_item_id.present?%>
+      <%labitem=MgInventoryManagement.find(@laboratry.mg_item_id)%>
+     <%=labitem.item_name%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+      </td>
+ </tr>
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('quantity_consumption')%></label>
+      </td>
+      <td class="mg-td-width-half" valign="top">
+      <%if @laboratry.quantity_consumption.present?%>
+     <%=@laboratry.quantity_consumption%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+      </td>
+ </tr>
+
+  <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label mg-label-text-transform-none"> <%= t('date_of_consumption')%></label>
+      </td>
+      <td class="mg-td-width-half" valign="top">
+       <% @timeformat=MgSchool.find_by_id(lab.mg_school_id)%>
+      <% if @timeformat.present?%>
+      <%= @laboratry.date.strftime(@timeformat.date_format) %>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+      </td>
+ </tr>
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('consumption_type')%></label>
+      </td>
+      <td class="mg-td-width-half" valign="top">
+       <%if @laboratry.consumption_type.present?%>
+     <%=@laboratry.consumption_type%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+      </td>
+ </tr>
+
+<%if @laboratry.consumption_type.present?%>
+<%if @laboratry.consumption_type=="Returned"%>
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('returned_date')%></label>
+      </td>
+      <td class="mg-td-width-half" valign="top">
+       <% @timeformat=MgSchool.find_by_id(@laboratry.mg_school_id)%>
+      <% if @timeformat.present?%>
+      <%= @laboratry.return_date.strftime(@timeformat.date_format) %>
+    
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+      </td>
+ </tr>
+
+
+ <table border="1" class="batch-tbl mg-scroll-result-bar" cellspacing="1" cellpadding="1">
+
+<tr>
+<th> <label class="mg-label"> <%= t('student_name')%></label>
+</th>
+<th> <label class="mg-label"> <%= t('class_name')%></label>
+</th>
+<th> <label class="mg-label"> <%= t('status')%></label>
+</th>
+</tr>
+ <%@student_data=MgStudentItemConsumption.where(:mg_item_consumption_id=>@laboratry.id,:mg_school_id=>session[:current_user_school_id],:is_deleted=>0)%>
+     <%@student_data.each do|data|%>
+<tr>
+
+     <%if data.mg_student_id.present?
+        student=MgStudent.find_by(:id=>data.mg_student_id)
+          %>
+      <td class="mg-td-width-half" valign="top"><%=student.try(:first_name)%> <%=student.try(:last_name)%></td>
+     <%end%>
+     </td>
+     <% batch=MgBatch.find_by(:id=>data.mg_batch_id)
+     course=MgCourse.find_by(:id=>batch.mg_course_id)
+     %>
+     <td class="mg-td-width-half" valign="top"><%=course.course_name%><%="-"%><%=batch.try(:name)%></td>
+     <td class="mg-td-width-half" valign="top"> <%=data.try(:consumption_type)%></td>
+ </tr>
+<%end%>
+  
+
+</table>
+ <%end%>
+ <%end%>
+</table>
+<br/>
+<!-- ======================Broken====================================================== -->
+<%if @laboratry.consumption_type.present?%>
+<%if @laboratry.consumption_type=="Broken"%>
+<div class="mg-scroll-employee-bar">
+<table border="1" class="batch-tbl" cellspacing="1" cellpadding="1">
+
+<tr>
+<th> <label class="mg-label"> <%= t('student_name')%></label>
+</th>
+<th> <label class="mg-label"> <%= t('class_name')%></label>
+</th>
+</tr>
+<%@feeFine=MgFeeFineParticular.where(:mg_item_consumption_id=>@laboratry.id)%>
+<%puts @feeFine.inspect%>
+<%puts "sdfsdafjsdakfhsjkadfhsjkdafhjksdfhkjsadfhjksadhfkjsd"%>
+<%@feeFine.each do |info|%>
+<tr>
+     <td class="mg-td-width-half" valign="top">
+     <%if info.mg_student_id.present?
+        student=MgStudent.find_by(:id=>info.mg_student_id)
+          %>
+     <%=student.try(:first_name)%> <%=student.try(:last_name)%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+     </td>
+
+     <td class="mg-td-width-half" valign="top">
+     <%if info.mg_batch_id.present?
+      batch=MgBatch.find_by(:id=>info.mg_batch_id)
+     course=MgCourse.find_by(:id=>batch.mg_course_id)
+     %>
+     <%=course.try(:course_name)%><%=batch.try(:name)%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+     </td>
+
+    
+ </tr>
+
+
+
+ <%end%>
+
+</table>
+</div>
+<%end%>
+<%end%>
+<!-- ================================================================================ -->
+
+
+
+
+<!-- ======================Broken====================================================== -->
+<%if @laboratry.consumption_type.present?%>
+<%if @laboratry.consumption_type=="Issued"%>
+
+<table border="1" class="batch-tbl mg-scroll-result-bar" cellspacing="1" cellpadding="1">
+
+<tr>
+<th> <label class="mg-label"> <%= t('student_name')%></label>
+</th>
+<th> <label class="mg-label"> <%= t('class_name')%></label>
+</th>
+<th> <label class="mg-label"> <%= t('status')%></label>
+</th>
+</tr>
+ <%@student_data=MgStudentItemConsumption.where(:mg_item_consumption_id=>@laboratry.id,:mg_school_id=>session[:current_user_school_id],:is_deleted=>0)%>
+     <%@student_data.each do|data|%>
+<tr>
+
+     <%if data.mg_student_id.present?
+        student=MgStudent.find_by(:id=>data.mg_student_id)
+          %>
+      <td class="mg-td-width-half" valign="top"><%=student.try(:first_name)%> <%=student.try(:last_name)%></td>
+     <%end%>
+     </td>
+     <% batch=MgBatch.find_by(:id=>data.mg_batch_id)
+     course=MgCourse.find_by(:id=>batch.mg_course_id)
+     %>
+     <td class="mg-td-width-half" valign="top"><%=course.course_name%><%="-"%><%=batch.try(:name)%></td>
+     <td class="mg-td-width-half" valign="top"> <%=data.try(:consumption_type)%></td>
+ </tr>
+<%end%>
+  
+
+    
+</table>
+<%end%>
+<%end%>
+
+<!-- ================================================================================ -->
+<br/>
+<%= link_to 'Cancel', laboratory_consumption_path ,:style=>"font-size: 0.8em; color: #297ACC; text-decoration: none;" ,:class=>"mg-custom-form-btn"%>
+
+
+
+
+
+
+
+
+<style>
+/*.mg-show-tbl-width {
+    width: 64% !important;
+}*/
+.table.batch-tbl th {
+    border-color: #363131;
+    border-style: solid;
+    border-width: 1px;
+    padding: 3px;
+    text-align: center;
+}
+
+
+.mg-inside-tbl-width {
+    width: 100px !important
+}
+
+.mg-showdata-bg th {
+    padding: 3px 10px;
+    border-color: #b2b2b2;
+}
+</style>

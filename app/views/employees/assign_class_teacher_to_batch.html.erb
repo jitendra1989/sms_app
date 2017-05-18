@@ -1,0 +1,21 @@
+<!--  jj    SSec --> 
+<!-- breadcrumbs Work -->
+<% navigation_add t('employees'), employees_path %>
+<% navigation_add t('assign_class_teacher_to_batch'), "/employees/assign_class_teacher_to_batch" %>
+
+<!-- breadcrumbs Work -->
+<!-- Partial left content -->
+<%= render partial: 'emp_left' %>
+<!-- Partial Index -->
+<%= render partial: 'assign_class_teacher_to_batch' %>
+<!-- Partial Section close-->
+<%= render partial: 'application/emp_section_close' %>
+
+<script>
+	$(document).ready(function(){
+		focusCurrentTab("assignClassTeacherToBatch","assignClassTeacherToBatchLiID");
+
+	});
+
+</script>
+

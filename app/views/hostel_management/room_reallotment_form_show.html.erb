@@ -1,0 +1,91 @@
+<%= render partial: 'dashboards/student_dashboard_left' %>
+<% navigation_add t('room_reallotment_request'), :controller=>'hostel_management', :action=>'room_reallotment_request' %>
+<h4 class="mg-h4"><%=t('room_reallotment_request')%></h4>
+<div>
+    <table border="1" class="mg-showdata-bg mg-tbl-layout" cellspacing="1" cellpadding="1">
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('hostel')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+     <%hostel_details=MgHostelDetails.find_by(:id=>@student_details_data.mg_hostel_details_id)%>
+      <%= hostel_details.try(:name) %>
+     </td>
+ </tr>
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('floor')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+     <%hostel_floor=MgHostelFloor.find_by(:id=>@student_details_data.mg_hostel_floor_id)%>
+      <%= hostel_floor.try(:name) %>
+     </td>
+ </tr>
+ 
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('room_type')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+     <%room_type=MgHostelRoomType.find_by(:id=>@student_details_data.mg_hostel_room_type_id)%>
+      <%= room_type.try(:name) %>
+     </td>
+ </tr>
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('programme')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+     <%programme=MgWing.find_by(:id=>@student_details_data.mg_wing_id)%>
+      <%= programme.try(:wing_name) %>
+     </td>
+ </tr>
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('present_room_no')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+     <%room_data=MgHostelRoom.find_by(:id=>@student_details_data.mg_hostel_room_id)%>
+      <%= room_data.try(:name) %>
+     </td>
+ </tr>
+
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('reason')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+      <div class="text-scroll-for-log-text-cls comments-space" style="padding: 5px 40 0 10px">
+     
+      <%= @student_details_data.try(:reason) %>
+      </div>
+     </td>
+ </tr>
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('status')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+     
+      <%= @student_details_data.try(:status) %>
+     </td>
+ </tr>
+</table>
+ 
+
+    <p class="mg-p-mgtop">      
+	    <%= link_to t('cancel'),:back ,{:class=>"mg-small-form-btn cancel-form-dialog"} %>
+    </p>
+  
+</div>
+
+<!-- <div id="showStudentPlacementDetailDIVID"></div> -->
+<%= render partial: 'application/common_left_close' %>
+
+
+<script>
+$(document).ready(function(){
+	focusCurrentTab("room_reallotment_requestAID","room_reallotment_requestLiID");
+});
+
+</script>

@@ -1,0 +1,239 @@
+
+<%= render  partial: 'hostel_management_left' %>
+<% navigation_add t('health_management'), :controller=>'hostel_management', :action=>'health_management' %>
+
+
+
+  <h4 class="mg-h4"><%=t('edit_health_management')%></h4>
+  <% navigation_add t('edit_health_management'), :controller=>'hostel_management', :action=>'health_management_edit',:id=>params[:id] %>
+
+<%= form_for :health_management , :url=>{:action=>'health_management_update',:id=>@health_management.try(:id).to_s},:html => {:id => 'hostel_roomsID' } do |f| %>
+ 
+
+
+  <%= f.hidden_field :mg_school_id, :value => session[:current_user_school_id]%>
+  <%= f.hidden_field :created_by, :value => session[:user_id]%> 
+  <%= f.hidden_field :updated_by, :value => session[:user_id]%> 
+  <%= f.hidden_field :health_data, :value =>@health_data.mg_hostel_details_id %>
+  <%= f.hidden_field :floor_data, :value =>@health_data.mg_hostel_floor_id %>
+  <%= f.hidden_field :room_data, :value =>@health_data.mg_hostel_room_id %>
+  <%= f.hidden_field :stu_data, :value =>@health_data.mg_student_id %>
+  <%= f.hidden_field :id, :value =>@health_data.id %>
+
+
+ 
+  <%= f.hidden_field :is_deleted, :value => 0%>
+
+<p>
+    <%= f.label :select_hostel, t('select_hostel') ,:class=>"mg-label mg-rm-text-trans"%><span class="required-field"> *</span><br>
+    <%# hostel_data=MgHostelDetails.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:name,:id)%>
+   
+      <%#=f.select :mg_hostel_details_id,options_for_select(hostel_data,:selected=>@health_data.mg_hostel_details_id),{include_blank: false,:prompt=>"Select"},:onchange => 'roomNo();' ,:class=> 'mg-text-field room-no'%>
+
+      <%hostel_warden=MgHostelWarden.find_by(:mg_user_id=>session[:user_id],:is_deleted=>0,:mg_school_id=>session[:current_user_school_id])
+        hostel_details=MgHostelDetails.find_by(:id=>hostel_warden.mg_hostel_details_id)
+
+        %>
+        <%= f.hidden_field :mg_hostel_details_id ,:value=>hostel_warden.mg_hostel_details_id%>
+        <%= text_field_tag :mg_hostel_id ,hostel_details.try(:name),:readonly=>true,:class=>"mg-text-field"%>
+    
+  </p>
+
+<div id="wing-floor-id">
+
+<p>
+    <%= f.label :select_floor_id, t('select_floor_id') ,:class=>"mg-label mg-rm-text-trans"%><span class="required-field"> *</span><br>
+      
+        <%=select_tag :mg_hostel_floor_id,options_for_select([]),:prompt=>"Select"%>
+      
+</p>
+
+</div>
+
+<p>
+    <%= f.label :select_room_no, t('select_room_no') ,:class=>"mg-label mg-rm-text-trans"%><span class="required-field"> *</span>
+    <div id="room-div">
+      
+        <%=select_tag :mg_hostel_room_id,options_for_select([]),:prompt=>"Select"%>
+      
+    </div>
+</p>
+
+    
+  <p>
+    <%= f.label :student, t('select_student') ,:class=>"mg-label mg-rm-text-trans"%><span class="required-field"> *</span><br>
+    <div id="std-div">
+	    
+	      <%=select_tag :mg_student_id,options_for_select([]),:prompt=>"Select"%>
+	    
+	</div>
+  </p>
+
+
+  <p>
+      <%= f.label :date, t('date') ,:class=>"mg-label"%><br>
+
+    
+      <%= text_field_tag :date,@health_data.date.strftime(@timeformat.date_format),:readonly=>true,:class =>"mg-select-btn"%><br/>
+
+    
+  </p>
+
+<p>  
+      <%= f.label :reason, t('reason') ,:class=>"mg-label"%><span class="required-field"> *</span><br>
+    
+
+        <%= f.text_area :reason,:class=>"mg-select-btn mg-text-field",:value=>@health_data.reason %>
+    
+
+</p>
+
+
+<p>
+  <%= f.label :status_data, t("status") ,:class=>"mg-label"%>
+  <br>
+  <%#= f.select :status,options_for_select(['Pending','accepted','rejected'],:selected=>@health_data.status),{},
+    {:disabled=>true}%>
+
+    <%=select_tag :status,options_for_select([["Open", "Open"],["Closed", "Closed"]],:selected=>@health_data.status)%>
+    <%#=f.hidden_field :status,:value=>"Pending"%>
+
+</p>
+
+
+
+<p class="mg-p-mgtop">
+    <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("save")%></a>
+    <%= link_to t('cancel'), {:controller=>'hostel_management',:action=>'health_management'}, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+</p>
+
+<% end %>
+
+
+<%= render  partial: 'application/common_left_close' %>
+
+<script type="text/javascript">
+	$( document ).ready(function() {
+	    focusCurrentTab("health_manageAID","health_manageLiID");
+
+
+
+        var roomDataId = $( "#health_management_mg_hostel_details_id" ).val();
+        var floor_id=$("#health_management_floor_data").val();
+
+       if(roomDataId > 0) {
+  
+           var urlLink = "/hostel_management/wing_floor_data/"+roomDataId;
+          $.ajax({
+             url: urlLink,
+             data: {"floor_id":floor_id,"data":"edit"},
+             cache: false,
+             success: function(data){
+                    $("#wing-floor-id").empty().append(data);
+                }
+         });
+     }
+
+
+
+        var hostel_id = $( "#health_management_mg_hostel_details_id" ).val();
+        var room_id = $( "#health_management_room_data" ).val();
+
+        
+        if(floor_id > 0) {
+           var urlLink = "/hostel_management/room_number/"+floor_id;
+           $.ajax({
+             url: urlLink,
+             cache: false,
+             data:{"hostel_id":hostel_id,"floor_id":floor_id,"room_id":room_id,"data":"edit"},
+             success: function(data){
+                    $("#room-div").empty().append(data);
+                }
+         });
+      }
+
+
+      var roomDataId = $( "#health_management_room_data" ).val();
+      var studentId = $( "#health_management_stu_data" ).val();
+
+       if(roomDataId > 0) {
+  
+           var urlLink = "/hostel_management/student_data/"+roomDataId;
+          $.ajax({
+             url: urlLink,
+             cache: false,
+             data:{"data":"edit","studentId":studentId},
+             success: function(data){
+                    $("#std-div").empty().append(data);
+                }
+         });
+      }
+
+
+    $("#hostel_roomsID").validate({
+          rules: {     
+            "health_management[mg_hostel_details_id]": {required: true},
+            "mg_hostel_floor_id": {required: true},
+            "mg_hostel_room_id": {required: true},
+            "mg_student_id": {required: true},
+            "health_management[status]": {required: true},
+            "health_management[reason]": {required: true},
+            "health_management[end_time]": {required: true}
+          }
+        });
+
+
+	});
+
+	function student(){
+        var roomDataId = $( "#mg_hostel_room_id" ).val();
+
+       if(roomDataId > 0) {
+  
+           var urlLink = "/hostel_management/student_data/"+roomDataId;
+          $.ajax({
+             url: urlLink,
+             cache: false,
+             success: function(data){
+                    $("#std-div").empty().append(data);
+                }
+         });
+  		}
+  	}
+
+  function roomNo(){
+        var roomDataId = $( ".room-no" ).val();
+       if(roomDataId > 0) {
+  
+           var urlLink = "/hostel_management/wing_floor_data/"+roomDataId;
+          $.ajax({
+             url: urlLink,
+             cache: false,
+             success: function(data){
+                    $("#wing-floor-id").empty().append(data);
+                }
+         });
+     }
+   }
+
+
+  	function room_data(){
+        var floor_id = $( "#mg_hostel_floor_id" ).val();
+        var hostel_id = $( "#health_management_mg_hostel_details_id" ).val();
+        if(floor_id > 0) {
+           var urlLink = "/hostel_management/room_number/"+floor_id;
+           $.ajax({
+             url: urlLink,
+             cache: false,
+             data:{"hostel_id":hostel_id,"floor_id":floor_id},
+             success: function(data){
+                    $("#room-div").empty().append(data);
+                }
+         });
+  		}
+  	}
+
+  
+
+
+</script>

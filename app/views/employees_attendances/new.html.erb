@@ -1,0 +1,129 @@
+<!-- Sec --> 
+<%= form_for :employees_attendances ,:html => {
+                            :id => 'employeeAttendancesFormID'} do |f| %>
+   <p> 
+        <%= f.label :is_late_come, t('islatecome') ,:class=> "mg-label"%>    
+        <!-- <input id="emp_attendances_latecom" type="checkbox"  > -->
+        <%= f.check_box :is_late_come,:onclick=>"toggleLateCome();" %>
+   </p> 
+  <div id="employeeAttendanceLateComeHideID">
+            <p>
+              <%= f.label :Leave_Type, t('leavetype') ,:class=> "mg-label"%><span class="required-field"> *</span><br>
+              <%= f.collection_select(:leave_type, @leave_types, :id, :leave_name,{:include_blank => 'Select Leave Type'} ,:class=>"mg-select-btn")  %>
+               <%= f.hidden_field :is_halfday, :value => false ,:id=>"emp_halfdayfield"%>
+            
+            </p>
+
+            <p> 
+                  <%= f.label :is_halfday , t('ishalfday'),:class=> "mg-label"%>    
+                  <input id="emp_attendances_halfday" type="checkbox" onclick="toggleAll();" name="employees_attendances[is_halfday]">
+            </p> 
+
+             <%= f.hidden_field :is_afternoon, :value => false ,:id=>"emp_afternoonfield"%>
+
+            <p>
+              <div id="whatever" style="display:none">
+                  <%= f.label :morning , t('morning') ,:class=> "mg-label"%>
+                  <%= f.radio_button :is_afternoon, false, :checked=>true%>
+                  <%= f.label :afternoon, t('afternoon'),:class=> "mg-label"%>
+                  <%= f.radio_button :is_afternoon, true%>
+              </div>
+            </p>
+
+          <div class="no-of-days-employee-attendence">
+             <p>
+              <%= f.label :No_of_days, t('noofdays'),:class=> "mg-label" ,:style=>"text-transform: none;"%><span class="required-field"> *</span></br>
+              <%= f.text_field :no_of_days ,:class=>"mg-text-field"%>
+            </p>
+          </div>
+
+          
+          <p>
+              <%= f.label :absent_without_notice, t('absentwithoutnotice') ,:class=> "mg-label" %>
+              <%= f.check_box :abcent_without_notice %> 
+
+          </p>
+             
+
+  </div>
+          <p>
+              <%= f.label :reason , t('reason'),:class=> "mg-label"%><span class="required-field"> *</span></br>
+              <%= f.text_area :reason ,:class=>"mg-text-field"%>
+          </p>
+
+          <%=hidden_field_tag :school_employee_weekday_arr, @school_employee_weekday_arr%>
+
+
+
+  <div id="lateComeEmployeeID" style="display:none">
+
+ <%= f.label :time, t('time') ,:class=> "mg-label"%><span class="required-field"> *</span></br>
+    <%= f.text_field :time %>
+  </div>
+
+
+
+<%= f.hidden_field :mg_employee_department_id, :value => @deptId %> 
+<%= f.hidden_field :mg_employee_id, :value => @student_id %>
+<%= f.hidden_field :absent_date, :value => @final_date %>
+<%= f.hidden_field :is_approved, :value => 1 %>
+<%= f.hidden_field :is_deleted, :value => 0 %>
+<%= f.hidden_field :mg_school_id, :value =>session[:current_user_school_id] %>
+<%= f.hidden_field :created_by, :value =>session[:user_id] %>
+<%= f.hidden_field :updated_by, :value => session[:user_id] %>
+<%#= f.hidden_field :is_deleted, :value => 0 %>
+
+
+<%@check=MgUser.where(:is_deleted=>0, :mg_school_id=>session[:current_user_school_id], :user_type=>'principal', :id=>session[:user_id])%>
+<% if @check.present?%>
+<label class="mg-label"><%= f.label :is_lock, "Unlock" %></label>
+ <%=f.check_box :is_lock%>
+<% end %>
+<% end %>
+
+<p>
+
+<button id="mg_employee_attendance_save_btn" class="btn btn-delete"><%=t('save')%></button>
+<button class="cancel-form-dialog btn btn-delete"><%= t('cancel') %></button>
+</p>
+<script type="text/javascript">
+
+function toggleAll()
+{
+ //    alert("i'm in toggleAll function");
+  $("#whatever").toggle();
+  $(".no-of-days-employee-attendence").toggle();
+  $("#employees_attendances_no_of_days").val(0);
+
+
+}
+
+function toggleLateCome(){
+   $("#lateComeEmployeeID").toggle();
+   $("#employeeAttendanceLateComeHideID").toggle();
+
+   $("#employees_attendances_time").timepicker('setTime', new Date());
+
+}
+
+
+
+$(document).ready(function () {
+   var date = new Date();
+  $('#start_date').val($.datepicker.formatDate('dd-mm-yy', new Date(new Date().getFullYear(), new Date().getMonth(), 1)));
+  $('#employees_attendances_time').timepicker({ 'scrollDefault': 'now' });
+
+    $("#employeeAttendancesFormID").validate({
+
+          rules: {
+          "employees_attendances[leave_type]": {required: true},
+          "employees_attendances[reason]": {required: true}
+          }
+      });
+
+});
+
+
+
+</script>
+

@@ -1,0 +1,114 @@
+<%= render  partial: 'library/library_left' %>
+<% navigation_add 'Resource Purchase', library_purchase_path %>
+
+<%# navigation_add 'Create Books Inventory', books_inventory_new_path %>
+<h4 class="mg-h4"><%= t('resource_purchase_list')%></h4>
+
+<%= button_to 'Add Purchase', {:controller => "library", :action => "purchase_new"},:class=>"mg-custom-form-btn" %>
+
+
+	<%if @book_purchase_details.size>0%>
+			<div id="library_books_purchase_show">
+</div>
+<div id="library_book_purchase_datasEdit">
+</div>
+
+<div class="mg-scroll-employee-bar mg-tbl-margin ">
+    <table class="batch-tbl mg-tbl-layout" cellspacing="0" style="padding:0; border-collapse:collapse;">   <!-- border="2" --> 
+      <tr >
+        <th><%=t('vendor_name')%></th>
+        <th><label class="mg-label-text-transform-none" for="dateofPurchase"><%= t ('date_of_purchase') %></label></th>
+        <th><%=t('amount_paid')%></th>
+        <th align="center"><%=t('actions')%></th>
+       </tr>
+
+    <%@book_purchase_details.each_with_index do |details| %>
+	      <tr>
+	        <td class="mg-align-center"><%=details.vendor_name%></td>
+	        <% @dateFormat = MgSchool.find_by_id(session[:current_user_school_id]).date_format %>
+          <%if details.date_of_purchase.present?%>
+          <td class="mg-align-center"><%=details.date_of_purchase.strftime(@dateFormat)%></td>
+           <%end%>
+
+	      
+	        
+	        <td class="mg-align-center"><%=details.amount_paid%></td>
+	        
+
+
+	      <td class="mg-align-center">
+	   
+	           <button title="Show" id='<%=details.id %>' class="show-libarary-book_purchase-details-class mg-icon-btn"><i class="fa fa-eye"></i></button>
+	            <%= link_to "<i class=\"fa fa-pencil-square-o\"></i>".html_safe, {:controller=>"library",:action => "purchase_edit",:id =>details.id},:title=>"Edit" ,:class=>"mg-icon-btn"%>
+	           <!-- <button title="Edit" id='<%#=details.id %>' class='edit-libarary-book_purchase-details-class mg-icon-btn'><i class="fa fa-pencil-square-o"></i></button>    -->        
+	           <span>
+	           <%= link_to "<i class=\"fa fa-trash\"></i>".html_safe ,{ action: "purchase_delete", id: details.id },
+                                method: :delete, data: { confirm: "Are you sure to delete?" } ,:title=>"Delete" ,:class=>"mg-icon-btn-link"  %>
+               </span>
+           </td>
+	      </tr>
+
+     <% end %>
+	</table>
+	<%else%>
+	<h5><%="No Records are Present"%></h5>
+	<%end%>
+
+
+<%= render  partial: 'schools/school_left_close' %>
+
+
+<script>
+$(document).ready(function () {
+        focusCurrentTab("viewlibraryresourcepurchase","viewlibraryresourcepurchaseLiID");
+        focusLibrary();
+    });
+// $(document).on("click", ".show-libarary-book_purchase-details-class", function(e){
+//        e.preventDefault();
+//         var ID =$(this).attr('id');
+//         var urlLink = "/library/purchase_show"+Id[0];
+//         $.ajax({
+//             url: urlLink ,
+//             cache: false,
+//             data:{"show_id":ID},
+//            success: function(html){
+
+//                   $('#library_books_purchase_show').dialog({
+//                     modal: true,
+//                     title: "Show Resource Purchase",
+//                     width: 464,
+//                     height: 192,
+//                     open: function () {
+                        
+//                         $(this).html(html);
+//                     }
+//                 }); 
+               
+//             }
+//         });
+// });
+
+
+$(document).on("click", ".show-libarary-book_purchase-details-class", function(e){
+        var myID =$(this).attr('id');
+        var Id=myID.split("-");
+        var urlLink = "/library/purchase_show/"+Id[0];
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(html){
+                  $('#library_books_purchase_show').dialog({
+                    modal: true,
+                     minHeight: 'auto',
+                    width: 800,
+                    title: "Show Resource Purchase",
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+});
+</script>

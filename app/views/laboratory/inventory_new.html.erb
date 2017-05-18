@@ -1,0 +1,88 @@
+<!-- 
+<%#= render  partial: 'laboratory/laboratry_left' %> -->
+
+ <div class="mg-custom-labels">
+<%= form_for :laboratry, url: laboratory_inventory_create_path, :html => {
+                            :id => 'labinventoryCreateID' } do |f| %>
+<%= f.hidden_field :is_deleted, :value => 0 %>
+<%= f.hidden_field :mg_school_id, :value => session[:current_user_school_id] %>
+<%= f.hidden_field :created_by, :value => session[:user_id] %>
+<%= f.hidden_field :updated_by, :value => session[:user_id] %>
+<p>
+<label class="mg-label" style="width:140px"><%= t('select_lab') %><span class="required-field">&nbsp;*</span></label>
+<br/>
+<%= f.collection_select(:mg_lab_id,MgLab.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]), :id, :lab_name,{:include_blank => t("select")},:class => "call-purpose-class mg-select-btn")%>
+</p>
+
+<p>
+    <label class="mg-label" style="width:140px"><%= t('category_name') %><span class="required-field">&nbsp;*</span></label>
+    <br/>
+   <%= f.text_field :category_name,:class=>"mg-text-field" %>
+</p>
+<p>
+    <label class="mg-label" style="width:140px"><%= t('select_item_type') %><span class="required-field">&nbsp;*</span></label>
+    <br/>
+    <%= f.collection_select(:mg_laboratory_item_id,MgLaboratoryItem.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]), :id, :name,{:include_blank => t("select")},:id => "LaboratoryItemId" ,:class => "laboratory-item-new-class mg-select-btn")%>
+</p>
+<p>
+    <label class="mg-label" style="width:140px"><%= t('prefix') %><span class="required-field">&nbsp;*</span></label>
+    <br/>
+
+   <%= f.text_field :prefix,:class=>"mg-text-field laboratory-resource-new-prefix" %>
+</p>
+
+<p class="mg-p-mgtop">
+
+    <a class="laboratory-resource-new-for-submit-class input_field mg-small-form-btn "><%=t("save")%></a>
+
+
+    <!-- <button type="button" class="laboratory-resource-new-for-submit-class mg-small-form-btn"><%#=t("save")%></button> -->
+
+    <a onclick="$(this).closest('form').submit()" class="laboratory-resource-new-submit-class" style="display:none"><%#=t("save")%></a>
+<a class="mg-small-form-btn cancel-form-dialog"><%=t("cancel")%></a>
+
+    <%#= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+</p>
+<% end %>
+</div>
+<!-- <%#= render  partial: 'application/common_left_close' %> -->
+<script>
+$( document ).ready(function() {
+            focusCurrentTab("viewLabInventoryIndex","viewLabInventoryLiID");
+          //focusStudentHeaderBox();
+});
+
+$("#labinventoryCreateID").validate({
+
+        rules: {        
+        "laboratry[mg_lab_id]": {required: true},
+        "laboratry[category_name]": {required: true},
+        "laboratry[mg_laboratory_item_id]": {required: true},
+        "laboratry[prefix]": {required: true}
+      }
+    });
+
+$(document).on("click", ".laboratory-resource-new-for-submit-class", function(e){
+    var prefix=$(".laboratory-resource-new-prefix").val();
+        var urlLink = "/laboratory/prefix_validation/"+prefix;
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(data){
+              if(data>0)
+                {
+                    alert("The prefix has already been used");
+                    $("#laboratry_prefix").val("");
+                }else{
+                  $(".laboratory-resource-new-submit-class").click();
+                }
+              
+            }
+        });
+});
+
+
+</script>
+<style>
+
+</style>

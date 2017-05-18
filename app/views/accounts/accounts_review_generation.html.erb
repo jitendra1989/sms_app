@@ -1,0 +1,98 @@
+<br/>
+<br/>
+<h4 class="mg-h4"><%= t("account_transaction")%></h4>
+<%if @transaction.present?%>
+
+<table border="1" class="mg-table-nowrap mg-showdata-bg mg-show-tbl-width" cellspacing="1" cellpadding="1">
+<tr>
+<th> <label class="mg-label"> <%= t('from')%></label>
+</th>
+<th> <label class="mg-label"> <%= t('transaction_type')%></label>
+</th>
+<th> <label class="mg-label"> <%= t('date')%></label>
+</th>
+<th> <label class="mg-label"> <%= t('amount')%></label>
+</th>
+<%@transaction.each do |info|%>
+
+<tr>
+     <td class="mg-td-width-half" valign="top"><%=info.try(:for_module).to_s.capitalize%></td>
+     <td class="mg-td-width-half" valign="top"><%=info.try(:amount_transfer_type).to_s.capitalize%></td>
+            <td class="mg-td-width-half" valign="top">
+             <%if info.current_date.present?%>
+             <%@dateFormat = MgSchool.find_by(:id=>session[:current_user_school_id]).date_format %>
+             <%=info.current_date.present? ? info.current_date.strftime(@dateFormat) : ""%>
+             <%else%>
+             <h5><%="No Data"%></h5>
+             <%end%>
+             </td>
+     <td class="mg-td-width-half" valign="top"><%=number_with_precision(info.try(:amount), :precision => 2)%></td>
+
+     
+     <%end%>
+ </tr>
+</table>
+<%else%>
+<h5>No current data to show</h5>
+<%end%>
+<p class="mg-p-mgtop">
+    <%#= f.submit t('save') ,:class=>"mg-small-form-btn"%>
+    <a href="/accounts/central_receivable_excel_report?f_date=<%=params[:f_date]%>&t_date=<%=params[:t_date]%>&amount_transfer_type=<%=params[:amount_transfer_type]%>&mg_user_id_acc_rev=<%=session[:user_id]%>"class="mg-small-form-btn"><%=t("export_excel")%></a>
+      <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+
+</p>
+
+
+
+
+<script>
+
+
+// $(document).on("click", ".show-inventory-proposal-btn", function(e){
+//         var myID =$(this).attr('id');
+//         var Id=myID.split("-");
+//         var urlLink = "/inventory/proposal_report_show/"+Id[0];
+//         $.ajax({
+//             url: urlLink ,
+//             cache: false,
+//             success: function(html){
+//                   $('#showInventoryProposalDIVID').dialog({
+//                     modal: true,
+//                     minHeight: 'auto',
+//                     width: 'auto',
+//                     title: "Item Proposal",
+//                     open: function () {
+                        
+//                         $(this).html(html);
+//                     }
+//                 }); 
+               
+//             }
+//         });
+// });
+
+
+// $(document).on("click", ".show-inventory-proposal-btns", function(e){
+//         var myID =$(this).attr('id');
+//         var Id=myID.split("-");
+//         var urlLink = "/inventory/projection_report_show/"+Id[0];
+//         $.ajax({
+//             url: urlLink ,
+//             cache: false,
+//             success: function(html){
+//                   $('#showInventoryProjectionDIVID').dialog({
+//                     modal: true,
+//                     minHeight: 'auto',
+//                     width: 'auto',
+//                     title: "Item Projection",
+//                     open: function () {
+                        
+//                         $(this).html(html);
+//                     }
+//                 }); 
+               
+//             }
+//         });
+// });
+    
+</script>

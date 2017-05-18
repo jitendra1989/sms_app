@@ -1,0 +1,131 @@
+<% navigation_add t('hostel_application_form'),"/hostel_management/hostel_application_form_index" %>
+<%= render partial: 'dashboards/student_dashboard_left' %>
+
+<h4 class="mg-h4"><%=t('hostel_application_form_details')%></h4>
+<div>
+	<%if @student_details_data.present?%>
+    <table border="1" class="mg-showdata-bg mg-tbl-layout" cellspacing="1" cellpadding="1">
+   <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('student_name')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+      <%= "#{@student_detail.first_name} #{@student_detail.last_name}" %>
+     </td>
+ </tr>
+
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"><%=t('guardian_name')%></label>
+     </td>
+     <%guardian_data=MgGuardian.find_by(:mg_student_id=>@student_detail.id,:is_deleted=>0,:mg_school_id=>session[:current_user_school_id])%>
+     <td class="mg-td-width-half" valign="top">
+     
+        <%="#{guardian_data.try(:first_name)} #{guardian_data.try(:last_name)}" %>
+     </td>
+ </tr>
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('course_name')%></label>
+     </td>
+     <%batch_data=MgBatch.find_by(:id=>@student_detail.mg_batch_id)%>
+  <%course_data=MgCourse.find_by(:id=>batch_data.mg_course_id)%>
+     <td class="mg-td-width-half" valign="top">
+      <%= "#{course_data.try(:course_name)}-#{batch_data.try(:name)}" %>
+     </td>
+ </tr>
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('student_id')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+      <%= @student_detail.admission_number %>
+     </td>
+ </tr>
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label mg-label-text-transform-none"> <%= t('date_of_application')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+     <% @dateFormat = MgSchool.find_by_id(session[:current_user_school_id]).date_format %>
+
+      <%= @student_details_data.date_of_application.strftime(@dateFormat) %>
+     </td>
+ </tr>
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('mobile_no')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+      <%= @student_details_data.mobile_no %>
+     </td>
+ </tr>
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('email_id')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+      <%= @student_details_data.email_id %>
+     </td>
+ </tr>
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"><%=t('contact_address')%></label>
+     </td>
+     <%address_data=MgAddress.find_by(:mg_user_id=>session[:user_id],:is_deleted=>0,:mg_school_id=>session[:current_user_school_id],:address_type=>"Permanent")%>
+     <td class="mg-td-width-half" valign="top">
+      <div class="text-scroll-for-log-text-cls comments-space" style="padding: 5px 40 0 10px">
+        <%= "#{address_data.address_line1}"%><br/><%if address_data.address_line2.present? %><%="#{address_data.address_line2}"%><br/><%end%><%if address_data.street.present? %><%="#{address_data.try(:street)}"%><br/><%end%><%if address_data.city.present? %><%="#{address_data.try(:city)}"%><br/><%end%><%="#{address_data.state},#{address_data.try(:country)}"%><br/><%="Pincode:"%><%="#{address_data.try(:pin_code)}"%>
+      </div>
+     </td>
+ </tr>
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('status')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+      <%= @student_details_data.status %>
+     </td>
+ </tr>
+</table>
+ 
+
+    <p class="mg-p-mgtop">      
+  		
+  		<%#=link_to t("delete_job_profile"),{:controller => "placements", :action => "placement_student_detail_delete",:id =>@student_details_data.id} , :method=>'delete',data: { confirm: 'Are you sure to delete?' },:class=>"mg-custom-form-btn"%>
+       <%= link_to t('cancel'), {:controller=>'hostel_management',:action=>'hostel_application_form_index'}, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+    </p>
+  <%else%>
+  	<%=link_to t("hostel_application_form"),{:controller=>"hostel_management",:action=>"hostel_application_form"},:class=>"mg-custom-form-btn"%>
+	  <h5>Not yet Applied</h5>
+	<%end%>
+</div>
+
+<div id="showStudentPlacementDetailDIVID"></div>
+<%= render partial: 'application/common_left_close' %>
+
+<script>
+$(document).ready(function(){
+	focusCurrentTab("hostel_applicationAID","hostel_applicationLiID");
+});
+
+// $(document).on("click", ".show-student_detail-btn", function(e){
+// 	  var myID =$(this).attr('id');
+// 	  var Id=myID.split("-");
+// 	  var urlLink = "/placements/placement_student_detail_show/"+Id[0];
+// 	  $.ajax({
+// 	      url: urlLink ,
+// 	      cache: false,
+// 	      success: function(html){
+// 	            $('#showStudentPlacementDetailDIVID').dialog({
+// 	              modal: true,
+// 	              width: '700px',
+// 	              title: "Show Job Profile",
+// 	              open: function () {
+// 	                  $(this).html(html);
+// 	              }
+// 	          }); 
+// 	      }
+// 	  });
+// 	});
+</script>

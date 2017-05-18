@@ -1,0 +1,192 @@
+<%= render  partial: 'master_settings/master_settings_left.html' %>
+<% navigation_add 'Kiosk',library_kiosk_path %>
+
+<!--===============================validating current password=============================-->
+<% flash.each do |name, msg| %>
+  <% if msg.is_a?(String) %>
+    <div class="alert alert-<%= name.to_s == 'notice' ? 'success' : 'danger' %>">
+      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+      <%= content_tag :div, msg, :id => "flash_#{name}" %>
+    </div>
+  <% end %>
+<% end %>
+                              
+
+<!--===============================validating current password=============================-->
+
+<h4 class="mg-h4"><%= t('kiosk') %></h4>
+
+<button class="new-add-library-kiosk mg-btn-bottom-margin mg-custom-form-btn"><%= t('add_kiosk')%></button>
+
+<!-- <%#= button_to 'Add Laboratory', {:controller => "laboratory", :action => "new" } ,:class=>"mg-custom-form-btn"%> -->
+<div class="mg_pagination">
+<%if @kiosk.length>0%>
+<table  class="batch-tbl mg-tbl-margin">   <!-- border="2" --> 
+  <tr class="subject-table-header">
+    <!-- <th>Subject Id</th> -->
+    <th><%= t('user_name') %></th>
+    
+    <th><%= t('action') %></th>
+
+  </tr>
+ 
+  <% @kiosk.each do |kiosk| %>
+    <tr>
+      <td><%= kiosk.user_name %></td>
+      
+      <td>
+      	
+      <button title="Change Password" id="<%=raw kiosk.id %>-showlabBTNID" class="show-library-kiosk-btn mg-icon-btn"><i class="fa fa-exchange"></i></button>
+
+        <button title="Edit" id="<%=raw kiosk.id %>-editlabBTNID" class="edit-library-kiosk-btn mg-icon-btn"><i class="fa fa-pencil-square-o"></i></button>
+
+        <button title="Delete" id="<%=raw kiosk.id %>-deletelabBTNID" class="delete-library-kiosk-btn mg-icon-btn"><i class="fa fa-trash"></i></button>
+
+        <%#= link_to "<i class=\"fa fa-trash\"></i>".html_safe, {:controller => "laboratory", :action => "delete",:id =>lab.id }, :method=>'post' ,:title=>"Delete" ,:class=>"mg-icon-btn",data: { confirm: 'Are you sure to delete?' } %>
+
+      </td>
+
+    </tr>
+  <% end %>
+</table>
+<br/>
+ <div class="pagination-align" style="position: relative; bottom: 10px;">
+              <%= will_paginate @kiosk, :container => false %>
+           </div>
+<%else%>
+<h5>No kiosk is created </h5>
+<%end%>
+</div>
+<div id="newAddLibrarykioskDIVID"></div>
+<div id="editlibrarykioskDIVID"></div>
+
+
+<div id="showlibrarykioskDIVID"></div>
+
+
+<%= render partial: 'emp_section_close' %>
+
+<script>
+$( document ).ready(function() {
+             focusCurrentTab("librarygeneratekioskAID","librarygeneratekioskLiID");
+          //focusStudentHeaderBox();
+});
+
+
+$(document).on("click", ".delete-library-kiosk-btn", function(e){
+     e.preventDefault();
+                var myID =$(this).attr('id');
+            var Id=myID.split("-");
+
+
+                
+                var retVal = confirm("Are you sure to delete?");
+                if(retVal){
+                  //  alert(retVal);
+                     var urlLink = "/library/kiosk_delete/"+Id[0];
+
+                      $.ajax({
+                        url: urlLink ,
+                        cache: false,
+                        success: function(html){
+                            window.location.reload();
+                                       
+                        }
+                    });
+
+                }else{
+                   // alert(retVal);     
+                   return false;
+                }
+
+        }); 
+
+
+$(document).on("click", ".show-library-kiosk-btn", function(e){
+        var myID =$(this).attr('id');
+        var Id=myID.split("-");
+        var urlLink = "/library/kiosk_show/"+Id[0];
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(html){
+                  $('#showlibrarykioskDIVID').dialog({
+                    modal: true,
+                     minHeight: 'auto',
+                    width: 'auto',
+                    title: "Change Password",
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+});
+
+
+$(document).on("click", ".edit-library-kiosk-btn", function(e){
+        var myID =$(this).attr('id');
+        var Id=myID.split("-");
+        var urlLink = "/library/kiosk_edit/"+Id[0];
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(html){
+                  $('#editlibrarykioskDIVID').dialog({
+                    modal: true,
+                     minHeight: 'auto',
+                    width: 'auto',
+                    title: "Edit kiosk",
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+});
+
+$(document).on("click", ".new-add-library-kiosk", function(e){
+        var urlLink = "/library/kiosk_new";
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(html){
+                  $('#newAddLibrarykioskDIVID').dialog({
+                    modal: true,
+                     minHeight: 'auto',
+                    width: 'auto',
+                    title: "Add kiosk",
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+});
+</script>
+<style>
+
+
+.table-batchs-tbl {
+   /* font-family: verdana,arial,sans-serif;*/
+    font-size:13px;
+    color:#363131;
+    border-width: 1px;
+    border-color:  #363131;
+    border-collapse: collapse;
+    padding: 12px ;
+    font-size: 0.8em;
+    width: 261px !important;
+    /* margin-left: 2px; */
+}
+</style>
+
+
+
+

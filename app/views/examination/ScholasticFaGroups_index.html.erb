@@ -1,0 +1,39 @@
+<!-- breadcrumbs Work -->
+<% navigation_add 'Examinations', examinations_path %>
+<% navigation_add 'CCE', examination_cce_new_path %>
+<% navigation_add 'Scholastic Settings', examination_scholastic_index_path %>
+<% navigation_add 'FA Group Subject', examination_ScholasticFaGroups_index_path %>
+<!-- breadcrumbs Work -->
+
+<%= render  partial: 'examination_table_left' %>
+<h4 class="mg-h4" style="text-transform: none;">Assign FA Groups to Subjects</h4>
+<div>
+	<p>
+		<label class="mg-label select-width-mod">Select Class Section</label>
+		
+				<%=select_tag :mg_course_id, options_for_select(@course),:prompt=>t('selectcoursebatch'),:onchange=>"myFaGroupsFunction(this.value)" %><br>
+		
+		
+	</p>
+
+	<div id="FaGroupsClassID">
+	</div>
+
+	<div id="FaGroupsID">
+	</div>
+
+	<div id="FaGroupsAssaignCommonID">
+
+	</div>
+
+</div>
+<%= render  partial: 'examination_table_close' %>
+
+
+<script type="text/javascript">
+  $(document).ready(function() {
+        focusCurrentTab("viewStudentListAId","viewStudentListLiId");
+        focusExaminationHeaderBox();
+  });
+
+</script>

@@ -1,0 +1,19 @@
+ <%= form_for :document_managements, url: create_folder_path, method: :post, :html => {
+                            :id => 'documentManagementsFormID' } do |f| %>
+
+  <p>
+    <%= f.label :name%><br>
+    <%= f.text_field :name   %>
+  </p>
+  
+   <p>
+    <%#= f.label :mg_employee_id%><br>
+    <%= f.hidden_field :mg_employee_id, :value=>@employee[0]%>
+  </p>
+
+
+
+  <p>
+    <%= f.submit t('submit') %>
+  </p>
+<% end %>

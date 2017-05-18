@@ -1,0 +1,68 @@
+<% navigation_add 'Leaves', guardian_leave_path %>
+
+<%= render partial: 'guardian_dashboard_left' %>
+<% if !params[:notice].blank? %>
+        <div class="alert alert-info mg-success-msg">
+          <%= params[:notice] %>
+        </div>
+<% end %>
+ <h4 class="mg-h4">Students List</h4>
+<table class="batch-tbl" id='guardianStudentsTableID'>
+        <tr>
+          <th>First Name</th>
+          <th>Last Name</th>
+          <th>Admission Number</th>
+          <th><%=t("actions")%></th>
+        </tr>
+        
+
+        <% @StudentListQuery.each do |student| %>
+          <td><%= student.first_name %></td>
+		  <td><%= student.last_name %></td>
+		  <td><%= student.admission_number %></td>
+		  <td> <button id="<%=raw student.id%>" class="guardian-student-leave mg-custom-form-btn">Apply leave</button></td>
+		 </tr>
+        <% end %>
+</table>
+
+<div id="applyLeave"></div>
+
+<%= render partial: 'guardian_dashboard_close' %>
+
+<script>
+
+      $(document).ready(function(){
+            focusCurrentTab("viewApplyLeave","viewApplyLeaveLiID");
+            focusDashboards();
+          
+
+     $(document).on("click",".guardian-student-leave",function(e){
+     	e.preventDefault();
+        var Id=$(this).attr("id");
+       
+        $.ajax({
+             url: "/attendances/apply_leave/"+Id,
+             data:{"id":Id},
+            
+            success: function(html){
+                      $("#applyLeave").dialog({
+                        modal: true,
+                        title: "Apply Leave",
+                        //top: 50px,
+                        minWidth: 'auto',
+                        minHeight: 300,
+                        open: function () {
+                            
+                            $(this).html(html);
+                        }
+                          
+                    }); //end confirm dialog
+                
+
+                }
+
+            });  
+
+        });
+     });
+     </script>

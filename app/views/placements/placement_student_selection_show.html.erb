@@ -1,0 +1,112 @@
+<%= render  partial: 'placements_left' %>
+<% navigation_add t('shortlist'), :controller=>'placements', :action=>'placement_student_selection' %>
+
+<% navigation_add  t('show_shortlisted_details'), :controller=>'placements', :action=>'placement_student_selection_show',:id=>params[:id] %>
+
+<h4 class="mg-h4"><%=t('shortlisted_list')%></h4>
+
+
+<table border="1" class="mg-showdata-bg" cellspacing="1" cellpadding="1">
+   <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label mg-rm-text-trans"> <%= t('name_of_the_company')%></label>
+     </td>
+     <td class="mg-td-width-half mg-capitalize-text" valign="top" >
+   
+      <%= @placement.try(:name_of_the_company) %>
+      <%= hidden_field_tag :mg_job_upload_id_data,@job_upload_data.id%>
+
+     </td>
+ </tr>
+
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label mg-rm-text-trans"><%=t('placement_job_id')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+    <%= @job_upload_data.try(:job_id) %>
+    
+     </td>
+ </tr>
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label mg-rm-text-trans"><%=t('select_passout_year')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+   <%= select_tag 'time_table_year', options_for_select((1994..Time.now.year).to_a.reverse), :prompt=>"Select",:class=>"mg-text-field" %>
+  
+    
+     </td>
+ </tr>
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"><%=t('select_programme')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+     <%wing_data=MgWing.where(:is_deleted=>0, :mg_school_id=>session[:current_user_school_id]).pluck(:wing_name,:id)%>
+      <%=select_tag :mg_wing_id ,options_for_select(wing_data),:prompt=>t('select'),:class=>"mg-select-btn",:onchange=>"selectSemesterShortlistedStudentsForCompany(this.value);"%>
+    <%#= f.collection_select(:mg_wing_id, MgWing.where(:is_deleted=>0, :mg_school_id=>session[:current_user_school_id]), :id, :wing_name,{:include_blank => 'Select'} ,:class=>"mg-select-btn" ,:onchange=>"selectSemesterShortlistedStudentsForCompany(this.value);")%>
+     </td>
+ </tr>
+<tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"><%=t('select_semester')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+   <%=select_tag :mg_batch_id ,options_for_select([]),:prompt=>t('select'),:class=>"mg-select-btn",:onchange=>"selectRoundsBasedOnJobId(this.value);"%>
+     </td>
+ </tr>
+
+ </table>
+  <p id="add_student_data_on_job_id"></p>
+  <br/>
+        <%= link_to t('cancel'), {:controller=>'placements',:action=>'placement_student_selection'}, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+
+
+<%= render  partial: 'application/common_left_close' %>
+
+<script type="text/javascript">
+$(document).ready(function () {
+    focusCurrentTab("student_selectionAID","student_selectionLiID");
+  
+  textSeeMoreLess();
+});
+function selectSemesterShortlistedStudentsForCompany(data){
+  var urlLink = "/placements/onchange_data";
+  
+  
+          $.ajax({
+              url: urlLink ,
+              cache: false,
+              data:{ 
+                selecter: "Select_Semester",
+                id: data
+              },
+              success: function(data){
+
+                $("#mg_batch_id").html(data.main);              }
+          });
+}
+
+function selectRoundsBasedOnJobId(data){
+var job_id=$("#mg_job_upload_id_data").val();
+var pass_out_year=$("#time_table_year").val();
+
+ var urlLink = "/placements/select_students_on_job_show";
+  
+          $.ajax({
+              url: urlLink ,
+              cache: false,
+              data:{ 
+                selecter: "Select_Semester",
+                id: data,
+                job_id:job_id,
+                pass_out_year:pass_out_year
+              },
+              success: function(data){
+
+                $("#add_student_data_on_job_id").empty().html(data);              }
+          });
+}
+</script>
+

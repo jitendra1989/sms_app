@@ -1,0 +1,94 @@
+<% navigation_add t('hostel_application_form'),"/hostel_management/hostel_application_form_index" %>
+<% navigation_add t('apply_hostel_application_form'),"/hostel_management/hostel_application_form" %>
+<%=render partial: "dashboards/student_dashboard_left"%>
+<h4 class="mg-h4"><%= @action=='new' ? t('hostel_application_form') : t('edit_job_detail')%></h4>
+
+
+
+
+
+<%= form_for :student_detail, :url=>@action=='new' ? 'hostel_application_form_create' : '',:html => {:id => 'studentDetailNewEditFormId' } do |f| %>
+
+	<%= f.hidden_field :is_deleted, :value => 0 %>
+	<%= f.hidden_field :mg_school_id, :value => session[:current_user_school_id] %>
+
+  	<%if @action=='new'%>
+    	<%= f.hidden_field :created_by, :value => session[:user_id] %>
+
+  	<%end%>
+  	<%= f.hidden_field :updated_by, :value => session[:user_id] %>
+  	<%#= f.hidden_field :mg_student_id, :value => @student_id[0] %>
+  	<%=hidden_field_tag "actions",@action%>
+
+	<label class="mg-label mg-tt-width" style="width:185px"><%= t('name') %><span class="required-field">&nbsp;*</span></label>
+	    <%= f.hidden_field :mg_student_id, :value => @student_data.id %>
+
+	<%= text_field_tag :name,"#{@student_data.first_name} #{@student_data.last_name}",:readonly=>true,:class =>"mg-select-btn"%><br/>
+
+	<label class="mg-label mg-tt-width" style="width:185px"><%= t('guardian_name') %><span class="required-field">&nbsp;*</span></label>
+	<%guardian_data=MgGuardian.find_by(:mg_student_id=>@student_data.id,:is_deleted=>0,:mg_school_id=>session[:current_user_school_id])%>
+	<%= f.hidden_field :mg_guardian_id, :value => guardian_data.try(:id) %>
+
+	<%= text_field_tag :guardian_name,"#{guardian_data.try(:first_name)} #{guardian_data.try(:last_name)}",:readonly=>true, :class =>"mg-select-btn"%><br/>
+
+	<label class="mg-label mg-tt-width" style="width:185px"><%= t('course') %><span class="required-field">&nbsp;*</span></label>
+	<%batch_data=MgBatch.find_by(:id=>@student_data.mg_batch_id)%>
+	<%course_data=MgCourse.find_by(:id=>batch_data.mg_course_id)%>
+	<%= f.hidden_field :mg_course_id, :value => course_data.id %>
+
+	<%= f.hidden_field :mg_batch_id, :value => batch_data.id %>
+
+	<%= text_field_tag :course,"#{course_data.try(:course_name)}-#{batch_data.try(:name)}",:readonly=>true,:class =>"mg-select-btn"%><br/>
+
+	<label class="mg-rm-text-trans mg-label mg-tt-width" style="width:185px"><%= t('student_id') %><span class="required-field">&nbsp;*</span></label>
+	<%= f.hidden_field :admission_number, :value => @student_data.admission_number %>
+
+	<%= text_field_tag :student_id,@student_data.admission_number,:readonly=>true,:class =>"mg-select-btn"%><br/>
+
+	<label class="mg-label mg-tt-width  mg-rm-text-trans" style="width:185px"><%= t('date_of_application') %><span class="required-field">&nbsp;*</span></label>
+	<%= f.hidden_field :date_of_application, :value => Date.today %>
+
+	<%= text_field_tag :date_of_application_data,Date.today,:readonly=>true,:class =>"mg-select-btn"%><br/>
+
+	<label class="mg-label mg-tt-width mg-rm-text-trans" style="width:185px">Mobile No<span class="required-field">&nbsp;*</span></label>
+	<%phone_data=MgPhone.find_by(:mg_user_id=>session[:user_id],:is_deleted=>0,:mg_school_id=>session[:current_user_school_id],:phone_type=>"mobile")%>
+	<%= f.hidden_field :mobile_no, :value => phone_data.phone_number %>
+	
+	<%= f.text_field :mobile_no_data,:value=>phone_data.phone_number,:readonly=>true,:class =>"mg-select-btn"%><br/>
+
+	<label class="mg-label mg-tt-width" style="width:185px"><%= t('email_id') %><span class="required-field">&nbsp;*</span></label>
+	<%email_data=MgEmail.find_by(:mg_user_id=>session[:user_id],:is_deleted=>0,:mg_school_id=>session[:current_user_school_id])%>
+	<%= f.hidden_field :email_id, :value => email_data.try(:mg_email_id) %>
+
+	<%= text_field_tag :email_id_data,email_data.try(:mg_email_id),:readonly=>true,:class =>"mg-select-btn"%><br/>
+
+	<label class="mg-label mg-tt-width" style="width:185px"><%= t('contact_address') %><%="(Permanent)"%><span class="required-field">&nbsp;*</span></label>
+	<%address_data=MgAddress.find_by(:mg_user_id=>session[:user_id],:is_deleted=>0,:mg_school_id=>session[:current_user_school_id],:address_type=>"Permanent")%>
+	<%= text_area_tag :contact_address,"#{"Address"}:#{address_data.address_line1}"+"\n"+"#{address_data.address_line2}"+"\n"+"#{"Street"}:#{address_data.try(:street)}"+"\n"+"#{"City"}:#{address_data.try(:city)}"+"\n"+"#{"State"}:#{address_data.state}"+"\n"+"#{"Country"}:#{address_data.try(:country)}"+"\n"+"#{"Pincode"}:#{address_data.try(:pin_code)}",:readonly=>true,:class =>"mg-select-btn"%><br/>
+
+	<label class="mg-label mg-tt-width" style="width:185px"><%= t('status') %><span class="required-field">&nbsp;*</span></label>
+	<%= f.hidden_field :status, :value => "Pending" %>
+
+	<%= select_tag :status_data,options_for_select([["Pending"]]),:disabled=>true,:class =>"mg-select-btn"%><br/>
+
+	<p class="mg-p-mgtop">
+		<a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("save")%></a>
+	    <%= link_to t('cancel'),:back ,{:class=>"mg-small-form-btn cancel-form-dialog"} %>
+	</p>
+<%end%>
+
+<%= render  partial: 'common_left_close' %>
+
+<script>
+	$( document ).ready(function() {
+	focusCurrentTab("hostel_applicationAID","hostel_applicationLiID");
+
+		dateFormatStr =  getJsDateFormat();
+		
+         var admission_date =  $.datepicker.formatDate(dateFormatStr,new Date($('#date_of_application_data').val()));
+
+//alert(joiningDate);
+$('#date_of_application_data').val(admission_date);
+		
+	});
+</script>

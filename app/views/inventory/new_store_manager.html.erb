@@ -1,0 +1,65 @@
+<div class="mg-custom-labels">
+  <%= form_for :store_manager, url: create_store_manager_path, :html => {
+                              :id => 'libraryCreateID' } do |f| %>
+    <%= f.hidden_field :is_deleted, :value => 0 %>
+    <%= f.hidden_field :mg_school_id, :value => session[:current_user_school_id] %>
+    <%= f.hidden_field :created_by, :value => session[:user_id] %>
+    <%= f.hidden_field :updated_by, :value => session[:user_id] %>
+    <%= f.hidden_field :user_type, :value => "store_manager" %>
+    <% school_subdomain = MgSchool.where(:id=>session[:current_user_school_id],:is_deleted=>0) %>
+    <% @subdomain = school_subdomain[0].subdomain%> 
+    <p>
+      <label class="mg-label" style="width:140px"><%= t('select_store') %><span class="required-field">&nbsp;*</span></label>
+      <br/>
+      <%store_data=MgInventoryStoreManagement.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:store_name,:id)%>
+     <%= select_tag :mg_inventory_store_management_id,options_for_select(store_data),:prompt=>"Select",:class=>"mg-text-field" %>
+    </p>
+    <p>
+        <label class="mg-label" style="width:140px"><%= t('user_name') %><span class="required-field">&nbsp;*</span></label>
+        <br/>
+       <%=@subdomain%><%= f.text_field :user_name,:class=>"mg-text-field" %>
+    </p>
+    <p>
+        <label class="mg-label" style="width:140px"><%= t('password') %><span class="required-field">&nbsp;*</span></label>
+        <br/>
+       <%= f.password_field :password,:class=>"mg-text-field" %>
+    </p>
+    <p class="mg-p-mgtop">
+       <%=f.submit "submit", :id=>"libraryCreateFormSubmitID", :style=>"display:none"%>
+      <a onclick="check_unique_username();" class="mg-small-form-btn"><%=t("save")%></a>
+      <%= link_to t('cancel'),'', {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+    </p>
+  <% end %>
+</div>
+<!-- <%#= render  partial: 'application/common_left_close' %> -->
+
+
+
+<script>
+
+$("#libraryCreateID").validate({
+        rules: {        
+        "store_manager[user_name]": {required: true},
+        "store_manager[password]": {required: true},
+        "mg_inventory_store_management_id": {required: true}
+      }
+    });
+
+function check_unique_username(){
+    var user_name=$("#store_manager_user_name").val();
+    var urlLink = "/inventory/unique_username";
+    $.ajax({
+      url: urlLink ,
+      cache: false,
+      data: {"user_name":user_name},
+      success: function(data){
+        if(data==1){
+          alert("User Name already Exists..");
+          $("#store_manager_user_name").val('');
+        }else{
+            $("#libraryCreateFormSubmitID").click();
+        }
+      }
+    });
+  }
+</script>

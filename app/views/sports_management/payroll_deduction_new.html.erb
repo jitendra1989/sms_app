@@ -1,0 +1,312 @@
+<% navigation_add t('payroll_deduction'),:controller=>'sports_management', 
+:action=>'payroll_deduction_index' %>
+<% navigation_add t('new_payroll_deduction'),:controller=>'sports_management', :action=>'payroll_deduction_new' %>
+
+<%= render  partial: 'sports_left' %>
+<%= form_for :payroll_deduction ,  :url=>{:controller=>'sports_management',:action=>'payroll_deduction_create'}, :html=>{:id=>'pay_deduction_data'} do |f| %>
+   
+   <h4 class="mg-h4"><%= t('employee_payroll_deduction')%></h4>
+<table class="mg-tbl-margin mg-show-tbl-width">
+<tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="date"><%= t ('date') %><span class="required-field">&nbsp;*</span></label><br/>
+        
+        <%= f.hidden_field :date_of_deduction ,:value=>Date.today.strftime("%Y-%m")%>
+          <%@dateFormat = MgSchool.find_by(:id=>session[:current_user_school_id]).date_format %>
+        <%= text_field_tag :mm_yyyy ,nil,:readonly=>false,:class=>"mg-text-field"%>
+        
+          <%#@dateFormat = MgSchool.find_by(:id=>session[:current_user_school_id]).date_format %>
+        <%#= f.text_field :date_of_deduction ,:value=>Date.today.strftime("%Y-%m"),:class=>"mg-text-field"%>
+
+      </td>
+ </tr>
+
+
+<!-- ================================================================================ -->
+ <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="date"><%= t ('name') %><span class="required-field">&nbsp;*</span></label><br/>
+        <%= f.text_field :name,:class=>"mg-text-field"%>
+      </td>
+  </tr>
+<!-- ================================================================================ -->
+
+   <%
+    account=Array.new
+    account.push("Central","central")
+    accounts=MgAccount.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:mg_account_name,:id)
+    accounts.insert(0,account)
+  %>
+
+  <!-- <label class="mg-label mg-tt-width" style="width:185px"><%#= t('select_account') %><span class="required-field">&nbsp;*</span></label><br/> -->
+
+
+  <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="date"><%= t ('select_account') %><span class="required-field">&nbsp;*</span></label><br/>
+        <%#= f.text_field :name,:class=>"mg-text-field"%>
+        <%=f.select :mg_account_id,options_for_select(accounts),{:include_blank => t('Select')},:class=> "mg-select-btn" %><br/>
+      </td>
+  </tr>
+<!-- ====================================================================================================== -->
+
+
+ <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="date"><%= t ('amount') %><span class="required-field">&nbsp;*</span></label><br/>
+        
+
+        <%= f.text_field :amount,:class=>"mg-text-field"%>
+      </td>
+    </tr>
+
+    <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="date"><%= t ('to_be_shown_in_payslip') %><span class="required-field">&nbsp;</span></label>&nbsp;&nbsp;&nbsp;&nbsp;
+        <%= f.check_box :deduction,:checked=>true %>
+      </td>
+  </tr>
+</table>
+<h4 class="mg-h4"><%= t('payroll_deduction_report')%></h4>
+<div class="text-scroll-for-log-text-payroll-cls">
+<table class="mg-tbl-margin mg-show-tbl-width mg-inner-table-align">
+<tr>
+<th>Select Category</th>
+<th></th>
+<th></th>
+<th>Select Department</th>
+<th></th>
+
+<th></th>
+
+<th>Select Employee</th>
+<th></th>
+<th></th>
+
+<th></th>
+
+<th>Selected Employee*</th>
+<th></th>
+
+</tr>
+    <tr>
+      <td>
+      
+
+   <%emp_category=MgEmployeeCategory.where(:is_deleted=>0, :mg_school_id=>session[:current_user_school_id]).pluck(:category_name,:id)%>
+  
+   <%=select_tag :notSelected, options_for_select(emp_category),:multiple => true,:size =>10, :class=>"mg-add-library-particular"%>
+    </td>
+    <td></td>
+    <td></td>
+
+    <td>
+ <!--  <a  id="addingdatas" class="mg-custom-form-btn mg-fee-btn">Select Dept</a>  -->
+<%=select_tag :selectedDept,options_for_select([]),:multiple => true,:size =>10 ,:class=>"mg-add-library-particular"%>
+</td>
+    <td></td>
+    <td></td>
+
+<td>
+<%=select_tag :selectedEmp,options_for_select([]),:multiple => true,:size =>10 ,:class=>"mg-add-library-particular"%>
+
+</td>
+<td><a  id="editaddingemployeedatas" class="mg-custom-form-btn mg-add-rem-btn">Add</a> 
+</td>
+    <td></td>
+    <td></td>
+
+<td>
+
+<%=select_tag :selected_employees,options_for_select([]),:multiple => true,:size =>10 ,:class=>"mg-add-library-particular"%>
+
+</td>
+<td><a  id="removingdata" class="mg-custom-form-btn mg-add-rem-btn">Remove</a>
+</td>
+ </tr>
+
+</table>
+</div>
+<br/>
+ <p class="mg-p-mgtop">
+ <a onclick="$(this).closest('form').submit()" class="inputsss_fieldsss mg-small-form-btn"><%=t("save")%></a>
+      <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+ </p>
+
+<%end%>
+<%= render  partial: 'application/common_left_close' %>
+
+<script>
+$(document).ready(function () {
+    focusCurrentTab("payrollDeductionAID","payrollDeductionLiID");
+
+    //======================================
+    $("#pay_deduction_data").validate({
+      rules: {     
+        "mm_yyyy": {required: true},
+        "payroll_deduction[name]": {required: true},
+        "payroll_deduction[mg_account_id]": {required: true},
+        "payroll_deduction[amount]": {required: true, number: true},
+        "selected_employees[]": {required: true}
+      }
+    });
+    //======================================
+
+
+    dateFormatStr =  getJsDateFormat();
+    // $("#mm_yyyy" ).datepicker({changeMonth: true,changeYear: true,yearRange: "-50:+50",dateFormat: dateFormatStr});
+// =========================================================================
+
+    $(function() {
+    $('#mm_yyyy').datepicker({
+        changeMonth: true,
+        changeYear: true,
+        showButtonPanel: true,
+        minDate: '0',
+        yearRange: '+0:+50',
+        lastMonth: '-0:50',
+        dateFormat: 'MM yy',
+        onClose: function(dateText, inst) { 
+            $(this).datepicker('setDate', new Date(inst.selectedYear, inst.selectedMonth, 1));
+        }
+    });
+});
+
+// =======================================================================
+
+    });
+
+
+
+$(document).on("click","#editaddingemployeedatas",function(e){
+
+
+ var demo=$("#selectedEmp").val();
+ 
+ var texts=$("#selectedEmp :selected").text();
+ var text=texts.split("  ")
+ 
+ var array=[];
+
+$("#selected_employees option").each(
+
+function() {
+array.push(this.value);
+
+}
+
+);
+
+
+ for(var i=0;i<demo.length;i++)
+ {
+var a =false;
+
+for(var j=0;j<array.length;j++){
+  
+ if (demo[i]==array[j]){
+ a=true;
+  
+}
+
+}
+
+if (a){
+
+  }
+else{
+
+ var addselectedOption=$("#selectedEmp option:selected")
+ 
+var str="<option value="+demo[i]+">"+text[i]+"</option>"
+
+  $("#selected_employees").append(str);
+ $("#selected_employees option").prop('selected',true);
+
+}
+
+}
+
+
+ });
+
+
+
+
+$(document).on("click","#removingdata",function(e){
+
+var selectedOption=$("#selected_employees option:selected").remove();
+$("#selected_employees option").prop('selected',true)
+  });
+
+
+
+$(document).on("click","#notSelected",function(e){
+    
+    var dept_values=$("#notSelected").val();
+
+   
+ $.ajax({
+            url: "/sports_management/payroll_deduction_ajax",
+            type: "GET",
+            data: {"floor_data":dept_values,"floor":"floor"},
+            success: function(data) {
+               // $(".fee-particular-admission-number-cls").empty();
+               // $(".fee-particular-admission-number-cls").append(data);
+             $("#selectedDept").empty();
+
+             $("#selectedDept").html(data.main);
+             
+              
+            },
+            error:function(){
+              alert("Something went wrong!");
+            }
+        });
+    
+});
+ $(document).on("click","#selectedDept",function(e){
+    
+    var dept_values=$("#notSelected").val();
+    var room_id=$("#selectedDept").val();
+
+
+   
+ $.ajax({
+            url: "/sports_management/payroll_deduction_ajax",
+            type: "GET",
+            data: {floor_data:dept_values,room:"room",room_id:room_id},
+            success: function(data) {
+               // $(".fee-particular-admission-number-cls").empty();
+               // $(".fee-particular-admission-number-cls").append(data);
+             $("#selectedEmp").empty();
+
+             $("#selectedEmp").html(data.main);
+             console.log(data.main);
+              
+            },
+            error:function(){
+              alert("Something went wrong!");
+            }
+        });
+    
+});
+</script>
+
+<style>
+.ui-datepicker-calendar {
+    display: none;
+    }
+
+.ui-datepicker-current  {
+    display: none;
+}  
+
+
+.text-scroll-for-log-text-payroll-cls {
+    height: 195px;
+    overflow: scroll;
+    text-align: initial;
+    width: 734px;
+}  
+</style>

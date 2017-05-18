@@ -1,0 +1,25 @@
+<!-- <label class="mg-label mg-label-width "><%#=t('total_hours')%> : <%=@over_time%></label> -->
+<table class="batch-tbl">
+	<tr>
+		<th><%=t('sl_no ')%></th>
+		<th><%=t('date ')%></th>
+		<th><%=t('check_in')%></th>
+		<th><%=t('check_out')%></th>
+	</tr>
+	<%counrt=0%>
+	<%@biometric_attendance.each do |over|%>
+		<tr>
+			<td><%=counrt +=1%></td>
+			<td><%=over.date? ? over.date.strftime(@school.date_format) : ""%></td>
+			<td ><%= over.check_in? ? over.check_in.strftime('%I:%M%p') : ""%> </td>
+	      	<td ><%= over.check_out? ? over.check_out.strftime('%I:%M%p') : ""%> </td>
+		</tr>
+	<%end%>
+	<tr>
+		<td colspan="2"><label class="mg-label mg-label-width "><%=t('total')%></label></td>
+		<td colspan="2"><label class="mg-label mg-label-width "><%=@over_time%> <%=t('hours')%></label></td>
+	</tr>
+</table>
+<p class="mg-p-mgtop">
+	<a class="mg-small-form-btn cancel-form-dialog"><%=t('cancel')%></a>
+</p>    

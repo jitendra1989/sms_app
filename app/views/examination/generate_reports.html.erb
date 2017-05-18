@@ -1,0 +1,54 @@
+<%= render  partial: 'examination_table_left' %>
+
+
+  <h4 class="mg-h4"><%= t('generate_reports')%></h4>
+ 
+<div>
+<div class="mg-custom-labels">
+
+  <% unless flash[:notice].nil? %>
+    <h5 class="flash-msg"> <%= flash[:notice] %> </h5>
+  <% end %>
+  <p>
+  <div class="box">
+
+    <%= form_for :report  do |f| %>
+      <div class="label-field-pair">
+        <label class="mg-label" for="student_course"><%=t('select') %> <%=t('course') %> </label>
+        <div  class="text-input-bg">
+        <%@course=MgCourse.where(:is_deleted=>0).pluck(:course_name,:id)%>
+           <%=select_tag :mg_course_id,options_for_select(@course),:prompt=>t('select'),:onchange=>"mycourseFunction(this.value)"%></div>
+      </div>
+      <div id="batch_group_list"></div>
+    </div>
+    </p>
+      <%= f.submit t('save') ,:class=>"mg-small-form-btn"%>
+    <% end %>
+    
+
+
+
+<%= render  partial: 'examination_table_close' %>
+
+<script>
+ $(document).ready(function() {
+        focusCurrentTab("generateReortsAID","generateReortsLID");
+        focusExaminationHeaderBox();
+  });
+function mycourseFunction(courseid){
+    var urlLink = "/examination/list_batch_groups/";
+      alert(courseid);
+  
+        $.ajax({
+            url: urlLink ,
+            data:{"mg_course_id":courseid},
+            cache: false,
+            success: function(data){
+                
+            $("#batch_group_list").empty();
+            $("#batch_group_list").append(data);
+        }
+       
+      }); 
+    }
+</script>

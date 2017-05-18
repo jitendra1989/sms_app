@@ -1,0 +1,10 @@
+<% navigation_add t('hostel_issue'),:controller=>'hostel_management', :action=>'complain_hostel_index' %>
+
+<% navigation_add t('edit_hostel_issue'),:controller=>'hostel_management', :action=>'complain_hostel_edit' %>
+
+<%=render partial:"complain_hostel"%>
+<script>
+  $( document ).ready(function() {
+    focusCurrentTab("complain_hostelAID","complain_hostelLiID");
+  });
+</script>

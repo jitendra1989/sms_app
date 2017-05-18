@@ -1,0 +1,60 @@
+
+<%= render  partial: 'inventory_left' %>
+<% navigation_add 'Fees Report', inventory_fee_module_communication_path %>
+
+<h4 class="mg-h4"><%= t('fees_report')%></h4>
+
+<%if @particular_data.length>0%>
+<div class="mg-scrl-width-bar ">
+
+ <table class="batch-tbl mg-tbl-layout" cellspacing="0" style="padding:0; border-collapse:collapse;"> 
+<tr>
+<th><%=t('item_category')%></th>
+<th><%=t('item_name')%></th>
+
+<th><%=t('student_name')%></th>
+<th><%=t('amount')%></th>
+
+
+
+</tr>
+<% @particular_data.each do |data| %>
+<tr>
+<%
+            item_category_data=MgFeeCategory.find_by(:id=>data.fee_category)
+            inventory_item=MgParticularType.find_by(:id=>data.mg_particular_type_id)
+
+    student_data=MgStudent.find_by(:admission_number=>data.admission_no,:mg_school_id=>session[:current_user_school_id])
+            %>
+<td class="mg-align-center"><%=item_category_data.try(:name)%></td>
+   
+        <td class="mg-align-center"><%=inventory_item.try(:particular_name)%></td>
+
+    
+        
+           
+            
+            <td class="mg-align-center"><%="#{student_data.first_name} #{student_data.last_name}"%></td>
+            
+            <td class="mg-align-center"><%=data.amount%></td>
+           
+</tr>
+<%end%>
+
+</table>
+<%#= will_paginate @data, :container => false %>
+<%else%>
+<%="No Records Are Present"%>
+<%end%>
+</div>
+<%= render  partial: 'schools/school_left_close' %>
+
+
+<script>
+$(document).ready(function () {
+        focusCurrentTab("fee_module_communicationAid","fee_module_communicationLiID");
+       
+       
+      });
+
+</script>

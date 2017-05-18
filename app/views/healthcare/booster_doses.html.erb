@@ -1,0 +1,120 @@
+<%=render partial: 'healthcare_left'%>
+<% navigation_add t('booster_doses'),:controller=>'healthcare',:action=>'booster_doses' %>
+
+
+<h4 class="mg-h4"><%= t('booster_doses_list') %></h4>
+
+<!-- onclick="window.location='/healthcare/new_vaccinations'"  -->
+<button id="newBoosterDosesBTNID" class= 'mg-custom-form-btn'><%=t('add_booster_doses')%></button>
+<%if @booster_doses.present?%>
+<div class="mg_pagination">
+<table class="batch-tbl mg-tbl-margin">   <!-- border="2" --> 
+ <tr >
+  	<th><%=t('name')%></th>
+    <th> <%=t('frequency')%></th>
+    <th> <%=t('description')%></th>
+     <th><%=t('actions')%></th>
+  </tr>
+  <% @booster_doses.each do |e| %>
+    <tr>
+      <td><%= e.name %></td>
+      <td><%= e.frequency %></td>
+      <td><%= truncate(e.description.to_s, :length => 25, :separator => ' ')  %></td>
+      <td>
+        <button title="Show" id="<%=raw e.id %>-showBoosterDosesBTNID" class="show-booster-doses-btn mg-icon-btn"><i class="fa fa-eye"></i></button>
+        <button title="Edit" id="<%=raw e.id %>-editBoosterDosesBTNID" class="edit-booster-doses-btn mg-icon-btn"><i class="fa fa-pencil-square-o"></i></button>
+        <button onclick="confirm('Are you sure to delete?') ? window.location='/healthcare/delete_booster_doses/<%=e.id%>' : '' " title="Delete" id="<%=raw e.id %>-deleteVaccinationsBTNID" class="delete-vaccinations-btn mg-icon-btn"><i class="fa fa-trash"></i></button>
+      </td>
+    </tr>
+  <% end %>
+</table>
+ <%= will_paginate @booster_doses, :container => false %>
+  </div>
+<%else%>
+<br>
+<p></p>
+<br>
+	<p>Please add some booster doses details</p>
+<%end%>
+
+<div id="newBoosterDosesDIVID"></div>
+<%= render  partial: 'application/common_left_close' %>
+
+<script>
+  $( document ).ready(function() {
+    focusCurrentTab("boosterDosesAID","boosterDosesliId");          
+  });
+
+  $(document).on("click", "#newBoosterDosesBTNID", function(e){
+        // var myID =$(this).attr('id');
+        // var Id=myID.split("-");
+
+        var urlLink = "/healthcare/new_booster_doses";
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(html){
+                  $('#newBoosterDosesDIVID').dialog({
+                    modal: true,
+                    minHeight: 'auto',
+                    title: "New Booster Doses",
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+});
+
+$(document).on("click", ".edit-booster-doses-btn", function(e){
+        var myID =$(this).attr('id');
+        var Id=myID.split("-");
+
+
+        var urlLink = "/healthcare/"+Id[0]+"/edit_booster_doses/";
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(html){
+                  $('#newBoosterDosesDIVID').dialog({
+                    modal: true,
+                    minHeight: 'auto',
+                    title: "Edit Booster Doses",
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+});
+
+$(document).on("click", ".show-booster-doses-btn", function(e){
+        var myID =$(this).attr('id');
+        var Id=myID.split("-");
+        var urlLink = "/healthcare/show_booster_doses/"+Id[0];
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(html){
+                  $('#newBoosterDosesDIVID').dialog({
+                    modal: true,
+                    minHeight: 'auto',
+                    width: 'auto',
+                    title: "Show Booster Doses",
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+});
+
+
+
+  </script>

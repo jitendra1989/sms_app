@@ -1,0 +1,73 @@
+<% navigation_add 'Item Management', item_management_index_path %>
+<%navigation_add 'Edit Item Management', item_management_edit_path %>
+	<%if @item.present?%>
+		<%
+		 item_category=MgInventoryItemCategory.find_by(:id=>@item.mg_inventory_item_category_id)	
+		 item_name=MgInventoryItem.find_by(:id=>@item.mg_inventory_item_id)
+		 room=MgInventoryRoomManagement.find_by(:id=>@item.mg_inventory_room_id)
+		 rack=InventoryStackManagement.find_by(:id=>@item.mg_inventory_rack_id)
+		%>	
+		<table border="1" class="mg-showdata-bg mg-tbl-layout" cellspacing="1" cellpadding="1">
+			<tr>
+				<td class="mg-td-width-half" valign="top"><label class="mg-label"><%=t("item_category")%></label></td>
+				<td class="mg-td-width-half" valign="top"><%=item_category.name%></td>
+			</tr>
+			<tr>
+				<td class="mg-td-width-half" valign="top"><label class="mg-label"><%=t("item_name")%></label></td>
+				<td class="mg-td-width-half" valign="top"><%=item_name.name%></td>
+			</tr>
+			<tr>
+				<td><label class="mg-label"><%=t("label_text")%></label></td>
+				<td><%=@item.label_text%></td>
+			</tr>
+			<tr>
+				<td><label class="mg-label"><%=t("item_type")%></label></td>
+				<%items=MgInventoryItem.find_by(:id=>@item.mg_inventory_item_id)%>
+				<td class="mg-capitalize-text"><%=items.try(:item_type)%></td>
+			</tr>
+			<tr>
+				<td><label class="mg-label"><%=t("room_name")%></label></td>
+				<td><%=room.room_no%></td>
+			</tr>
+			<tr>
+				<td><label class="mg-label"><%=t("rack_name")%></label></td>
+				<td><%=rack.rack_no%></td>
+			</tr>
+			<!-- <tr>
+				<td><label class="mg-label"><%#=t("quantity")%></label></td>
+				<td><%#=@item.quantity%></td>
+			</tr> -->
+			<tr>
+				<td><label class="mg-label"><%=t("minimum_quantity")%></label></td>
+				<td><%=item_name.minimum_quantity_required%></td> 
+			</tr>
+			<%
+			        	
+	    		item_quantity=MgInventoryItemManagement.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id],:mg_inventory_item_id=>@item.id)
+				quantity_available=0
+				item_quantity.each do |i_quantity|
+						quantity_available=quantity_available.to_i + i_quantity.quantity.to_i
+				end
+
+				item_consumed=MgInventoryItemConsumption.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id],:mg_inventory_item_id=>@item.id)
+				consumed_value=0
+					item_consumed.each do |item_c|
+					consumed_value=consumed_value.to_i + item_c.quantity_consumed.to_i
+					end
+					available_quantity=quantity_available - consumed_value	
+	    	%>
+	    	<!-- <tr>
+				<td><label class="mg-label"><%#=t("quantity_available")%></label></td>
+				<td><%=available_quantity%></td> 
+			</tr>
+			<tr>
+				<td><label class="mg-label"><%#=t("quantity_consumed")%></label></td>
+				<td><%=consumed_value%></td> 
+			</tr> -->
+		</table>
+
+	<%end%>
+			<p class="mg-p-mgtop">
+      <a class="mg-small-form-btn cancel-form-dialog"><%=t('cancel')%></a>
+</p>
+<%#=render partial:"common_left_close"%>

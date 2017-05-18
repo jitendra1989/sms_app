@@ -1,0 +1,49 @@
+<%= render  partial: 'inventory/inventory_left' %>
+<h4 class="mg-h4"><%= t('search_item') %></h4>
+<h4>Provide an input to search the Item</h4>
+<%= form_for :inventory_item_search, :html => {:id => 'inventoryItemSearchFormID' } do |f| %>
+	<p>
+		<label class="mg-label" style="width:140px"><%= t('item_name') %><span class="required-field">&nbsp;</span></label>
+		<br/>
+		<%= f.text_field :item_name,:class=>"mg-text-field inventory-item-search-field" %>
+	</p>
+	<p>
+    	<label class="mg-label" style="width:140px"><%= t('item_code') %><span class="required-field">&nbsp;</span></label>
+   		<br/>
+   		<%= f.text_field :item_identification_number,:class=>"mg-text-field inventory-code-search-field" %>
+	</p>
+	<p class="mg-p-mgtop">
+    	<button type="button" class="inventory-search-item-submit-btn mg-small-form-btn" style="display:none"><%=t("save")%></button>
+    	<a onclick="$(this).closest('form').submit()" class="laboratory-resource-new-submit-class" style="display:none"></a>
+	</p>
+<%end%>
+<div id="itemDataDivID"></div>
+<%= render  partial: 'common_left_close' %>
+
+<script type="text/javascript">
+	$(document).ready(function(){
+		focusCurrentTab("itemSearchAID","itemSearchLiID");
+	});
+	$(".inventory-item-search-field").keyup(function(){
+		if($(this).val().length>1){
+			$(".inventory-search-item-submit-btn").click();
+		}
+	});
+	$(".inventory-code-search-field").keyup(function(){
+		if($(this).val().length>1){
+			$(".inventory-search-item-submit-btn").click();
+		}
+	});
+
+	$(".inventory-search-item-submit-btn").click(function(){
+		var item_name=$("#inventory_item_search_item_name").val();
+		var item_code=$("#inventory_item_search_item_identification_number").val();
+		$.ajax({
+			url:"/inventory/item_search_data",
+			data:{"seach_item_name":item_name,"search_item_code":item_code},
+			success:function(html){
+				$("#itemDataDivID").html(html);
+			}
+		});
+	});
+</script>

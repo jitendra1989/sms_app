@@ -1,0 +1,43 @@
+<%= render partial: 'dashboards/cloud_admin_dashboard_left' %>
+
+<h4 class="mg-h4"><%= t('file_upload') %></h4>
+	<%= form_tag({:action => 'school_cloud_admin_upload',:controller => 'cloud_admins'}, :multipart => true) do %>
+       
+		<p><label for="upload_file">Select File</label> : 
+		<%= file_field 'upload', 'datafile' %></p>
+	<%= submit_tag "Upload" %>
+
+<% end %>
+
+<%= render partial: 'application/common_left_close' %>
+
+<script type="text/javascript">
+    var file = document.getElementById('upload_datafile');
+         file.onchange = function(e){
+            var ext = this.value.match(/\.([^\.]+)$/)[1];
+            switch(ext)
+            {
+                case 'xls':
+                    break;
+                case 'xlsx':
+                    break;
+                default:
+                    alert('not allowed');
+                    this.value='';
+            }
+    };
+
+ $(document).ready(function() {
+
+    $("form").validate({
+
+        rules: {
+        "upload[datafile]": {required: true},
+        "mg_school_id": {required: true}
+        }
+    });
+    focusCurrentTab("viewCloudAdminDashboardSchool","viewCloudAdminDashboardSchoolLiID");
+    focusDashboards();
+ });
+
+</script>

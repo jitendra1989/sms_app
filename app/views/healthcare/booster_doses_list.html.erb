@@ -1,0 +1,30 @@
+<table class="batch-tbl mg-tbl-margin">
+  <tr>
+    <th><%=t('name')%></th>
+    <th><%=t('frequency')%></th>
+    <th><%=t('date ')%></th>
+  </tr>
+  <%@booster_doses.each do |v|%>
+    <tr>
+      <td><%=v.name%></td>
+      <td><%=v.frequency%></td>
+      <%temp=@booster_doses_detail.find_by(:mg_booster_dose_id=>v.id)%>
+      <td><%=text_field_tag "date[#{v.id}]",temp.present? ? (temp.date.present? ? temp.date.strftime(@school.date_format) : nil) : nil, :class=>'immunization-due-date-cls'%></td>
+    </tr>
+  <%end%>
+</table>
+ <p class="mg-p-mgtop">
+    <%#= f.submit t('save') ,:class=>"mg-small-form-btn"%>
+    <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("save")%></a>
+      <%= link_to t('cancel'), '/healthcare/immunization_booster_doses' , {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+    <!-- <a class="mg-small-form-btn cancel-form-dialog"><%=t('cancel')%></a> -->
+
+</p> 
+
+<script type="text/javascript">
+    
+  $( document ).ready(function() {
+      var dateFormatStr =  getJsDateFormat();
+      $( ".immunization-due-date-cls" ).datepicker({  ochangeMonth: true,changeYear: true,yearRange: "-100:+0", dateFormat: dateFormatStr});
+    });
+</script>

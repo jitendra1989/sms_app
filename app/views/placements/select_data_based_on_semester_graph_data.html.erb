@@ -1,0 +1,493 @@
+
+
+
+
+
+
+
+
+<%@obj1=Hash.new%>
+<%@obj3=Hash.new%>
+<%mg_placements_bacth=MgPlacementJobApplication.where(:is_deleted=>0, :mg_school_id=>session[:current_user_school_id]).pluck(:mg_batch_id).uniq%>
+<%mg_batch_all=MgBatch.where(:is_deleted=>0, :mg_school_id=>session[:current_user_school_id],:id=>mg_placements_bacth)%>
+  <%count=0%>
+<%mg_batch_all.each do |batch|%>
+  
+
+    <%@obj2=Hash.new%>
+    <%@obj5=Hash.new%>
+    <%@obj6=Hash.new%>
+    <%@obj9=Hash.new%>
+    <%@obj10=Hash.new%>
+
+
+
+     <%@obj4=Array.new%>
+     <%@obj7=Array.new%>
+     <%@obj8=Array.new%>
+
+    
+
+
+    <%mg_placements=MgPlacementJobApplication.where(:is_deleted=>0, :mg_school_id=>session[:current_user_school_id], :mg_batch_id=>batch.id,:job_selected=>true,:pass_out_year=>params[:year]).count%>
+    <%puts "=================12222222==================================="%>
+    <%puts mg_placements.inspect%>
+    <%student_data=MgStudent.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id],:mg_batch_id=>batch.id).count%>
+    <%if mg_placements>0 || student_data>0%>
+    <%count=count+1%>
+    
+    <%@obj5["Selected"]=mg_placements%>
+    <%@obj5["Present"]=student_data%>
+   
+    <%@obj3[batch.course_batch_code]=@obj5%>
+    
+<%end%>
+
+
+<%end%>
+
+<%#=@obj3 %>
+
+
+
+<%@@subjectCount=count%>
+<%fee_syllabus_width=730%>
+<%if @@subjectCount>4%>
+<%fee_syllabus_width=@@subjectCount*170%>
+<%end%>
+
+  <div class="mg-scrl-width-bar ">
+
+<div id="wrapperCanvasSyllabusDIVID" >
+    <canvas id="canvasSyllabusID" height="400" width="<%=fee_syllabus_width%>"></canvas>
+    <canvas id="tipSyllabusID" width="175" height="75"></canvas>
+</div>
+</div>
+
+<style>
+
+body {
+/*    background-color: ivory;*/
+    margin-top:35px;
+}
+#wrapperCanvasSyllabusDIVID {
+    position:relative;
+   /* width:300px;
+    height:150px;*/
+}
+
+#tipSyllabusID {
+    background-color:white;
+    border:1px solid blue;
+    position:absolute;
+    left:-200px;
+    top:100px;
+    padding: 0px;
+}
+
+    #canvasSyllabusID{background: #ffffff;
+        box-shadow:5px 5px 5px #ccc;
+    border:5px solid #eee;
+    margin-bottom:10px;}
+</style>
+<script>
+$(document).ready(function () {
+       
+      //  canvassyllabus_graph();
+  });
+ 
+        canvassyllabus_graph();
+ 
+   
+function canvassyllabus_graph() {
+var demo="<%=@obj3.to_json%>";
+  console.log(demo);
+  var demo=demo.replace(/&quot;=&gt;/g,'"');
+  var demo=demo.replace(/&quot;/g,'"');
+      demo=JSON.parse(demo);
+  var chages= demo;
+   
+var colour=["#deacba","#6ab0b1","#e95c60","#29708b","#897d92","#479b9c","#b16a8d","#a295f0","#308c5d","#e9e2a6","#b94e83","#5ca060","#4b4890","#c0b2cc","#a83c41","#cb6088","#c5a68a","#1a684d","#e76947","#906cab","#ebbd7c","#672a41","#c7a4e2","#739a87","#a1c3e1","#ae2753","#c6d1a3","#e9d1bc","#2f986f","#6a4587","#ce999b"];
+  var greater=[];
+  var colour_array=[];
+ for (var prop in chages) {
+   var big=0;
+        for (var d in chages[prop]) {
+    console.log("d");
+
+          console.log(chages[prop][d]);
+    
+          
+                   big=big+chages[prop][d];
+                   colour_array.push(d);
+       
+            }
+                 greater.push(big);
+
+      }
+   
+     console.log(chages);
+   console.log(colour_array);
+
+   console.log("==========================");
+
+   console.log(greater);
+var dd;
+  function uniqueArray( ar ) {
+    var j = {};
+    ar.forEach( function(v) {
+      j[v+ '::' + typeof v] = v;
+    });
+    return Object.keys(j).map(function(v){
+      return j[v];
+    });
+} 
+  
+  
+  var array=uniqueArray(colour_array);
+  var colour_with_data = {};
+  
+  for(dd=0;dd<array.length;dd++){
+   colour_with_data[array[dd]]=colour[dd];
+  } 
+
+  
+var Val_amount = Math.max.apply(Math, greater);
+console.log("===============>>>>>>>>>>>")
+console.log(Val_amount)
+
+  var bar_width=0.32;
+  var bar_width_tip=bar_width*100;
+  var bar_width_in_group=0.05;
+  var canvas ;
+  var context ;
+  var Val_Max=3;
+  var Val_Min;
+  var sections;
+  var xScale;
+  var yScale;
+  var y;
+    // intialize values for each variables
+  sections = chages.length;
+    Val_amount=Val_amount+Val_amount*30/100;
+  if(Val_amount>5){
+    Val_Max =Math.round(Val_amount); //Math.max.apply(Math, itemValue)+2;;
+  }
+    
+      
+  var stepSize =Val_Max*30/100 ;
+  var columnSize = 50;
+  var rowSize = 60;
+  var margin = 30;
+  var header = "No of Students" 
+    
+    
+  canvas = document.getElementById("canvasSyllabusID");
+  context = canvas.getContext("2d");
+  var tipCanvas = document.getElementById("tipSyllabusID");
+  var tipCtx = tipCanvas.getContext("2d");
+  // var canvasOffset = $("#canvasSyllabusID").offset();
+  context.fillStyle = "#8B8B8B"
+  var graph_hight=canvas.height*80/100;
+  var graph_width=canvas.width*80/100;
+  yScale = (graph_hight - columnSize - margin) / (Val_Max);
+  xScale=100;
+  
+  context.strokeStyle="#8B8B8B"; // background black lines
+  context.beginPath();
+  
+  
+  
+ function getMousePos(canvas, evt) {
+        var rect = canvas.getBoundingClientRect();
+        return {
+          x: evt.clientX - rect.left,
+          y: evt.clientY - rect.top
+        };
+      }
+      var canvas = document.getElementById('canvasSyllabusID');
+      var context = canvas.getContext('2d');
+
+      canvas.addEventListener('mousemove', function(evt) {
+        var mousePos = getMousePos(canvas, evt);
+        var message = 'Mouse position: ' + mousePos.x + ',' + mousePos.y;
+        handleMouseMove(mousePos);
+      }, false); 
+  
+  
+
+  
+  
+function handleMouseMove(e) {
+ 
+  mouseX = parseInt(e.x);
+  mouseY = parseInt(e.y);
+  
+  var hit = false;
+  var position=0;
+
+  if(e.x>(canvas.width*80/100)-15 ){
+     var temp_colour_pos=1;
+      var temp_colour=0;
+      for (var prop in colour_with_data) {
+          var x_pos1=(canvas.width*80/100)-15;
+          var x_pos2=(canvas.width*80/100);
+          var y_pos1=(canvas.height*3/100)-5+temp_colour;
+          
+          var y_pos2= (canvas.height*3/100)-5+temp_colour+15;
+          //e.y>y_pos1
+          if(e.x>x_pos1 && e.x<x_pos2 &&  e.y>y_pos1 && e.y<y_pos2){
+          var tip_tool=canvas.width*80/100;
+           tipCanvas.style.left = (mouseX) -100+ "px";
+          tipCanvas.style.top = (mouseY) +50+ "px";
+          tipCtx.clearRect(0, 0, tipCanvas.width, tipCanvas.height);
+          tipCtx.fillStyle = 'Green';
+          tipCtx.fill();
+          tipCtx.fillText(prop, 5, 5);
+         hit = true;
+          }
+      temp_colour+=30;
+      }
+  }else{
+       for (var prop in chages) {
+      for (var d in chages[prop]) {
+         
+                
+                  
+                    y =computeHeight_canvassyllabus(chages[prop][d],graph_hight,yScale);
+                    var x_pos1=position+rowSize+xScale-margin*2;
+                    var x_pos2=x_pos1+bar_width_tip;
+                    var y_pos1=graph_hight-margin;
+                    var y_pos2=y - margin;
+                    if(e.x>x_pos1 && e.x<x_pos2 && e.y<y_pos1 && e.y>y_pos2){
+                      var maxWidth = 50;
+                      var lineHeight = 15;
+                        tipCanvas.style.left = (mouseX)+25 + "px";
+                        tipCanvas.style.top = (mouseY) -50+ "px";
+                        tipCtx.clearRect(0, 0, tipCanvas.width, tipCanvas.height);
+                        tipCtx.fillStyle = 'Green';
+                        tipCtx.fill();
+                        //tipCtx.fillText('Name :'+prop, 5, 15);
+                        wrapText(tipCtx,'Name :'+prop, 5, 5, maxWidth, lineHeight);
+                        //tipCtx.fillText(n+' : '+chages[prop][d][k][m][n], 5, 30);
+                        wrapText(tipCtx,d+' : '+chages[prop][d], 5, 30, maxWidth, lineHeight);
+                        //tipCtx.fillText('Subject'+' : '+m+ ' ', 5, 45);
+                        // wrapText(tipCtx,'Subject'+' : '+m+ ' ', 5, 45, maxWidth, lineHeight);
+                      hit = true;
+                    }
+                     position=position+bar_width_tip;
+                     
+                  }
+                  position=position+7.5;
+
+      position=position+bar_width_tip-5;
+                
+              }
+        
+    }
+   
+  
+
+    
+if (!hit) {
+        tipCanvas.style.top = "-1000000px";
+    }
+}
+
+
+  
+ function wrapText(context, text, x, y, maxWidth, lineHeight) {
+    
+     // var words = text.split('');
+      var letter = text.length;
+     
+    
+        var line = '';
+     // alert(text.length);
+      
+
+        for(var n = 0; n < letter; n++) {
+          //alert(n+"          ");
+          //alert(text.charAt(n));
+          // var res = str.charAt(0);
+          var testLine = line + text.charAt(n) + '';
+          // alert(testline);
+          
+          var metrics = context.measureText(testLine);
+          var testWidth = metrics.width;
+          //  alert(n);
+          if ( n%21==0) {
+            // alert(x +"             "+y)
+            context.fillText(line, x, y);
+            line = text.charAt(n) + '';
+            y += lineHeight;
+          }
+          else {
+            line = testLine;
+          }
+        }
+        context.fillText(line, x, y);
+      }
+  
+    // column names 
+  context.font = "19 pt Arial;"
+  context.fillText(header, 0,columnSize - margin);
+    // draw lines in the background
+  context.font = "18 pt Helvetica"
+  var count =  0;
+  for (scale=Val_Max;scale>=0;scale = scale - stepSize) {
+    y = columnSize + (yScale * count * stepSize); 
+        context.fillText(Math.round(scale), margin,y + margin-30);
+    count++;
+  }
+  
+ 
+  // context.stroke();
+  
+  var count_zero =  0;
+  for (scale=Val_Max;scale>=0;scale = scale - 1) {
+    y = columnSize + (yScale * count_zero * 1); 
+    console.log("scale====>"+scale)
+      if(scale==0){
+        context.beginPath();
+        context.moveTo(xScale-20,20);
+        context.lineTo(xScale-20,graph_hight);
+        context.stroke();
+        context.beginPath();
+        var x_position,y_positon;
+        x_position=graph_hight*20/100;
+        y_positon=canvas.height*100/100;
+        context.moveTo(rowSize,y)
+        context.lineTo(graph_width,y)
+        context.fillText(Math.round(scale), margin,y + margin-30);
+        context.stroke();
+      }
+    count_zero++;
+  }
+  context.stroke();
+  // print names of each data entry
+  context.font = "20 pt Verdana";
+    context.textBaseline="bottom";
+  
+  var temp=1;
+      for (var prop in chages) {
+      temp++;
+  }
+  
+  var text_width=canvas.height*16/100;
+ var text_hoght=canvas.height*8/100;
+ var text_width1=canvas.height*15/100;;
+ var text_hoght1=canvas.height*8/100;
+ var total_position=0
+ var text_position=0;
+ for (var prop in chages) {
+   var position=0;
+            var count1=0;
+  
+        for (var d in chages[prop]) {
+           
+             //HHHHHHHHHHHHHHHHHHERE UNDER DATAAAAAAAAAA
+               
+                  context.beginPath();
+                  context.fillStyle = 'blue';
+                  y =computeHeight_canvassyllabus(chages[prop][d],graph_hight,yScale);
+                  
+                 // context.fillText(n+':'+chages[prop][d][k][m][n], xScale * (position+1),y - margin);
+                  context.stroke();
+                  count1 +=.45;
+                }
+                
+                context.save();
+                //  context.translate( (xScale * (text_position+1)),graph_hight);
+                
+                context.rotate(0.20);
+                context.fillStyle = '#000000';
+                context.font='9pt Calibri';
+                //Y SSSSSSSSSSSSCCCCAAAAAAAAALLLLLLEEEE DDDDDAAAAAAAAAAATTTTTTTAAAAAAA
+                context.fillText(prop, (xScale * (text_position+1))+text_width,graph_hight-text_hoght);
+                context.rotate(-0.20);
+                context.fillStyle = 'blue';
+                //   context.save();
+                //text_width=text_width;
+                text_hoght=text_hoght+21;
+                
+                text_position+=(bar_width*2)+bar_width_in_group;
+                total_position=total_position+bar_width*2+bar_width_in_group;
+                position=position+bar_width*2+bar_width_in_group;
+              
+            
+      
+   
+   
+  var emp_name=position-count1*25/100;
+  
+  context.rotate(0.17);
+  context.font='11pt Calibri';
+   //context.fillText(prop, xScale*(total_position+.75-(position/2))+text_width1,graph_hight+50-text_hoght1);
+   context.rotate(-0.17);
+  text_hoght1=text_hoght1+30;
+   total_position=total_position+bar_width;
+   text_position+=bar_width;
+   }
+  
+    var temp_colour=0;
+      for (var prop in colour_with_data) {
+        context.beginPath();
+        
+        context.font = '10pt Calibri';
+
+        var tip_tool=canvas.width*80/100;
+        context.fillStyle = '#000000';
+        context.fillText(prop, tip_tool,(canvas.height*temp_colour*3/100)+25);
+        context.fillStyle=colour_with_data[prop];
+        context.rect(tip_tool-20, (canvas.height*temp_colour*3/100)+10, 15, 15);
+        context.fillStyle = colour_with_data[prop];
+        context.fill();
+
+        context.stroke();
+        temp_colour+=2;
+  }
+    // translate to bottom of graph  inorder to match the data 
+  context.translate(0,graph_hight - margin);
+  context.scale(xScale,-1 * yScale);
+ 
+    // draw each graph bars 
+  
+ var position=0;
+ for (var prop in chages) {
+   
+        for (var d in chages[prop]) { 
+     
+
+context.fillStyle=colour_with_data[d];
+
+context.fillRect(position+1, 0, bar_width, chages[prop][d]);
+
+context.font = '20pt Calibri';        
+           position=position+bar_width;
+
+}  
+               position=position+bar_width_in_group;   
+
+           
+
+
+
+    
+
+
+
+  position=position+bar_width; 
+     }
+
+  
+  
+  
+}
+
+function computeHeight_canvassyllabus(value,height,yScale) {
+  y = height - value * yScale ; 
+    return y;
+}
+</script>
+

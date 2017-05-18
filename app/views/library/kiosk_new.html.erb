@@ -1,0 +1,35 @@
+<div class="mg-custom-labels">
+<%= form_for :library, url: library_kiosk_create_path, :html => {
+                            :id => 'libraryCreateID' } do |f| %>
+<%= f.hidden_field :is_deleted, :value => 0 %>
+<%= f.hidden_field :mg_school_id, :value => session[:current_user_school_id] %>
+<%= f.hidden_field :created_by, :value => session[:user_id] %>
+<%= f.hidden_field :updated_by, :value => session[:user_id] %>
+<%= f.hidden_field :user_type, :value => "kiosk" %>
+<p>
+    <label class="mg-label" style="width:140px"><%= t('user_name') %><span class="required-field">&nbsp;*</span></label>
+    <br/>
+   <%= f.text_field :user_name,:class=>"mg-text-field" %>
+</p>
+<p>
+    <label class="mg-label" style="width:140px"><%= t('password') %><span class="required-field">&nbsp;*</span></label>
+    <br/>
+   <%= f.text_field :password,:class=>"mg-text-field" %>
+</p>
+<p class="mg-p-mgtop">
+    <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("save")%></a>
+    <!-- <%#= f.submit t('save') ,:class=>"mg-small-form-btn"%> -->
+    <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+</p>
+<% end %>
+</div>
+<!-- <%#= render  partial: 'application/common_left_close' %> -->
+<script>
+
+$("#libraryCreateID").validate({
+        rules: {        
+        "library[user_name]": {required: true},
+        "library[password]": {required: true}
+      }
+    });
+</script>

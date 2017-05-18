@@ -1,0 +1,94 @@
+<table border="1" class="mg-showdata-bg" cellspacing="1" cellpadding="1"> 
+  <%checkup_obj = MgCheckupType.find_by(:id=>@checkup_schedule.mg_check_up_type_id)%>
+  <%@dateFormat = MgSchool.find_by(:id=>session[:current_user_school_id]).date_format %>
+  <tr>
+    <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('doctor_name')%></label>
+    </td>
+    <td class="mg-td-width-half mg-capitalize-text" valign="top">
+      <%= @doctor.try(:user_name) %>
+    </td>
+  </tr>
+
+ <tr>
+    <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"><%=t('checkup_type')%></label>
+    </td>
+    <td class="mg-td-width-half " valign="top">
+      <%= checkup_obj.try(:name) %>
+    </td>
+  </tr>
+
+  <tr>
+    <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"><%=t('date')%></label>
+    </td>
+    <td class="mg-td-width-half " valign="top">
+      <%= @checkup_schedule.try(:date).try(:strftime, @dateFormat) %>
+    </td>
+  </tr>
+
+  <tr>
+    <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"><%=t('start_time')%></label>
+    </td>
+    <td class="mg-td-width-half " valign="top">
+      <%= @checkup_schedule.try(:start_time).try(:strftime,"%l:%M%P") %>
+    </td>
+  </tr>
+
+  <tr>
+    <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"><%=t('end_time')%></label>
+    </td>
+    <td class="mg-td-width-half " valign="top">
+      <%= @checkup_schedule.try(:end_time).try(:strftime,"%l:%M%P") %>
+    </td>
+  </tr>
+
+  <tr>
+    <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"><%=t('user_checkup')%></label>
+    </td>
+    <td class="mg-td-width-half mg-capitalize-text" valign="top">
+      <%= @checkup_schedule.try(:checkup_for) %>
+    </td>
+  </tr>
+  <%if @checkup_schedule.try(:checkup_for)=='student'%>
+    <% mg_batch_id = MgCheckUpScheduleRecord.where(:mg_check_up_schedule =>@checkup_schedule.id,:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:mg_batch_id)%>
+    <tr>
+      <td class="mg-td-width-half" valign="top">
+        <label class="mg-label"><%=t('semester')%></label>
+      </td>
+      <td class="mg-td-width-half mg-capitalize-text" valign="top">
+        <ul>
+          <%mg_batch_id.each do |batch_id| %>
+            <% batchObj = MgBatch.where(:id=>batch_id,:is_deleted => 0,:mg_school_id=>session[:current_user_school_id])%>
+            <%courseObj = MgCourse.find_by(:id=>batchObj[0].mg_course_id)%>
+            <li><%= (courseObj.course_name) +"-"+ batchObj[0].name %></li>
+          <%end%>
+        </ul>
+      </td>
+    </tr>
+  <%else%>
+    <% mg_employee_department_id = MgCheckUpScheduleRecord.where(:mg_check_up_schedule => @checkup_schedule.id,:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:mg_employee_department_id)%>
+    <tr>
+      <td class="mg-td-width-half" valign="top">
+        <label class="mg-label"><%=t('department_name')%></label>
+      </td>
+      <td class="mg-td-width-half mg-capitalize-text" valign="top">
+        <ul>
+          <%mg_employee_department_id.each do |department_id| %>
+            <% employee_department = MgEmployeeDepartment.find_by(:id=>department_id,:is_deleted => 0,:mg_school_id=>session[:current_user_school_id])%>
+            <li><%= (employee_department.try(:department_name)) %></li>
+          <%end%>
+        </ul>
+      </td>
+    </tr>
+  <%end%>
+</table>
+<p class="mg-p-mgtop">
+  <a class="mg-small-form-btn cancel-form-dialog"><%=t('cancel')%></a>
+</p>
+
+  

@@ -1,0 +1,181 @@
+<% navigation_add t('hosteler_leave'), :controller=>'hostel_management', :action=>'hosteler_leave' %>
+<%= render  partial: 'hostel_management_left' %>
+<h4 class="mg-h4"><%= t('hosteler_leave')%></h4>
+<% hostel_details=MgHostelDetails.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:name,:id) %>
+<%= form_tag hosteler_leave_list_path, :id=> 'studentHostelAttendancesFormID', multipart: true do %>
+
+  <table class="exam-rounds">
+    <tr class="prgm-div">
+      <td>
+        <%=label :select_hostel, t("select_hostel") ,:class=>"mg-label "%>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <%#= select_tag "mg_hostel_details",options_for_select(hostel_details,:selected=>""),:prompt=>"Select",:class => 'prgm2' %>
+        <% hostel_warden=MgHostelWarden.find_by(:mg_user_id=>session[:user_id],:is_deleted=>0,:mg_school_id=>session[:current_user_school_id])
+        hostel_details=MgHostelDetails.find_by(:id=>hostel_warden.mg_hostel_details_id)
+        %>
+        <%= hidden_field_tag :mg_hostel_details_id ,hostel_warden.mg_hostel_details_id%>
+        <%= text_field_tag :mg_hostel_id ,hostel_details.try(:name),:readonly=>true,:class=>"mg-text-field"%>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <%=label :programme_list, t("select_programme") ,:class=>"mg-label "%><span class="required-field prgme">*</span>
+        &nbsp;<%= select_tag "mg_programme_details",options_for_select([]),{:class => 'prgm1',:prompt=>"Select", :onchange=>""} %>
+        <%#= select_tag :course_list, options_for_select(@classes,@mgcours_id), :prompt=>t("select"), :onchange=>"courseList(this.value)", :class=>"mg-text-field" %>
+      </td>     
+    </tr>
+  <!-- </table> -->
+
+  <%#=============================search form start===========================================%>
+
+  <!-- <h4 class="mg-h4">Select Date</h4> -->
+  <%#= form_tag hosteler_leave_list_path, :id=> 'studentHostelAttendancesFormID', multipart: true do %>
+  <%#= form_tag hosteler_leave_list_path, :id => 'employeeReportAttendancesFormID', multipart: true do %>
+  <!-- <table class="exam-rounds">
+    <tr class="prgm-div">
+      <td> -->
+  <!-- <p> -->
+  <tr><td>
+    <label class="mg-label mg-leave-width">Start Date</label>
+    <%mg_school_id_for_start_date=MgSchool.find_by(:is_deleted=>0,:id=>session[:current_user_school_id])%>
+    &nbsp;&nbsp;&nbsp;<%= text_field_tag :start_date, params[:start_date].present? ? params[:start_date].strftime(mg_school_id_for_start_date.try(:date_format)) : Date.today.beginning_of_month.strftime(mg_school_id_for_start_date.try(:date_format)), id: 'start_date' ,:class=>"mg-text-field"%>
+    </td>
+    </tr>
+    <tr>
+    <td>
+  <!-- </p>
+  <p> -->
+    <label class="mg-label mg-leave-width">End Date </label>
+    &nbsp;&nbsp;&nbsp;<%= text_field_tag :end_date, params[:end_date].present? ? params[:end_date].strftime(mg_school_id_for_start_date.try(:date_format)) : Date.today.end_of_month.strftime(mg_school_id_for_start_date.try(:date_format)) ,:class=>"mg-text-field"%>
+  <!-- </p> -->
+  </td>
+  </tr>
+  </table>
+<% end %>
+<p>
+  <!-- <button id="mg_employee_attendance_search_employee_btn" class="mg-custom-form-btn">Search</button> -->
+  <button id="mg_student_attendance_search_btn_id" class="mg-custom-form-btn">Search</button>
+</p>
+<!-- <div id="employeeAttendanceReportID"> -->
+<div id="HostelstudentLeaveListDIVID">
+<!-- <div id="studentFullAttendanceID" class="mg-pop-up-padding" style="overflow: hidden;"></div> -->
+
+</div>
+
+
+
+<%#=============================search form end=============================================%>
+
+
+
+
+<%= render  partial: 'application/common_left_close' %>
+
+<script type="text/javascript">
+  $( document ).ready(function() {
+    focusCurrentTab("hostelStudentLeaveAID","hostelStudentLeaveLID");
+    hostler();
+    dateFormatStr =  getJsDateFormat();
+    $("#start_date").datepicker({ dateFormat: dateFormatStr})// ,changeMonth: true,changeYear: true,yearRange: "-100:+0"});
+    $("#end_date").datepicker({ dateFormat: dateFormatStr})// ,changeMonth: true,changeYear: true,yearRange: 
+
+
+    $("#studentHostelAttendancesFormID").validate({
+      rules: {  
+        "mg_hostel_details": {required: true},
+        "mg_programme_details": {required: true},
+        "start_date": {dateFormat: true,required: true},
+        "end_date": {dateFormat: true,required: true}
+        // "end_date": {dateFormat: true, required: true}
+      }
+    });
+  });
+
+  $(document).on("click", "#mg_student_attendance_search_btn_id",function(){
+    if($("#studentHostelAttendancesFormID").valid()){
+      var startDate = $("#start_date").val();
+      var endDate = $("#end_date").val(); 
+      var myID =$("#mg_programme_details").val();
+      var Id=myID.split("-");
+      // var departmentId=$("#attendenceDepartmentID").val();
+      var mg_hostel_details_id=$("#mg_hostel_details").val();
+
+      $.ajax({
+        url: "/hostel_management/hosteler_leave_list/" ,
+        // url: "/employees_attendances/attendance_report/" ,
+        type: "get",
+        cache: false,
+        data: {"startDate":startDate, "endDate":endDate, "mg_hostel_details_id":mg_hostel_details_id,"wing_id":Id[0], "quota_id":Id[1]},
+        // data: {"startDate":startDate, "endDate":endDate, "departmentId":departmentId},
+
+        success:function(html){
+          $("#HostelstudentLeaveListDIVID").empty();
+          $("#HostelstudentLeaveListDIVID").append(html);
+        },
+        error: function(){
+          alert("Error: Please try again.");
+        }
+      }); 
+    }
+  });
+
+
+  $(document).on("change","#start_date",function(e){
+    var admission_date=$("#end_date").val();
+    var dob=$(this).val();
+   // alert(getDateObj(dob,dateFormatStr)+3);
+    if($("#studentHostelAttendancesFormID").valid()){
+     if(getDateObj(dob,dateFormatStr)>getDateObj(admission_date,dateFormatStr)){
+        alert("From Date should be lesser than To Date");
+        document.getElementById('start_date').value ="";
+      }
+    }
+  });
+
+  $(document).on("change","#end_date",function(e){
+    var admission_date=$(this).val();
+    var dob=$("#start_date").val();
+    if($("#studentHostelAttendancesFormID").valid()){
+      if(getDateObj(dob,dateFormatStr)>getDateObj(admission_date,dateFormatStr)){
+        alert("From Date should be lesser than To Date");
+        document.getElementById('end_date').value ="";
+      }
+    }
+  });
+
+
+  $(function () {
+    $.validator.addMethod('dateFormat',
+    function (value, element) {
+      dateFormatStr =  getJsDateFormat();
+        if (this.optional(element)) {
+            return true;
+        }
+        var ok = true;
+        try {
+            $.datepicker.parseDate(dateFormatStr, value);
+        }
+        catch (err) {
+            ok = false;
+        }
+        return ok;
+    },
+      "Please enter a date in the format "+ getDateFormat(dateFormatStr) +".");
+      dateFormatStr =  getJsDateFormat();
+
+    $(".datefield").datepicker({ dateFormat: dateFormatStr, changeYear: true });
+});
+
+  function hostler(){
+  var myID =$("#mg_hostel_details_id").val();
+  var urlLink = "/hostel_management/select_programme_data";
+  $.ajax({
+    url: urlLink ,
+    cache: false,
+    data:{id:myID},
+    success: function(html){
+      $('#mg_programme_details').empty().html(html.main);
+    }
+  });
+};
+</script>

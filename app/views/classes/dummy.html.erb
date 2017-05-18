@@ -1,0 +1,80 @@
+<!-- Sec --><h1>Generate New Course</h1>
+
+<div id="page-yield">
+	<div class="box">
+		
+		<%= form_for :courses, url: classes_path do |f| %>
+			
+			<label for="course_name">Course Name</label>
+			<%= f.text_field :course_name %>
+
+			<label for="section_name">Section Name</label>
+			<%= f.text_field :section_name %>
+
+			<label for="code">Code</label>
+			<%= f.text_field :code %>
+
+			<!--Grading system will come here-->
+
+			<h4><%= t('initial_batch') %></h4>
+			
+		<% end %>
+
+		<%= fields_for :batches do |batch_form| %>
+
+		<label for="course_name">Course Name</label>
+			<label for="name"><%= t('name') %></label>
+                    <%= batch_form.text_field :name %>
+
+                    <label for="Start date"><%= t('Start date') %></label>
+                <div class="input-container">
+                    <%= batch_form.text_field :Start_date ,:class => 'Start_date' %>
+                </div> 
+
+             <label for="End date"><%= t('End date') %></label>
+                <div class="input-container">
+                    <%= batch_form.text_field :End_date ,:id => 'End_date' %>
+                </div>
+
+		<% end %>
+
+			<%= submit_tag t('save'), class: "submit" %>
+	</div>
+</div>
+
+
+<script >
+ 
+
+   $(function() {
+          // $( ".Start_date" ).datepicker();
+          dateFormatStr =  getJsDateFormat();
+      
+          $( "#End_date" ).datepicker(changeMonth: true,
+                changeYear: true,dateFormat: dateFormatStr );
+
+          $( ".Start_date" ).datepicker({
+              beforeShow: function( input ) {
+                  setTimeout(function() {
+                      var headerPane = $( input )
+                      .datepicker( "widget" )
+                      .find( ".ui-datepicker-header" );
+
+                      $( "<button>", {
+                          text: "X",
+                          click: function() {
+                            $.datepicker.hide();
+                          }
+                      }).appendTo( headerPane );
+                  }, 1 );
+              },
+              changeMonth: true,
+                changeYear: true,
+                dateFormat: dateFormatStr 
+          });
+        
+      });
+
+
+</script>
+ 

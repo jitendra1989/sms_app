@@ -1,0 +1,19 @@
+<table class="batch-tbl">
+	<tr>
+		<th><%=t('name')%></th>
+		<th><%=t('startdate')%></th>
+		<th><%=t('enddate')%></th>
+		<th><%=t('actions')%></th>
+	</tr>
+	<%@academicdetails.each do |academicDetail|%>
+	<tr>
+		<td><%=academicDetail.name%></td>
+		<%@dateFormat = MgSchool.find_by(5).date_format %>
+		<td><%=academicDetail.start_date.strftime(@dateFormat)%></td>
+		<td><%=academicDetail.end_date.strftime(@dateFormat)%></td>
+		<td><button title="Edit" id="<%=raw academicDetail.id %>" class="academic-year-edit mg-icon-btn"><i class="fa fa-pencil-square-o"></i></button>
+		<button title="Delete" id="<%=raw academicDetail.id %>" class="academic-year-delete mg-icon-btn" onclick="return confirm('Are you sure?')"><i class="fa fa-trash"></i></button></td>
+
+	</tr>
+	<%end%>
+</table>

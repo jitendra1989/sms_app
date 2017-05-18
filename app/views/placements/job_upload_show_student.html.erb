@@ -1,0 +1,234 @@
+<% navigation_add t('job_upload'), :controller=>'placements', :action=>'job_upload' %>
+<% navigation_add  t('job_details'), :controller=>'placements', :action=>'job_upload_show',:id=>params[:id] %>
+
+<%#= render  partial: 'placements_left' %>
+
+
+<table border="1" class="mg-showdata-bg " cellspacing="1" cellpadding="1">
+   <tr>
+     <td class="mg-td-width-half" valign="top">
+        <label class="mg-label"> <%= t('position')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+        <%= @job_upload.try(:position) %>
+     </td>
+ </tr>
+
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+        <label class="mg-label"><%=t('job_description')%></label>
+     </td>
+     <td class="mg-td-width-half " valign="top">
+        <!-- <div class="text-scroll-for-log-text-cls comments-space" style="padding: 5px 40 0 10px"> -->
+            <%= @job_upload.try(:job_description) %>
+        <!-- </div> -->
+     </td>
+ </tr>
+  <tr>
+     <td class="mg-td-width-half" valign="top">
+        <label class="mg-label"> <%= t('functional_area')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+        <%= @job_upload.try(:functional_area) %>
+     </td>
+ </tr>
+  <tr>
+     <td class="mg-td-width-half" valign="top">
+        <label class="mg-label"> <%= t('industry')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+    
+        <%= @job_upload.try(:industry) %>
+     </td>
+ </tr>
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+        <label class="mg-label"> <%= t('job_location')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+     
+        <%= @job_upload.try(:job_location) %>
+     </td>
+ </tr>
+
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+        <label class="mg-label"> <%= t('educational_qualification')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+     
+        <%= @job_upload.try(:edu_qual) %>
+     </td>
+ </tr>
+
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+        <label class="mg-label"> <%= t('minimum_experience')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+     
+        <%= @job_upload.try(:min_exp) %>
+     </td>
+ </tr>
+
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+        <label class="mg-label"> <%= t('technical_skills')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+     
+        <%= @job_upload.try(:technical_skills) %>
+     </td>
+ </tr>
+
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+        <label class="mg-label"> <%= t('soft_skills')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+     
+        <%= @job_upload.try(:soft_skills) %>
+     </td>
+ </tr>
+
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+        <label class="mg-label"> <%= t('salary')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+     
+        <%= @job_upload.try(:salary) %>
+     </td>
+ </tr>
+
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+        <label class="mg-label"> <%= t('company')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+       <% companies_data=MgPlacementRegistration.where(:id=>@job_upload.company).pluck(:name_of_the_company) %>
+
+        <%= companies_data.join(', ') %>
+     </td>
+ </tr>
+
+
+<tr>
+     <td class="mg-td-width-half" valign="top">
+        <label class="mg-label"> <%= t('company_website')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+     
+        <%= @job_upload.try(:company_website) %>
+     </td>
+ </tr>
+
+<tr>
+     <td class="mg-td-width-half" valign="top">
+        <label class="mg-label"> <%= t('job_id')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+     
+        <%= @job_upload.try(:job_id) %>
+     </td>
+ </tr>
+
+<tr>
+     <td class="mg-td-width-half" valign="top">
+        <label class="mg-label"> <%= t('relevant_experience')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+     
+        <%= @job_upload.try(:rel_exp) %>
+     </td>
+ </tr>
+
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+        <label class="mg-label"> <%= t('referral_code')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+     
+        <%= @job_upload.try(:referral_code) %>
+     </td>
+ </tr>
+
+<tr>
+     <td class="mg-td-width-half" valign="top">
+        <label class="mg-label"> <%= t('last_date_of_application')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+     
+        <%= @job_upload.try(:last_date_application).strftime(@timeformat.date_format) %>
+     </td>
+ </tr>
+
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+        <label class="mg-label"> <%= t('interview_date')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+     
+        <%= @job_upload.try(:interview_date).strftime(@timeformat.date_format)%>
+     </td>
+ </tr>
+
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+        <label class="mg-label"> <%= t('interview_location')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+     
+        <%= @job_upload.try(:interview_location)%>
+     </td>
+ </tr>
+
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+        <label class="mg-label"> <%= t('status')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+     
+        <%= @job_upload.try(:status)%>
+     </td>
+ </tr>
+
+ 
+    <% (1..10).each do |i| %>
+        
+            <%# puts @job_upload.public_send("round#{i}").inspect %>
+            <%# puts ss %>
+        <% if @job_upload.public_send("round#{i}").present? %>
+            <tr>
+                <td class="mg-td-width-half" valign="top">
+                    <label class="mg-label"> <%= "Round "+ i.to_s%></label>
+                </td>
+
+                <% round_data=MgInterviewRound.find_by(:id=>@job_upload.public_send("round#{i}"))%>
+                <td class="mg-td-width-half" valign="top">
+                    <%= round_data.name %>
+                </td>
+            </tr>
+        <% end %>
+    <% end %>
+
+</table>
+ 
+ <table>
+        <tr>
+            <td>
+               <a class="mg-small-form-btn cancel-form-dialog"><%=t('cancel')%></a>
+            </td>
+        </tr> 
+    </table>
+
+ <%#= render  partial: 'application/common_left_close' %>
+
+
+<script type="text/javascript">
+
+// $( document ).ready(function() {
+//     focusCurrentTab("placementsJobUploadAID","placementsJobUploadLiID");
+//   });
+
+</script>

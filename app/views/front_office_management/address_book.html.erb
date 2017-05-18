@@ -1,0 +1,85 @@
+<% navigation_add t('address_book'), address_book_path %>
+<%=render partial: 'front_office_management_left'%>
+<h4 class="mg-h4"><%= t('address_book') %></h4>
+
+<!-- <button class="new-add-exam-type mg-btn-bottom-margin mg-custom-form-btn"><%#= t('add_address_book')%></button>
+ -->
+<button class="mg-btn-bottom-margin mg-custom-form-btn" onclick="window.location.href='/front_office_management/address_book_new'">Add Address</button>
+
+<div class="mg_pagination">
+<%if @address_book_data.present?%>
+<table  class="batch-tbl mg-tbl-margin">   <!-- border="2" --> 
+  <tr class="subject-table-header">
+    <th><%= t('name') %></th>
+    <th><%= t('contact_number') %></th>
+    <th class="mg-capitalize-text"><%= t('designation') %></th>
+    <th><%= t('email_id') %></th>
+    <th colspan="3"><%= t('actions') %></th>
+  </tr>
+ 
+  <% @address_book_data.each do |s| %>
+   <tr>
+      <td class="mg-capitalize-text"><%= s.try(:name) %></td>
+     <!--  <td class="mg-desc-text-justify"><%#= truncate(s.description.to_s, :length => 25, :separator => ' ') %></td>
+     <td> -->
+         <td><%= s.try(:contact_number  ) %></td>
+           
+          <td><%= s.try(:designation) %></td>
+           <td><%= s.try(:email_id) %></td>
+<td>
+      <button title="Show" id="<%=raw s.id %>-showAddressBTNID" class="show-show-address-book-btn mg-icon-btn"><i class="fa fa-eye"></i></button>
+
+        <button title="Edit" id="" class=" mg-icon-btn" onclick="window.location.href='/front_office_management/<%=s.id%>/address_book_edit'"><i class="fa fa-pencil-square-o" ></i></button>
+   <span style="left: -2px; position: relative; float: right; top:-2px;"> 
+                <%= link_to "<i class=\"fa fa-trash\"></i>".html_safe,{ action: "address_book_destroy", id: s.id },data: { confirm: "Are you sure?" } ,:title=> "Delete" ,:class=>"mg-icon-btn"%> 
+   </span>
+      </td>
+    </tr>
+  <% end %>
+</table>
+<br/>
+ <div class="pagination-align" style="position: relative; bottom: 10px;">
+              <%#= will_paginate @exam_types, :container => false %>
+  </div>
+<%else%>
+<h5>No Records are present </h5>
+<%end%>
+</div>
+
+<div id="newExamTypeDIVID"></div>
+<div id="editExamTypeDIVID"></div>
+<div id="showAddressFomDIVID"></div>
+
+<%= render  partial: 'application/common_left_close' %>
+
+<script>
+$(document).ready(function () {
+    focusCurrentTab("address_bookAID","address_bookLiID");
+});
+$(document).on("click", ".show-show-address-book-btn", function(e){
+        
+        var Id=$(this).attr('id');
+       
+        //alert(urlLink);
+        var urlLink = "/front_office_management/address_book_show/";
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            data:{"id":Id[0]},
+            success: function(html){  
+                    $('#showAddressFomDIVID').dialog({
+                    modal: true,
+                    title: "Show Address",
+                    minWidth: 300,
+                    minHeight: 320,
+                    // maxHeight: 500,
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+});
+</script>

@@ -1,0 +1,40 @@
+<%= form_for :gradeSets, :url=>{:controller=>'examination',:action=>'cceBasic_gradeSetscreate'},:html => {
+                            :id => 'gradeSetDataCategoryNewFormId', :class => 'elm_class',
+                            :style => 'elm_style' } do |f| %>
+
+    
+ 
+
+      <p>
+        <label class="mg-label" for="name"> <%= t('name') %><span class="required-field">&nbsp;*</span></label><br/>
+        <%= f.text_field :name ,:class=>"mg-text-field"%>
+      </p>
+     <%=f.hidden_field :mg_school_id,:value=>session[:current_user_school_id]%>
+
+
+<div style="display:none;">
+      <p>
+        <label for="is_deleted" class="mg-label "><%=t('status')%></label><br />
+        <label for="is_deleted" class="mg-label-inner-form "><%=t('active')%></label>
+        <%= f.radio_button :is_deleted, false , :checked => true%>
+        <label for="is_deleted" class="mg-label-inner-form "><%=t('inactive')%></label>
+        <%= f.radio_button :is_deleted, true %>
+
+      </p>
+</div>
+    <p>
+       <%= f.submit t('save') ,:class=>"mg-small-form-btn"%>
+        <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+    </p>
+<%end%>
+ 
+<script>
+ $("#gradeSetDataCategoryNewFormId").validate({
+        //debug: true,
+        rules: {
+                  "gradeSets[name]": {required: true},
+                  
+        }
+      });
+ 
+</script>

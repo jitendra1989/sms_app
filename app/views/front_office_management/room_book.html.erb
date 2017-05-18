@@ -1,0 +1,419 @@
+<%= render partial: 'front_office_management_left' %>
+<% navigation_add t('meeting_details'), :controller=>'front_office_management', :action=>'meeting_detail' %>
+<% navigation_add t('add_meeting_details'), :controller=>'front_office_management', :action=>'room_book' %>
+<h4 class="mg-h4"><%= t('meeting_detail') %></h4>
+<div class="row">
+<div class="box col-md-3" >
+
+  <div class="box">
+    <%= form_for :meeting_detail, url: create_booking_path,:html=>{:id=>"meetingDetailsFormID", :multipart=>true} do |f| %>
+      <%= f.hidden_field :is_deleted, :value=>0 %>  
+      <%= f.hidden_field :mg_school_id, :value =>session[:current_user_school_id]%>
+      <%= f.hidden_field :created_by, :value =>session[:user_id] %>
+      <%= f.hidden_field :updated_by, :value =>session[:user_id] %>     
+    
+      <label class="mg-label mg-custom-labels mg-label-text-transform-none" for="recipient_name"><%= t('number_of_attendees') %><span class="required-field"> *</span></label>
+      <div class="input-container">
+        <%= f.text_field :number_of_attendees, :class=>"mg-text-field mg-custom-labels" %>
+      </div>
+
+      <label class="mg-label mg-custom-labels" for="recipient_name"><%= t('room_no_name_capacity') %><span class="required-field"> *</span></label>
+      <div class="input-container">
+      <%#= f.select :mg_meeting_room_id,options_for_select([]),:prompt=>"Select",:class=> "mg-text-field mg-custom-labels" %>
+      <%=f.select :mg_meeting_room_id,options_for_select([]),{:include_blank => t('select')} ,:class=>"mg-text-field mg-custom-labels"%>
+      </div>
+
+      <label class="mg-label mg-custom-labels" for="address"><%= t('start_date') %><span class="required-field"> *</span></label>
+      <div class="input-container">
+        <%= f.text_field :start_date, :class=>"mg-text-field mg-custom-labels room_book_start_time_class" %>
+      </div>
+
+      <label class="mg-label mg-custom-labels" for="dispatch_number"><%= t('start_time') %><span class="required-field"> *</span></label>
+      <div class="input-container">
+        <%= f.text_field :start_time, :class=>"mg-text-field mg-custom-labels" %><span id="start_time_errorID" class="error" style="font-weight: bold;">
+      </div>
+
+      <label class="mg-label mg-custom-labels" for="transaction_flow"><%= t('end_date') %><span class="required-field"> *</span></label>
+      <div class="input-container">
+        <%= f.text_field :end_date, :class=>"mg-text-field mg-custom-labels room_book_end_time_class" %>
+      </div>
+
+      <label class="mg-label mg-custom-labels" for="transaction_flow"><%= t('end_time') %><span class="required-field"> *</span></label>
+      <div class="input-container">
+        <%= f.text_field :end_time, :class=>"mg-text-field mg-custom-labels" %><span id="end_time_errorID" class="error" style="font-weight: bold;">
+      </div>
+
+      <label class="mg-label mg-custom-labels" for="transaction_flow"><%= t('booked_by') %><span class="required-field"> *</span></label>
+      <div class="input-container">
+        <%= f.select :mg_employee_id, options_for_select(@employee_list),{:prompt=>t("select")},{class: "mg-text-field mg-custom-labels"} %>
+      </div>
+
+      <label class="mg-label mg-custom-labels" for="received_date"><%= t('purpose') %><span class="required-field"> *</span></label>
+      <div class="input-container">
+        <%= f.text_area :meeting_purpose, :autocomplete => :off, :class=>"mg-text-field mg-custom-labels" %>
+      </div>
+
+      <p class="mg-p-mgtop">
+        <!-- <a onclick="$(this).closest('form').submit()" id="" class="submit mg-small-form-btn mg-text-field mg-custom-labels"><%#=t("save")%></a> --> 
+        <%= f.submit t('save'),:id=>"roomBookedFormID" ,:class=>"mg-small-form-btn",:style=>"display:none;"%>
+      </p>
+    <% end %>
+  </div>
+ 
+  <!-- <a onclick="roomValidateFunction()" id="" class="submit mg-small-form-btn mg-text-field mg-custom-labels"><%#=t("save")%></a> 
+  <%#= link_to t('cancel'), {:controller=>'front_office_management',:action=>'meeting_detail'}, {:class=>"mg-small-form-btn cancel-form-dialog"} %>   -->     
+</div>
+
+ <div class="col-md-8">
+    <div id="date_wise_overlapped_list_ID"></div>
+ </div>
+ <div class="col-md-1">
+ </div>
+</div>
+<div class="row col-md-12">
+   <a onclick="roomValidateFunction()" id="" class="submit mg-small-form-btn mg-text-field mg-custom-labels"><%=t("save")%></a> 
+  <%= link_to t('cancel'), {:controller=>'front_office_management',:action=>'meeting_detail'}, {:class=>"mg-small-form-btn cancel-form-dialog"} %>   
+</div>
+
+
+<%= render  partial: 'application/common_left_close' %>
+
+<script>
+
+  dateFormatStr =  getJsDateFormat();
+
+  $(document).ready(function(){
+    focusCurrentTab("roomBookingAID","roomBookingLID");
+
+    $( "#meeting_detail_start_date" ).datepicker({changeMonth: true,changeYear: true,yearRange: "-0:+50",minDate: "0",dateFormat: dateFormatStr});
+    $( "#meeting_detail_end_date" ).datepicker({changeMonth: true,changeYear: true,yearRange: "-50:+0",minDate: "0",dateFormat: dateFormatStr});
+    $('#meeting_detail_start_time').timepicker({ 'scrollDefault': 'now' });
+    $('#meeting_detail_end_time').timepicker({ 'scrollDefault': 'now'}); 
+
+    $(function () {
+      $.validator.addMethod('dateFormat',
+      function (value, element) {
+        dateFormatStr =  getJsDateFormat();
+        if (this.optional(element)) {
+            return true;
+        }
+        var ok = true;
+        try {
+            $.datepicker.parseDate(dateFormatStr, value);
+        }
+        catch (err) {
+            ok = false;
+        }
+        return ok;
+      },
+        "Please enter a date in the format "+ getDateFormat(dateFormatStr) +".");
+      dateFormatStr =  getJsDateFormat();
+
+      $(".datefield").datepicker({ dateFormat: dateFormatStr, changeYear: true });
+    });
+
+   $("#meetingDetailsFormID").validate({
+      rules: {     
+        "meeting_detail[mg_meeting_room_id]": {required: true},
+        "meeting_detail[start_date]": {required: true, dateFormat: true},
+        "meeting_detail[start_time]": {required: true},
+        "meeting_detail[end_date]": {required: true, dateFormat: true},
+        "meeting_detail[end_time]": {required: true},
+        "meeting_detail[mg_employee_id]": {required: true},
+        "meeting_detail[number_of_attendees]": {required: true},
+        "meeting_detail[meeting_purpose]": {required: true}
+      }
+    });
+  });
+  
+  $(document).on("change","#meeting_detail_number_of_attendees",function(){
+    var no_of_attendes=$("#meeting_detail_number_of_attendees").val();
+    var select_option='<option value="">Select</option>';
+
+    if(no_of_attendes!=''){
+      $.ajax({
+        url: "/front_office_management/room_list",
+        data: {"number_of_attendees":no_of_attendes},
+        success:function(data){
+          if (data.length>0) {
+            for(key in data){
+              select_option += '<option value="'+data[key].id+'">'+data[key].room_no+'</option>'
+            }
+            $("#meeting_detail_mg_meeting_room_id").empty().append(select_option);
+            //$("select#meeting_detail_mg_meeting_room_id").val(batch_id);
+          }else{
+            $("#meeting_detail_mg_meeting_room_id").empty().append(select_option);
+          }
+        }
+      });
+    }else{
+      $("#meeting_detail_mg_meeting_room_id").empty().append(select_option);
+    }
+  });
+
+  function roomValidateFunction(){
+    var room_id=$("#meeting_detail_mg_meeting_room_id").val();
+    var start_date=$("#meeting_detail_start_date").val();
+    var start_time=$("#meeting_detail_start_time").val();
+    var end_date=$("#meeting_detail_end_date").val();
+    var end_time=$("#meeting_detail_end_time").val();
+
+    $.ajax({
+      url: "/front_office_management/room_availibility",
+      data: {"room_id":room_id,"start_date":start_date,"start_time":start_time,"end_date":end_date,"end_time":end_time},
+      success:function(data){
+        console.log(data["test_result"]);
+        if(data["test_result"]==false){
+          alert("This room is already Booked");
+        }else{
+          $("#roomBookedFormID").click();
+        }
+      }
+    });
+  }
+
+  $(document).on("change","#meeting_detail_end_date",function(){
+    var dateFormatStr =  getJsDateFormat();
+    var start_date=$("#meeting_detail_start_date").val();
+    var end_date=$(this).val();
+    console.log("Strat_date="+start_date);
+    console.log("end_date="+end_date);
+    if(start_date && end_date){
+      if(!(compareDate(start_date,end_date,dateFormatStr))){
+        alert("End date should be greater than start date");
+        $(this).val('');
+        //document.getElementById('events_end_date').value="";
+      }else{
+        var from_date=$("#meeting_detail_start_date").val();
+        var to_date=$("#meeting_detail_end_date").val();
+        if (from_date==to_date){
+          var from = $('#meeting_detail_start_time').val();
+          var to = $('#meeting_detail_end_time').val();
+          var from_time=minFromMidnight(from);
+          var to_time=minFromMidnight(to);
+          if(from_time && to_time){
+            if(from_time > to_time){
+             alert("Start Time must be less than End Time");
+             $('#meeting_detail_start_time').val('');
+              //document.getElementById('events_start_time').value="";
+            } 
+          }
+        }
+      }
+    }
+  });
+
+
+  $(document).on("change","#meeting_detail_start_date",function(){
+    var dateFormatStr =  getJsDateFormat();
+    var start_date=$(this).val();
+    var end_date=$("#meeting_detail_end_date").val();
+
+    console.log("Strat_date="+start_date);
+    console.log("end_date="+end_date);
+    if(start_date && end_date){
+      if(!(compareDate(start_date,end_date,dateFormatStr))){
+        alert("End date should be greater than start date");
+        $(this).val('');
+        //document.getElementById('events_end_date').value="";
+      }else{
+        var from_date=$("#meeting_detail_start_date").val();
+        var to_date=$("#meeting_detail_end_date").val();
+        if (from_date==to_date){
+          var from = $('#meeting_detail_start_time').val();
+          var to = $('#meeting_detail_end_time').val();
+          var from_time=minFromMidnight(from);
+          var to_time=minFromMidnight(to);
+          if(from_time && to_time){
+            if(from_time > to_time){
+             alert("Start Time must be less than End Time");
+             $('#meeting_detail_start_time').val('');
+              //document.getElementById('events_start_time').value="";
+            } 
+          }
+        }
+      }
+    }
+  });
+
+  $(document).on("change","#meeting_detail_start_time",function(){
+    var dateFormatStr =  getJsDateFormat();
+    var start_date=$("#meeting_detail_start_date").val();
+    var end_date=$("#meeting_detail_end_date").val();
+    var start_time = $('#meeting_detail_start_time').val();
+    var regexprsn = /^([1-9]|1[0-2]):([0-5]\d)\s?(AM|PM)?$/i;
+
+    if(start_time.match(regexprsn)){
+      $("#start_time_errorID").text("");
+
+      if(start_date && end_date){
+        //var from_date=$("#meeting_detail_start_date").val();
+        //var to_date=$("#meeting_detail_end_date").val();
+        if (start_date==end_date){
+          var from = $('#meeting_detail_start_time').val();
+          var to = $('#meeting_detail_end_time').val();
+          var from_time=minFromMidnight(from);
+          var to_time=minFromMidnight(to);
+          if(from_time && to_time){
+            if(from_time > to_time){
+             alert("Start Time must be less than End Time");
+             $('#meeting_detail_start_time').val('');
+              //document.getElementById('events_start_time').value="";
+            } 
+          }
+        }
+      }
+    }else{      
+      $("#start_time_errorID").text("Please enter a time in the format am/pm.");
+      $('#meeting_detail_start_time').val('');
+    }
+  });
+
+  $(document).on("change","#meeting_detail_end_time",function(){
+    var dateFormatStr =  getJsDateFormat();
+    var start_date=$("#meeting_detail_start_date").val();
+    var end_date=$("#meeting_detail_end_date").val();
+    var end_time = $('#meeting_detail_end_time').val();
+    var regexprsn = /^([1-9]|1[0-2]):([0-5]\d)\s?(AM|PM)?$/i;
+    
+    if(end_time.match(regexprsn)){
+      $("#end_time_errorID").text("");
+    
+      if(start_date && end_date){
+        //var from_date=$("#meeting_detail_start_date").val();
+        //var to_date=$("#meeting_detail_end_date").val();
+        if (start_date==end_date){
+          var from = $('#meeting_detail_start_time').val();
+          var to = $('#meeting_detail_end_time').val();
+          var from_time=minFromMidnight(from);
+          var to_time=minFromMidnight(to);
+          if(from_time && to_time){
+            if(from_time > to_time){
+             alert("End Time must be greater than Start Time");
+             $('#meeting_detail_end_time').val('');
+              //document.getElementById('events_start_time').value="";
+            } 
+          }
+        }
+      }
+    }else{      
+      $("#end_time_errorID").text("Please enter a time in the format am/pm.");
+      $('#meeting_detail_end_time').val('');
+    }
+  });
+
+  function minFromMidnight(tm){
+    if(tm==''){
+      return
+    }
+   var ampm= tm.substr(-2)
+   var clk = tm.substr(0, 4);
+   var m  = parseInt(clk.match(/\d+$/)[0], 10);
+   var h  = parseInt(clk.match(/^\d+/)[0], 10);
+   h += (ampm.match(/pm/i))? 12: 0;
+   return h*60+m;
+  }
+
+
+$(document).on("change",".room_book_start_time_class",function(){
+    var room_id=$("#meeting_detail_mg_meeting_room_id").val();
+    var start_date=$("#meeting_detail_start_date").val();
+    var end_date=$("#meeting_detail_end_date").val();
+    $("#date_wise_overlapped_list_ID").empty();
+    if (!(room_id=="" || start_date=="" || end_date==""))
+    {
+        // ====================================================================
+      $.ajax({
+      url: "/front_office_management/room_overlapping_details",
+      data: {"room_id":room_id,"start_date":start_date,"end_date":end_date,"is_start_date":"yes"},
+      success:function(html){
+        $("#date_wise_overlapped_list_ID").empty();
+        $("#date_wise_overlapped_list_ID").append(html);
+      }
+    });
+    // ====================================================================
+    }
+    else{
+                  // ====================================================================
+      $.ajax({
+      url: "/front_office_management/room_overlapping_details",
+      data: {"room_id":room_id,"start_date":start_date,"is_start_date":"yes"},
+      success:function(html){
+        $("#date_wise_overlapped_list_ID").empty();
+        $("#date_wise_overlapped_list_ID").append(html);
+      }
+    });
+    // ====================================================================
+    }
+    
+  });
+
+  $(document).on("change",".room_book_end_time_class",function(){
+    var room_id=$("#meeting_detail_mg_meeting_room_id").val();
+    var start_date=$("#meeting_detail_start_date").val();
+    var end_date=$("#meeting_detail_end_date").val();
+    $("#date_wise_overlapped_list_ID").empty();
+    $.ajax({
+      url: "/front_office_management/room_overlapping_details",
+      data: {"room_id":room_id,"start_date":start_date,"end_date":end_date,"is_start_date":"no"},
+      success:function(html){
+        $("#date_wise_overlapped_list_ID").empty();
+        $("#date_wise_overlapped_list_ID").append(html);
+      }
+    });
+  });
+
+
+  $(document).on("change","#meeting_detail_mg_meeting_room_id",function(){
+    var room_id=$("#meeting_detail_mg_meeting_room_id").val();
+    var start_date=$("#meeting_detail_start_date").val();
+    var end_date=$("#meeting_detail_end_date").val();
+    $("#date_wise_overlapped_list_ID").empty();
+      if (!(start_date=="" || end_date=="" || room_id==""))
+      {
+          $.ajax({
+          url: "/front_office_management/room_overlapping_details",
+          data: {"room_id":room_id,"start_date":start_date,"end_date":end_date,"is_start_date":"no"},
+          success:function(html){
+          $("#date_wise_overlapped_list_ID").empty();
+          $("#date_wise_overlapped_list_ID").append(html);
+        }
+        });
+      }
+      else if (!(start_date=="" || room_id==""))
+      {
+          $.ajax({
+          url: "/front_office_management/room_overlapping_details",
+          data: {"room_id":room_id,"start_date":start_date,"is_start_date":"yes"},
+          success:function(html){
+          $("#date_wise_overlapped_list_ID").empty();
+          $("#date_wise_overlapped_list_ID").append(html);
+        }
+        });
+      }
+    });
+ 
+
+
+
+  //   $(document).on("change",".meeting_detail_mg_meeting_room_id",function(){
+  //   var room_id=$("#meeting_detail_mg_meeting_room_id").val();
+  //   var start_date=$("#meeting_detail_start_date").val();
+  //   var end_date=$("#meeting_detail_end_date").val();
+  //   $.ajax({
+  //     url: "/front_office_management/room_overlapping_details",
+  //     if (!(start_date=="" || end_date=="" || room_id==""))
+  //     {
+  //         data: {"room_id":room_id,"start_date":start_date,"end_date":end_date,"is_start_date":"no"},
+  //     }
+  //     else if (!(start_date=="" || room_id==""))
+  //     {
+  //         data: {"room_id":room_id,"start_date":start_date,"end_date":end_date,"is_start_date":"no"},
+  //     }
+  //     success:function(html){
+  //       $("#date_wise_overlapped_list_ID").empty();
+  //       $("#date_wise_overlapped_list_ID").append(html);
+  //     }
+  //   });
+  // });
+</script>

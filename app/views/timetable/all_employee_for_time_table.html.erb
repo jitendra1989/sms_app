@@ -1,0 +1,2 @@
+<label class="mg-label mg-tt-width mg-tbl-margin">Select Employee</label>
+	<%=select_tag :batch,options_for_select(@employee),:prompt=>"Select Employee",:onchange=>"selectEmployee(this.value)"%>

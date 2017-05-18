@@ -1,0 +1,49 @@
+<%= form_for :laboratory, :url=>{:controller=>'laboratory',:action=>'item_update',:id=>@laboratory.id},:html => {:id => 'laboratoryitemUpdateID' } do |f| %>
+<%= f.hidden_field :is_deleted, :value => 0 %>
+<%= f.hidden_field :mg_school_id, :value => session[:current_user_school_id] %>
+<%= f.hidden_field :updated_by, :value => session[:user_id] %>
+<p>
+    <label class="mg-label" style="width:140px"><%= t('item_type') %><span class="required-field">&nbsp;*</span></label>
+    <br/>
+   <%= f.text_field :name,:class=>"mg-text-field" %>
+</p>
+<p>
+    <label class="mg-label" style="width:140px"><%= t('description') %><span class="required-field">&nbsp;</span></label>
+    <br/>
+   <%= f.text_area :description,:class=>"mg-text-field" %>
+</p>
+
+<table>
+<tr>
+<td>
+    <label class="mg-label" style="width:76px"><%= t('is_issuable') %><span class="required-field">&nbsp;*</span></label>
+   </td><td>
+   <%= f.check_box :is_issuable,:class=>"mg-text-field" %>
+   </td>
+  
+   </tr>
+   </table>
+
+
+<p class="mg-p-mgtop">
+    <!-- <%#= f.submit t('save') ,:class=>"mg-small-form-btn"%> -->
+    <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("save")%></a>
+    <%#= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+<a class="mg-small-form-btn cancel-form-dialog"><%=t("cancel")%></a>
+
+</p>
+<% end %>
+
+<%#= render  partial: 'application/common_left_close' %>
+
+<script>
+
+
+$("#laboratoryitemUpdateID").validate({
+
+        rules: {        
+        "laboratory[name]": {required: true}
+       //   "laboratory[description]": {required: true}
+      }
+    });
+</script>

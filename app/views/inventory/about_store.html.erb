@@ -1,0 +1,45 @@
+<% navigation_add 'About Store', :controller => 'inventory', :action => 'about_store' %>
+<%= render  partial: 'inventory/inventory_left' %>
+<h4 class="mg-h4"><%= t('about_store') %></h4>
+
+<%if @store_obj.length>0%>
+  <table  class="batch-tbl mg-tbl-margin">   <!-- border="2" --> 
+    <tr class="subject-table-header">
+      <th><%= t('store_name') %></th>
+      <th><%= t('manager_name') %></th>
+      <th class="mg-desc-text-justify"><%= t('description') %></th>
+    </tr>
+   
+    <% @store_obj.each do |f| %>
+      <tr>
+        
+        <td><%= f.try(:store_name) %></td>
+        <td>
+          <%
+            @store_manager = MgInventoryStoreManager.where(:mg_inventory_store_management_id=>f.id,:is_deleted=>0,:mg_school_id=>session[:current_user_school_id])
+if @store_manager[0].present?
+            @manager_name = MgUser.find_by(:id=>@store_manager[0].mg_user_id)
+end
+          %>
+
+          <%= @manager_name.try(:user_name) %>
+        </td>
+        <td><%= truncate(f.try(:description), :length => 25) %></td>
+      </tr>
+    <% end %>
+  </table>
+  <br/>
+<%else%>
+  <h5 >No Proposal is created </h5>
+<%end%>
+
+<%= render  partial: 'application/common_left_close' %>
+
+
+<script>
+
+  $( document ).ready(function() {
+    focusCurrentTab("aboutFinancialStoreManagerID","aboutFinancialStoreManagerLiID");
+            //focusStudentHeaderBox();
+  });
+</script>

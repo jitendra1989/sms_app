@@ -1,0 +1,120 @@
+
+
+<% navigation_add t('payslips_for_approve'), :controller=>'payslips', :action=>'payslips_for_approve' %>
+<%=render partial: 'payslip_left'%>
+<h4 class="mg-h4"><%=t('payslip_list')%></h4>
+<%= form_for :sort_payslip, url: payslips_for_approve_path, :html => {
+                            :id => 'labpurchaseshortCreateID' } do |f| %>
+
+<label class="mg-label mg-tt-width mg-rm-text-trans"><%=t('select_month_and_year')%></label>   <%=text_field_tag :date_month_approve, "#{Date.new(@year.to_i,@month.to_i,01).strftime('%B')} #{@year}" %>
+<%=hidden_field_tag :date_month_approve_date, "#{@month}-#{@year}"%>
+<br/>
+
+<%= f.submit t('search') ,:class=>"mg-small-form-btn hidden-button-onchange-submit-class", :id=>"payslipApproveSubmitFormID" ,:style=>"display:none"%>
+
+<%end%>
+
+<%= form_for :sort_payslip, :url=>payslip_approval_path, :html => {
+                            :id => 'indexPayslipApprovalPrincipalCreateFormID' } do |f| %>
+  <%=hidden_field_tag :is_rejected%>
+	<%if @payslip.present?%>
+		<%=render partial: 'index'%>
+		<p class="mg-p-mgtop">
+  			<%= link_to t("export_approved_payslips"), payslips_for_approve_path(format: "xls", :date_month_approve_date=>"#{@month}-#{@year}") , :class=>'mg-small-form-btn'%> 
+        <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn" id="payslipApprovalRejectFormAID"><%=t("approve_selected_payslips")%></a>
+        <!-- <a onclick="is_rejected_function()" class="mg-small-form-btn"><%#=t("reject_selected_payslip")%></a> -->
+      <%#= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+
+ 		</p>
+	<%else%>
+		<h5>No Records are Present</h5>
+	<%end%>
+
+<%end%>
+
+<div id="payslipsEditGenDIVID"></div>
+<div id="showPayslipDIVID"></div>
+
+ 
+<%= render partial: 'application/common_left_close' %>
+
+
+<script type="text/javascript">
+
+function is_rejected_function () {
+  $("#is_rejected").val("1");
+  $("#payslipApprovalRejectFormAID").click();
+
+}
+
+$(document).on("click", ".select-all-payslip-approval", function(e){
+  e.preventDefault();
+    $(".payslip-approval-cls").prop('checked', true);
+        
+  });
+   $(document).on("click", ".select-non-payslip-approval", function(e){
+     e.preventDefault();
+    $(".payslip-approval-cls").prop('checked', false);
+       
+  }); 
+
+
+$(document).ready(function(){
+		$("li").removeClass( "active" );
+        $("a").removeClass( "activeMenu" );
+
+        $("#viewPayslipsApprovedLiID").addClass( "active" );
+        $("#viewPayslipsApprovedAID").addClass( "activeMenu" );
+        focusPaySlip();
+
+
+        $("#indexPayslipApprovalPrincipalCreateFormID").validate({
+        rules: {
+        "payslip_approved[]": {required: true}
+        }
+        });
+
+        $("#date_month_approve").datepicker( {
+        changeMonth: true,
+        changeYear: true,
+        showButtonPanel: true,
+        dateFormat: 'MM yy',
+        beforeShow: function (){
+                          setTimeout(function() {
+                        $(".ui-datepicker-buttonpane")
+                            .html('')
+                            .append("<button id='dateMonthDateMonthApprovePayslipBTNID'>Done</button>");
+                        }, -6)
+                    },
+         onChangeMonthYear: function (){
+                        setTimeout(function() {
+                        
+                         $(".ui-datepicker-buttonpane")
+                            .html('')
+                            .append("<button id='dateMonthDateMonthApprovePayslipBTNID'>Done</button>");
+                        }, -5)
+
+                    }, 
+        onClose: function(dateText, inst) { 
+            var month = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
+            var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
+            $(this).datepicker('setDate', new Date(year, month, 1));
+        }
+    });
+
+   });
+
+$(document).on("click", "#dateMonthDateMonthApprovePayslipBTNID", function(e){
+  $( "#date_month_approve" ).datepicker("hide");
+  var month = parseInt($("#ui-datepicker-div .ui-datepicker-month :selected").val()) + 1;
+  var year = parseInt($("#ui-datepicker-div .ui-datepicker-year :selected").val());
+  $("#date_month_approve_date").val(month+"-"+year);
+  $("#payslipApproveSubmitFormID").click();
+});
+</script>
+
+<style>
+.ui-datepicker-calendar {
+    display: none;
+    }
+</style>

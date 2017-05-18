@@ -1,0 +1,29 @@
+<table border="1" class="mg-showdata-bg mg-tbl-layout" cellspacing="1" cellpadding="1">
+   <tr>
+     <td class="mg-td-width-half" valign="top">
+        <label class="mg-label"> <%= t('store_name')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+        
+     <%store_data=MgInventoryStoreManagement.find_by(:id=>@show_store_data.mg_inventory_store_management_id)%>
+    <%=store_data.try(:store_name)%>
+   
+     </td>
+ </tr>
+ <tr>
+     <td valign="top">
+        <label class="mg-label"> <%= t('room_no')%></label>
+     </td>
+     <td valign="top" style="width: 100%;">
+    <%if @show_store_data.room_no.present?%>
+  <%=@show_store_data.room_no%>
+     
+     <%else%>
+     <h5><%="No Data"%></h5>
+     <%end%>
+     </td>
+ </tr>
+
+</table>
+<br/>
+ <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>

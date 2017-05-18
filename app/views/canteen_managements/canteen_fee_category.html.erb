@@ -1,0 +1,136 @@
+<%= render  partial: 'canteen_management_left' %>
+<% navigation_add 'Canteen Fees', canteen_managements_canteen_fee_category_path %>
+
+<%if flash[:error].present?%>
+<%=flash[:error]%>
+<%end%>
+
+
+<%
+library_id=MgFeeCategory.find_by(:mg_school_id=>session[:current_user_school_id],:is_deleted=>0,:item_category_name=>"Canteen Management")
+%>
+
+<div id="transportDialogID" class="mg-pop-up-padding" style="overflow-x: inherit;">
+
+<h4 class="mg-h4"><%=t('show_canteen_fee_category')%></h4>
+<%if library_id.present?%>  
+
+<button id="<%=raw library_id.id%>" title="Edit Category" class="canteen_feess_edit mg-icon-btn mg-btn-bottom-margin"><i class="fa fa-pencil-square-o"></i></button>
+
+ <%= link_to "<i class=\"fa fa-wrench\"></i>".html_safe, {:action=>"manage_canteen_particulars",:controller=>"canteen_managements",:id=>library_id.id} ,:title=>"Manage Particulars" ,:class=>"mg-icon-btn-link"%>  
+<table border="1" class="mg-showdata-bg mg-show-tbl-width" cellspacing="1" cellpadding="1">
+
+<%data_info=MgFeeCategory.find(library_id.id)%>
+
+<tr>
+      <td class="mg-td-width-half" valign="top">
+       <label class="mg-label" for="maxBooksIssuable"><%= t ('name') %></label>
+      </td>
+      <td class="mg-td-width-half" valign="top">
+        <label class="mg-label-inner-form"> <%=data_info.name %></label>
+      </td>
+  </tr>
+ <tr>
+      <td class="mg-td-width-half" valign="top">
+       <label class="mg-label" for="maxBorrowDays"><%= t ('description') %></label>
+      </td>
+      <td class="mg-td-width-half" valign="top">
+        <label class="mg-label-inner-form"> <%=data_info.description %></label>
+      </td>
+  </tr>
+
+   
+
+
+
+</table>
+<br/>
+
+
+<table border="1" class="mg-showdata-bg mg-show-tbl-width" cellspacing="1" cellpadding="1">
+<h4 class="mg-h4"><%=t('Particulars_Information')%></h4>
+
+ <th class="mg-padding-10">Particulars</th>
+
+<%
+library_settings=MgParticularType.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id],:mg_fee_category_id=>library_id.id).all
+
+%>
+          <%library_settings.each do |settings|%>
+          <tr>
+        
+          <td><%=settings.particular_name%></td>
+         
+
+          </tr>
+          <%end%>
+
+
+
+</table>
+</table>
+<%else%>
+
+<button  title="Edit Fee" class="canteen-edit-data mg-icon-btn mg-btn-bottom-margin"><i class="fa fa-pencil-square-o"></i></button>
+<%="Please Create Canteen Fee Category"%>
+<%end%>
+
+</div>
+
+<%= render  partial: 'application/common_left_close' %>
+
+<script>
+$(document).ready(function(){
+
+  focusCurrentTab("canteenFeeAID","canteenFeeLiID");
+  
+});
+
+$(document).on("click", ".canteen-edit-data", function(e){
+       e.preventDefault();
+       
+
+        var ID =$(this).attr('id');
+         
+       
+        var urlLink = "/canteen_managements/canteen_fee_category_new";
+       
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            data:{"edit_id":ID},
+           success: function(html){
+
+        $('#transportDialogID').empty();
+        $('#transportDialogID').html(html);
+
+               
+            }
+        });
+});
+
+
+$(document).on("click", ".canteen_feess_edit", function(e){
+       e.preventDefault();
+       
+
+        var ID =$(this).attr('id');
+         
+       
+        var urlLink = "/canteen_managements/canteen_fee_category_edit";
+       
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            data:{"id":ID},
+           success: function(html){
+
+                
+        $('#transportDialogID').empty();
+        $('#transportDialogID').html(html);
+
+               
+            }
+        });
+});
+</script>

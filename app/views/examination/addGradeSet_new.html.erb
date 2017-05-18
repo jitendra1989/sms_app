@@ -1,0 +1,60 @@
+<!-- breadcrumbs Work -->
+<% navigation_add 'Examinations', examinations_path %>
+<% navigation_add 'CCE', examination_cce_new_path %>
+<% navigation_add 'Basic Settings', examination_cceBasic_Settings_path %>
+<% navigation_add 'CCE Grades', examination_cceBasic_gradeSets_path %>
+<%# ppath = '/examination/addGradeSet_new/'+@id %>
+<%# navigation_add 'Add Grade',ppath %>
+
+<!-- breadcrumbs Work -->
+
+<%= render  partial: 'examination_table_left' %>
+<h4 class="mg-h4">CCE Grades</h4>
+<div>
+<button class="addGrade-sets-datas mg-custom-form-btn mg-btn-bottom-margin" id="<%= @id%>">New </button><br/>
+
+
+<div id="addGrade_sets_newDatas">
+</div>
+<div id="addGrade_sets_newDatasEdit">
+</div>
+
+
+<table class="batch-tbl mg-btn-bottom-margin" cellspacing="0" style="padding:0; border-collapse:collapse;">
+
+ 
+<%if  @addGradeSetData[0].to_s.empty? %>
+<h5><%="No Records Found"%></h5>
+<%else%>
+<label class="mg-label"><%="Name : "%></label>
+<label class="mg-label-inner-form">&nbsp;<%= @gradeSets.name%></label>
+  <tr>
+    <th>Grade</th>
+    <th>Grade Points</th>
+    <th><%=t('actions')%></th>
+  </tr>
+  <% @addGradeSetData.each do |data| %>
+    <tr>
+      <td><%= data.name %></td>
+      <td class="mg-align-center"><%= data.grade_point %></td>
+
+      <td>
+          <a title="Edit" href="#" id=<%=raw data.id%> class="addGradeSet-edit-class mg-icon-btn"><i class="fa fa-pencil-square-o"></i></a>
+          <a title="Delete" href="#" id=<%=raw data.id%> class="addGradeSet-delete-class mg-icon-btn"><i class="fa fa-trash"></i></a>
+      </td>
+    </tr>
+  <% end %>
+  <%end%>
+</table>
+</div>
+</div>
+<%= render  partial: 'examination_table_close' %><br/>
+
+
+<script type="text/javascript">
+  $(document).ready(function() {
+        focusCurrentTab("viewStudentListAId","viewStudentListLiId");
+        focusExaminationHeaderBox();
+  });
+
+</script>

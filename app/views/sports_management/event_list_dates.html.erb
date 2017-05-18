@@ -1,0 +1,7 @@
+<label class="mg-label mg-tt-width mg-rm-text-trans"><%=t('event_date') %><span class="required-field"> *</span></label>
+<%if params[:data1]=="12"%>
+<%end%>
+<%if params[:data1]=="123"%>
+<br/>
+<%end%>
+   <%=select_tag :date_of_event_Data ,options_for_select(@date,:selected=>@data),:prompt=>t('select'),:class=>"mg-select-btn"%>

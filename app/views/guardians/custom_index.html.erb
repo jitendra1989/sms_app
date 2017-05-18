@@ -1,0 +1,82 @@
+<!-- breadcrumbs Work -->
+<% navigation_add 'Guardian Custom Fields', '/guardians/custom_new' %>
+<% navigation_add 'Guardian New Custom Field', '/guardians/custom_index' %>
+
+<!-- breadcrumbs Work -->
+
+
+<!-- Sec --> 
+<!--<a href='#',id='customFieldID'  class="custom-fields">customfields </a>-->
+<%= render  partial: 'master_settings/master_settings_left.html' %>
+<h4 class="mg-h4">Create Custom Fields</h4>
+<!--<%#=link_to "customfields", controller: "students", action: "custom_new"%>-->
+<%#="CREATE CUSTOM FIELDS"%>
+
+<%= form_for :demo,  :url=>{:controller=> "guardians", :action=> "custom_create"} ,:html => { :id => "guardianCustomFieldsFormID" ,:multipart => true } do |f| %>
+  
+<div class="field1">
+
+  <%= f.hidden_field :mg_school_id, :value =>session[:current_user_school_id]%>
+   
+  <%= f.hidden_field :model_name, :value => "guardian"%>
+ </div>
+
+ <div class="field">
+   <label class="mg-label mg-leave-width"><%=t('fieldname')%><span class="required-field "> *</span></label>
+    <%= f.text_field :name ,:class=>"mg-text-field"%>
+  </div><br>
+
+<div id="field2">
+ <label class="mg-label mg-leave-width"><%=t('fieldtype')%><span class="required-field "> *</span></label>
+<%= f.select :data_type, options_for_select([["Check Box","check_box"], ["Radio Button","radio_button"],["Input Text","input_type"],["Drop Down","drop_down"]]),{:include_blank => 'Select'} ,:class=>"mg-select-btn"%>
+ </div><br>
+  
+  <div id="field4">
+  <label for="Default Value" class="mg-label"><%=t('defaultvalue')%><span class="required-field "> *</span></label><br>
+    <%= f.text_area :text_data ,:class=>"mg-text-field"%>
+    </div>
+<div style="display:none">
+  <p>
+  <label for="is_deleted" class="mg-label"><%=t('status')%></label><br />
+      <label for="is_deleted" class="mg-label-inner-form"><%=t('active')%></label>
+    <%= f.radio_button :is_deleted, false , :checked => true%>
+    <label for="is_deleted" class="mg-label-inner-form"><%=t('inactive')%></label>
+    <%= f.radio_button :is_deleted, true %>
+   </p>
+</div>
+ 
+  
+ <div id="field3">
+  </div><br>
+
+  <div class="actions">
+    <%#= f.submit t("save") ,:class=>"mg-small-form-btn"%>
+    <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("save")%></a>
+    <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+  </div>
+<% end %>
+
+<!-- <span class="mg-cncl-btn-align">
+ <%#= button_to t('cancel'), '/guardians/custom_new' ,:class=>"mg-small-form-btn"%>   
+</span> -->
+
+
+ <!-- <%#= button_to t('cancel'), '/guardians/custom_new' %>    -->
+
+<%= render partial: 'application/common_left_close' %>
+
+<script >
+
+ $(document).ready(function () {
+    focusCurrentTab("viewGuardianCustomFieldAId","viewGuardianCustomFieldiId");
+    focusMasterSettings();
+    $("#guardianCustomFieldsFormID").validate({
+      rules:{
+        "demo[name]":{required:true},
+        "demo[data_type]":{required:true},
+         "demo[text_data]":{required:true}
+      }
+    });
+
+  });
+</script>

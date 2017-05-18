@@ -1,0 +1,132 @@
+<% navigation_add t('discipline_report'), :controller=>'hostel_management', :action=>'discipline_report' %>
+
+<% navigation_add t('show_discipline_report'), :controller=>'hostel_management', :action=>'disciplanary_report_show',:id=>params[:id] %>
+<%= render  partial: 'hostel_management_left' %>
+
+<h4 class="mg-h4"><%= t('show_hostel_details')%></h4>
+
+<table border="1" class="mg-showdata-bg " cellspacing="1" cellpadding="1" style="width: 343px;">
+   <tr>
+     <td class="mg-td-width-half" valign="top">
+        <label class="mg-label"> <%= t('hostel_name')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+     <%hostel_details=MgHostelDetails.find_by(:id=>@discipline_report.mg_hostel_details_id)
+@date_format=MgSchool.find_by(:id=>session[:current_user_school_id]).date_format
+     %>
+
+        <%= hostel_details.try(:name) %>
+     </td>
+ </tr>
+  <tr>
+     <td class="mg-td-width-half" valign="top">
+        <label class="mg-label mg-label-text-transform-none"> <%= t('date_of_report')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+    
+
+<%=@discipline_report.try(:date_of_report).strftime(@date_format)%>
+     </td>
+ </tr>
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+        <label class="mg-label"><%=t('reason')%></label>
+     </td>
+     <td class="mg-td-width-half " valign="top">
+            <%= @discipline_report.try(:reason) %>
+     </td>
+ </tr>
+
+  
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+        <label class="mg-label"> <%= t('action_to_be_taken')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+     
+        <%= @discipline_report.try(:action_to_be_taken) %>
+     </td>
+ </tr>
+
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+        <label class="mg-label"> <%= t('status')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+     
+       <%= @discipline_report.try(:status) %>
+     </td>
+ </tr>
+
+</table>
+
+<h4 class="mg-h4"><%= t('discipline_report_data')%></h4>
+
+<% list= MgHostelDisciplineReportList.where(:is_deleted=>0,:mg_hostel_discipline_report=>@discipline_report.id,:mg_school_id=>session[:current_user_school_id])
+%>
+
+<table border="1" class="mg-showdata-bg " cellspacing="1" cellpadding="1" style="width: 344px;">
+ <tr>
+    <th>
+  <%= t('student_name')%>
+    </th>
+
+    <th>  <%= t('student_id')%></th>
+
+    <th>  <%= t('Floor')%></th>
+
+
+    <th>  <%= t('room_no')%></th>  
+     
+ </tr>
+ <% list.each do |prgm| %>
+           <%@list_data=MgAllocateRoomList.find_by(:mg_student_id=>prgm.mg_student_id,:is_deleted=>0,:mg_school_id=>session[:current_user_school_id])
+
+           student_data=MgStudent.find_by(:id=>@list_data.try(:mg_student_id))
+           floor_Data=MgHostelFloor.find_by(:id=>@list_data.try(:mg_hostel_floor_id))
+            room_data=MgHostelRoom.find_by(:id=>@list_data.try(:mg_hostel_room_id))
+
+ %>  
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+       
+           <%= "#{student_data.first_name} #{student_data.last_name}" %>
+     </td>
+
+     <td class="mg-td-width-half" valign="top">
+     
+ <%= "#{student_data.admission_number}" %>            
+      
+     </td>
+      <td class="mg-td-width-half" valign="top">
+     
+ <%= "#{floor_Data.name}" %>            
+      
+     </td>
+      <td class="mg-td-width-half" valign="top">
+     
+ <%= "#{room_data.name}" %>            
+      
+     </td>
+     
+     </td>
+</tr>
+<%end%>
+ 
+
+ <br/>
+
+ 
+</table>
+<p  class="mg-p-mgtop">
+<%= link_to t('cancel'), {:controller=>'hostel_management',:action=>'discipline_report'}, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+</p>
+<%= render  partial: 'application/common_left_close' %>
+<script>
+$(document).ready(function () {
+
+        focusCurrentTab("disciplane_listAID","disciplane_listLiID");
+        
+    });
+
+</script>

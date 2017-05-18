@@ -1,0 +1,107 @@
+<% navigation_add t('rooms'), :controller=>'hostel_management', :action=>'hostel_rooms' %>
+<% navigation_add  t('show_room_details'), :controller=>'hostel_management', :action=>'hostel_rooms_show',:id=>params[:id] %>
+
+<%#= render  partial: 'hostel_management_left' %>
+<%= render  partial: 'hostel_management_left' %>
+<h4 class="mg-h4"><%=t('show_room_details')%></h4>
+
+
+
+<table border="1" class="mg-showdata-bg" cellspacing="1" cellpadding="1">
+   <tr>
+     <td class="mg-td-width-half" valign="top">
+   		<label class="mg-label mg-rm-text-trans"> <%= t('hostel')%></label>
+   	 </td>
+   	 <td class="mg-td-width-half" valign="top">
+    	<%= MgHostelDetails.find_by(:id=>@hostel_rooms.mg_hostel_details_id).name %>
+  	 </td>
+ </tr>
+
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+  		<label class="mg-label mg-rm-text-trans"><%=t('floor')%></label>
+  	 </td>
+  	 <td class="mg-td-width-half" valign="top">
+    	<%= MgHostelFloor.find_by(:id=>@hostel_rooms.mg_hostel_floor_id).name %>
+  	 </td>
+ </tr>
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"><%=t('name')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+      <%= @hostel_rooms.try(:name) %>
+     </td>
+ </tr>
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"><%=t('room_type')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+    	<%= MgHostelRoomType.find_by(:id=>@hostel_rooms.mg_hostel_room_type_id).name %>
+     </td>
+ </tr>
+
+
+
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"><%=t('capacity')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+      <%= @hostel_rooms.try(:capacity) %>
+     </td>
+ </tr>
+
+<tr>
+<td class="mg-td-width-half" valign="top">
+      <label class="mg-label"><%=t('is_occupiable?')%></label>
+     </td>
+ 	<% if @hostel_rooms.try(:is_occupiable)==true %>
+      	<td><%= "Yes" %></td>
+      <% else %>
+      	<td><%= "No" %></td>
+      <%end %>
+</tr>
+
+  <% if @hostel_rooms.try(:is_occupiable)==false %>
+
+   <tr>
+
+       <td class="mg-td-width-half" valign="top">
+          <label class="mg-label"><%=t('reason')%></label>
+       </td>
+       <td class="mg-td-width-half" valign="top">
+         <div class="text-scroll-for-log-text-cls comments-space">
+            <%= @hostel_rooms.try(:reason) %>
+          </div>
+       </td>
+   </tr>
+  <% end %>
+ 
+</table>
+<br/>
+    <table>
+        <tr>
+            <td>
+                <%= link_to t('cancel'), {:controller=>'hostel_management',:action=>'hostel_rooms'}, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+            </td>
+        </tr> 
+    </table>
+ <%= render  partial: 'application/common_left_close' %>
+
+<script type="text/javascript">
+
+$(document).ready(function () {
+  textSeeMoreLess();
+  focusCurrentTab("hostelRoomsAID","hostelRoomsLiID");
+  focusCurrentTab("hostelRoomsAAID","hostelRoomsALiID");
+});
+
+
+
+</script>
+
+
+
+

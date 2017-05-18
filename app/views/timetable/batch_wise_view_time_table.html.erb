@@ -1,0 +1,38 @@
+
+<%if @weekDayForSelectedBatch.length>0%>
+	<%=hidden_field :batch_id,:value=>@batchId%>
+	<h4 class="mg-h4">Course:<%=@courseName%>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Batch:<%=@batchname%>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ClassTeacher:</h4>
+	<table class="batch-tbl">
+		<tr>
+			<th>WeekDay</th>
+			<th>08.30am-09.30am123</th>
+		</tr>
+		<%@weekDayForSelectedBatch.each do|weekday|%>
+		  <% if weekday.mg_weekday_id==0%>
+        	<% @day="Sunday"%>
+	      <% elsif weekday.mg_weekday_id==1%>
+	        <% @day="Monday"%>
+	      <% elsif weekday.mg_weekday_id==2%>
+	       <%  @day="Tuesday"%>
+	      <% elsif weekday.mg_weekday_id==3%>
+	       <%  @day="Wednesday"%>
+	      <% elsif weekday.mg_weekday_id==4%>
+	        <% @day="Thursday"%>
+	      <% elsif weekday.mg_weekday_id==5%>
+	       <%  @day="Friday"%>
+	      <% else%>
+	       <%  @day="Saturday"%>
+	      <% end%>
+		<tr>
+			<td id="weekDayTdID"><%= @day%></td>
+			<td></td>
+		</tr>
+		<%end%>
+	</table>
+	<%else%>
+		<h4>No timetable Entry</h4>
+<%end%>
+
+
+
+

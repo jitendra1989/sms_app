@@ -1,0 +1,21 @@
+
+
+<!-- breadcrumbs Work -->
+<% navigation_add 'Weekdays', timetable_index_path %>
+
+<!-- breadcrumbs Work -->
+
+
+
+<%= render  partial: 'master_settings/master_settings_left' %>
+<%= render  partial: 'index' %>
+<%= render  partial: 'schools/school_left_close' %>
+
+<script>
+$(document).ready(function () {
+        focusCurrentTab("viewWeekDayAId","viewWeekDayLiId");
+
+        focusMasterSettings();
+
+    });
+</script>

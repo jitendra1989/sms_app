@@ -1,0 +1,134 @@
+<%= render  partial: 'library/library_left' %>
+<% navigation_add 'Resource Type', library_resource_path %>
+<% navigation_add 'Create Resource Type', library_resource_new_path %>
+
+<h4 class="mg-h4"><%= t('add_resource_type') %></h4>
+
+<%= form_for :library, url: library_resource_create_path, :html => {
+                            :id => 'libraryResourceCreateID' } do |f| %>
+<%= f.hidden_field :is_deleted, :value => 0 %>
+<%= f.hidden_field :mg_school_id, :value => session[:current_user_school_id] %>
+<%= f.hidden_field :created_by, :value => session[:user_id] %>
+<%= f.hidden_field :updated_by, :value => session[:user_id] %>
+
+
+
+<p>
+    <label class="mg-label" style="width:220px"><%= t('select_resource_category') %><span class="required-field">&nbsp;*</span></label>
+    </br>
+    <%= f.collection_select(:mg_resource_category_id,MgResourceCategory.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]), :id, :name,{:include_blank => t("select")},:id => "libraryResourceCategoryId")%>
+
+   <%#= f.text_field :mg_resource_category_id,:class=>"mg-text-field" %>
+</p>
+
+<p>
+    <label class="mg-label mg-label-text-transform-none" style="width:220px"><%= t('type_of_resource') %><span class="required-field">&nbsp;*</span></label>
+    </br>
+   <%= f.text_field :name,:class=>"mg-text-field" %>
+</p>
+<p>
+    <label class="mg-label" style="width:220px"><%= t('description') %></label>
+    </br>
+   <%= f.text_area :description,:class=>"mg-text-field" %>
+</p>
+<p>
+    <label class="mg-label mg-tt-width"><%= t('is_non_issuable') %></label>
+                    <%= f.check_box :is_non_issuable %>
+</p>
+
+<p>
+    <label class="mg-label" style="width:220px"><%= t('max_issuable_count') %><span class="required-field">&nbsp;*</span></label>
+    </br>
+   <%= f.text_field :max_issuable_count,:class=>"one_two mg-text-field" %>
+</p>
+<p>
+    <label class="mg-label" style="width:220px"><%= t('max_borrow_days') %><span class="required-field">&nbsp;*</span></label>
+    </br>
+   <%= f.text_field :max_borrow_day,:class=>"one_two mg-text-field" %>
+</p>
+<p>
+    <label class="mg-label" style="width:220px"><%= t('renewal_period') %><span class="required-field">&nbsp;*</span></label>
+    </br>
+   <%= f.text_field :renewal_period,:class=>"one_two mg-text-field" %>
+</p>
+<p>
+    <label class="mg-label mg-label-text-transform-none" style="width:220px"><%= t('max_no_of_renewals_allowed') %><span class="required-field">&nbsp;*</span></label>
+    </br>
+   <%= f.text_field :max_renewals_allowed,:class=>"one_two mg-text-field" %>
+</p>
+<p>
+    <label class="mg-label" style="width:220px"><%= "#{"fine"}(#{"per day"})" %><span class="required-field">&nbsp;*</span></label>
+   </br>
+   <%= f.text_field :fine_per_day,:class=>"one_two mg-text-field" %>
+</p>
+<p>
+    <label class="mg-label" style="width:220px"><%= t('prefix') %><span class="required-field">&nbsp;*</span></label>
+    </br>
+   <%= f.text_field :prefix,:class=>"mg-text-field library-resource-new-prefix" %>
+</p>
+<p class="mg-p-mgtop">
+    <button type="button" class="library-resource-new-for-submit-class  mg-small-form-btn"><%=t("save")%></button>
+    <a onclick="$(this).closest('form').submit()" class="library-resource-new-submit-class mg-small-form-btn" style="display:none"><%#=t("save")%></a>
+    <!-- <%#= f.submit t('save') ,:class=>"mg-small-form-btn"%> -->
+    <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+</p>
+<% end %>
+<%= render  partial: 'application/common_left_close' %>
+
+<!-- <%#= render  partial: 'application/common_left_close' %> -->
+<script>
+$( document ).ready(function() {
+            focusCurrentTab("viewlibraryresource","viewlibraryresourceLiID");
+            
+          //focusStudentHeaderBox();
+
+$("#libraryResourceCreateID").validate({
+        rules: {        
+        "library[name]": {required: true},
+        "library[mg_resource_category_id]": {required: true},
+        "library[mg_resource_category_id]": {required: true},
+        "library[max_issuable_count]": {required: true,number:true,min:1},
+        "library[max_borrow_day]": {required: true,number:true,min:1},
+        "library[renewal_period]": {required: true,number:true,min:1},
+        "library[max_renewals_allowed]": {required: true,number:true,min:1},
+        "library[prefix]": {required: true},
+        "library[fine_per_day]": {required: true,number: true}
+
+      }
+    });
+});
+
+
+  $(document).on("click", ".library-resource-new-for-submit-class", function(e){
+
+    var prefix=$(".library-resource-new-prefix").val();
+        var urlLink = "/library/prefix_validation/"+prefix;
+       
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(data){
+
+              console.log(data)
+              if(data>0)
+                {
+                    alert("The prefix has already been used");
+                }else{
+                  $(".library-resource-new-submit-class").click();
+                }
+              
+            }
+        });
+});
+
+$(document).on("change","#library_is_non_issuable",function(){
+if ($(this).is(":checked")) {
+            $(".one_two").val(" ");
+
+            $(".one_two").prop("disabled", true);
+        } else {
+            $(".one_two").prop("disabled", false);
+        }
+
+});
+</script>

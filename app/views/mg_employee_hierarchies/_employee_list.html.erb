@@ -1,0 +1,7 @@
+<!-- Sec --> 
+<label class="mg-label mg-custom-labels mg-label-width " for="selectEmployee"><%= t('selectemployee') %></label>
+<%= select_tag :employee, options_for_select(@employee),:prompt => "Select Employee",:onchange=>"mg_manager_employee(this.value)" ,:class=>"select-width-mod"%><br>
+
+
+
+

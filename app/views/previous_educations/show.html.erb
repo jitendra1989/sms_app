@@ -1,0 +1,103 @@
+
+<section id="viewStudentID" style="margin: 0 auto;">
+<div>
+    <table>
+        <tr>
+             <td valign="top">
+              <aside class="userMenuBoxLeft" style="width: 160px;">
+                <div class="empleftbx">
+                    <div class="empimgbx" style="padding:10px 10px 0;">
+                              
+                    <div class="clear"></div>
+                    <div class="prof_detail">
+                        
+                        
+                        <strong style="padding:10px 10px 0; font-size: 0.9em;"></strong>
+                        
+                        </span>
+                    </div>
+                   
+                </div>
+                </aside>
+            </td>
+            <td valign="top">
+                <h4 class="mg-h4"><%= t('Previous Education details') %></h4>
+                    <table>
+                        <tr>
+                            <td style="width:250px">
+                                <label class="mg-label" style="width:140px"><%= t('school_name') %></label>
+                                <label><%=  @previous_educations.school_name %></label>
+                            </td>
+                           </tr>
+                           <tr>
+                            <td style="width:250px">
+                                <label class="mg-label" style="width:140px"><%= t('course') %></label>
+    								            <label>  <%=@previous_educations.course %> </label> 
+                        
+                            </td>
+                             </tr>
+                           <tr>
+                            <td style="width:250px">
+                                <label class="mg-label" style="width:140px"><%= t('year') %></label>
+                                <label><%=  @previous_educations.year %></label>
+                            </td>
+                             </tr>
+                           <tr>
+                            <td style="width:250px">
+                                <label class="mg-label" style="width:140px"><%= t('marks obtained') %></label>
+                                <label><%=  @previous_educations.marks_obtained %></label>
+                            </td>
+                             </tr>
+                           <tr>
+                            <td style="width:250px">
+                                <label class="mg-label" style="width:140px"><%= t('totalmarks') %></label>
+                                <label><%=  @previous_educations.total_marks %></label>
+                            </td>
+                            
+                        </tr>
+                        </table>
+                    <table>
+                    <tr>
+                        
+                        
+                        
+                    </tr>
+                    </table>
+                     <div class="clear">
+                    
+
+                    </div>
+                    <button id="<%=raw @previous_educations.id%>" class="preEditdcDet ">Edit</button>
+                    </div>
+                    </div>
+
+
+
+<script>
+    $(document).on("click",".preEssdcDet",function(){
+        var Id=$(this).attr("id");
+        $.ajax({
+             url: "/previous_educations/show/"+Id,
+            success: function(html){
+                 
+                 $("#manageStudentCategoryID").empty();
+               $("#manageStudentCategoryID").append(html);
+               
+            }
+        });
+    });
+
+
+     $(document).on("click",".preEditdcDet",function(){
+        var Id=$(this).attr("id");
+        $.ajax({
+             url: "/previous_educations/edit/"+Id,
+            success: function(html){
+                
+                 $("#manageStudentCategoryID").empty();
+               $("#manageStudentCategoryID").append(html);
+               
+            }
+        });
+    });
+</script>

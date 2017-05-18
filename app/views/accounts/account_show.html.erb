@@ -1,0 +1,32 @@
+<% navigation_add 'About Accounts', account_index_path %>
+
+<%#=render partial:"inventory_left"%>
+<!-- <h4 class="mg-h4"><%#=t('item_detail')%></h4> -->
+  <%if @account.present?%>
+    
+    <table border="1" class="mg-showdata-bg mg-tbl-layout" cellspacing="1" cellpadding="1">
+      <tr>
+        <td class="mg-td-width-half" valign="top"><label class="mg-label"><%=t("account_name")%></label></td>
+        <td class="mg-td-width-half" valign="top"><%=@account.mg_account_name%></td>
+      </tr>
+      <tr>
+        <td class="mg-td-width-half" valign="top"><label class="mg-label"><%=t("employee_department")%></label></td>
+        <%department=MgEmployeeDepartment.find_by(:id=>@account.mg_department_id)%>
+        <td class="mg-td-width-half" valign="top"><%=department.department_name%></td>
+      </tr>
+      <tr>
+        <td><label class="mg-label"><%=t("employee_name")%></label></td>
+         <%employee=MgEmployee.find_by(:id=>@account.mg_employee_id)%>
+        <td><%=employee.first_name%> <%=employee.middle_name%> <%=employee.last_name%></td>
+      </tr>
+      <tr>
+        <td><label class="mg-label"><%=t("description")%></label></td>
+        <td class="mg-capitalize-text"><%=@account.description%></td>
+      </tr>
+    </table>
+
+  <%end%>
+      <p class="mg-p-mgtop">
+      <a class="mg-small-form-btn cancel-form-dialog"><%=t('cancel')%></a>
+</p>
+<%#=render partial:"common_left_close"%>

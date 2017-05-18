@@ -1,0 +1,14 @@
+<%= render  partial: 'fee_left' %>
+
+  <div class="alert alert-info mg-success-msg">
+  <%= 'Fee Paid Successfully'	 %>
+  </div>
+
+
+	<div class="mg-tbl-margin">
+	<%= link_to "View Report",generate_fee_pdf_path(params[:id]),:target => "_blank" ,:class=>"mg-custom-form-btn" ,:style=>"text-decoration: none;"%>
+<br/>	
+<br/>
+<%= link_to "Make Another Transaction",'/fees/fee_collection' ,:class=>"mg-custom-form-btn" ,:style=>"text-decoration: none;"%>
+</div>
+<%= render  partial: 'application/common_left_close' %>

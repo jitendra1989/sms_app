@@ -1,0 +1,11 @@
+<!-- Sec --> 
+<tr>
+  <td><%  @roletemp=MgRole.find_by_id(mg_roles_permission.mg_role_id)%>
+  			<%= @roletemp.try(:role_name)%></td>
+
+  <td><%  @permissiontemp=MgAction.find_by_id(mg_roles_permission.mg_permission_id)%>
+  			<%= @permissiontemp.try(:action_name)%></td>
+  <td>
+  	<button class="edit-mg-role-permission" id="editMgRolePermissionID-<%= mg_roles_permission.id%>">Edit</button>
+    <button class="delete-mg-role-permission" id="deleteMgRolePermissionID-<%= mg_roles_permission.id%>">Delete</button></td>
+</tr>

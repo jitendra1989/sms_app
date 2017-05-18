@@ -1,0 +1,34 @@
+<h4 class="mg-h4"><%= t('account_details') %></h4>
+   <table class="mg-tbl-size-width">
+       <tr>
+           <td class="mg-td-width-half">
+                <label class="mg-label mg-form-width"><%= t('bank_name') %></label>
+          <label><%if @account_details.present?%><%= @account_details.bank_name %><%end%></label>
+           </td>
+          <td class="mg-td-width-half">
+                <label class="mg-label mg-form-width"><%= t("branch_name") %></label>
+                  <label><%if @account_details.present?%><%= @account_details.branch_address %><%end%></label>
+           </td>
+       </tr>
+
+        <tr>
+           <td class="mg-td-width-half">
+                <label class="mg-label mg-form-width"><%= t("account_number") %></label>
+          <label><%if @account_details.present?%><%=@account_details.account_number %><%end%></label>
+           </td>
+          <td class="mg-td-width-half">
+                <label class="mg-label mg-form-width"><%= t("ifs_code") %></label>
+                  <label><%if @account_details.present?%><%=@account_details.ifs_code %><%end%></label>
+           </td>
+       </tr>
+
+      <!--  <tr>
+           <td class="mg-td-width-half">
+                <label class="mg-label mg-form-width"><%#= t("account_holder_name") %></label>
+          <label><%#if @account_details.present?%><%#=@account_details.ac_holder_name %><%#end%></label>
+           </td>
+          <td class="mg-td-width-half">
+               
+           </td>
+       </tr> -->
+   </table>

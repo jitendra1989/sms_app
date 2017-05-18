@@ -1,0 +1,74 @@
+
+
+ <button class="new-guests-btn mg-btn-bottom-margin mg-custom-form-btn" id="<%=@mg_event_id%>-creatNewGuestBTNID"><%= t('add_new_guest')%></button >  </br>
+ 
+
+<h4 class="mg-h4"><%= t('guest_list')%></h4>
+
+<%if @guests.present?%>
+<div>
+<table class="batch-tbl mg-tbl-margin mg-scrl-width-bar mg-tbl-layout">   <!-- border="2" --> 
+ <tr >
+    <th><%=t('event')%></th>
+  	<th><%=t('guest_name')%></th>
+    <th> <%=t('guest_details')%></th>
+    <th> <%=t('mobile_no')%></th>
+    <th> <%=t('email_id')%></th>
+    <th> <%=t('status')%></th>
+    <th><%=t('actions')%></th>
+     
+
+  </tr>
+  <% @guests.each do |e| %>
+    <tr>
+       <td> <%if e.mg_event_id.present?%>
+       <%event=MgEvent.find_by(e.mg_event_id )%>
+       <%if event.present?%>
+          <%= event.title%>
+      <%end%>
+      <%end%></td>
+      <td><%= e.guest_name %></td>
+      <td><%= truncate(e.guest_details.to_s, :length => 25, :separator => ' ') %></td>
+      <td><%= e.mobile_no %></td>
+      <td><%= e.email_id %></td>
+      <td>
+        <%if e.status.present?%>
+          <%if e.status=='invited'%>
+            Invited
+          <%elsif e.status=='will_attend'%>
+            Will Attend
+          <%else%>
+            Not Attend
+          <%end%>
+        <%end%>
+      </td>
+      <td>
+        <button title="Show" id="<%=raw e.id %>-showGuestBTNID" class="show-guests-btn mg-icon-btn"><i class="fa fa-eye"></i></button>
+        <button title="Edit" id="<%=raw e.id %>-editGuestBTNID" class="edit-guests-btn mg-icon-btn"><i class="fa fa-pencil-square-o"></i></button>
+        <button title="Delete" id="<%=raw e.id %>-deleteGuestBTNID" class="delete-guests-btn mg-icon-btn"><i class="fa fa-trash"></i></button></td>
+    </tr>
+  <% end %>
+</table>
+ <%#= will_paginate @guests, :container => false %>
+  </div>
+
+<%else%>
+<h5>Please add some guests... </h5>
+<%end%>
+
+<div id="showGuestDIVID"></div>
+<div id="editGuestDIVID"></div>
+<div id="newGuestDIVID"></div>
+
+<script>
+$(document).ready(function () {
+
+ //focusCurrentTab("viewGuestsAID","viewGuestsLiID");
+      //focusDashboards();
+
+
+});
+
+
+
+</script>

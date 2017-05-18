@@ -1,0 +1,161 @@
+<%= form_for :polling_option, :url=>@action=='new' ? 'polling_options_create' : @polling_option.try(:id).to_s+'/polling_options_update', :html => {:id => 'alumnipollingCreateFormId'} do |f| %>
+
+  <%= f.hidden_field :mg_school_id, :value=> session[:current_user_school_id]%>
+  <%= f.hidden_field :is_deleted, :value=>0%>
+  <%= f.hidden_field :created_by, :value=> session[:user_id]%>
+  <%= f.hidden_field :updated_by, :value=> session[:user_id]%>
+
+  <%if @action=='new'%>
+    <%boolean_val=false%>
+  <%else%>
+    <%if @start_date <= @today_date%>
+      <%boolean_val=true%>
+      <%= hidden_field_tag :is_disabled, "disabled"%>
+    <%else%>
+      <%boolean_val=false%>
+      <%= hidden_field_tag :is_disabled, "not_disabled"%>
+    <%end%>
+  <%end%>
+
+  <p>
+  	<%= f.label :name, t('question') ,:class=>"mg-label"%><span class="required-field"> *</span><br>
+  	<% if @action=='new'%>
+      <%= f.text_area :question,:class=>"mg-text-field" %>
+  	<% else %>
+      <%= f.text_area :question,:readonly=>boolean_val,:class=>"mg-text-field",:value=>@polling_option.question %>
+  	<%end%>
+  </p>
+
+  <p>
+  	<label class="mg-label"><%= t('options') %><span class="required-field">&nbsp;*</span></label>
+  	<% if @action=='new'%>
+  		<div id="finalDueFineDivId" >
+        <div class="due-fine-div" id="dueFineDivId">
+          <%= text_field_tag 'alumni_particulars[]' ,nil,:class=>"mg-text-field required-field"%>
+          <a href="#" title="Remove" class="remove-polling-options mg-icon-btn" style="color: #297ACC; font-size:0.8em;"> <i class="fa fa-trash"></i></a>
+        </div>
+      </div>
+      <a id="addDueFineId" class="mg-label-inner-form mg-custom-form-btn" style="color: #297ACC; font-size:0.8em; position: relative; top: 3px;" >Add Options</a> <br/>
+    <% else %>
+    	<%polling_data=MgPollOptionAlumniParticulars.where(:mg_poll_option_alumni_id=>@polling_option.id,:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:paticular)%>
+  		<%polling_data_id=MgPollOptionAlumniParticulars.where(:mg_poll_option_alumni_id=>@polling_option.id,:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:id)%>
+   		<%polling_data.each_with_index do|data,i|%>
+        <div id="finalDueFineDivId" >
+          <div class="due-fine-div" id="dueFineDivId">
+            <%= hidden_field_tag 'ids[]',polling_data_id[i],:class=>"mg-text-field-particular required-field"%>
+          	<%= text_field_tag 'alumni_particulars[]' ,data,:class=>"mg-text-field required-field" ,:disabled=>boolean_val%>
+
+            <%if boolean_val==false%>
+              <a href="#" title="Remove" class="remove-polling-options mg-icon-btn" style="color: #297ACC; font-size:0.8em;"> <i class="fa fa-trash"></i></a>
+            <%else%>
+              <a href="#" title="Remove" class="mg-icon-btn" style="color: #297ACC; font-size:0.8em;"> <i class="fa fa-trash"></i></a>
+            <%end%>
+          </div>
+        </div>
+      <%end%>
+      <%if boolean_val==false%>
+        <a id="addDueFineId" class="mg-label-inner-form mg-custom-form-btn" style="color: #297ACC; font-size:0.8em; position: relative; top: 3px;" >Add Options</a> <br/>
+      <%else%>
+        <a id="" class="mg-label-inner-form mg-custom-form-btn" style="color: #297ACC; font-size:0.8em; position: relative; top: 3px;" >Add Options</a> <br/>
+      <%end%>
+    <% end %>
+  </p>
+
+  <p>
+    <br/><%= f.label :start_date, t("start_date") ,:class=>"mg-label"%><span class="required-field"> *</span><br>
+    <%# @timeformat = MgSchool.find(session[:current_user_school_id]) %>
+    <% if @action=='new'%>
+      <%= f.text_field :start_date, :class=> 'mg-text-field' %>
+    <% else %>
+      <%= f.text_field :start_date,:disabled=>boolean_val, :class=> 'mg-text-field',:value=>@polling_option.start_date.strftime(date_format(session[:current_user_school_id])) %>
+    <% end %>
+  </p>
+
+  <p>
+    <%= f.label :due_date, t("end_date") ,:class=>"mg-label"%><span class="required-field"> *</span><br>
+    <%# @timeformat = MgSchool.find(session[:current_user_school_id]) %>
+    <% if @action=='new'%>
+  		<%= f.text_field :due_date, :class=> 'mg-text-field due_date' %>
+    <% else %>
+  		<%= f.text_field :due_date, :class=> 'mg-text-field due_date',:value=>@polling_option.due_date.strftime(date_format(session[:current_user_school_id])) %>
+    <% end %>
+  </p>
+
+  <p class="mg-p-mgtop">
+    <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("save")%></a>
+    <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+  </p>
+<% end %>
+
+
+<script>
+  $(document).ready(function(){
+    dateFormatStr =  getJsDateFormat();
+
+    $("#polling_option_start_date" ).datepicker({ changeMonth: true,changeYear: true,yearRange: "-0:+50",minDate:0, dateFormat: dateFormatStr });
+    $(".due_date" ).datepicker({ changeMonth: true,changeYear: true,yearRange: "-0:+50",minDate: 0, dateFormat: dateFormatStr });
+
+    $("#alumnipollingCreateFormId").validate({
+      rules: 
+      {
+        "polling_option[question]": {required: true},
+        "alumni_particulars[]": {required: true},
+        "polling_option[start_date]": {required: true, dateFormat: true},
+        "polling_option[due_date]": {required: true, dateFormat: true}
+      }
+    });
+  }); //End of Ready
+
+
+   $(function () {
+      $.validator.addMethod('dateFormat',
+      function (value, element) {
+        dateFormatStr =  getJsDateFormat();
+        if (this.optional(element)) {
+            return true;
+        }
+        var ok = true;
+        try {
+            $.datepicker.parseDate(dateFormatStr, value);
+        }
+        catch (err) {
+            ok = false;
+        }
+        return ok;
+      },
+        "Please enter a date in the format "+ getDateFormat(dateFormatStr) +".");
+      dateFormatStr =  getJsDateFormat();
+
+      $(".datefield").datepicker({ dateFormat: dateFormatStr, changeYear: true });
+    });
+
+
+   $(document).on("change","#polling_option_start_date",function(){
+    var dateFormatStr =  getJsDateFormat();
+    var start_date=$(this).val();
+    var end_date=$("#polling_option_due_date").val();
+
+    if(start_date && end_date){
+      if(!(compareDate(start_date,end_date,dateFormatStr))){
+        alert("End date should be greater than start date");
+        $(this).val('');
+        //document.getElementById('events_end_date').value="";
+      }
+    }
+  });
+
+
+  $(document).on("change","#polling_option_due_date",function(){
+      var dateFormatStr =  getJsDateFormat();
+      var start_date=$("#polling_option_start_date").val();
+      var end_date=$(this).val();
+      if(start_date && end_date){
+        if(!(compareDate(start_date,end_date,dateFormatStr))){
+          alert("End date should be greater than start date");
+          $(this).val('');
+          //document.getElementById('events_end_date').value="";
+        }
+      }
+    });
+  
+</script>

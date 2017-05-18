@@ -1,0 +1,50 @@
+<!-- Sec --> 
+<%#= render  partial: 'students/student_left' %>
+ <h4 class="mg-h4"><%= t('unit') %></h4>
+ <div class="mg-custom-labels">
+<%= form_for :curriculum, url: curriculum_unit_create_path, :html => {
+                            :id => 'unitCurriculamManagementsID' } do |f| %>
+<!--#Syllabus.where(:is_deleted => '0')-->
+<%= f.hidden_field :is_deleted, :value => 0 %>
+<%= f.hidden_field :mg_school_id, :value => session[:current_user_school_id] %>
+
+<label class="mg-label" style="width:140px"><%= t('selectsyllabus') %></label><br/>
+<%= f.collection_select(:mg_syllabus_id,MgSyllabus.where(:is_deleted => '0', :mg_school_id=>session[:current_user_school_id]), :id, :name,{:include_blank => t("select")},:class => "unit-syllabus-id-class")%>
+<p>
+    <label class="mg-label" style="width:140px"><%= t('unitname') %></label><br/>
+   <%= f.text_field :unit_name,:class=>"mg-text-field" %>
+ </p>
+ <p>
+    <label class="mg-label" style="width:140px"><%= t('description') %></label><br/>
+   <%= f.text_area :description ,:class=>"mg-text-field" %>
+ </p>
+
+
+ <p>
+    <label class="mg-label" style="width:140px"><%= t('timedescription') %></label><br/>
+   <%= f.text_field :time ,:class=>"mg-text-field" %>
+ </p>
+
+ <p>
+    <label class="mg-label" style="width:140px"><%= t('duration') %></label><br/>
+   <%= f.text_field :hour ,:class=>"mg-text-field" %>
+   <%= f.text_field :min ,:class=>"mg-text-field" %>
+ </p>
+    <%= f.submit t('save') ,:class=>"mg-small-form-btn"%>
+  </p>
+<% end %>
+</div>
+<script>
+$(document).ready(function () {
+$("#unitCurriculamManagementsID").validate({
+
+
+rules: {
+"curriculum[mg_syllabus_id]": {required: true},
+"curriculum[unit_name]": {required: true},
+"curriculum[hour]": {required: true},
+"curriculum[min]": {required: true}
+}
+});
+});
+// </script>

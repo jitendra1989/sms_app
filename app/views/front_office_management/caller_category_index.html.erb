@@ -1,0 +1,147 @@
+<% navigation_add t('request_type'), :controller=>'front_office_management' ,:action=> 'caller_category_index' %>
+
+<%#=render partial: 'front_office_management_left'%>
+<%= render  partial: 'master_settings/master_settings_left' %>
+
+
+<h4 class="mg-h4"><%=t('request_type list')%></h4>
+
+<button class="add-caller-category-for-fom mg-btn-bottom-margin mg-custom-form-btn"><%= t('add_request_type')%></button>
+<% if @caller_category_data.present? %>
+	<table  class="batch-tbl mg-tbl-margin">   <!-- border="2" --> 
+	  <tr class="subject-table-header">
+	    <th><%= t('name') %></th>
+	    <th><%= t('description') %></th>
+	    <th style="width: 97px;"><%= t('actions') %></th>
+	  </tr>
+
+	  <% @caller_category_data.each do |s| %>
+		  <tr>
+	   		<td><%= s.name %></td>
+	   		<td class="mg-desc-text-justify"><%= truncate(s.description.to_s, :length=> 25, 
+	   			:seperator=> ' ') %>
+	   		 </td>
+	   		 <td>
+	   		 <button title="Show" id="<%=raw s.id %>-showCallerCategoryFomBTNID" class="show-caller-category-fom-btn mg-icon-btn"><i class="fa fa-eye"></i></button>
+
+	   		 <button title="Edit" id="<%=raw s.id %>-editCallerCategoryFomBTNID" class="edit-caller-category-fom-btn mg-icon-btn"><i class="fa fa-pencil-square-o"></i></button>
+
+	   		 <button title="Delete" id="<%=raw s.id %>-deletelabBTNID" class="delete-caller-category-incharge-btn mg-icon-btn"><i class="fa fa-trash"></i></button>
+
+
+	</td>
+    </tr>
+  <% end %>
+	</table>
+	<br/>
+<%else%>
+<h5>No records are created </h5>
+<%end%>
+
+<div id="editCallerCategoryfomdata"></div>
+<div id="showCallerCategoryfomdata"></div>
+<div id="fom_caller_category">
+</div>
+<%= render  partial: 'application/common_left_close' %>
+
+
+<script type="text/javascript">
+	$(document).ready(function () {
+         
+          focusCurrentTab("caller_categoryAID","caller_categoryLiID");
+          
+      });
+
+	$(document).on("click", ".add-caller-category-for-fom", function(e){
+		var urlLink= '/front_office_management/caller_category_new';
+		$.ajax({
+			url: urlLink,
+			cache: false,
+			success: function(html){
+				$("#fom_caller_category").dialog({
+					modal:true,
+					minHeight: 'auto',
+					title: 'Add Request Type',
+					open: function(){
+						$(this).html(html);
+					}
+				});
+			}
+		});
+	});
+
+
+	$(document).on("click", ".show-caller-category-fom-btn", function(e){
+		var myID =$(this).attr('id');
+        var Id=myID.split("-"); 
+
+        var urlLink= '/front_office_management/caller_category_show';
+        $.ajax({
+        	url: urlLink,
+        	cache: false,
+        	data: {"id":Id[0]},
+        	success: function(html){
+        		$("#showCallerCategoryfomdata").dialog({
+        			modal:true,
+        			minHeight: 'auto',
+        			width: 'auto',
+        			title: 'Show Request Type',
+        			open: function(){
+        				$(this).html(html);
+        			}
+        		})
+        	}
+        })
+	});
+
+	$(document).on("click", ".edit-caller-category-fom-btn", function(e){
+		var myID =$(this).attr('id');
+         var Id=myID.split("-");
+
+        var urlLink = "/front_office_management/caller_category_edit";
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            data:{id:Id[0]},
+            success: function(html){
+                  $('#editCallerCategoryfomdata').dialog({
+                    modal: true,
+                    minHeight: 'auto',
+                    width: 'auto',
+                    title: "Edit Request Type",
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+});
+
+$(document).on("click", ".delete-caller-category-incharge-btn", function(e)
+{
+     e.preventDefault();
+    var myID =$(this).attr('id');
+    var Id=myID.split("-");
+    var retVal = confirm("Are you sure to delete?");
+    if(retVal)
+    {
+         var urlLink = "/front_office_management/caller_category_delete/"+Id[0];
+
+          $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(html)
+            {
+                window.location.reload();
+            }
+        });
+    }else
+    {
+       return false;
+    }
+}); 
+
+
+</script>

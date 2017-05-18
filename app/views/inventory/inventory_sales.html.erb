@@ -1,0 +1,330 @@
+<%= render  partial: 'inventory/inventory_left' %>
+
+<% navigation_add 'Sales', inventory_inventory_sales_index_path %>
+<% navigation_add 'Create Sales', inventory_inventory_sales_path %>
+
+<%if flash[:error].present?%>
+  <div class="alert alert-info mg-success-msg">
+
+        <%=flash[:error]%>
+  <div class="alert alert-info mg-success-msg">
+        
+   <%end%>
+
+<h4 class="mg-h4"><%= t('Purchase Information')%></h4>
+<div class="box">
+<%= form_for :library_purchase_details ,  :url=>{:controller=>'inventory',:action=>'inventory_sales_create'}, :html=>{:id=>'sales_details_validation'} do |f| %>
+
+        <%= f.hidden_field :is_deleted ,:value=>0%>
+        <%= f.hidden_field :mg_school_id ,:value=>session[:current_user_school_id]%>
+        
+<table class="mg-tbl-margin mg-show-tbl-width">
+    <tr>
+      <td class="mg-td-width-one-third">
+      <label class="mg-label"><%= t ('customer_name') %><span class="required-field">&nbsp;*</span></label><br/>
+      <%= f.text_field :customer_name ,:class=>"mg-text-field"%>
+      </td>
+    </tr>
+    <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label mg-label-text-transform-none" for="dateofPurchase"><%= t ('date_of_sales') %><span class="required-field">&nbsp;*</span></label><br/>
+        <%= f.text_field :date_of_purchase ,:class=>"mg-text-field"%>
+      </td>
+    </tr>
+    <tr>
+    <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="dateofPurchase"><%= t ('amount') %><span class="required-field">&nbsp;*</span></label><br/>
+        <%= f.text_field :amount ,:class=>"mg-text-field"%>
+      </td>
+    </tr>
+    
+    <tr>
+    </tr>
+</table>  
+<h4 class="mg-h4"><%= t('items')%></h4> 
+<a id="library_details_for_data" class="mg-label-inner-form mg-custom-form-btn" style="color: #297ACC; font-size:0.8em; position: relative;" >Add </a> <br/>
+ <div class="mg-scroll-employee-bar mg-tbl-margin">   
+
+<table class="mg-show-tbl-width mg-table-nowrap batch-tbl mg-adjust-padding">  
+  <th><%=t("sr_no.")%></th>
+  <th><%=t("select_item_category")%><span class="required-field">&nbsp;*</span></th>
+  <th><%=t("select_item")%><span class="required-field">&nbsp;*</span></th>
+  <th><%=t("prefix")%></th>
+  <th><%=t("cost_per_unit")%><span class="required-field">&nbsp;*</span></th>
+  <th class="mg-rm-text-trans mg-label-text-transform-none"><%=t("no_of_units")%><span class="required-field">&nbsp;*</span></th>
+  <th><%=t("total")%></th>
+  <th><%=t('action')%></th>
+  <tr class="demo-div">
+
+    <div id="finalDueFineDivId">
+      <div class="due-fine-div" id="dueFineDivId">
+        <td><span class="required-incremented-field">1</span></td>
+        <td>
+          <div id="demo123" class="">
+            <%item_category_data=MgInventoryItemCategory.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:name,:id)%>
+            <%= select_tag "mg_inventory_category_id[]",options_for_select(item_category_data),:prompt=>"Select",:onchange=>"inventorySalesData(this.value,this)",:class=>"mg-text-field"%>
+          </div>
+        </td>
+      
+        <td class="mg-align-center resource-category-td-class">
+          <div id="demo123" class="">
+            <%= select_tag "mg_inventory_item_id[]",options_for_select([[]]) ,:prompt=>"select",:class=>"mg-text-field"%>
+          </div>
+        </td>
+        <td class="mg-align-center resource-type-td-class">
+          <%= text_field_tag 'mg_resource_type_id[]',nil,:disabled=>true%>
+        </td>
+     
+        <td class="mg-align-center cost-td-class">
+          <%= text_field_tag 'cost[]' ,nil,:class=>"mg-text-field-particular cost-auto-class required-field",:id=>"cost_"%>
+        </td>
+        <td class="mg-align-center unit-td-class">
+          <%= text_field_tag 'no_of_copy[]' ,nil,:class=>"mg-text-field-particular required-field unit-auto-class",:id=>"unit_"%>
+        </td>
+        <td class="mg-align-center total-td-class">
+          <%= text_field_tag 'total[]' ,nil,:class=>"mg-text-field-particular required-field total-auto-class",readonly: true%>
+        </td>
+        <td class="mg-align-center">
+          <a title="Remove" class="remove-library-details mg-icon-btn" style="color: #297ACC; font-size:0.8em;"> <i class="fa fa-trash"></i></a>
+        </td>   
+      </div>
+    </div>
+  </tr>
+</table>
+</div>                
+                      
+                     
+
+<%#=f.submit "Submit" ,:class=>"mg-small-form-btn"%>
+ <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("Submit")%></a>
+
+<%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+<%end%>
+</div>
+<%= render  partial: 'application/common_left_close' %>
+
+
+<script>
+$( document ).on( "change", ".unit-auto-class ", function(){ 
+var unit=$(this).val();
+ // console.log($(this).parent('td').siblings(".cost-td-class").children(".cost-auto-class").val());
+  var cost=$(this).parent('td').siblings(".cost-td-class").children(".cost-auto-class").val();
+  if (cost=="")
+  {
+    alert("First provide cost for the perticular category");
+    $(this).val("");
+  }
+  else
+  {
+    var total=cost*unit;
+  $(this).parent('td').siblings(".total-td-class").children(".total-auto-class").val(total);
+  }
+});
+
+$( document ).on( "change", ".cost-auto-class", function(){
+  $(this).parent('td').siblings(".unit-td-class").children(".unit-auto-class").val("");
+  $(this).parent('td').siblings(".total-td-class").children(".total-auto-class").val("");
+});
+
+
+
+
+
+
+
+$(document).ready(function () {
+            focusCurrentTab("inventory_salesAid","inventory_salesLiID");
+        
+        
+
+        dateFormatStr =  getJsDateFormat();
+
+    $('#library_purchase_details_date_of_purchase').datepicker({ changeMonth: true,
+                changeYear: true,yearRange: "-50:+0",maxDate: "0",dateFormat: dateFormatStr});
+
+//===============category population as per lab starts===================================
+
+
+      var labID = $( ".library-purchas-new-resource-category-class" ).val();
+      
+      var apdStr = '<option value="">Choose Category</option>';
+      $(".library-purchas-new-resource-type-class").empty().append(apdStr);
+
+      if(labID > 0) {
+           var urlLink = "/library/resource_type_list/"+labID;
+           $.ajax({ 
+               url: urlLink,
+               cache: false,
+               success: function(data){
+                 // console.log();
+                  if(data.length > 0){
+                      var apdStr = '<option value="select">Select</option>';
+                     for(key in data){
+                        apdStr += '<option value="'+data[key].id+'">'+data[key].name+'</option>'
+                      }
+                    // console.log(apdStr);
+                      $(".library-purchas-new-resource-type-class").empty().append(apdStr);
+                  }
+               }
+           });
+    }else{
+      var apdStr = '<option value="">Choose Category</option>';
+      $(".library-purchas-new-resource-type-class").empty().append(apdStr);
+      // alert("Please select category");
+    }
+
+
+//===============category population as per lab starts===================================
+
+    });
+
+
+ $(function () {
+    $.validator.addMethod('dateFormat',
+    function (value, element) {
+      dateFormatStr =  getJsDateFormat();
+        if (this.optional(element)) {
+            return true;
+        }
+        var ok = true;
+        try {
+            $.datepicker.parseDate(dateFormatStr, value);
+        }
+        catch (err) {
+            ok = false;
+        }
+        return ok;
+    },
+
+
+      "Please enter a date in the format "+ getDateFormat(dateFormatStr) +".");
+      dateFormatStr =  getJsDateFormat();
+
+    $(".datefield").datepicker({ dateFormat: dateFormatStr, changeYear: true });
+});
+ 
+$("#sales_details_validation").validate({
+//   $(".category-validation-class").rules("add", { 
+//   required:true
+// });
+        rules: {   
+        "library_purchase_details[customer_name]": {required: true}, 
+        "mg_inventory_category_id[]":{required: true},
+        "mg_inventory_item_id[]": {required: true}, 
+        "library_purchase_details[date_of_purchase]": {required: true,dateFormat:true},    
+        "library_purchase_details[amount]": {required: true,number: true},
+      //  "library_purchase_details[invoice_number]": {required: true, number: true},
+        "mg_inventort_item_id[]": {required: true},
+        
+        "mg_resource_category_id[]": {required: true},
+        "cost[]": {required: true, number: true, number: true},
+        "no_of_copy[]":{required: true, number: true},
+      }
+    });
+
+
+$(document).on('change','.library-purchas-new-resource-category-class',function(){
+      var labID = $(this).val();
+      
+      var apdStr = '<option value="">Choose Category</option>';
+      var temp =$("#inventory-purchas-news-resources-category-class").parent('.resource-category-td-class').siblings(".resource-type-td-class").children(".resource-type-class");
+      temp.empty().append(apdStr);
+      //$(".library-purchas-new-resource-type-class").empty().append(apdStr);
+
+      if(labID > 0) {
+           var urlLink = "/library/resource_type_list/"+labID;
+           $.ajax({ 
+               url: urlLink,
+               cache: false,
+               success: function(data){
+                 // console.log();
+                  if(data.length > 0){
+                      var apdStr = '<option value="select">Select</option>';
+                     for(key in data){
+                        apdStr += '<option value="'+data[key].id+'">'+data[key].name+'</option>'
+                      }
+                    // console.log(apdStr);
+                      temp.empty().append(apdStr);
+                      //var temp =$(this).parent('.resource-category-td-class').siblings(".resource-type-td-class").children(".resource-type-class");
+                  }
+               }
+           });
+    }else{
+      var apdStr = '<option value="">Choose Category</option>';
+      temp.empty().append(apdStr);
+     // var temp =$(this).parent('.resource-category-td-class').siblings(".resource-type-td-class").children(".resource-type-class");
+      // alert("Please select category");
+    }
+  });
+
+function inventorySalesData(data,that){
+  var urlLink="/inventory/inventory_sales_category_data/"
+$.ajax({ 
+               url: urlLink,
+               cache: false,
+               data:{"id":data},
+               success: function(data){
+                  console.log(that);
+                  // $(that).siblings($(".resource-category-td-class")).html(data);
+                  $(that).parents('td').siblings(".mg-align-center").children("input").val("");
+                  $(that).parents('td').siblings(".resource-category-td-class").html(data);
+                  // console.log(sib);
+                  // $(that).siblings(".resource-category-td-class").append(data);
+                }
+           });
+
+}
+
+
+$( document ).on( "change", ".inventory-purchas-news-resources-category-class", function(){
+  
+  var data1=$(this).val();
+  console.log( $(this).parent('.resource-category-td-class').siblings(".resource-type-td-class").children("mg_resource_type_id_"));
+  var temp =$(this).parent('.resource-category-td-class').siblings(".resource-type-td-class");
+  var category_id=$("#mg_inventory_category_id").val();
+var urlLink="/inventory/inventory_auto_generated_data/"
+$.ajax({ 
+               url: urlLink,  
+               cache: false,
+               data:{"id":data1,"Category_Id":category_id},
+               success: function(data){
+                console.log(data)
+                  temp.empty();
+                  temp.append(data);
+                }
+           });
+  //$(this).parent('td').siblings(".total-td-class").children(".total-auto-class").val("");
+});
+
+
+
+// function inventorySalesitemData(data){
+
+//    var temp =$(".inventory-purchas-news-resources-category-class").parent("#demo123").parent('.resource-category-td-class').siblings(".resource-type-td-class")//.children(".resource-type-class");
+//    console.log("data")
+//    console.log(temp);
+//   var category_id=$("#mg_inventory_category_id").val();
+// var urlLink="/inventory/inventory_auto_generated_data/"
+// $.ajax({ 
+//                url: urlLink,  
+//                cache: false,
+//                data:{"id":data,"Category_Id":category_id},
+//                success: function(data){
+//                   temp.empty();
+//                   temp.append(data);
+//                 }
+//            });
+
+
+// }
+
+
+
+</script>
+<style>
+.error{
+  float:left;
+  font-size:10px;
+}
+</style>

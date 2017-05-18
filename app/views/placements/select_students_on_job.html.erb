@@ -1,0 +1,305 @@
+<p>
+
+    <%= label :next_round_date, t('next_round_date') ,:class=>"mg-label mg-rm-text-trans"%><br>
+    <%if params[:data_demo]=="demo"%>
+    <%= text_field_tag :next_round_date,@mg_interview_datess,:class=>"validation_date" %>
+    <%else%>
+    <%= text_field_tag :next_round_date %>
+
+    <%end%>
+    <%= hidden_field_tag :array_rounds_data,@array_datas %>
+    <%= hidden_field_tag :array_rounds_data_array,@data_id_round %>
+    <%= hidden_field_tag :job_upload_id_data,@placement_data.id %>
+    <%= hidden_field_tag :demo_data_valididation,@demo_data_valid %>
+
+
+    
+  </p>
+
+  <p>
+
+    <%= label :select_rounds, t('select_rounds') ,:class=>"mg-label mg-rm-text-trans"%><br>
+
+    <%=select_tag :mg_interview_round_id,options_for_select(@rounds_array,:selected=>@mg_interview_round_id),:prompt=>"Select" %>
+   
+
+       <a id="clickFormBtnIddataforstudent" class="mgStudent_job_application_information mg-custom-labels mg-small-form-btn"><%=t("send_notification")%></a>
+
+      <%#=button_to class="mgStudent_job_application_information mg-custom-form-btn mg-custom-labels mg-btn-bottom-margin" id="student_job_placements_job"><%= t('Send Notification')%></button>
+      <%#= button_to 'Notification',{}, {:class=>"mgStudent_job_application_information mg-exam-scholastic-btn-width"} %><br>
+  </p>
+  <%=hidden_field_tag :round_data,@id_array%>
+   <div id="parent" class="mg-scrl-width-bar ">
+
+
+  <table border="1" id="fixTablePOConfirmationHistoriesTABLEID" class="mg-showdata-bg batch-tbl mg-tbl-margin" cellspacing="1" cellpadding="1">
+<thead>
+
+  <tr>
+    <th colspan="2"></th>
+   
+    <% (1..10).each do |i| %>
+        <% if @placement_data.public_send("round#{i}").present? %>
+         
+                 <% round_data=MgInterviewRound.find_by(:id=>@placement_data.public_send("round#{i}"))%>
+                  <th colspan="2">  <%= "Round "+ i.to_s%>(<%= round_data.name %>)</th>
+                  
+   
+        <% end %>
+    <% end %>
+    
+  </tr>
+   <tr>
+    <th>Student Name</th>
+    <th>Admission Number</th>
+    <% (1..10).each do |i| %>
+        <% if @placement_data.public_send("round#{i}").present? %>
+         
+                 <% round_data=MgInterviewRound.find_by(:id=>@placement_data.public_send("round#{i}"))%>
+                  <th>  <%= "Select"%></th>
+                  <th><%="date"%></th>
+   
+        <% end %>
+    <% end %>
+    <th>Selected(For Job?)</th>
+    
+  </tr>
+  </thead>
+  <%@sorted_records.each_with_index do |data,index|%>
+<tr>
+  
+  <td><%="#{data.first_name} #{data.last_name}"%></td>
+  <td><%=data.admission_number%></td>
+   <%job_app=MgPlacementJobApplication.find_by(:mg_batch_id=>params[:id],:mg_student_id=>data.id,:is_deleted=>0,:mg_job_upload_id=>params[:job_id],:mg_school_id=>session[:current_user_school_id],:pass_out_year=>params[:pass_out_year])%>
+<% (1..10).each do |i| %>
+        <% if @placement_data.public_send("round#{i}").present? %>
+           <% round_data=MgInterviewRound.find_by(:id=>@placement_data.public_send("round#{i}"))%>
+
+          
+          <%if (i==1 &&  job_app.mg_wing_id==nil) || (round_data.id.to_i==job_app.public_send("round#{i}").to_i)%>
+            <%#=@placement_data_array[index].is_round_selected%>
+
+            <%if i==1 &&  job_app.mg_wing_id==nil%>
+
+             <td>  <%=check_box_tag "student_id_data[#{data.id}]","#{round_data.id}-#{data.id}",true,:class=>"class#{round_data.id} student_id_data"%></td>
+                  <td><%= text_field_tag "interview_data[#{data.id}]",@placement_data.interview_date,:class=>"class1#{round_data.id} date_picker_texts_fields_clsses data_filed_class dawte_pickedr_teexts_fieldws_clsswes "%></td>
+            <%elsif round_data.id.to_i==job_app.public_send("round#{i}").to_i%>
+           <td>  <%=check_box_tag "student_id_data[#{data.id}]","#{round_data.id}-#{data.id}",job_app.public_send("round#{i}_date").present? ? true: job_app.mg_wing_id==nil ? true : false ,:disabled=>true, :class=>"class#{round_data.id} student_id_data"%>
+                  <%#=job_app.public_send("round#{i}_date").present?%>
+                  <td><%= text_field_tag "interview_data[#{data.id}]",job_app.public_send("round#{i}_date").present? ? job_app.public_send("round#{i}_date") : job_app.mg_wing_id==nil ? @placement_data.interview_date : "",:disabled=>true,:class=>"class1#{round_data.id} date_picker_texts_fields_clsses data_filed_class"%></td>
+
+                   <%else%>
+
+                  <td>  <%=check_box_tag "student_id_data[#{data.id}]","#{round_data.id}-#{data.id}",false,:disabled=>true,:class=>"class#{round_data.id} student_id_data"%></td>
+                  <td><%= text_field_tag "interview_data[#{data.id}]",nil,:disabled=>true,:class=>"class1#{round_data.id} date_picker_texts_fields_clsses data_filed_class"%></td>
+                  <%end%>
+                  <%else%>
+                  <td>  <%=check_box_tag "student_id_data[#{data.id}]","#{round_data.id}-#{data.id}",false,:disabled=>true,:class=>"class#{round_data.id} student_id_data"%></td>
+                  <td><%= text_field_tag "interview_data[#{data.id}]",nil,:disabled=>true,:class=>"class1#{round_data.id} date_picker_texts_fields_clsses data_filed_class"%></td>
+                  <%end%>
+                 
+   
+        <% end %>
+    <% end %>
+      <td>  <%=check_box_tag "student_job_selected[#{data.id}]",nil,job_app.job_selected==true ? true :false,:class=>"student_id_data student_data123"%></td>
+</tr>
+<%end%>
+
+  </table> 
+  </div>
+
+  <script>
+
+ $(document).ready(function(){
+  $("#fixTablePOConfirmationHistoriesTABLEID").tableHeadFixer({'left' : 1, 'head' : true});
+
+  
+var valid=$("#demo_data_valididation").val();
+if (valid=="1"){
+        // console.log($("#array_rounds_data").val());
+var array_ronds_db=$("#array_rounds_data").val();
+ var array_ronds_db1=array_ronds_db.split(" ");
+var array_rounds_data1=$("#array_rounds_data_array").val();
+var array_rounds_data11=array_rounds_data1.split(" ");
+console.log("array_ronds_db");
+
+//console.log(array_ronds_db);
+console.log(array_ronds_db1);
+console.log(array_rounds_data1);
+console.log(array_rounds_data11);
+
+ var array_rounds_data2= array_rounds_data11.filter(function(obj){return array_ronds_db1.indexOf(obj)==-1;})
+console.log(array_rounds_data2);
+  
+    var data=$("#mg_interview_round_id").val();
+console.log(data);
+
+    var datas=[]
+    var data1=$("#round_data").val();
+console.log(data1);
+console.log("array_ronds_db");
+   
+    for (i = 0; i < array_rounds_data11.length; i++) {
+    $(".class"+array_rounds_data11[i]).attr("disabled", true);
+    $(".class1"+array_rounds_data11[i]).attr("disabled", true);
+ }
+
+     if(array_ronds_db1.indexOf(data)>=0){
+
+           $(".class"+data). removeAttr("disabled");
+           $(".class1"+data). removeAttr("disabled");
+          
+  
+    } else if(array_rounds_data2[0]==data) {
+
+      $(".class"+data). removeAttr("disabled");
+           $(".class1"+data). removeAttr("disabled");
+
+ 
+      // Code for else case
+}
+    $(".class"+data).each(function(){
+
+      if($(this).prop("checked") == true && $(this).prop("disabled")==false){
+
+               var data=$(this).val();
+                var datas=data.split("-")
+              
+               $(this).parent().siblings().find(".class1"+datas[0]).removeAttr("disabled");
+                //$(this).siblings().css({"color": "red", "border": "2px solid red"})
+
+            }
+             else {
+              var data=$(this).val();
+                var datas=data.split("-")
+               
+             
+                $(this).parent().siblings().find(".class1"+datas[0]).attr("disabled", true);
+             }
+
+})
+  }
+});
+  
+
+
+  dateFormatStr =  getJsDateFormat();
+
+ $( "#next_round_date" ).datepicker({ 
+            changeMonth: true,
+            changeYear: true,yearRange: "-50:+10",maxDate: "10000",
+            dateFormat: dateFormatStr})
+         var round_date_val =  $.datepicker.formatDate(dateFormatStr,new Date($(".validation_date").val()));
+         if (round_date_val=="NaN/NaN/NaN"){
+      $(".validation_date").val("");
+     
+    }
+    else{
+       $(".validation_date").val(round_date_val);
+    }
+       
+
+ $('.date_picker_texts_fields_clsses').each(function(){
+      $(this).removeAttr('id').removeClass('hasDatepicker'); // added the removeClass part.
+      $('.date_picker_texts_fields_clsses').datepicker({changeMonth: true,
+            changeYear: true,yearRange: "-50:+10",maxDate: "10000",
+            dateFormat: dateFormatStr});
+         var round_date =  $.datepicker.formatDate(dateFormatStr,new Date($(this).val()));
+      if (round_date=="NaN/NaN/NaN"){
+      $(this).val("");
+     
+    }
+    else{
+       $(this).val(round_date);
+    }
+
+    }); 
+ 
+
+
+  
+
+        $('input[type="checkbox"]').click(function(){
+
+
+          var next_round_data=$("#next_round_date").val();
+
+            if($(this).prop("checked") == true){
+
+               var data=$(this).val();
+               var datas=data.split("-")
+              var pre_val=$(this).parent().prev().find("input").val();
+            
+              //Dont Deletettttttttttttttt
+              // var pre_val1=$(this).parent().prev().text();
+              var boolean_data=$(this).parent().next().find("input").val();
+              
+              
+             
+
+
+              
+
+
+               if((pre_val=="")||(next_round_data=="")){
+                
+                if(next_round_data==""){
+                    if(boolean_data==undefined && pre_val!=""){
+
+
+                    }
+                    else if(pre_val==""){
+               alert("Previous interview rounds not yet completed ");
+               $(this).attr('checked', false);
+                      
+                    }
+
+                      else{
+               //alert("Please Select Next Round date");
+               //$(this).attr('checked', false);
+                $(this).parent().siblings().find(".class1"+datas[0]).removeAttr("disabled");
+               
+           }
+             }
+             else if(pre_val==""){
+               alert("Previous interview rounds not yet completed ");
+               $(this).attr('checked', false);
+
+             }
+
+             }
+
+             else{
+               $(this).parent().siblings().find(".class1"+datas[0]).removeAttr("disabled");
+              $(this).parent().siblings().find(".class1"+datas[0]).val(next_round_data);
+                //$(this).parent().siblings().find(".class1"+datas[0]).css({"color": "red", "border": "2px solid red"})
+             }
+
+            }
+
+            else if($(this).prop("checked") == false){
+
+             var data=$(this).val();
+               var datas=data.split("-")
+               $(this).parent().siblings().find(".class1"+datas[0]).val("");
+               $(this).parent().siblings().find(".class1"+datas[0]).attr("disabled", true);
+            }
+
+        });
+
+
+ //  $(document).on("change","#mg_interview_round_id",function(){
+ //    var data=$(this).val();
+ //    var data1=$("#round_data").val();
+ //    console.log(data1)
+ //    for (i = 0; i < data1.length; i++) {
+ //    //$(".class"+data1[i]).prop("checked", false);
+ //    //$(".class"+data1[i]).val("");
+ //    $(".class"+data1[i]).attr("disabled", true);
+     
+ // }
+ //    $(".class"+data).removeAttr("disabled");
+
+
+ //  });
+  </script>

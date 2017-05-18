@@ -1,0 +1,26 @@
+<!-- Sec --> 
+<%@previous_educations=MgPreviousEducation.all%>
+ <h4 class="mg-h4"><%= t('previousedcuation') %></h4>
+<table  class="batch-tbl">   <!-- border="2" --> 
+  <tr class="subject-table-header">
+  	<th><%=t("school_name")%></th>
+    <th>Course</th>
+    <th>Year</th>
+    <th>Total Marks </th>
+     <th colspan="2"><%= t('actions') %></th>
+  </tr>
+ 
+  <% @previous_educations.each do |sub| %>
+    <tr>
+      <td><%= sub.school_name %></td>
+      <td><%= sub.course %></td>
+      <td><%= sub.year %></td>
+       <td><%= sub.total_marks %></td>
+      <td><button title="Show" class="show-previous-education mg-icon-btn" id="showPreviousEducationID-<%= sub.id%>"><i class="fa fa-eye"></i></button>
+      <button title="Edit" class="edit-previous-education mg-icon-btn" id="editPreviousEducationID-<%= sub.id%>"><i class="fa fa-pencil-square-o"></i></button>
+      <button title="Delete" class="delete-previous-education mg-icon-btn" id="deletePreviousEducationID-<%= sub.id%>"><i class="fa fa-trash"></i></button></td>
+
+    </tr>
+  <% end %>
+</table>
+<%= button_to 'Add Previous Educations Details', {:controller => "previous_educations", :action => "new" },html: { id: "add_subject_path"} %>

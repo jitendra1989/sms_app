@@ -1,0 +1,8 @@
+<% navigation_add t('generate_fine'),:controller=>'sports_management', :action=>'generate_fine' %>
+<% navigation_add t('Edit_generate_fine'),:controller=>'sports_management', :action=>'generate_fine_edit' %>
+<%= render partial: "generate_fine_form" %>
+<script>
+$(document).ready(function(){
+  focusCurrentTab("generate_fineAID","generate_fineLiID");
+});
+</script>

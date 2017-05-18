@@ -1,0 +1,28 @@
+<table class="mg-tbl-margin">
+	<tr>
+		<td>
+			<aside style="width: 130px;">
+				<label class="mg-label mg-custom-labels mg-label-width ">Sunday</label>
+				<label class="mg-label mg-custom-labels mg-label-width ">Monday</label>
+				<label class="mg-label mg-custom-labels mg-label-width ">Tuesday</label>
+				<label class="mg-label mg-custom-labels mg-label-width ">Wednesday</label>
+				<label class="mg-label mg-custom-labels mg-label-width ">Thursday</label>
+				<label class="mg-label mg-custom-labels mg-label-width ">Friday</label>
+				<label class="mg-label mg-custom-labels mg-label-width ">Saturday</label>
+			</aside>
+		</td>
+			<td id="selectedWeekdayTdID" style="line-height: 2.18;">
+			<%@allvalue.each do |value|%>
+				<%= check_box_tag "weekdays[#{value}]", 1,  @weekdaychecked.include?(value) ? true : false ,:onclick=>"buttonEnable()" ,:style=>"positin: relative; top: -1px;"%><br>
+				<%end%>
+			</td>
+	</tr>
+</table>
+
+<button id="weekdaySavebtn" class="mg-small-form-btn" disabled><%=t('save')%></button>
+
+ <%#= link_to t('cancel'), :back, {:class=>"btn btn-delete cancel-form-dialog"} %>
+
+
+
+ 

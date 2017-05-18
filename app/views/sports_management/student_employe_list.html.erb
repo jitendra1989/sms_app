@@ -1,0 +1,7 @@
+<%if params[:batch_id].present?%>
+  <%=select_tag 'student_emp_obj', options_from_collection_for_select(@student_emp_obj, 'id', 'first_name',:selected=>params[:student_id]),:prompt=>"Select",:onchange=>""%>
+<%else%>
+  <%=select_tag 'student_emp_obj', options_from_collection_for_select(@student_emp_obj, 'id', 'first_name',:selected=>params[:employee_id]),:prompt=>"Select",:onchange=>""%>
+<%end%>
+
+

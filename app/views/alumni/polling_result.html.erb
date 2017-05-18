@@ -1,0 +1,76 @@
+<% navigation_add t('poll_result'), :controller=>'alumni' ,:action=> 'polling_result' %>
+
+<%=render partial: 'alumni_left'%>
+<h4 class="mg-h4"><%= t('poll_result') %></h4>
+
+	<% data = MgPollQuestionAlumni.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]) %>
+		
+	<% @timeformat = MgSchool.find(session[:current_user_school_id]) %>
+	<div class="mg-scroll-alumni-bar">
+	<% data.each_with_index do |poll,i| %>
+
+ 		<p style="font-weight: bold;"><%i=i+1%>
+
+			<%= "#{i.to_s}."%><%= poll.try(:question) %> 
+
+			<%="(End Date: "%><%= poll.try(:due_date).strftime(@timeformat.date_format)%><%=")"%>
+		</p>
+
+		  
+		<table border="1" class="mg-showdata-bg " cellspacing="1" cellpadding="1">
+			
+			<tr>
+				<th>Options</th>
+				<th style="min-width:18%;">Count</th>
+			</tr>
+			<tr>
+				<% options= MgPollOptionAlumniParticulars.where(:mg_poll_option_alumni_id=>poll.id,:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]) %>
+
+				<td>		
+					  <% options.each_with_index do |option,i| %>
+							 <%= option.try(:paticular)%>
+
+							<br/>
+					  <%end%>
+				</td>
+
+				<td>
+					  <% options.each_with_index do |option,i| %>
+							<% if option.try(:count).present? %>
+						 		<%= option.try(:count)%>
+							<% else %>
+								<%= 0 %>
+					  <% end %>
+						<br/>
+				  <%end%>
+				</td>
+			</tr>
+		
+		</table>
+			<br>
+			
+		
+	<% end %>	
+		</div>
+
+<%= render  partial: 'application/common_left_close' %>
+
+<script>
+
+        $( document ).ready(function() {
+            focusCurrentTab("poll_resultAID","poll_resultliId");
+            });
+
+</script>
+
+<style type="text/css">
+	.mg-scroll-alumni-bar {
+    border: 1px solid #b2b2b2;
+    display: inline-block;
+    max-height: 400px;
+    min-width: 735px;
+    overflow-y: scroll;
+    width: auto;
+}
+</style>
+		 

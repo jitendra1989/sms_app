@@ -1,0 +1,55 @@
+<!-- breadcrumbs Work -->
+<% navigation_add 'Examinations', examinations_path %>
+<% navigation_add 'CCE', examination_cce_new_path %>
+<% navigation_add 'Co-Scholastic Settings', examination_Co_Scholastic_index_path %>
+<% navigation_add 'Co-Course Observation' , examination_Co_ScholasticCourseObservation_index_path %>
+
+
+<!-- breadcrumbs Work -->
+
+
+<%= render  partial: 'examination_table_left' %>
+<h4 class="mg-h4" style="text-transform: none;">Assign Co-Scholastic Groups to <%=t('course')%></h4>
+<div>
+
+<%=hidden_field_tag :mg_course_id, @Id, :id=>"observationsCourseId"%>
+	<div>
+		<p>
+			<label class="mg-label mg-leave-width"><%=t('select')%> <%=t('course')%></label>
+			<%=select_tag :mg_course_id, options_for_select(@course),:prompt=>t('select'),:onchange=>"myCoCourseFunction(this.value)" %><br>
+		</p>
+	</div>
+	<div id="CoexaminationClassID">
+	</div>
+
+	<div id="COeditAssaignClassID">
+	</div>
+
+	<div id="CoexaminationAssaignCommonID">
+
+	</div>
+</div>
+
+<%= render  partial: 'examination_table_close' %>
+
+
+<script>
+
+$(document).ready(function(){
+
+	focusCurrentTab("viewStudentListAId","viewStudentListLiId");
+        focusExaminationHeaderBox();
+		
+	var Id=$("#observationsCourseId").val();
+	
+	if(Id ==""){
+		
+		myRankingFunction(Id);
+
+	}
+	if(Id!=""){
+		myCoCourseFunction(Id);
+	}
+});
+
+</script>

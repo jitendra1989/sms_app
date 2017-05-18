@@ -1,0 +1,6 @@
+<label class="mg-label mg-custom-labels mg-label-width "><%=t('select')%> <%=t('batch')%></label>
+<%if @batches.length > 0%>
+<%=select_tag :batch,options_from_collection_for_select(@batches,"id","course_batch_name"),:prompt=>"Default",:onchange=>"batchesChange(this.value)"%>
+<%else%>
+	<%=select_tag :batch,options_for_select([]),:prompt=>"Default",:onchange=>"batchesChange(this.value)"%>
+<%end%>

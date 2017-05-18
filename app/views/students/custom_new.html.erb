@@ -1,0 +1,67 @@
+<!-- breadcrumbs Work -->
+<% navigation_add 'Student Custom Fields', '/students/custom_new' %>
+
+<!-- breadcrumbs Work -->
+
+
+<!-- Sec --> 
+<%= render  partial: 'master_settings/master_settings_left.html' %>
+
+<h4 class="mg-h4">Student Custom Fields</h4>
+<div>
+<%#=link_to "Student Custom Field ", controller: "students", action: "custom_index"%>
+<%= button_to "Create Student Custom Field", { :controller=> "students", :action=> "custom_index"} ,:class=>"mg-custom-form-btn"%>
+<div id="editStudentCustomFieldsDivID"></div>
+
+<%#= button_to "Guardian Custom Field", controller: "guardians", action: "custom_index" %>
+<%#=link_to "Guardian Custom Field", controller: "guardians", action: "custom_index"%>
+
+<% if(@dbdatas.length > 0)%>
+
+  <table class="batch-tbl mg-tbl-margin">
+    <tr>
+            <th><%=t('fieldname')%></th>
+            <th><%=t('fieldtype')%></th>
+            <th><%=t('defaultvalue')%></th>
+            <th colspan="2"><%=t('actions')%></th>
+   </tr>
+            <% @dbdatas.each do |student| %>
+    <tr>
+            <td><%=student.name %></td>
+             <% 
+                temp=student.data_type.split("_") 
+                str=temp[0].split.map(&:capitalize).join(' ')+" "+temp[1]
+            %>
+            <td><%=str%></td>
+            <td><%=student.text_data %></td>
+            <td colspan="2">
+                <button title="Edit" id="editCustum-<%=raw student.id %>" class="edit-student-custum-fields mg-icon-btn"><i class="fa fa-pencil-square-o"></i></button>
+                 <button title="Delete" class="delete-student-custum-field mg-icon-btn" id="deleteCustumID-<%= student.id%>"><i class="fa fa-trash"></i></button>
+            </td>
+    </tr>
+    <%end%>
+  </table>
+<% else %>
+  <h5>Please add some custom fields for student</h5>
+<% end %> 
+</div>
+
+
+<%= render partial: 'student_left_close' %>
+
+<script >
+ $(document).ready(function () {
+
+
+    
+    focusCurrentTab("viewStudentCustomFieldAID","viewStudentCustomFieldLiID");
+    focusMasterSettings();
+
+
+  });
+
+        
+
+</script>
+
+

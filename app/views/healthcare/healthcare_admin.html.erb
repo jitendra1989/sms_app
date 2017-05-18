@@ -1,0 +1,131 @@
+<% navigation_add t('healthcare_admin'), :controller => 'healthcare', :action => 'healthcare_admin' %>
+<%=render partial: '/master_settings/master_settings_left'%>
+<h4 class="mg-h4"><%= t('about_healthcare_admin') %></h4>
+<%if !@healthcare_admin.present?%>
+  <button class="add_healthcare_admin mg-btn-bottom-margin mg-custom-form-btn"><%= t('add_healthcare_admin')%></button>
+<%end%>
+
+<%if @healthcare_admin.length>0%>
+  <table  class="batch-tbl mg-tbl-margin">   <!-- border="2" --> 
+    <tr class="subject-table-header">
+      <th><%= t('user_name') %></th>
+      <th><%= t('actions') %></th>
+    </tr>
+   
+    <% @healthcare_admin.each do |healthcare_admin| %>
+      <tr>
+        <td><%= healthcare_admin.try(:user_name) %></td>
+        <td>
+          <button title="Change Password" id="<%=raw healthcare_admin.id %>-showlabBTNID" class="change-healthcare-admin-password-btn mg-icon-btn"><i class="fa fa-exchange"></i></button>
+
+          <button title="Edit" id="<%=raw healthcare_admin.id %>-editaccountBTNID" class="edit-healthcare-admin-detail-btn mg-icon-btn"><i class="fa fa-pencil-square-o"></i></button>
+
+          <button title="Delete" id="<%=raw healthcare_admin.id %>-deletelabBTNID" class="delete-healthcare-admin-detail-btn mg-icon-btn"><i class="fa fa-trash"></i></button>
+        </td>
+      </tr>
+    <% end %>
+  </table>
+  <br/>
+<%else%>
+  <h5>No Healthcare Admin is created</h5>
+<%end%>
+<div id="newHealthCareAdminDivId"></div>
+<div id="editHealthCareAdminDivId"></div>
+<div id="changePasswordHealthCareAdminDIVID"></div>
+
+<%= render  partial: 'application/common_left_close' %>
+
+<script>
+$( document ).ready(function() {
+  focusCurrentTab("healthCareAdminLoginAID","healthCareAdminLoginLID");
+});
+
+
+
+$(document).on("click", ".delete-healthcare-admin-detail-btn", function(e)
+{
+  e.preventDefault();
+  var myID =$(this).attr('id');
+  var Id=myID.split("-");
+  var retVal = confirm("Are you sure to delete?");
+  if(retVal)
+  {
+    var urlLink = "/healthcare/delete_healthcare_admin/"+Id[0];
+    $.ajax({
+      url: urlLink ,
+      cache: false,
+      success: function(html)
+      {
+          window.location.reload();
+      }
+    });
+  }else
+  {
+    return false;
+  }
+}); 
+
+
+$(document).on("click", ".edit-healthcare-admin-detail-btn", function(e){
+  var myID =$(this).attr('id');
+  var Id=myID.split("-");
+  var urlLink = "/healthcare/edit_healthcare_admin/"+Id[0];
+  $.ajax({
+      url: urlLink ,
+      cache: false,
+      success: function(html){
+            $('#editHealthCareAdminDivId').dialog({
+              modal: true,
+               minHeight: 'auto',
+              minWidth: '250px',
+              title: "Edit Healthcare Admin",
+              open: function () {
+                $(this).html(html);
+              }
+          }); 
+      }
+  });
+});
+
+$(document).on("click", ".add_healthcare_admin", function(e){
+  var urlLink = "/healthcare/new_healthcare_admin";
+  $.ajax({
+      url: urlLink ,
+      cache: false,
+      success: function(html){
+            $('#newHealthCareAdminDivId').dialog({
+              modal: true,
+               minHeight: 'auto',
+              minWidth: '250px',
+              title: "Add Healthcare Admin",
+              open: function () {
+                $(this).html(html);
+              }
+          }); 
+      }
+  });
+});
+
+$(document).on("click", ".change-healthcare-admin-password-btn", function(e){
+  var myID =$(this).attr('id');
+  var Id=myID.split("-");
+  var urlLink = "/healthcare/change_healthcare_admin_password/"+Id[0];
+  $.ajax({
+      url: urlLink ,
+      cache: false,
+      success: function(html){
+            $('#changePasswordHealthCareAdminDIVID').dialog({
+              modal: true,
+              minHeight: 'auto',
+              minWidth: '250px',
+              title: "Change Password",
+              open: function () {
+                  $(this).html(html);
+              }
+          }); 
+      }
+  });
+});
+
+
+</script>

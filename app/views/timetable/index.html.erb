@@ -1,0 +1,65 @@
+<!-- breadcrumbs Work -->
+<% navigation_add t('timetable'), timetable_index_path %>
+<!-- breadcrumbs Work -->
+
+
+
+
+<%= render  partial: 'timetable_left' %>
+
+ <%= form_for :createtimetableasso, url: teacher_for_subject_save_path do |f| %>
+
+<h4 class="mg-h4"><%=t('timetable')%> Association</h4>
+<div>
+<label class="mg-label mg-tt-width mg-tbl-margin">Select Academic Year</label>
+<%=select_tag :mg_time_table_id,options_for_select(@academic_name),:prompt=>"Select"%><br>
+<label class="mg-label mg-tt-width mg-tbl-margin"><%=t('select')%> <%=t('coursebatch')%> </label>
+<%=select_tag :batch,options_from_collection_for_select(@batch,"id","course_batch_name"),:prompt=>t('select'),:onchange=>"classTimingsForBatch(this.value)"%>
+<%#=select_tag :batch,options_for_select(@batch),:prompt=>"Batch and course",:onchange=>"classTimingsForBatch(this.value)"%><br><br>
+<div id="selectTimeDivId"></div>
+<div id="batchwiseWeekdayTableID"></div>
+<div class="mg-btn-cancel">
+	<%#=f.submit t('submit') ,:class=>"mg-small-form-btn"%>
+	<a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("save")%></a>
+	<%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+</div><br>
+<%end%>
+ </div> 
+<%= render  partial: 'timetable_left_close' %>
+
+<script>
+$(document).ready(function () {
+        focusCurrentTab("timeTableAssociateAID","timeTableAssociateLiID");
+        focusTimeTable();
+    });
+
+
+function classTimingsForBatch(batchId){
+	var mg_time_table_id=$("#mg_time_table_id").val();
+	$.ajax({
+		url:'/timetable/batch_wise_select_class_timings_name',
+		data:{"batch_id":batchId, mg_time_table_id: mg_time_table_id},
+		type:"GET",
+		success:function(html){
+			$("#selectTimeDivId").html(html);
+		},
+		error:function(){
+			alert("inside error");
+		}
+	});
+}
+
+function weekDayForBatch(className){
+	$.ajax({
+		url:'/timetable/batch_wise_week_day_time_table',
+		data:{"name":className},
+		type:"GET",
+		success:function(html){
+			$("#batchwiseWeekdayTableID").html(html);
+		},
+		error:function(){
+			alert("inside error");
+		}
+	});
+}
+</script>

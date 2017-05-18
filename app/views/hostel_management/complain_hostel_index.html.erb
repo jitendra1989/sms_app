@@ -1,0 +1,50 @@
+<% navigation_add t('hostel_issue'),"/hostel_management/complain_hostel_index" %>
+<%= render partial: 'dashboards/student_dashboard_left' %>
+<%=link_to t("hostel_issues"),{:controller=>"hostel_management",:action=>"complain_hostel_new"},:class=>"mg-custom-form-btn"%>
+<!-- <br/> -->
+<h4 class="mg-h4" style="margin-top: 8px;"><%=t('hostel_issue_details')%></h4>
+<div>
+<%if @complain_hostel.present?%>
+
+<div class="mg_pagination">
+<table class="batch-tbl mg-tbl-margin">   <!-- border="2" --> 
+ <tr >
+    <th> <%=t('hostel')%></th>
+    <th><%=t('room_no')%></th>
+    <th><%=t('programme')%></th>
+    <th><%=t('reason')%></th>
+    <th><%=t('date')%></th>
+    <th><%=t('status')%></th>
+    <th><%=t('actions')%></th>
+  </tr>
+  <% puts @complain_hostel.inspect %>
+  <% @complain_hostel.each do |e| %>
+    <tr>
+     <%hostel_details=MgHostelDetails.find_by(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id],:id=>@allocate_room_data.try(:mg_hostel_details_id))%>
+    <td><%= hostel_details.try(:name) %></td>
+    <td><%= e.room_no %></td>
+    <td><%= e.programme %></td>
+      <td><%=truncate(e.try(:reason).to_s, :length => 25, :separator => ' ')  %></td>
+      <td><%= e.date.strftime(@timeformat.date_format) %></td>
+      <td><%= e.status %></td>
+      <td>  
+        <button title="Show" id="<%=raw e.id %>-showjobUploadBTNID" class="show-job-upload-fom-btn mg-icon-btn" onclick="window.location='/hostel_management/complain_hostel_show/<%=e.id%>'"><i class="fa fa-eye"></i></button>
+        <button title="Edit" id="<%=raw e.id %>-editjobUploadBTNID" class="edit-job-upload-fom-btn mg-icon-btn" onclick="window.location='/hostel_management/complain_hostel_edit/<%=e.id%>'"><i class="fa fa-pencil-square-o"></i></button>
+        <button title="Delete" onclick="confirm('Are you sure to delete?') ? window.location='/hostel_management/complain_hostel_delete/<%=e.id%>' : ''" class="mg-icon-btn"><i class="fa fa-trash"></i></button>    
+      </td>
+    </tr>
+  <% end %>
+</table>
+<div>
+ <%#= will_paginate @provision, :container => false %>
+  </div>
+  <%else%>
+    <p>Please create some Records</p>
+  <%end%>
+ </div>
+<%= render partial: 'application/common_left_close' %>
+<script>
+  $( document ).ready(function() {
+    focusCurrentTab("complain_hostelAID","complain_hostelLiID");
+  });
+</script>

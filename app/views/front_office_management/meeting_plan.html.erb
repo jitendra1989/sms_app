@@ -1,0 +1,73 @@
+<% navigation_add t('meeting_planner'), front_office_management_meeting_plan_path %>
+<%=render partial: 'front_office_management_left'%>
+<h4 class="mg-h4"><%= t('meeting_planner') %></h4>
+
+<!-- <button class="new-add-exam-type mg-btn-bottom-margin mg-custom-form-btn"><%#= t('add_address_book')%></button>
+ -->
+ <%if session[:user_type]=="principal"%>
+<button class="mg-btn-bottom-margin mg-custom-form-btn" onclick="window.location.href='/front_office_management/meeting_plan_new'">Add Meeting Planner</button>
+<%end%>
+
+<div class="mg_pagination">
+<%if @meeting_planner_data.present?%>
+<table  class="batch-tbl mg-tbl-margin">   <!-- border="2" --> 
+  <tr class="subject-table-header">
+    <th><%= t('meeting_with') %></th>
+    <th class="mg-label-text-transform-none"><%= t('start_date') %></th>
+    <th class="mg-label-text-transform-none"><%= t('end_date') %></th>
+    <th><%= t('status') %></th>
+      <%if session[:user_type]=="front_office_manager"%>
+          <th colspan="3"><%= t('action') %></th>    
+      <%else%>
+          <th colspan="3"><%= t('actions') %></th>    
+      <%end%>
+
+  </tr>
+ 
+  <% @meeting_planner_data.each do |s| %>
+   <tr>
+      <td class="mg-capitalize-text"><%= s.try(:meeting_with) %></td>
+      <%@dateFormat = MgSchool.find_by(:id=>session[:current_user_school_id]).date_format
+      date_time_format=@dateFormat +"     " + "%k:%M%p"%>
+      <td><%=s.try(:start_date_of_meeting).try(:strftime, @dateFormat)%></td>
+      <td><%=s.try(:end_date_of_meeting).try(:strftime, @dateFormat)%></td>
+           
+          <td><%= s.try(:status) %></td>
+<td>
+
+
+      <button title="Show" id="" class=" mg-icon-btn" onclick="window.location.href='/front_office_management/<%=s.id%>/meeting_plan_show'"><i class="fa fa-eye" ></i></button>
+
+      <%if session[:user_type]=="principal"%>
+
+      <button title="Edit" id="" class=" mg-icon-btn" onclick="window.location.href='/front_office_management/<%=s.id%>/meeting_plan_edit'"><i class="fa fa-pencil-square-o" ></i></button>
+      
+                <span style="left: -2px; position: relative; float: right; top:-2px;"> 
+                <%= link_to "<i class=\"fa fa-trash\"></i>".html_safe,{ action: "meeting_plan_delete", id: s.id },data: { confirm: "Are you sure?" } ,:title=> "Delete" ,:class=>"mg-icon-btn"%> 
+      <%end%>
+   </span>
+      </td>
+    </tr>
+  <% end %>
+</table>
+<br/>
+ <div class="pagination-align" style="position: relative; bottom: 10px;">
+              <%#= will_paginate @exam_types, :container => false %>
+  </div>
+<%else%>
+<h5>No Records are present </h5>
+<%end%>
+</div>
+
+<div id="newExamTypeDIVID"></div>
+<div id="editExamTypeDIVID"></div>
+<div id="showAddressFomDIVID"></div>
+
+<%= render  partial: 'application/common_left_close' %>
+
+<script>
+$(document).ready(function () {
+    focusCurrentTab("meeting_planAID","meeting_planLiID");
+});
+
+</script>

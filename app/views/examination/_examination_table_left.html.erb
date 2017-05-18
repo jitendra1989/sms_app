@@ -1,0 +1,48 @@
+<!-- Sec --> 
+<section id="userBodyContentBox" style="margin: 0 auto;">
+    <table width=100% border="0" cellspacing="0" cellpadding="0"  style="margin-bottom: 0px;">
+        <tr>
+            <td valign="top" class="userBodyContentBox1">
+                <aside class="userMenuBoxLeft" style="width: 210px;">
+                    <ul class="menuListHome">
+                        <li class="myAccountMenu"><%= t('Examinations') %></li>
+                        
+                        <li id="viewStudentListLiId">
+                            <a class="menuItemsActivities" href="/examination/index" id="viewStudentListAId">
+                                <div class="setMenu"><i class="fa fa-gear">&nbsp;&nbsp;</i><%= t('Settings') %><!-- <i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i> -->
+                                </div>
+                            </a>
+                        </li>
+                        <li id="createNewStudentLiID">
+                            <a class="menuItemsActivities" href="/examination/exammanagement_index" id="createNewStudentAID" >
+                                <div class="setMenu"><i class="fa fa-wrench">&nbsp;&nbsp;</i><%= t('Exam Management') %><!-- <i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i> -->
+                                </div>
+                            </a>
+                        </li>
+
+                       <!--  <li id="generateReortsLID">
+                            <a class="menuItemsActivities" href="/examination/generate_reports" id="generateReortsAID">
+                                <div class="setMenu"><i class="fa fa-file-text-o">&nbsp;&nbsp;</i><%#= t('Generate Reports') %>
+                                </div>
+                            </a>
+                        </li>  -->
+                         <li id="viewResultLiID">
+                            <a class="menuItemsActivities" href="/examination/report_center" id="viewResultAID">
+                                <div class="setMenu"><i class="fa fa-file-text">&nbsp;&nbsp;</i><%= t('Reports Center') %><!-- <i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i> -->
+                                </div>
+                            </a>
+                        </li>
+                       
+
+
+                    </ul>    
+
+                </aside>
+            </td>
+            <td  valign="top" id="manageStudentCategoryID" class="mg-table-td-main-2">
+
+<script>
+$(document).ready(function(){
+    focusExaminationHeaderBox();
+});
+</script>

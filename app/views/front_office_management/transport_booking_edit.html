@@ -1,0 +1,241 @@
+<h4 class="mg-h4"><%=t('edit_transport_booking')%></h4>
+<%= form_for :transport_booking_type ,:url=> {:action=>'transport_booking_update',
+  :id=>@transport_booking_type.id }, :html=> 
+
+       { :id=> 'transport_booking_id' } do |f| %>
+<table cellspacing="0" cellpadding="0" border="0" class="employee-form-cls mg-table-spacing">
+
+<%= f.hidden_field :book_id_data, :value =>@transport_booking_type.id %>
+
+<%= f.hidden_field :is_deleted, :value => 0 %>
+<%= f.hidden_field :mg_emplo_posi_data, :value => @transport_booking_type.mg_employee_position_id %>
+
+<%= f.hidden_field :mg_school_id, :value => session[:current_user_school_id] %>
+<%= f.hidden_field :updated_by, :value => session[:user_id] %>
+
+
+<tr><td width="33%" valign="top">
+
+<!-- <p> -->
+  <%= f.label :date_of_booking, t("date_of_booking") ,:class=>"mg-label mg-rm-text-trans"%><span class="required-field"> *</span><br>
+    <%= f.text_field :date_of_booking, :class=> 'date_of_booking mg-text-field' %>
+<!-- </p> -->
+</td>
+<td width="33%" valign="top">
+<!-- <p> -->
+  <%= f.label :transport_time, t("transport_time") ,:class=>"mg-label"%><span class="required-field"> *</span><br>
+    <%= f.text_field :transport_time,:value=>@transport_booking_type.transport_time.try(:strftime,"%l:%M%P"), :class=> 'transport_time mg-text-field' %>
+<!-- </p> -->
+</td></tr>
+<tr><td width="33%" valign="top">
+<!-- <p> -->
+  <%= f.label :place_from, t("place_from") ,:class=>"mg-label"%><span class="required-field"> *</span><br>
+    <%= f.text_field :place_from, :class=> 'place_from mg-text-field' %>
+<!-- </p> -->
+</td>
+<td width="33%" valign="top">
+<!-- <p> -->
+  <%= f.label :place_to, t("place_to") ,:class=>"mg-label"%><span class="required-field"> *</span><br>
+    <%= f.text_field :place_to, :class=> 'place_to mg-text-field' %>
+<!-- </p> -->
+</td></tr>
+<tr><td width="33%" valign="top">
+<!-- <p> -->
+  <%= f.label :way_mode, t("way_mode") ,:class=>"mg-label"%><span class="required-field"> *</span><br>
+    <%#= f.text_field :way_mode, :class=> 'way_mode',:selected=>@transport_booking_type.way_mode,:readonly=>true %>
+    <%=f.select :way_mode,options_for_select([['One Way','one way'],['Two Way','two way']],:selected=>@transport_booking_type.way_mode)%>
+<!-- </p> -->
+</td>
+<td width="33%" valign="top">
+<!-- <p> -->
+  <%= f.label :mg_employee_category_id, t("employee_category") ,:class=>"mg-label"%><span class="required-field"> *</span><br/>
+ 
+  <%= f.collection_select(:mg_employee_category_id,MgEmployeeCategory.all, :id, :category_name,{:include_blank => t("Choose Category"),:selected=>@transport_booking_type.mg_employee_category_id},:onchange => "bookedbySelect()",:id => "bookedbySelectID")%>
+<!-- </p> -->
+</td></tr>
+<tr><td width="33%" valign="top">
+<!-- <p> -->
+  <label class="mg-label"  for="currentInsuranceDueDate"><%= t ('employee_profile') %><span class="required-field">&nbsp;*</span></label><br/>
+     
+      <div id="profile_id_data">
+<%#= f.select :mg_employee_data_fom,options_for_select(["Choose Employee"]),{:include_blank=>t('select')}%>
+        </div>
+<!-- </p> -->
+</td>
+<td width="33%" valign="top">
+<!-- <p> -->
+  <label class="mg-label"  for="currentInsuranceDueDate"><%= t ('select_employee') %><span class="required-field">&nbsp;*</span></label><br/>
+     
+<div id="mg_employee_data_for_fom">
+       <%= f.select :mg_employee_id,options_for_select(["Choose Employee"]),{:include_blank=> 'Choose Employee'} %>
+</div>
+<!-- </p> -->
+</td></tr>
+<tr><td width="33%" valign="top">
+<!-- <p> -->
+  <%= f.label :purpose, t("purpose") ,:class=>"mg-label"%><span class="required-field"> *</span><br>
+    <%= f.text_area :purpose, :class=>'mg-text-field'%>
+<!-- </p> -->
+</td>
+<td width="33%" valign="top">
+
+<!-- <p> -->
+  <%= f.label :status_data, t("status") ,:class=>"mg-label"%>
+  <span class="required-field"> *</span><br>
+  <%if session[:user_type]=="principal"%>
+    <%= f.select :status,options_for_select([['Pending','pending'],['Accepted','accepted'],['Rejected','rejected']],:selected=>@transport_booking_type.status),{}%>
+  <%else%>
+    <%= f.select :status,options_for_select([['Pending','pending'],['Accepted','accepted'],['Rejected','rejected']]),{},{:disabled=>true}%>
+    <%=f.hidden_field :status,:value=>"pending"%>
+  <%end%>
+<!-- </p> -->
+</td></tr>
+<tr><td width="33%" valign="top">
+<!-- <p> -->
+  <%= f.label :remark, t("remark") ,:class=>"mg-label"%><span class="required-field"> </span><br>
+  <%if session[:user_type]=="principal"%>
+    <%= f.text_area :remark, :class=>'mg-text-field' %>
+  <%else%>
+    <%= f.text_area :remark,:readonly=>true, :class=>'mg-text-field' %>
+  <%end%>
+<!-- </p> -->
+</td>
+
+<td width="33%" valign="top">
+
+<label class="mg-label mg-custom-labels" for="transaction_flow"><%= t('is_cancelled') %>&nbsp;&nbsp;&nbsp;&nbsp;<span class="required-field"> 
+      <!-- <div class="input-container"> -->
+        <%if @transport_booking_type.try(:is_cancelled)==true%>
+            <%= check_box_tag 'is_cancelled','yes', true, disabled: true%>
+        <%else%>
+            <%= check_box_tag 'is_cancelled'%>
+        <%end%>
+        </span></label>
+        <div class="input-container"></div>
+
+
+</td>
+
+
+
+
+
+
+</tr>
+<tr>
+<td width="33%" valign="top">
+<p class="mg-p-mgtop">
+    <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%='Submit'%></a>
+    <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+
+</p>
+</td></tr></table>
+<% end %>
+
+
+
+<script type="text/javascript">
+  $(document).ready(function () {
+       focusCurrentTab("transport_bookingAID","transport_bookingLiID");
+
+          var empCategoryID = $( "#bookedbySelectID" ).val();
+          var book_data = $( "#transport_booking_type_book_id_data" ).val();
+          
+       if(empCategoryID > 0) {
+           var urlLink = "/front_office_management/employee_position_list/"+empCategoryID;
+          $.ajax({
+             url: urlLink,
+             cache: false,
+             data:{"book_id":book_data,"Transport":"data"},
+             success: function(data){
+               
+                    $("#profile_id_data").empty().append(data);
+                  }
+            });
+      }
+
+  
+
+  var empProfileID = $("#transport_booking_type_mg_emplo_posi_data").val();
+ 
+    var urlLink = "/front_office_management/employee_list/";
+         $.ajax({
+             url: urlLink,
+             cache: false,
+             data: {"emp_profile_id": empProfileID,"book_id":book_data,"Transport":"data"},
+             success: function(data){
+                 $("#mg_employee_data_for_fom").empty().append(data);
+               }   
+         });
+       $("#transport_booking_id").validate({
+
+      rules: { 
+          "transport_booking_type[date_of_booking]": {required: true},
+          "transport_booking_type[transport_time]" : {required: true},
+          "transport_booking_type[place_from]": {required: true},
+          "transport_booking_type[place_to]": {required: true},
+          "transport_booking_type[way_mode]"     : {required: true},
+          "transport_booking_type[mg_employee_category_id]": {required: true},
+          "mg_employee_position_id_data": {required: true},
+          "mg_employee_id_data": {required: true},       
+          "transport_booking_type[purpose]": {required: true},
+          "transport_booking_type[status]": {required: true},
+            }
+    });
+
+       });
+
+     dateFormatStr =  getJsDateFormat();
+      $(".date_of_booking" ).datepicker({ changeMonth: true,
+                changeYear: true,yearRange: "-50:+50",dateFormat: dateFormatStr }
+                );
+      
+    var bookingDate =  $.datepicker.formatDate(dateFormatStr,new Date($('.date_of_booking').val()));
+
+    $("#transport_booking_type_transport_time").timepicker({ 'scrollDefault': 'now' });
+
+    $('.date_of_booking').val(bookingDate);
+
+      function bookedbySelect(){
+        var empCategoryID = $( "#bookedbySelectID" ).val();
+          var book_data = $( "#transport_booking_type_book_id_data" ).val();
+
+       if(empCategoryID > 0) {
+  
+           var urlLink = "/front_office_management/employee_position_list/"+empCategoryID;
+          $.ajax({
+             url: urlLink,
+             cache: false,
+             data:{"book_id":book_data,"Transport":"data"},
+             success: function(data){
+               
+                    $("#profile_id_data").empty().append(data);
+               }
+                             
+         });
+      }
+
+    }
+
+  
+
+
+
+function profileSelect(){
+  
+    var empProfileID = $("#mg_employee_position_id").val();
+    var book_data = $( "#transport_booking_type_book_id_data" ).val();
+    var urlLink = "/front_office_management/employee_list/";
+         $.ajax({
+             url: urlLink,
+             cache: false,
+             data: {"emp_profile_id": empProfileID,"book_id":book_data,"Transport":"data"},
+             success: function(data){
+                $("#mg_employee_data_for_fom").empty().append(data);
+             }      
+         });
+}
+
+
+
+</script>

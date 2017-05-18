@@ -1,0 +1,36 @@
+<%= render  partial: 'examination/examination_table_left' %>
+
+<%= form_for :section_wise_report, url: '/cce_reports/show_section_wise_report' do |f| %>
+
+            <label class="mg-label" >Select Terms </label><br/>
+            <%if @allTerms.present? %>
+              <%=f.select :terms,options_for_select(@allTerms),{include_blank: true},:onchange => 'getSection(this);'%>
+            <% else %>
+              <select >
+              </select>
+            <%end%>
+            <br/>
+            <label class="mg-label" >Select Section </label><br/>
+            <%=f.select :terms,options_for_select('')%>
+
+            
+
+<%end%>
+
+<%= render  partial: 'examination/examination_table_close' %>
+
+
+<!-- ,:onchange => 'this.form.submit();'   :prompt=> t('select') -->
+
+<script>
+
+  function getSection(that) {
+
+    var termId=$(that).val();
+    //alert(termId);
+    if( termId!="" ){
+
+    }
+
+  }
+</script>

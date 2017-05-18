@@ -1,0 +1,44 @@
+<!-- Sec --> 
+<%= render  partial: 'settings/setting_left' %>
+<input type="button" value="Add New Role And Permission" id= "addRolePermissionBtn" />
+<div class="mg_pagination">
+    <h4 class="mg-h4">Listing Actions</h4>
+
+    <table class="batch-tbl mg-tbl-margin" id='people_table'>
+        <tr>
+          <th>Role Name</th>
+          <th>Permission Name</th>
+          <th><%=t("actions")%></th>
+        </tr>
+
+        <% @mg_roles_permissions.each do |mg_roles_permission| %>
+             <%#= render partial: 'table_row', locals: {mg_roles_permission: mg_roles_permission} %>
+              <tr>
+              <td><%  @roletemp=MgRole.find_by_id(mg_roles_permission.mg_role_id)%>
+                    <%= @roletemp.try(:role_name)%></td>
+
+              <td><%  @permissiontemp=MgRolesPermission.find_by_id(mg_roles_permission.mg_permission_id)
+                      @Per = MgPermission.find_by(:id=>@permissiontemp.try(:mg_permission_id))
+                      @acsonName = MgAction.find_by(:id=>@Per.try(:mg_action_id))
+              %>
+
+                    <%= @acsonName.try(:action_name) %>
+                    <%#= @AcsonName.action_name%></td>
+              <td>
+                <button title="Edit" class="edit-mg-role-permission mg-icon-btn" id="editMgRolePermissionID-<%= mg_roles_permission.id%>"><i class="fa fa-pencil-square-o"></i></button>
+                <button title="Delete" class="delete-mg-role-permission mg-icon-btn" id="deleteMgRolePermissionID-<%= mg_roles_permission.id%>"><i class="fa fa-trash"></i></button></td>
+            </tr>
+
+
+
+        <% end %>
+    </table>
+        <br/>
+    <div class="pagination-align">
+      <%= will_paginate @mg_roles_permissions, :container => false %>
+    </div>
+    <br/>
+    
+</div>
+<%= render  partial: 'application/common_left_close' %>
+

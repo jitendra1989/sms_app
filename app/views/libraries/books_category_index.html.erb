@@ -1,0 +1,56 @@
+
+<%= render  partial: 'library_left' %>
+
+<% navigation_add 'Books Category', books_category_index_path %>
+
+<%if flash[:success].present?%>
+  <div class="alert alert-info mg-success-msg">
+
+        <%=flash[:success]%>
+        </div>
+   <%end%>
+
+<h4 class="mg-h4"><%= t('books_category_list')%></h4>
+
+<button  id ="books_category_id" class="mg-custom-form-btn">Add Books Category</button><br/><br/>
+
+
+<div id="create_book_category"></div>
+<div id="show_book_category"></div>
+<div id="edit_book_category"></div>
+
+<%if @all_books_category_data.length>0%>
+ <table class="batch-tbl mg-tbl-layout" cellspacing="0" style="padding:0; border-collapse:collapse;"> 
+<tr>
+<th><%=t('category_name')%></th>
+<th align="center"><%=t('actions')%></th>
+</tr>
+<% @all_books_category_data.each do |data| %>
+<tr>
+<td><%=data.category_name%></td>
+<td> 
+<!-- <button title="Show" id='<%#=data.id %>' class="show-book-category-class mg-icon-btn"><i class="fa fa-eye"></i></button> -->
+	           <button title="Edit" id='<%=data.id %>' class='edit-book-category-class mg-icon-btn'><i class="fa fa-pencil-square-o"></i></button>           
+	           <span>
+	           <%= link_to "<i class=\"fa fa-trash\"></i>".html_safe ,{ action: "books_category_destroy", id: data.id }, data: { confirm: "Are you sure to delete the selected entry?" } ,:title=>"Delete" ,:class=>"mg-icon-btn-link"  %>
+               </span>
+ </td>
+
+</tr>
+<%end%>
+</table>
+<%else%>
+<%="Please Create Some Data"%>
+<%end%>
+
+<%= render  partial: 'schools/school_left_close' %>
+
+<script>
+$(document).ready(function () {
+        focusCurrentTab("bookcategoryAID","bookcategoryLiID");
+        //focusMasterSettings();
+        focusLibrary();
+        
+      });
+
+</script>

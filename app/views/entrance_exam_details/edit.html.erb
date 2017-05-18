@@ -1,0 +1,357 @@
+<%= render partial: 'entrance_exam_left' %>
+<% navigation_add 'Entrance Exam Details', :controller=>'entrance_exam_details', :action=>'index' %>
+<% navigation_add t('edit_exam_details'), :controller=>'entrance_exam_details', :action=>'edit',:id=>@exam_detail.id %>
+<h4 class="mg-h4"><%= t('edit_exam_details') %></h4>
+<div class="box">
+  <%= form_for :exam_detail,:html=>{:id=>"examDetailID", :multipart=>true}, :url=>{:controller=>'entrance_exam_details', :action=>'update'}, method: :patch do |f| %>
+    <%= f.hidden_field :is_deleted, :value=>0 %>  
+    <%= f.hidden_field :mg_school_id, :value =>session[:current_user_school_id]%>
+    <%= f.hidden_field :created_by, :value =>session[:user_id] %>
+    <%= f.hidden_field :updated_by, :value =>session[:user_id] %> 
+    <%= f.hidden_field :edit_id, :value =>params[:id] %> 
+
+    <label class="mg-label mg-custom-labels" for="select_exam_date"><%= t('select_exam_date') %><span class="required-field"> *</span></label>
+    <div class="input-container">
+      <% @dateFormat = MgSchool.find_by(:id=>session[:current_user_school_id]).date_format %>
+      <%= f.text_field :start_date, :value=>@exam_detail.start_date.strftime(@dateFormat), :autocomplete=>:off,:id=>"startDateLID",:class=>"mg-text-field mg-custom-labels" %>
+    </div><br/>
+
+
+    <label class="mg-label mg-custom-labels" for="select_class"><%= t('select_class') %><span class="required-field"> *</span></label>
+    <div class="input-container">
+      <%= f.collection_select(:mg_course_id, MgCourse.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]), :id, :course_name, {:include_blank=>t("select"),:selected=>@exam_detail.mg_course_id},:onchange=>"editSelectStudentFunction(this.value)", :class=>"mg-text-field mg-custom-labels") %>
+    </div></br>
+
+    <table class="mg-custom-labels">
+      <tr>
+        <td>
+          <label class="mg-label" for="select_class"><%= t('student_list') %><span class="required-field"> *</span></label>
+        </td>
+        <td></td><td></td><td></td><td></td><td></td>
+        
+      <tr>
+        <td class="mg-td-width-one-thirds" valign="top"  style="width:50px;">
+         <span id="selectedEdit_studentsID">
+            <%=select_tag :selectEditStudentID,options_for_select([]),:multiple => true,:size =>10 ,:class=>""%>
+          </span>
+        </td>
+              
+        <td style="width:5px;"> </td>
+
+        <td  style="width:70px;">
+          <a  id="addEditStudentsID" class="mg-custom-form-btn add_button_to_show">Add</a><br><br>
+          <a  id="addAllEditStudentsID" class="mg-custom-form-btn">Add All</a> 
+        </td>
+
+        <td style="width:5px;"> </td>
+        <td class="mg-td-width-one-thirds" valign="top"  style="width:50px;">
+          <span id="removing_students">
+            <%=select_tag :selectedEditStudentID,options_for_select(@student_array),:multiple => true,:size =>10 ,:class=>"mg-add-library-particular"%>
+          </span>
+        </td>
+        <td style="width:5px;"> </td>
+        <td class="mg-td-width-one-thirds"  style="width:100px;"> 
+         <a  id="removeEditStudentsID" class="mg-custom-form-btn">Remove</a><br><br>
+         <a  id="removeAllEditStudentsID" class="mg-custom-form-btn add_button_to_show">Remove All</a>
+        </td>
+      </tr>
+    </table></br>
+
+    <label class="mg-label mg-custom-labels" for="select_start_time"><%= t('select_start_time') %><span class="required-field"> *</span></label>
+    <div class="input-container">
+      <%= f.text_field :start_time, :value => @exam_detail.start_time.strftime("%I:%M%P"), :id=>"startTimeLID",:class=>"mg-text-field mg-custom-labels" %>
+      <span id="start_time_errorLID" class="error" style="font-weight: bold;"></span>
+    </div>
+
+    <label class="mg-label mg-custom-labels" for="select_end_time"><%= t('select_end_time') %><span class="required-field"> *</span></label>
+    <div class="input-container">
+      <%= f.text_field :end_time, :value =>@exam_detail.end_time.strftime("%I:%M%P"), :id=>"endTimeLID",:class=>"mg-text-field mg-custom-labels" %>
+      <span id="end_time_errorLID" class="error" style="font-weight: bold;"></span>
+    </div>
+    <% @vanue_name=@institute_name.where(:id=>@exam_detail.mg_entrance_exam_venue_id,:is_deleted=>0)%>
+    <%@school = MgSchool.where(:id=>session[:current_user_school_id],:is_deleted=>0)%>
+    <%if @school[0].is_test_center==true%>
+      <label class="mg-label mg-custom-labels" for="institute_name"><%= t('select_venue') %><span class="required-field"> *</span></label>
+        <div class="input-container">                
+          <%= f.collection_select(:mg_entrance_exam_venue_id, @institute_name, :id, :institute_name, {:include_blank=>t("select"),:selected => @exam_detail.mg_entrance_exam_venue_id},:onchange=>"examVenue(this.value)", :class=>"mg-text-field mg-custom-labels") %> 
+        </div>
+
+      <label class="mg-label mg-custom-labels" for="exam_venue"><%= t('venue_address') %><span class="required-field"> *</span></label>
+      <div class="input-container">
+        <%= f.text_area :exam_venue,:value=>@vanue_name[0].try(:exam_venue),:readonly=>true, :class=>"mg-text-field mg-custom-labels" %>
+      </div>
+    <%elsif @school[0].is_test_center==false%>
+      <label class="mg-label mg-custom-labels" for="venue_address"><%= t('venue_address') %><span class=""></span></label>
+      <div class="input-container">
+        <%= f.text_area :exam_venue,:value=>@school[0].try(:address_line1)+' '+@school[0].try(:address_line2)+' '+@school[0].try(:street)+' '+@school[0].try(:landmark)+' '+@school[0].try(:city)+' '+@school[0].try(:state)+' '+@school[0].try(:pin_code).to_s,:readonly=>true, :class=>"mg-text-field mg-custom-labels" %>
+      </div> 
+    <%end%> 
+     
+    <p class="mg-p-mgtop">
+      <%= f.submit "save",:id=>"editEntranceExamDetailsIDs" ,:class=>"mg-small-form-btn" ,:style=>"display:none"%>
+      <a onclick="selectEditFunction()" id="saveStudentRecordID" class="submit mg-small-form-btn"><%=t("save")%></a> 
+      <%= link_to t('cancel'), {:controller=>'entrance_exam_details',:action=>'index'}, {:class=>"mg-small-form-btn cancel-form-dialog"} %>       
+    </p>
+  <% end %>
+</div>
+
+<%= render  partial: 'application/common_left_close' %>
+<script>
+  dateFormatStr =  getJsDateFormat();
+
+  $(document).ready(function(){
+    $( "#startDateLID" ).datepicker({changeMonth: true,changeYear: true,yearRange: "0:+50",minDate: "0" ,dateFormat: dateFormatStr});
+
+     $('#startTimeLID').timepicker({ 'scrollDefault': 'now' });
+     $('#endTimeLID').timepicker({ 'scrollDefault': 'now' }); 
+
+     $(function () {
+      $.validator.addMethod('dateFormat',
+      function (value, element) {
+        dateFormatStr =  getJsDateFormat();
+        if (this.optional(element)) {
+            return true;
+        }
+        var ok = true;
+        try {
+            $.datepicker.parseDate(dateFormatStr, value);
+        }
+        catch (err) {
+            ok = false;
+        }
+        return ok;
+      },
+        "Please enter a date in the format "+ getDateFormat(dateFormatStr) +".");
+      dateFormatStr =  getJsDateFormat();
+
+      $(".datefield").datepicker({ dateFormat: dateFormatStr, changeYear: true });
+    });
+    
+    $("#examDetailID").validate({
+      rules: {
+        "exam_detail[start_date]": {required: true, dateFormat: true},
+        "exam_detail[start_time]": {required: true},
+        "exam_detail[end_time]": {required: true},
+        "exam_detail[exam_venue]": {required: true},
+        "exam_detail[mg_class_id]": {required: true},
+        "exam_detail[mg_entrance_exam_venue_id]": {required: true},
+        "exam_detail[mg_course_id]": {required: true},
+        "selectedEditStudentID[]": {required: true}
+      }
+    });
+    focusCurrentTab("viewEXMDetailLID","viewEXMDetailID");
+  });
+
+  $(document).on("change","#startTimeLID",function(){
+ 
+    function minFromMidnight(tm){      
+      var ampm= tm.substr(-2)
+      var clk = tm.substr(0, 4);
+      var m  = parseInt(clk.match(/\d+$/)[0], 10);
+      var h  = parseInt(clk.match(/^\d+/)[0], 10);
+      if(tm=="12:00am" || tm=="12:30am")
+        {
+          h=0;
+          return h*60+m;
+        } else if(tm=="12:00pm" || tm=="12:30pm"){
+           return h*60+m;
+        } else if(ampm=="pm"){
+            h=h+12;
+            return h*60+m;
+        }else{
+            return h*60+m;
+        }           
+    }   
+
+    $("#startTimeLID").blur(function(){
+      var start_time = $('#startTimeLID').val(); 
+      var regexprsn = /^([1-9]|1[0-2]):([0-5]\d)\s?(AM|PM)?$/i;        
+        if(start_time.match(regexprsn))
+        {
+          $("#start_time_errorLID").text('');
+          var end_time = $('#endTimeLID').val();
+          var startTime=minFromMidnight(start_time)+1;
+        
+          var endTime=minFromMidnight(end_time)-1;
+          if(startTime && endTime)
+          {
+            if(startTime > endTime)
+            {
+              alert("Start Time must be less thant End Time");
+              $("#startTimeLID").val('');
+              //document.getElementById("exam_detail_start_time").value="";
+            }
+          }
+        } else{          
+            $("#start_time_errorLID").text("Please enter a time in the format am/pm.");
+            $("#startTimeLID").val('');
+        }
+    });      
+  });
+
+  $(document).on("change","#endTimeLID",function(){
+
+    function minFromMidnight(tm){        
+      var ampm= tm.substr(-2)
+      var clk = tm.substr(0, 4);
+      var m  = parseInt(clk.match(/\d+$/)[0], 10);
+      var h  = parseInt(clk.match(/^\d+/)[0], 10);
+      if(tm=="12:00am" || tm=="12:30am")
+        {
+          h=0;
+          return h*60+m;
+        } else if(tm=="12:00pm" || tm=="12:30pm"){
+            return h*60+m;
+        } else if(ampm=="pm"){
+            h=h+12;
+            return h*60+m;
+        }else{
+            return h*60+m;
+        }           
+    }
+
+    $("#endTimeLID").blur(function(){
+      var start_time = $('#startTimeLID').val();      
+      var end_time = $('#endTimeLID').val();
+      var regexprsn = /^([1-9]|1[0-2]):([0-5]\d)\s?(AM|PM)?$/i;
+
+      if(end_time.match(regexprsn))
+      {
+        $("#end_time_errorLID").text('');
+        var startTime=minFromMidnight(start_time)+1;
+        var endTime=minFromMidnight(end_time)-1;
+        if(startTime && endTime){
+          if(startTime > endTime){
+            alert("End Time must be Greater than start Time");
+            $("#endTimeLID").val('');
+            //document.getElementById('exam_detail_end_time').value="";
+          } 
+        }
+      } else{      
+        $("#end_time_errorLID").text("Please enter a time in the format am/pm.");
+        $("#endTimeLID").val('');
+      }
+    });   
+  });
+
+
+  
+  function editSelectStudentFunction(cours_Ids){
+    var exam_date=$("#startDateLID").val();
+    var exam_detail_id=$("#exam_detail_edit_id").val();
+    //alert(exam_detail_id);
+
+    if(cours_Ids!=''){
+      if(exam_date!=''){
+        $("#selectedEditStudentID").empty();
+        $.ajax({
+          url: "/entrance_exam_details/edit_students",
+          type: "GET",
+          data: {"mg_course_id":cours_Ids,"exam_date":exam_date,"exam_detail_id":exam_detail_id},
+          dataType: "html",
+          success: function(data) {
+           
+           $("#selectedEdit_studentsID").empty();
+           $("#selectedEdit_studentsID").html(data);
+          },
+          error:function(){
+            alert("Something went wrong!");
+          }
+        });
+      }else{
+        alert("please select first exam date");
+      }
+    }else{
+      $("#selectEditStudentID").empty();
+    }
+  }
+
+
+  $(document).on("click","#addEditStudentsID",function(){
+
+    var demo=$("#selectEditStudentID").val();
+    var texts=$("#selectEditStudentID :selected").text();
+    var text=texts.split(" ")
+   
+    var array=[];
+
+    $("#selectedEditStudentID option").each(function() {
+      array.push(this.value);
+    });
+
+
+   for(var i=0;i<demo.length;i++)
+   {
+     var a =false;
+      for(var j=0;j<array.length;j++){
+       if (demo[i]==array[j]){
+          a=true;
+        }
+      }
+      if (a){
+
+        }
+      else{
+        var addselectedOption=$("#selectEditStudentID option:selected")
+        var str="<option value="+demo[i]+">"+text[i]+"</option>"
+        $("#selectedEditStudentID").append(str);
+      }
+    }
+    //var selectedOptions=$("#selectStudentID option:selected").remove();
+    $("#selectedEditStudentID option").prop('selected',true)
+  });
+
+  $(document).on("click","#addAllEditStudentsID",function(){
+    $("#selectEditStudentID option").prop('selected',true);
+
+    var demo=$("#selectEditStudentID").val();
+    var texts=$("#selectEditStudentID :selected").text();
+    var text=texts.split(" ")
+    var array=[];
+    $("#selectedEditStudentID option").each(function() {
+      array.push(this.value);
+    });
+
+   for(var i=0;i<demo.length;i++)
+   {
+     var a =false;
+      for(var j=0;j<array.length;j++){
+       if (demo[i]==array[j]){
+          a=true;
+        }
+      }
+      if (a){
+        }
+      else{
+        var addselectedOption=$("#selectEditStudentID option:selected")
+        var str="<option value="+demo[i]+">"+text[i]+"</option>"
+        $("#selectedEditStudentID").append(str);
+      }
+    }
+    //var selectedOptions=$("#selectStudentID option:selected").remove();
+    $("#selectedEditStudentID option").prop('selected',true)
+  });
+
+
+  $(document).on("click","#removeEditStudentsID",function(){
+    var selectedOption=$("#selectedEditStudentID option:selected").remove();
+    //$("#selectedStudentID option").prop('selected',true)
+  
+  });
+
+  $(document).on("click","#removeAllEditStudentsID",function(){
+    $("#selectedEditStudentID option").prop('selected',true);
+    var selectedOption=$("#selectedEditStudentID option:selected").remove();
+    //$("#selectedStudentID option").prop('selected',true)
+  
+  });
+
+  function selectEditFunction(){
+    $("#selectedEditStudentID option").prop('selected',true);
+    $("#selectEditStudentID option").prop('selected',true);
+    $("#editEntranceExamDetailsIDs").click();
+  }
+
+
+</script>
+

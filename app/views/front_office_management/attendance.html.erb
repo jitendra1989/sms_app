@@ -1,0 +1,319 @@
+<%=render partial: 'front_office_management_left'%>
+
+<div class="rightBodyContent">
+               <article class="mailContentRight">
+                    <div class="bodyContent">
+                      <div class="content-tab">
+                       <ul class="tabs" data-persist="true">
+                          <li><a href="#chartID" style="font-family: Calibri">Attendance Chart</a></li>
+                            <li><a href="#b-report" style="font-family: Calibri">Department Report</a></li>
+                            <li><a href="#leave-report" style="font-family: Calibri">Leaves</a></li>
+
+                       </ul>
+                       <div class="content-header" style="font-family: calibri;">
+                             <div id="b-report">
+                                <table>
+                                   <tr>
+                                      <td>
+                                        <div class="content-box">
+
+            <%#= f.collection_select(:mg_employee_department_id, MgEmployeeDepartment.where(:is_deleted=>0), :id, :department_name, :prompt => 'Select Department') %> 
+                                                    <label class="mg-label mg-label-width ">Select Department</label>
+                                                  <%@category=MgEmployeeDepartment.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:department_name,:id)%>
+                                                  <%=select_tag :mg_employee_department_id,options_for_select(@category),:prompt=>"Select", :id=>"attendances_mg_employee_department_id", :onchange=>"departmentChange()" ,:class=>"mg-select-btn"%>
+
+             
+
+                                                
+                                        </div>
+                                     </td>
+                                     <td>
+                                        <!-- date picker -->
+                                        <label class="mg-label mg-label-width ">Select Date</label>
+                                        <input id="employeeAttendanceDatePickerID" class="employee-attendance-month mg-text-field" type="text" placeholder="Select Month" />
+                                     </td>
+                                   </tr>
+                                </table>
+                                    <div style="display:none">
+                                         <ul>
+                                            <li><span>Department 1</span></li>
+                                            <li><span>NOVEMBER 2014</span></li>
+                                            <li><span>Generate PDF<input type="image" src="/assets/adobe.png/"
+                                            /></span></li>
+                                         <ul>
+                                     </div>
+                                
+                                <br>
+                                <br>
+                                <br>
+                               
+                             
+                                <!-- <h4 class="mg-h4"><%#=t('department_wise_attendance')%></h4>  -->
+                                 <div id="attendanceTanleAppendDIVID">
+                                   
+                                 </div>
+
+
+                            </div>
+
+                            <div id="chartID">
+                                <%= render partial: 'employees_attendances/employee_attendance_graph' %>
+                                <%#= render partial: 'bkb_employee_attendance_graph' %>
+                            <div id="attendanceChartCanvasDivID"></div>
+                            </div>
+
+                            
+                             <div id="leave-report">
+                                 <div class="content-box">
+                                     <table>
+                                   <tr>
+                                      <td>
+                                        <div class="content-box">
+                                                  <label class="mg-label mg-label-width ">Select Department</label>
+                                                  <%@category=MgEmployeeDepartment.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:department_name,:id)%>
+                                                  <%=select_tag :dept_id,options_for_select(@category),:prompt=>"Select" , :id=>"attendenceDepartmentID" ,:class=>"mg-select-btn"%>
+
+                                                  <!-- <select id="employeeLeaveSelectID" ></select> -->
+                                        </div>
+                                        <div class="all-employee-table">
+                                        </div>
+
+                                        <div>
+
+                                          <h4 class="mg-h4">Select Date</h4>
+                                          <%= form_tag attendance_import_path, :id => 'employeeReportAttendancesFormID', multipart: true do %>
+                                          
+                                                <p>
+                                                    <label class="mg-label mg-leave-width">Start Date</label>
+
+
+
+                                                    
+                                                    <!-- <%#= text_field_tag :start_date%> -->
+                                                    <%mg_school_id_for_start_date=MgSchool.find_by(:is_deleted=>0,:id=>session[:current_user_school_id])%>
+                                                    <%= text_field_tag :start_date, params[:start_date].present? ? params[:start_date].strftime(mg_school_id_for_start_date.try(:date_format)) : Date.today.beginning_of_month.strftime(mg_school_id_for_start_date.try(:date_format)), id: 'start_date' ,:class=>"mg-text-field"%>
+                                                <p>
+                                                </p>
+                                                    <label class="mg-label mg-leave-width">End Date </label>
+                                                    
+                                                    <%= text_field_tag :end_date, params[:end_date].present? ? params[:end_date].strftime(mg_school_id_for_start_date.try(:date_format)) : Date.today.end_of_month.strftime(mg_school_id_for_start_date.try(:date_format)) ,:class=>"mg-text-field"%>
+
+                                                  </p>
+                                                   <% end %>
+                                                <p>
+                                                <button id="mg_employee_attendance_search_employee_btn" class="mg-custom-form-btn">Search</button>
+                                                </p>
+                                                 <!--  <%#= link_to "Search", :id=>"mg_employee_attendance_search_employee_btn"%> -->
+                                                <div id="employeeAttendanceReportID">
+                                         
+                                        </div>
+
+                                     </td>
+
+                                     <!-- <td>
+                                        <input class="employee-attendance-month" type="text" placeholder="Select Month" />
+                                     </td> -->
+                                   </tr>
+                                </table>
+                                    <div style="display:none">
+                                         <h4><%=t('employeelist') %></h4>
+                                                <table class="batch-tbl">
+                                                          <tr>
+                                                            <th>Name</th>
+                                                            <th>Last Name</th>
+                                                          </tr>
+                                                    </table>
+                                     </div>
+                                </div>             
+                            </div>
+                          </div>
+                       </div>
+                    </div>
+                </article>
+              </div>
+<%= render  partial: 'application/common_left_close' %>
+<style id="hideMonth"> </style>
+
+<!-- upp up liolg box div-->
+ <div id="employeeAttendanceDIVID1"></div>
+<div id="employeeAttendanceDIVID2"></div>
+<div id="employeeAttendanceLeaveReportForHalfDayDIVID"></div>
+<div id="employeeAttendanceLeaveReportForFullDayDIVID"></div>
+<div id="employeeAttendanceLeaveReportForAllDayDIVID" class="mg-pop-up-padding" style="overflow: hidden;"></div>
+<div id="employeeLeaveTypeReportDIVID"></div>
+
+
+<script >
+
+dateFormatStr =  getJsDateFormat();
+$("#start_date").datepicker({ dateFormat: dateFormatStr})// ,changeMonth: true,changeYear: true,yearRange: "-100:+0"});
+  $("#end_date").datepicker({ dateFormat: dateFormatStr})// ,changeMonth: true,changeYear: true,yearRange: "-100:+0"});
+$(document).on("change","#start_date",function(e){
+      var admission_date=$("#end_date").val();
+      var dob=$(this).val();
+     // alert(getDateObj(dob,dateFormatStr)+3);
+      if($("#employeeReportAttendancesFormID").valid()){
+       if(getDateObj(dob,dateFormatStr)>getDateObj(admission_date,dateFormatStr)){
+          alert("From Date should be lesser than To Date");
+          document.getElementById('start_date').value ="";
+        }
+      }
+
+   });
+   $(document).on("change","#end_date",function(e){
+
+      var admission_date=$(this).val();
+      var dob=$("#start_date").val();
+      if($("#employeeReportAttendancesFormID").valid()){
+        if(getDateObj(dob,dateFormatStr)>getDateObj(admission_date,dateFormatStr)){
+          alert("From Date should be lesser than To Date");
+          document.getElementById('end_date').value ="";
+        }
+      }
+   });
+
+  $(document).on("click", "#mg_employee_attendance_search_employee_btn",function(){
+    if($("#employeeReportAttendancesFormID").valid()){
+      var startDate = $("#start_date").val();
+      var endDate = $("#end_date").val(); 
+      var departmentId=$("#attendenceDepartmentID").val();
+        $.ajax({
+          url: "/employees_attendances/attendance_report/" ,
+          type: "get",
+          cache: false,
+          data: {"startDate":startDate, "endDate":endDate, "departmentId":departmentId},
+
+          success:function(html){
+                $("#employeeAttendanceReportID").empty();
+                $("#employeeAttendanceReportID").append(html);
+              },
+          error: function(){
+            alert("Error: Please try again.");
+          }
+      }); 
+
+
+    }
+  });
+
+$(document).ready(function () {
+    focusCurrentTab("attendanceFaqAID","attendanceFaqLID");
+  
+ var date = new Date();
+  //$('#start_date').val($.datepicker.formatDate(dateFormatStr, new Date(date.getFullYear(), date.getMonth(), 1)));
+ // $('#end_date').val($.datepicker.formatDate(dateFormatStr, new Date(date.getFullYear(), date.getMonth()+1, 0)));
+  var startDate = new Date($.datepicker.formatDate(dateFormatStr, new Date(date.getFullYear(), date.getMonth(), 1)));
+  var endDate = new Date($.datepicker.formatDate(dateFormatStr, new Date(date.getFullYear(), date.getMonth()+1, 0)));
+
+  var startDate = $('#start_date').val();
+  var endDate =  $('#end_date').val();
+
+ 
+ var departmentId=$("#attendenceDepartmentID").val();
+      $.ajax({
+        url: "/employees_attendances/attendance_report/" ,
+        type: "get",
+        cache: false,
+        data: {"startDate":startDate, "endDate":endDate, "departmentId":departmentId, ready: "onready"},
+
+        success:function(html){;
+              $("#employeeAttendanceReportID").empty();
+              $("#employeeAttendanceReportID").append(html);
+            },
+        error: function(){
+          alert("Error: Please try again.");
+        }
+    }); 
+
+
+});
+
+$(document).ready(function(){
+
+              $(".content-tab").tabs();
+              $('#employeeAttendanceDatePickerID').val($.datepicker.formatDate('MM yy',new Date()));
+              $('#employeeAttendanceDatePickerID').datepicker({
+                    changeMonth: true,
+                    changeYear: true,
+                    dateFormat: 'MM yy',
+                    showButtonPanel: true,
+                    beforeShow: function (){
+                        setTimeout(function() {
+                         $(".ui-datepicker-buttonpane")
+                            .html('')
+                            .append("<button id='employeeAttendanceDoneBTNID'>Done</button>");
+                        }, 1)
+                        $('#hideMonth').html('.ui-datepicker-calendar{display:none;}');
+                    },
+                    onChangeMonthYear: function (){
+                        setTimeout(function() {
+                        
+                         $(".ui-datepicker-buttonpane")
+                            .html('')
+                            .append("<button id='employeeAttendanceDoneBTNID'>Done</button>");
+                             
+                   //         $(this).datepicker( "setDate", month + '/1/' + year );
+                        }, 1)
+
+                    }, 
+                    dateFormat: 'MM yy',
+                    onClose: function(dateText, inst) { 
+                        var month = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
+                      month1=month;
+
+                        var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
+                     year1=year;
+                        $('#employeeAttendanceDatePickerID').datepicker('setDate', new Date(year, month, 1));
+                        setTimeout(function(){$('#hideMonth').html('');},200);
+                    }
+          });
+});
+
+    $(document).ready(function () {
+
+      $(".content-tab").tabs();
+
+
+      focusCurrentTab("employeeAttendanceAID","employeeAttendanceLiID");
+      focusAttendance();
+
+
+
+    });
+
+
+ $(function () {
+    $.validator.addMethod('dateFormat',
+    function (value, element) {
+      dateFormatStr =  getJsDateFormat();
+        if (this.optional(element)) {
+            return true;
+        }
+        var ok = true;
+        try {
+            $.datepicker.parseDate(dateFormatStr, value);
+        }
+        catch (err) {
+            ok = false;
+        }
+        return ok;
+    },
+      "Please enter a date in the format "+ getDateFormat(dateFormatStr) +".");
+      dateFormatStr =  getJsDateFormat();
+
+    $(".datefield").datepicker({ dateFormat: dateFormatStr, changeYear: true });
+});
+
+$("#employeeReportAttendancesFormID").validate({
+
+        rules: {  
+        "start_date": {dateFormat: true, required: true},
+        "end_date": {dateFormat: true, required: true}
+
+      }
+});
+
+
+
+
+</script >

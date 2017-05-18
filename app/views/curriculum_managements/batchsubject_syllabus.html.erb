@@ -1,0 +1,13 @@
+<%
+puts "ttttttttttttttttt"
+puts params[:mg_subjects_id]
+puts "topic"
+
+
+%>
+<%@topic=Topic.where(:mg_subject_id => params[:mg_subjects_id],:is_deleted => '0', :mg_school_id=>session[:current_user_school_id]).pluck(:name, :id)%>
+
+
+ <%=select_tag :topic_name, options_for_select(@topic),:prompt=>"Select A Topic"%><br>
+
+ <!-- <#%=select_tag :topic_name, options_for_select(@topic),:prompt=>"Select A Topic",:onchange=>"myBatchSubjects(this.value)" %><br>-->

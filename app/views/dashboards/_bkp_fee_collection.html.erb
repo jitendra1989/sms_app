@@ -1,0 +1,50 @@
+
+<h4 class="mg-h4">Fee Collection</h4> 
+<div class="mg-custom-labels">
+<%batch_count=0%>
+<%from_date=Date.today()-30
+to_date=Date.today()%>
+
+<%fuinal_hash=Hash.new%>
+<%mg_batch_all=MgBatch.where(:is_deleted=>0, :mg_school_id=>@mg_school_id)%>
+<%@obj1=Hash.new%>
+<%@obj3=Hash.new%>
+
+
+
+<%mg_batch_all.each do |batch|%>
+  <%amount=0%>
+    <%mg_fee_particulars=MgFeeParticular.where(:is_deleted=>0, :mg_school_id=>@mg_school_id, :mg_batch_id=>batch.id, :created_at=>from_date...to_date)%>
+    <%puts from_date.inspect%>
+    <%puts mg_fee_particulars.inspect%>
+    <%puts to_date.inspect%>
+    <%#logger.inoasdkfhash%>
+    <%@obj2=Hash.new%>
+    <%mg_fee_particulars.each do |fee|%>
+     <%@obj4=Array.new%>
+
+    <%mg_fee_particulars_array=Array.new%>
+        <%perticular_type_amount=MgFeeParticular.where(:is_deleted=>0, :mg_batch_id=>batch.id, :mg_particular_type_id=>fee.mg_particular_type_id).sum(:amount)%>
+    <%mg_fee_particulars_array.push(MgParticularType.find(fee.mg_particular_type_id).particular_name ,batch.course_batch_code)%>
+    <%mg_fee=MgParticularType.find(fee.mg_particular_type_id).particular_name%>
+
+    <%fuinal_hash[mg_fee_particulars_array]=perticular_type_amount%>
+
+    <%@obj2[mg_fee]=perticular_type_amount%>
+    <%@obj4.push(@obj2)%>
+    <%@obj3[batch.course_batch_code]=@obj4%>
+<%#@obj4=Array.new%>
+    
+
+  <%end%>
+
+<%end%>
+
+ 
+  <%#=@obj3%>
+<%=column_chart fuinal_hash, :stacked=> true, library: { width:600,hAxis: {title: "Class & Section"}, vAxis: {title: "Amount"}}%>
+
+
+<br>
+</div><br>
+

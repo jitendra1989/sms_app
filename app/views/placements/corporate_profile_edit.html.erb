@@ -1,0 +1,364 @@
+<% navigation_add t('profile'), corporate_profile_path %>
+<% navigation_add t('edit_profile'), corporate_profile_edit_path(params[:id]) %>
+
+
+<%= render  partial: 'placements_left' %>
+<h4 class="mg-h4"><%= t('profile') %></h4>
+
+ <%= form_for :placements_registration , :url=>{:action=>"corporate_profile_update",:id=>@placements_registration.id},:html => {
+                            :id => 'placementsRegistrationFormID' } do |f| %>
+
+
+
+
+ <div class="form-content">
+          <div class="form-content-inner">
+             
+            <table width="100%" cellspacing="0" cellpadding="0" border="0" >
+              <tbody>
+                <tr>
+                  <td width="33%" valign="bottom">
+                    <label class="mg-label mg-rm-text-trans" for="name_of_the_company" ><%= t('name_of_the_company') %>
+                      <span class="required-field">*</span> 
+                    </label>
+                  </td>
+
+                  <td> </td>
+                  <td width="33%" valign="bottom">
+                    <label class="mg-label" for="industry"><%= t('industry') %>
+                     <span class="required-field">*</span>
+                    </label>
+                  </td>
+                  <td> </td>
+                  <td width="33%" valign="bottom">
+                    <label class="mg-label" for="company_website_url"><%= t('company_website_url') %>
+                    <span class="required-field">*</span>
+                    </label>
+                  </td>
+                </tr> 
+                <tr>
+                  <td valign="top">
+                    <%= f.text_field :name_of_the_company  ,:class=>"mg-text-field"%>
+                  </td>
+                  <td> </td>
+                  <td valign="top">
+                    <%= f.text_field :industry ,:class=>"mg-text-field"%>
+                  </td>
+                  <td> </td>
+                  <td valign="top">
+                    <%= f.text_field :company_website_url ,:class=>"mg-text-field"%>
+                  </td>
+                </tr>
+   <%#=================================================ddd====================%> 
+
+   
+
+
+                 <tr>
+                  <td width="33%" valign="bottom">
+                    <label class="mg-label" for="contact_person"><%= t('contact_person') %>
+                    <span class="required-field">*</span>
+                    </label>
+                  </td>
+
+                  <td> </td>
+                  <td width="33%" valign="bottom">
+                    <label class="mg-label" for="contact_number"><%= t('contact_number') %>
+                    <span class="required-field">*</span>
+                    </label>
+                  </td>
+                  <td> </td>
+                  <td width="33%" valign="bottom">
+                    <label class="mg-label" for="contact_email"><%= t('contact_email') %>
+                    <span class="required-field">*</span>
+                    </label>
+                  </td>
+                </tr>
+                <tr>
+                <tr>
+                  <td valign="top">
+                     <%= f.text_field :contact_person, :class=>"textboxwidth mg-text-field" %>
+                     
+                  </td>
+                  <td> </td>
+                  <td valign="top">
+                    <%= f.text_field :contact_number, :class=>"textboxwidth mg-text-field" %>
+                  </td>
+                  <td> </td>
+                  <td valign="top">
+                    <%= f.text_field :contact_email, :class=>"textboxwidth mg-text-field" %>
+                  </td>
+                </tr>
+
+
+                <%#=================================================eee====================%> 
+
+   
+
+
+                 <tr>
+                  <td width="33%" valign="bottom">
+                    <label class="mg-label" for="user_name" ><%= t('user_name') %>
+                    <span class="required-field">*</span>
+                    </label>
+                  </td>
+
+                  <td> </td>
+                  <td width="33%" valign="bottom">
+                  <% if @request=="new"%>
+                    <label class="mg-label" for="password"><%= t('password') %>
+                    <span class="required-field">*</span>
+                    </label>
+                    <%end%>
+                  </td>
+                  <td> </td>
+                  <td width="33%" valign="bottom">
+                  <% if @request=="new"%>
+                    <label class="mg-label" for="confirm_password"><%= t('confirm_password') %>
+                      <span class="required-field">*</span>
+                    </label>
+                    <%end%>
+                  </td>
+                </tr>
+                <tr>
+                <tr>
+                  <td valign="top">
+                    <% user_data= @placements_registration.mg_user_id %>
+                    <% placement_data=MgUser.where(:id=>user_data).pluck(:user_name) %>
+                    <% if @request=="new"%>
+                    <%=@school.subdomain%><%= text_field_tag :user_name,nil,:class=> 'mg-text-field'%>
+                    <% else %>
+                    <%=@school.subdomain%><%= text_field_tag :user_name,nil, :class=> 'mg-text-field',:value=>
+                    @user_name%>
+                  </td>
+                  <% end %>
+                  <td> </td>
+                  <td valign="top">
+                  <% if @request=="new"%>
+                    <%= password_field_tag :password,nil, :class=> 'mg-select-btn mg-text-field',:step => 'any',
+                       :id=>"newUserPassword"%>
+                  <%end%>
+                  </td>
+                  <td> </td>
+                  <td valign="top">
+                  <% if @request=="new"%>
+                    <%= password_field_tag :confirm_password,nil, 
+                    :class=> 'mg-select-btn mg-text-field', 
+                     :step => 'any', :id=>"reUserPassword"%>
+                  <p id="passwordfeedbackdivId" style="color:red;font-weight:bold"></p>
+                  <%end%>
+                  </td>
+                </tr>
+
+   <%#=====================================================================%>       
+                <tr>
+                  <td width="33%" valign="bottom">
+                    <label class="mg-label" for="address"><%= t('address') %>
+                      <span class="required-field">*</span>
+                    </label>
+                    
+                    
+                  </td>
+
+                  <td> </td>
+                  <td width="33%" valign="bottom">
+                    <label class="mg-label" for="location"><%= t('location') %>
+                    <span class="required-field">*</span>
+                    </label>
+                  </td>
+                  <td> </td>
+                  <td width="33%" valign="bottom">
+                    <!-- <label class="mg-label" for="contact_email"><%#= t('contact_email') %>
+                    <span class="required-field">*</span>
+                    </label> -->
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top">
+                    <%= f.text_area :address, :class=>"textboxwidth mg-text-field" %>
+                     
+                  </td>
+                  <td> </td>
+                  <td valign="top">
+                     <%= f.text_field :location, :class=>"textboxwidth mg-text-field" %>
+                  </td>
+                  <td> </td>
+                  <td valign="top">
+                    <%#= f.text_field :contact_email, :class=>"textboxwidth mg-text-field" %>
+                  </td>
+                </tr>
+    <%#=====================================================================%>
+    
+<%#=======================================================================%>
+
+               <tr>
+                <td width="33%" valign="bottom">
+                  <label class="mg-label" for="is_alumni"><%= t('is_alumni') %>
+                  </label>
+                </td>
+                <td></td>
+                
+                <td width="33%" valign="bottom" class="haveAlumniPID" style="display:none">
+                    <label  class="mg-label" for="have_alumni_id"><%= 
+                    t('have_alumni_id?') %>
+                     </label>
+                 </td>
+                 <td></td>
+                 <td width="33%" valign="bottom" class="haveAlumniIdPID" style="display:none">
+                  <label class="mg-label" for="alumni_id"><%= t('alumni id') %>
+                  <span class="required-field">*</span></label>
+                 </td>
+                </tr> 
+               
+                <tr>
+                <td valign="top">
+                     <%= f.check_box :is_alumni   %>
+                </td>
+                <td></td>
+                <td   valign="top" class="haveAlumniPID" style="display:none">
+                    <%= f.check_box :have_alumni_id   %>
+                </td>
+                <td></td>
+                <td   valign="top" class="haveAlumniIdPID" style="display:none">
+                  <%= f.text_field :alumni_id   %>
+                </td>
+
+               </tr> 
+            
+                <tr>
+                  <td width="33%" valign="bottom">
+                    <label class="mg-label" for="status"><%= t('status') %>
+                    <span class="required-field">*</span>
+                    </label>
+                  </td>
+                 </tr>
+                 <tr>
+                  <td valign="top">
+                    <%= f.select :status, [ 'Active', 'Inactive' ] ,{:include_blank => 'Select'},:class=>"mg-select-btn",:disabled=>true%>
+                  </td>
+
+                </tr>
+             </tbody>
+            </table>
+          </div>
+  </div>
+  
+  <%=hidden_field_tag :user_type,nil, :value => "Company",:class=> 'mg-text-field'%>
+  <%= f.hidden_field :mg_school_id, :value => session[:current_user_school_id]%>
+  <%= f.hidden_field :created_by, :value => session[:user_id]%> 
+  <%= f.hidden_field :updated_by, :value => session[:user_id]%> 
+  <%= f.hidden_field :is_deleted, :value => 0%>
+
+  <p class="mg-p-mgtop">
+    <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn">
+    <%=t("save")%></a>
+    <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+
+  </p>
+                           
+
+ <%end%>
+<%= render  partial: 'application/common_left_close' %>
+
+ <script>
+$(document).ready(function () {
+    focusCurrentTab("corporate_profileAID","corporate_profileLiID");
+  
+  if($("input#placements_registration_is_alumni").is(':checked')){
+    $(".haveAlumniPID").show();
+  }else{
+    $(".haveAlumniPID").hide();
+  }
+  if($("input#placements_registration_have_alumni_id").is(':checked')){
+    $(".haveAlumniIdPID").show();
+  }else{
+    $(".haveAlumniIdPID").hide();
+  }
+
+  $("#placementsRegistrationFormID").validate({
+
+    rules: {
+    "placements_registration[name_of_the_company]": {required: true},
+    "placements_registration[industry]": {required: true},
+    "placements_registration[company_website_url]": {required: true},
+    "placements_registration[location]": {required: true},
+    "placements_registration[address]": {required: true},
+    "placements_registration[contact_email]": {required: true, email: true},
+    "placements_registration[contact_number]": {required: true, number: true, minlength: 10 , maxlength: 10},
+    "placements_registration[contact_person]": {required: true},
+    // "placements_registration[is_alumni]": {required: true},
+    //"placements_registration[have_alumni_id]": {required: true},
+    "user_name": {required: true},
+    "password" : {required: true},
+    "confirm_password" : {required: true},
+    "placements_registration[alumni_id]": {required: true},
+    "placements_registration[status]": {required: true}
+    }
+  });
+});
+
+$("#placements_registration_is_alumni").click(function(){
+  AlumniPID();
+});
+
+$("#placements_registration_have_alumni_id").click(function(){
+  haveAlumniPID();
+});
+
+function AlumniPID(){
+  if($("input#placements_registration_is_alumni").is(':checked')){
+    $(".haveAlumniPID").show();
+    $("#placements_registration_have_alumni_id").attr('checked', false);
+    $("#placements_registration_alumni_id").val("");
+    
+  }else{
+    $(".haveAlumniPID").hide();
+     $(".haveAlumniIdPID").hide();
+    $("#placements_registration_have_alumni_id").attr('checked', false);
+    $("#placements_registration_alumni_id").val("");
+    
+  }
+}
+function haveAlumniPID(){
+  if($("input#placements_registration_have_alumni_id").is(':checked')){
+    $(".haveAlumniIdPID").show();
+    $("#placements_registration_alumni_id").val("");
+    
+  }else{
+    $(".haveAlumniIdPID").hide();
+    $("#placements_registration_alumni_id").val("");
+    
+  }
+}
+$("#reUserPassword").focusout(function(){
+      var new_password=$("#newUserPassword").val();
+      var retype_password=$(this).val();
+      
+
+      if(new_password==retype_password)
+      {
+        $("#passwordfeedbackdivId").text("");
+      }
+      else
+      {
+        $("#passwordfeedbackdivId").css("color","#e9573f");
+        $("#passwordfeedbackdivId").text("Password doesn't matches..");
+        $("#reUserPassword").val("");
+      }
+    });
+
+
+
+
+</script>
+
+<style type="text/css">
+  #user_name-error
+  {
+    position: relative;
+    top: 1px;
+    font-weight: bold;
+    color: #e9573f;
+  }
+</style>
+

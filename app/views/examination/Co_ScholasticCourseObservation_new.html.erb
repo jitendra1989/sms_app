@@ -1,0 +1,72 @@
+
+<%= form_for :observations, :html => {
+                            :id => 'observationCategoryCreateFormId', :class => 'elm_class', :style => 'elm_style' } do |f| %>
+    <table class="mg-exam-table-margin mg-tbl-margin mg-btn-bottom-margin">
+        <tr>
+            <td id="observationCheckedTdID">
+                <%@info.each do |value|%>
+                    <%= check_box_tag "weekdays[#{value}]", 1,  @cceID.include?(value) ? true : false ,:style=>'position: relative; top: -2px;'%><br/>
+                 <%end%>
+            </td>
+            <td >
+                <%@observation.each do |data|%>
+                <div class="mg-margin-td">
+                  <%= @data2=data.name%><br/>
+                </div>
+        
+                <%end%> 
+            </td>
+        </tr>
+    </table>
+    <div style="display:none;">
+    <p>
+        <label for="is_deleted" class="mg-label "><%=t('status')%></label><br />
+        <label for="is_deleted" class="mg-label-inner-form "><%=t('active')%></label>
+        <%= f.radio_button :is_deleted, false , :checked => true%>
+        <label for="is_deleted" class="mg-label-inner-form "><%=t('inactive')%></label>
+        <%= f.radio_button :is_deleted, true %>
+      </p>
+      </div>
+<button id="saves" class="btn btn-delete"><%=t('save')%></button>
+<%= link_to t('cancel'), :back, {:class=>"btn btn-delete cancel-form-dialog"} %>
+<%end%>
+
+<script>
+    $(document).on("click","#saves",function(e){
+        e.preventDefault();
+        var courseId=$("#mg_course_id").val();
+        var checkedvalue="";
+        var uncheckedvalue="";
+        $("#observationCheckedTdID > input").each(function(index) {
+                 var currentInputIDS = $(this).attr("id");
+                 var checked=$("input#"+currentInputIDS).is(':checked');
+                 if(checked){
+                    checkedvalue+=currentInputIDS.split("_")[1]+","; 
+
+
+                 }
+                 else{
+                    uncheckedvalue+=currentInputIDS.split("_")[1]+",";
+                    
+                 }
+                
+          });
+        //alert(checkedvalue);
+        //alert(uncheckedvalue);
+                
+        jQuery.ajax({
+            url: "/examination/Co_ScholasticCourseObservation_create/",
+            type: "GET",
+            data: {"mg_course_id" :courseId,"checked":checkedvalue,
+            "unchecked":uncheckedvalue},
+            dataType: "html",
+            success: function(data) {
+                //alert("successfully saved")
+                window.location="Co_ScholasticCourseObservation_index"
+            },
+            error:function(){
+               // alert("Something went wrong!");
+            }
+        });
+    });
+    </script>

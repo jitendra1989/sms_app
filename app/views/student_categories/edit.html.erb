@@ -1,0 +1,36 @@
+<!-- Sec --> 
+	
+<%= form_for @student_category, url: student_category_path(@student_category),method: :patch  ,:html => { :id => "editStudentCategoryFormID" ,:multipart => true } do |f| %>
+
+  <p class="field">
+    <label class="mg-label" for="name"><%= t('name') %><span class="required-field"> *</span></label><br>
+    <%= f.text_field :name ,:class=>"mg-text-field" %> 
+  </p>
+  <p class="field">
+    
+  </p>
+  <%= f.hidden_field :mg_school_id, :value => session[:current_user_school_id] %>
+  
+  <p class="actions">
+    <%#= f.submit t('save') , :class=>"mg-small-form-btn"%>
+    <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("save")%></a>
+    <%= link_to t('cancel'), :back, {:class=>" mg-small-form-btn cancel-form-dialog"} %>
+  </p>
+
+<% end %>
+
+<!-- <span class="mg-cncl-btn-align">
+  <button class="cancel-form-dialog btn btn-cancel"><%#= t('cancel') %></button>
+</span> -->
+
+
+<script>
+  $(document).ready(function(){
+    $("#editStudentCategoryFormID").validate({
+      rules:{
+        "mg_student_category[name]":{required:true}
+      }
+    });
+
+  });
+</script>

@@ -1,0 +1,112 @@
+<%= render  partial: 'inventory/inventory_left' %>
+
+<% navigation_add 'Assign Financial Officer', inventory_assaign_financial_officer_show_path %>
+
+<%
+@finance_id=MgFinanceOfficer.where(:mg_school_id=>session[:current_user_school_id],:is_deleted=>0)
+
+%>
+
+<div id="financeboxcreate" class="mg-pop-up-padding" style="overflow-x: inherit;">
+
+<h4 class="mg-h4"><%=t('financial_officer')%></h4>
+<%if @finance_id.size>0%>
+
+<button id="<%=raw @finance_id[0].id%>" title="Edit Finance Officer" class="finance_officer_edit mg-icon-btn mg-btn-bottom-margin"><i class="fa fa-pencil-square-o"></i></button>
+
+ <%#= link_to "<i class=\"fa fa-wrench\"></i>".html_safe, {:action=>"manage_transport_particulars",:controller=>"transports",:id=>library_id.mg_fee_category_id} ,:title=>"Manage Particulars" ,:class=>"mg-icon-btn-link"%>  
+<table border="1" class="mg-showdata-bg mg-show-tbl-width" cellspacing="1" cellpadding="1">
+
+
+<!-- <tr>
+      <td class="mg-td-width-half" valign="top">
+       <label class="mg-label" for="maxBooksIssuable"><%#= t ('departmant_name') %></label>
+      </td>
+      <#%employeedepartment=MgEmployeeDepartment.find_by(:id=>@finance_id[0].mg_employee_department_id)%> 
+      <td class="mg-td-width-half" valign="top">
+        <label class="mg-label-inner-form"> <%#=employeedepartment.try(:department_name)%></label>
+      </td>
+  </tr>-->
+ <tr>
+      <td class="mg-td-width-half" valign="top">
+       <label class="mg-label" for="maxBorrowDays"><%= t ('employee_name') %></label>
+      </td>
+      <td class="mg-td-width-half" valign="top">
+      <%employee_data=MgEmployee.find_by(:id=>@finance_id[0].mg_employee_id)
+        fname=employee_data.try(:first_name)
+        lname=employee_data.try(:last_name)
+      %>
+        <label class="mg-label-inner-form"> <%="#{fname} #{lname}" %></label>
+      </td>
+  </tr>
+
+   
+
+
+
+</table>
+<br/>
+
+
+</table>
+<%else%>
+
+<button  title="Create Finance Officer" class="finance-officer-create mg-icon-btn mg-btn-bottom-margin"><i class="fa fa-pencil-square-o"></i></button>
+<%=" Create  Finance Officer"%>
+<%end%>
+
+</div>
+
+<%= render  partial: 'application/common_left_close' %>
+
+<script>
+$(document).ready(function(){
+
+  focusCurrentTab("assign_financial_officerAid","assign_financial_officerLiID");
+  
+});
+
+$(document).on("click", ".finance-officer-create", function(e){
+       e.preventDefault();
+          
+       
+        var urlLink = "/inventory/assaign_financial_officer_new";
+       
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+        
+           success: function(html){
+
+        $('#financeboxcreate').empty();
+        $('#financeboxcreate').html(html);
+
+               
+            }
+        });
+});
+
+
+$(document).on("click", ".finance_officer_edit", function(e){
+       e.preventDefault();
+       
+
+        var ID =$(this).attr('id');
+         
+       
+        var urlLink = "/inventory/assaign_financial_officer_edit";
+       
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            data:{"id":ID},
+           success: function(html){
+
+        $('#financeboxcreate').empty();
+        $('#financeboxcreate').html(html);
+
+               
+            }
+        });
+});
+</script>

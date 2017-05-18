@@ -1,0 +1,111 @@
+<%#=@cart_detail.inspect%>
+ <h4 class="mg-h4">Item List</h4>
+	
+ 	<% if @cart_detail.present?%>
+ 	<table class="mg-scrl-width-bar mg-tbl-layout"  batch-tbl="">
+ 	<%#=@cart_detail.group(:mg_inventory_item_id).count%>
+	<%@cart_detail.group(:mg_inventory_item_id).each do |item|%>
+
+		<tr class="item-online-store-list-tr-cls tr-onlene-store-hidtory " id="<%=item.id%>-itemOnlineStoreListTRID">
+			<td width="400px">
+				<table >
+					<tr>
+						<td width="100px"><%=t('name')%></td>
+						<td width="20px"> : </td>
+						<td width="280px"><%=item.mg_inventory_item.name%></td>
+					</tr>
+					<tr>
+						<td><%=t('price')%></td>
+						<td> : </td>
+						<td><%=item.price.to_f.round(2)%></td>
+					</tr>
+					<tr>
+						<td><%=t('quantity')%></td>
+						<td> : </td>
+						<td> <%=@cart_detail.where(:mg_inventory_item_id=>item.mg_inventory_item_id).sum(:required_quantity)%><%#=item.required_quantity%></td>
+					</tr>
+					</tr>
+						<td><%=t('order_date')%></td>
+						<td> : </td>
+						<td><%=item.created_at.present? ? item.created_at.strftime(@school.date_format) : ""%></td>
+					</tr>
+					<tr>
+						<td><%=t('status')%></td>
+						<td> : </td>
+						<td><%=item.status%></td>
+					</tr>
+					<tr>
+						<td><%=t('total_price')%></td>
+						<td> : </td>
+						<td><%=(item.price.to_f * (@cart_detail.where(:mg_inventory_item_id=>item.mg_inventory_item_id).sum(:required_quantity)).to_i).to_f.round(2)%></td>
+					</tr>
+				</table>
+				<br>
+
+            </td>             
+            <td  width="100px">
+	            <%mg_document_management=item.mg_inventory_item.mg_document_managements.find_by(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id])%>                 
+				<div class="img-show" id="<%#=i.mg_category_id%>-<%#=i.id%>-MgCategoryID">
+					<a class="online-shop-inventory-item-show-details-cls" id="<%#=i.id%>-onlineShopInventoryItemShowDetailsAID">
+						<img src="<%=mg_document_management.present? ? mg_document_management.file.url : ""%>" alt="Fjords" width="300" height="200">
+					</a>
+				</div>
+       
+			</td>
+			<td  width="100px" class="mg-align-center"><button type="button" id="<%=item.id%>-deleteItemFromCartBTNID" class="delete-item-from-cart-btn-cls mg-icon-btn"><i class="fa fa-minus"></i></button></td>
+		</tr>
+
+	<%end%>
+	</table>
+	<%else%>
+	<p>No items in cart</p>
+	<%end%>
+
+</div>
+<p class="mg-p-mgtop">
+	<% if @cart_detail.present?%>
+	  <a class="mg-small-form-btn" id="cartBuyItemListAID" onclick="cartBuyItemList()"><%=t('send_request')%></a>
+	<%end%>
+      <a class="mg-small-form-btn cancel-form-dialog"><%=t('cancel')%></a>
+  </p>
+
+<style type="text/css">
+	
+div.img-show {
+    margin: 5px;
+    border: 1px solid #ccc;
+    float: left;
+    width: 120px;
+    height: 120px;
+
+
+}
+
+div.img-show:hover {
+    border: 1px solid #777;
+}
+
+div.img-show img {
+    width: 100%;
+    height: 100px;
+}
+
+div.desc {
+    padding: 15px;
+    text-align: center;
+}
+.tr-onlene-store-hidtory {
+    border-radius: 25px;
+    border: 2px solid #d9d9d9;
+    padding: 20px; 
+    width: 200px;
+    height: 150px;    
+}
+
+
+</style>
+
+<script type="text/javascript">
+
+
+</script>

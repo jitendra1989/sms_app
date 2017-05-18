@@ -1,0 +1,20 @@
+<!-- Sec --> 
+<!-- Partial left content -->
+<%= render partial: 'cloud_admin_dashboard_left' %>
+<!-- Partial Index -->
+<%= render partial: 'cloud_admin_dashboard' %>
+<!-- Partial Section close-->
+<%= render partial: 'application/common_left_close' %>
+
+
+<script type="text/javascript">
+    
+
+ $(document).ready(function(){
+
+    focusCurrentTab("viewCloudAdminDashboard","viewCloudAdminDashboardLiID");
+    focusDashboards();
+
+});
+
+</script>

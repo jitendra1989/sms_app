@@ -1,0 +1,24 @@
+<!-- Sec -->
+  <div class="box">
+    <h1>Edit Classes</h1>
+    <%= form_for :course, url: classes_path(@course), method: :patch do |f| %>
+
+       <label for="course_name"><%= t('class_name') %></label>
+       <div class="input-container">
+            <%= f.text_field :course_name %>
+            </div>
+
+       <label for="section_name"><%= t('section_name') %></label>
+            <div class="input-container">
+              <%= f.text_field :section_name %>
+          </div>
+
+
+          <label for="code"><%= t('code') %></label>
+          <div class="input-container">
+              <%= f.text_field :code %>
+          </div>
+			<br/>
+           <%= f.submit "Submit" %>
+   <% end %>
+</div>

@@ -1,0 +1,87 @@
+<%#=@timetable.inspect%>
+
+ <%= form_for :time_table,:url=>change_teacher_edit_save_path, :html => {
+                            :id => 'editChangeTeacherFormID' } do |f| %>
+<%=hidden_field_tag :id,@timetable.id%>
+<table>
+	<tr>
+		<td>
+			<label class="mg-label mg-custom-labels mg-tt-width mg-tbl-margin"><%=t('select_acadamic_year')%><span class="required-field"> *</span></label>
+		</td>
+		<td>
+			<%=select_tag :acadamic_year,options_for_select(@acadamic_year,@timetable.mg_timetable_id),:onchange=>"select_acadamic_year_function(this.value)",:prompt=>t('select'), :class=>"mg-text-field", :disabled => "disabled" %>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<label class="mg-label mg-custom-labels mg-tt-width mg-tbl-margin">Select Date<span class="required-field"> *</span></label>
+		</td>
+		<td>
+			<%=text_field_tag :date,@timetable.date.strftime(@school.date_format), :html=>{:id=>"change_teacher_index" }, :class=>"mg-text-field", :disabled => "disabled"%>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<label class="mg-label mg-custom-labels mg-tt-width mg-tbl-margin"><%=t('select')%> <%=t('class')%><span class="required-field"> *</span></label>
+		</td>
+		<td>
+			<%=select_tag :mg_course_id,options_for_select(@course,@batches.mg_course_id),:prompt=>t('select'), :class=>"mg-text-field", :disabled => "disabled"%>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			
+		<label class="mg-label mg-custom-labels mg-tt-width mg-tbl-margin"><%=t('select')%> <%=t('section')%><span class="required-field"> *</span></label>
+		</td>
+		<td>
+			
+			<%=select_tag :mg_batch_id,options_for_select(@batche, @timetable.mg_batch_id),:prompt=>t('select'), :class=>"mg-text-field", :disabled => "disabled"%>
+		</td>
+	</tr>
+	<tr>
+		<td>
+				<label class="mg-label mg-custom-labels mg-tt-width mg-tbl-margin">Select Period<span class="required-field"> *</span></label>
+		</td>
+		<td>
+			<%=select_tag :mg_class_timing_id,options_for_select(@period_hash , @timetable.mg_class_timing_id),:prompt=>t('select'), :class=>"mg-text-field", :disabled => "disabled"%>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<label class="mg-label mg-custom-labels mg-tt-width mg-tbl-margin">Select Subject<span class="required-field"> *</span></label>
+		</td>
+		<td>
+			<%=select_tag :mg_subject_id,options_for_select(@subject, @timetable.mg_subject_id),:prompt=>t('select'),:onchange=>"editTeacherForSelectedSubject(this.value)", :class=>"mg-text-field"%>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<label class="mg-label mg-custom-labels mg-tt-width mg-tbl-margin">Select Teacher<span class="required-field"> *</span></label>
+		</td>
+		<td>
+			<%=select_tag :mg_employee_id,options_for_select(@employee, @timetable.mg_employee_id),:prompt=>t('select'), :id=>"editEmployeeSelectTagChangeTeacherSTAGID", :class=>"mg-text-field"%>
+		</td>
+	</tr>
+</table>
+
+  <p style="float: left;" class="mg-p-mgtop">
+    <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("save")%></a>
+      <%#= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+      <a class="mg-small-form-btn cancel-form-dialog"><%=t('cancel')%></a>
+  </p>
+
+<%end%>
+<br/>
+
+<script type="text/javascript">
+	$(document).ready(function () {
+
+     	$("#editChangeTeacherFormID").validate({
+        rules: {
+        "mg_subject_id": {required: true},
+        "mg_employee_id": {required: true}
+        }
+      });
+
+    });
+</script>

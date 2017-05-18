@@ -1,0 +1,85 @@
+<!-- Sec --> 
+
+<table border="1" class="mg-showdata-bg mg-tbl-layout mg-btn-bottom-margin" cellspacing="1" cellpadding="1">
+    <tr>
+     <td class="mg-td-width-half" valign="top">
+  		<label class="mg-label"> Fine Name</label>
+  	 </td>
+  	 <td class="mg-td-width-half" valign="top">
+  		<%= @fine_particular.fine_name %>
+  	 </td>
+ 	</tr>
+
+	<tr>
+		<td class="mg-td-width-half" valign="top">
+  			<label class="mg-label">Description </label>
+  		</td>
+  		<td class="mg-td-width-half" valign="top">
+        <div class="text-scroll-for-log-text-cls comments-space" style="padding: 5px 40 0 10px">
+          <%= @fine_particular.try(:description) %>
+        </div>
+  		</td>
+	</tr>
+ 
+	<tr>
+		<td class="mg-td-width-half" valign="top">
+  			<label class="mg-label">Fine From </label>
+  		</td>
+  		<td class="mg-td-width-half" valign="top">
+  			<%= @fine_particular.fine_from %>
+  		</td>
+	</tr>
+
+  <tr>
+    <td class="mg-td-width-half" valign="top">
+      <label class="mg-label">Account </label>
+    </td>
+    <% if @fine_particular.mg_account_id.present?%>
+      <%account=MgAccount.find_by(:id=> @fine_particular.mg_account_id,:is_deleted=>0,:mg_school_id=>session[:current_user_school_id])%>
+      <td class="mg-td-width-half" valign="top">
+        <%= account.try(:mg_account_name) %>
+      </td>
+    <%elsif @fine_particular.is_to_central.present?%>
+      <td class="mg-td-width-half" valign="top">
+        <%= "Central" %>
+      </td>
+    <%else%>
+      <td></td>
+    <%end%>
+  </tr>
+  
+ 	<tr>
+ 		<td class="mg-td-width-half" valign="top">
+  			<label class="mg-label">Name </label>
+  		</td>
+      <%student_Data=MgStudent.find_by(:id=>@fine_particular.mg_student_id)%>
+  		<td class="mg-td-width-half" valign="top">
+  			<%= "#{student_Data.first_name} #{student_Data.last_name}" %>
+  		</td>
+	</tr>
+  <tr>
+    <td class="mg-td-width-half" valign="top">
+        <label class="mg-label">Admission Number </label>
+      </td>
+      <%student_Data=MgStudent.find_by(:id=>@fine_particular.mg_student_id)%>
+      <td class="mg-td-width-half" valign="top">
+        <%= "#{student_Data.admission_number}" %>
+      </td>
+  </tr>
+  <tr>
+    <td class="mg-td-width-half" valign="top">
+        <label class="mg-label">Amount </label>
+      </td>
+      <td class="mg-td-width-half" valign="top">
+        <%= @fine_particular.amount %>
+      </td>
+  </tr>
+</table>
+<a class="mg-small-form-btn cancel-form-dialog"><%=t("cancel")%></a>
+
+<script type="text/javascript">
+$(document).ready(function () {
+  textSeeMoreLess();
+});
+
+</script>

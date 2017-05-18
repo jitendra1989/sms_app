@@ -1,0 +1,61 @@
+<!-- Sec --> 
+<%= fields_for (phone_types) do |cnt| %>
+      <%if phone_types=="mobile"%>
+      <%= cnt.hidden_field :phone_type, :value => "mobile" %>
+      <!--<h4>Home Number </h4>-->
+      <%end%>
+
+      <%if phone_types=="phone"%>
+      <%= cnt.hidden_field :phone_type, :value => "phone" %>
+     <!-- <label for="personal_number "><#%= t 'personalnumber' %></label>-->
+      <%end%>
+
+      <%if phone_types=="emergency"%>
+      <%= cnt.hidden_field :phone_type, :value => "emergency" %>
+     <!-- <label for="emergency_number "><#%= t 'emergencynumber' %></label>-->
+      <%end%>
+      <%= cnt.hidden_field :is_deleted, :value => 0 %>
+      <!--updated 5th jan--> 
+
+      <div class="form-content">
+          <div class="form-content-inner">
+            <table width="100%" cellspacing="0" cellpadding="0" border="0" class="employee-form-cls">
+              <tbody>
+                <tr>
+                  <td width="33%" valign="bottom">
+                    <label class="mg-label" for="phone_number" ><%= t('mobilenumber') %>
+                      <span class="required-field">*</span> 
+                    </label>
+                  </td>
+
+                  <td> </td>
+                  <td width="33%" valign="bottom">
+                    <label class="mg-label" for="notification"><%= t('notification') %></label>
+                  </td>
+                  <td> </td>
+                  <td width="33%" valign="bottom">
+                    <label class="mg-label" for="subscription"><%= t('subscription') %>
+                    <span class="required-field"></span>
+                    </label>
+                  </td>
+                </tr> 
+                <tr>
+                  <td valign="top">
+                    +91-<%= cnt.text_field :phone_number ,:class=>"mg-phn-text-field"%>
+                  </td>
+                  <td> </td>
+                  <td valign="top">
+                    <%=cnt.check_box :notification%>
+                  </td>
+                  <td> </td>
+                  <td valign="top">
+                    <%=cnt.check_box :subscription%>
+                  </td>
+                </tr>  
+              </tbody>
+            </table>
+      </div>
+    </div>
+  <% end %>
+ 
+ 

@@ -1,0 +1,50 @@
+<% navigation_add t('timetable'), timetable_index_path %>
+<% navigation_add 'Absent Teacher', timetable_absent_teachers_path %>
+
+<%= render  partial: 'timetable_left' %>
+<h4 class="mg-h4">Absent Teachers</h4>
+<div>
+<!-- <label class="mg-label mg-custom-labels mg-tt-width mg-tbl-margin">Absent Teachers</label><br> -->
+<label class="mg-label mg-leave-width mg-tbl-margin">Date :</label>
+<%school=MgSchool.find(session[:current_user_school_id])%>
+<label class="mg-label-inner-form"><%= DateTime.now.strftime(school.date_format) %></label>
+
+
+
+
+<%@count=0%>
+<%if @absent_teachers.length>0%>
+<table class="batch-tbl mg-tbl-margin">
+	<tr>
+		<th>Sl No</th>
+		<th>Employee Name</th>
+		<th>Reason</th>
+
+	</tr>
+
+<%@absent_teachers.each do |name|%>
+	<tr>
+		<td><%=@count +=1%></td>
+		<td><%=MgEmployee.find(name.mg_employee_id).employee_name%></td>
+		<td><%=name.reason%></td>
+
+	</tr>
+<%end%>
+
+</table>
+<%else%>
+<h5>All teachers are present. </h5>
+<%end%>
+
+</div>
+<%= render  partial: 'timetable_left_close' %>
+
+
+<script type="text/javascript">
+	$(document).ready(function () {
+        focusCurrentTab("viewAbsentEmployeeTimeTableAID","viewAbsentEmployeeTimeTableLiID");
+        focusTimeTable();
+
+    });
+
+</script>

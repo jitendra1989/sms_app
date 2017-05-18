@@ -1,0 +1,110 @@
+<%= render  partial: 'hostel_management_left' %>
+<% navigation_add t('allocate_rooms'), :controller=>'hostel_management', :action=>'allocate_rooms_new' %>
+<h4 class="mg-h4"><%= t('allocating_rooms')%></h4>
+<div class="box">
+<%= form_for :allocate_rooms ,  :url=>{:controller=>'hostel_management',:action=>'allocate_rooms_create'}, :html=>{:id=>'hostel_rooms_data'} do |f| %>
+<table class="mg-tbl-margin mg-show-tbl-width">
+    <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="hostel_name"><%= t ('hostel_name') %></label><br/>
+        <%hostel_warden=MgHostelWarden.find_by(:mg_user_id=>session[:user_id],:is_deleted=>0,:mg_school_id=>session[:current_user_school_id])
+        hostel_details=MgHostelDetails.find_by(:id=>hostel_warden.mg_hostel_details_id)
+        %>
+        <%= f.hidden_field :hostel_id ,:value=>hostel_warden.mg_hostel_details_id%>
+<%if params[:id].present?%>
+        <%= hidden_field_tag :main_id ,@hostel_rooms.id%>
+       <% @data=@hostel_rooms.mg_wing_id%>
+<%else%>
+       <% @data=0%>
+<%end%>
+        <%= text_field_tag :hostel_name ,hostel_details.try(:name),:readonly=>true,:class=>"mg-text-field"%>
+      </td>
+    </tr>
+    <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label mg-label-text-transform-none" for="dateofPurchase"><%= t ('select_programme') %><span class="required-field">&nbsp;*</span></label><br/>
+        <%  programme_quota=MgHostelProgrammeQuota.where(:is_deleted=>0,:mg_hostel_details_id=>hostel_warden.mg_hostel_details_id,:mg_school_id=>session[:current_user_school_id]).pluck(:programme).uniq
+
+         wing_data=MgWing.where(:id=>programme_quota,:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:wing_name,:id)
+%>
+        <%= select_tag :mg_wing_id,options_for_select(wing_data,:selected=>@data),:prompt=>"Select",:onchange=>"selectHostelStudentList(this.value)"%>
+      </td>
+    </tr>
+    </table>
+    <div id="capacity_data_form">
+    </div>
+<%end%>
+<%= render  partial: 'application/common_left_close' %>
+        <script>
+$( document ).ready(function() {
+      focusCurrentTab("allocate_rooms_listAID","allocate_rooms_listLiID");
+      var hostel_data = $("#allocate_rooms_hostel_id").val();
+      var data = $("#mg_wing_id").val();
+      var main_id = $("#main_id").val();
+           var urlLink = "/hostel_management/allocate_rooms_student_lists";
+          $.ajax({
+             url: urlLink,
+             cache: false,
+             data:{hostel_id:hostel_data,wing_id:data,main_id:main_id},
+             success: function(data){
+                    $("#capacity_data_form").empty().append(data);
+                }
+         });
+
+    });
+function selectHostelStudentList(data){
+        var hostel_data = $("#allocate_rooms_hostel_id").val();
+    
+           var urlLink = "/hostel_management/allocate_rooms_student_lists";
+          $.ajax({
+             url: urlLink,
+             cache: false,
+             data:{hostel_id:hostel_data,wing_id:data,main_id:null},
+             success: function(data){
+                    $("#capacity_data_form").empty().append(data);
+                }
+         });
+  
+  }
+ // function selectHostelRoomType(data1,data){
+$(document).on("change",".room_data_value",function(){
+  if($(this).parent().siblings().find(".check_box_tag_data").prop("checked") == true)
+      {
+        alert("uncheck the checkbox")
+        $(this).val("");
+      }else{
+      var data=$(this).val();
+                    //$(this).parent().siblings().next().css({"color": "red", "border": "2px solid red"})
+                    var data_id_value=$(this).attr('id');
+                    var data_array=data_id_value.split("_");
+
+      var floor_data=$("#mg_floor_id_"+data_array[4]).val();
+                    
+
+        var hostel_data = $("#allocate_rooms_hostel_id").val();
+    
+           var urlLink = "/hostel_management/manage_central_data";
+          $.ajax({
+             url: urlLink,
+             cache: false,
+             data:{hostel_id:hostel_data,type_data:data,floor_data:floor_data,data:"room"},
+             success: function(html){
+                //$(data).empty()..append(data.main);
+                    $("#mg_room_no_id_"+data_array[4]).empty().append(html.main);
+                    //$(this).parent().siblings().find(".class1"+datas[0]).removeAttr("disabled");
+                    //$(".floor_data_value").css({"color": "red", "border": "2px solid red"})
+                }
+         });
+  }
+  });
+
+
+
+
+
+
+
+
+
+
+</script>

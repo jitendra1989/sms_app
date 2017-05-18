@@ -1,0 +1,232 @@
+<div class="mg-custom-labels">
+<%if @finance_fee_hash.empty?%>
+<h5><%="No Fee Records"%></h5>
+<%else%>
+<table class="batch-tbl mg-tbl-margin">
+<tr>
+<th>Fee Collection Name</th>
+<th>Start Date</th>
+<th>Due Date</th>
+<th>Action</th>
+<th>Receipts</th>
+</tr>
+<%@finance_fee_hash.each do |finance_fee|%>
+<tr>
+
+<%
+@school=MgSchool.find(session[:current_user_school_id])
+
+
+fee_collection=MgFeeCollection.find(finance_fee.mg_fee_collection_id)
+
+
+finance_transaction_details=MgFinanceTransactionDetail.where('mg_student_id = ? AND mg_collection_id= ? AND mg_fee_particular_id IS NOT NULL',params[:id],finance_fee.mg_fee_collection_id).pluck(:mg_transaction_id).uniq
+
+#finance_transaction_details+=MgFinanceTransactionDetail.where('student_id =? AND mg_collection_id IS NULL',params[:id]).uniq
+@student_id=params[:id]
+
+%>
+
+<td><%=fee_collection.name%></td>
+<td><%=fee_collection.start_date.strftime(@school.date_format)%></td>
+<td><%=fee_collection.due_date.strftime(@school.date_format)%></td>
+<%if finance_fee.is_paid==true%>
+<td><%="Fee Paid"%></td>
+<%else%>
+    
+<td><button id="<%=raw finance_fee.student_id%>-<%=raw fee_collection.id%>" class="guardian-student-fee_recipt">Pay Fee</button></td>
+
+<%end%>
+<td>
+    <% finance_transaction_details.each do |ftd|
+         paid_date = MgFinanceTransaction.find(ftd).transaction_date %>
+    <%#=ftd%>
+    <%= link_to "#{paid_date.strftime(@school.date_format)}", generate_fee_pdf_path(ftd),:target=>"_blank" %>
+    <%end%>
+</td>
+</tr>
+<%end%>
+
+</table>
+<%end%>
+<div id="fee_recipt_for_student">
+</div>
+</div>
+
+<h4 class="mg-h4">Fine</h4>
+<div class="mg-custom-labels">
+<% fine_particular=MgFeeFineParticular.where('mg_batch_id=?  AND is_deleted=? AND mg_School_id=? AND mg_student_id IS  NULL',@student.mg_batch_id,0,session[:current_user_school_id])
+
+fine_particular+=MgFeeFineParticular.where('mg_batch_id=? AND mg_student_id=? AND is_deleted=? AND mg_School_id=?',@student.mg_batch_id,params[:id],0,session[:current_user_school_id])
+
+%>
+
+
+<%if fine_particular.empty?%>
+<h5><%="No Fine Records"%></h5>
+<%else%>
+
+
+<table class="batch-tbl mg-tbl-margin">
+<tr>
+<th>Fine Name</th>
+<th>Start Date</th>
+<th>Due Date</th>
+<th>Action</th> 
+<th>Receipts</th>
+</tr>
+
+<%fine_particular.each do |fine_details|%>
+<tr>
+
+
+<%@school=MgSchool.find(session[:current_user_school_id])%>
+<td><%=fine_details.fine_name%></td>
+<td><%=fine_details.start_date.strftime(@school.date_format)%></td>
+<td><%=fine_details.due_date.strftime(@school.date_format)%></td>
+
+<%transaction_details=MgFinanceTransactionDetail.where(:mg_student_id=>params[:id],:mg_fee_fine_particular_id=>fine_details.id)
+%>
+
+<%if transaction_details.present?%>
+<td> <%="Fee Paid"%> </td>
+<%else%>
+<td>  
+<button id="<%= @student_id%>" class="guardian-student-fines-recipt">Pay Fee</button>
+</td>
+<%end%>
+
+<%finance_transaction_details=MgFinanceTransactionDetail.where('mg_student_id = ? AND mg_fee_fine_particular_id =?',params[:id],fine_details.id).pluck(:mg_transaction_id).uniq%>
+
+<td>
+
+ <% finance_transaction_details.each do |ftd|
+         paid_date = MgFinanceTransaction.find(ftd).transaction_date %>
+
+ <%= link_to "#{paid_date}", generate_fee_pdf_path(ftd),:target=>"_blank" %>
+    <%end%>
+
+</td>
+
+
+</tr>
+<%end%>
+
+</table>
+
+<%end%>
+
+<br/>
+
+ <%=link_to 'Back',{:controller=>'dashboards',:action=>'guardians_student_fee' },:class=>"mg-small-form-btn"%>
+<%#= button_to 'Back',"history.back()" %>
+
+</div>
+
+<script>
+
+     $(document).on("click",".guardian-student-fee_recipt",function(e){
+        e.preventDefault();
+      
+        var Id=$(this).attr("id");
+                    var Ids=Id.split('-')
+                    //alert(Ids);
+        $.ajax({
+             url: "/fees/student_fee_submission/",
+             data:{"id":Ids[0],"Collectionid":Ids[1]},
+            
+            success: function(html){
+                   
+
+                      $("#fee_recipt_for_student").dialog({
+                        modal: true,
+                        title: "Fee Details",
+                        //top: 50px,
+                        minWidth: 785,
+                        open: function () {
+                            
+                            $(this).html(html);
+                        }
+                    }); //end confirm dialog
+
+              // $("#fee_recipt_for_student").empty();
+              // $("#fee_recipt_for_student").append(html);
+
+                   
+                }
+            });  
+
+        });
+
+
+
+
+      $(document).on("click",".guardian-student-fines-recipt",function(e){
+        e.preventDefault();
+      
+        var Id=$(this).attr("id");
+                    
+                    //alert(Ids);
+        $.ajax({
+             url: "/fees/fine_fee_reports/",
+             data:{"id":Id},
+            
+            success: function(html){
+                   
+
+                      $("#fee_recipt_for_student").dialog({
+                        modal: true,
+                        title: "Fee Details",
+                        //top: 50px,
+                        minWidth: 785,
+                        open: function () {
+                            
+                            $(this).html(html);
+                        }
+                    }); //end confirm dialog
+
+              // $("#fee_recipt_for_student").empty();
+              // $("#fee_recipt_for_student").append(html);
+
+                   
+                }
+            });  
+
+        });
+
+
+
+
+     $(document).on("click",".guardian-student-fee-pdf",function(e){
+        e.preventDefault();
+      
+        var Id=$(this).attr("id");
+                   
+                    //alert(Ids);
+        $.ajax({
+             url: "/fees/generate_fee_pdf/"+Id, 
+            
+            
+            success: function(html){
+                   
+
+                    //   $("#fee_recipt_for_student").dialog({
+                    //     modal: true,
+                    //     title: "Show Student",
+                    //     //top: 50px,
+                    //     minWidth: 785,
+                    //     open: function () {
+                            
+                    //         $(this).html(html);
+                    //     }
+                    // }); //end confirm dialog
+
+                $("#fee_recipt_for_student").empty();
+               $("#fee_recipt_for_student").append(html);
+
+                   
+                }
+            });  
+
+        });
+</script>

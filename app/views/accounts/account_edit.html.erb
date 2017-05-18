@@ -1,0 +1,67 @@
+<%=form_for :account,:url=>{:controller=>"accounts",:action=>"account_update",:id=>@account.id},:html => {:id => 'editAccountFormID'} do |f|%>
+	<%= f.hidden_field :is_deleted, :value => 0 %>
+	<%= f.hidden_field :mg_school_id, :value => session[:current_user_school_id] %>
+	<%= f.hidden_field :created_by, :value => session[:user_id] %>
+	<%= f.hidden_field :updated_by, :value => session[:user_id] %>
+
+	<p>
+		<label class="mg-label mg-tt-width" style="width:185px"><%=t('account_name')%><span class="required-field"> *</span></label>
+		<%=f.text_field :mg_account_name,:class=>"mg-text-field"%>
+	</p>
+
+  <p>
+    <label class="mg-label" style="width:140px"><%= t('description') %></label>
+    <%= f.text_area :description,:class=>"mg-text-field" %>
+  </p>
+
+	<p>
+    <label class="mg-label" style="width:140px"><%= t('user_name') %><span class="required-field">&nbsp;*</span></label><br/>
+    <%school=MgSchool.find_by(:id=>session[:current_user_school_id])%>
+    <%user=MgUser.find_by(:id=>@account.mg_user_id)%>
+    <%user_name=user.user_name.sub(school.subdomain,"")%>
+    <%=school.subdomain%><%= f.text_field :user_name,:value=>user_name,:class=>"mg-text-field",:style=>"width:10.3em;"%>
+  </p>
+  
+	<p class="mg-p-mgtop">
+    	<a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("save")%></a>
+    	<%= link_to t('cancel'),"#", {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+	</p>
+<%end%>
+
+<script>
+	$(document).ready(function(){
+		$("#editAccountFormID").validate({
+		rules: 
+			{
+				"account[mg_account_name]": {required: true},
+				"account[user_name]": {required: true}
+			}
+		});
+	});
+
+	$(document).on("change",".department-change",function(){
+      var departmentId = $(this).val();
+      var apdStr = '<option value="">Choose Department</option>';
+      $("#mg_account_mg_employee_id").html(apdStr);
+      if(departmentId > 0) {
+           $.ajax({ 
+               url: "/accounts/employee_list/"+departmentId,
+               cache: false,
+               success: function(data){
+                 // console.log();
+                  if(data.length > 0){
+                      var apdStr = '<option value="">Select</option>';
+                     for(key in data){
+                        apdStr += '<option value="'+data[key].id+'">'+data[key].first_name+" "+data[key].last_name+'</option>'
+                      }
+                      $("#mg_account_mg_employee_id").empty().append(apdStr);
+                  }
+               }
+           });
+    }else{
+      var apdStr = '<option value="">Choose Department</option>';
+      $("#mg_account_mg_employee_id").html(apdStr);
+      // alert("Please select category");
+    }
+  });
+</script>

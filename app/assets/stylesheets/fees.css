@@ -1,0 +1,31 @@
+/* comm */
+
+#fee_discount_discount_type{
+	margin-top: 11px;
+}
+.fee-fine-td{
+	margin-top: 11px;
+}
+
+.due-fine-btn{
+	margin-left: 0px; 
+	margin-top: 9px;
+}
+
+.userBodyContentBox1{
+	width: 227px;
+}
+
+.mg-fees-submission-batch-tbl{
+	
+	margin-top: 10px;
+	width: 100%;
+}
+
+.mg-fees-submission-batch-tbl ,.mg-tbl-td ,.mg-tbl-th, .mg-tbl-tr {
+	border: 1px solid #999999;
+}
+
+.mg-group-end{
+	background: #E6E6E6;
+}

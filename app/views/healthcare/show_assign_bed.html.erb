@@ -1,0 +1,128 @@
+<table border="1" class="mg-showdata-bg" cellspacing="1" cellpadding="1"> 
+  <%bed_obj = MgBedDetail.find_by(:id=>@bed_assign_detail.mg_bed_details_id)%>
+  <%@dateFormat = MgSchool.find_by(:id=>session[:current_user_school_id]).date_format %>
+  <tr>
+    <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('bed_number')%></label>
+    </td>
+    <td class="mg-td-width-half" valign="top">
+      <%= bed_obj.try(:bed_no) %>
+    </td>
+  </tr>
+  <%user_obj=MgUser.find_by(:user_name=>@bed_assign_detail.try(:user_id),:is_deleted=>0,:mg_school_id=>session[:current_user_school_id])%>
+  <%if user_obj.user_type=='student'%>
+      <%student_obj=MgStudent.find_by(:mg_user_id=>user_obj.id,:is_deleted=>0,:mg_school_id=>session[:current_user_school_id])%>
+    <%if student_obj.present?%>
+      <tr>
+        <td class="mg-td-width-half" valign="top">
+          <label class="mg-label"><%=t('name')%></label>
+        </td>
+        <td class="mg-td-width-half mg-capitalize-text" valign="top" style="">
+          <%= student_obj.try(:first_name)%><%=" "%><%= student_obj.try(:last_name)%>
+        </td>
+      </tr>
+      <tr>
+        <td class="mg-td-width-half" valign="top">
+          <label class="mg-label"><%=t('admission_number')%></label>
+        </td>
+        <td class="mg-td-width-half mg-capitalize-text" valign="top" style="">
+          <%= student_obj.try(:admission_number)%>
+        </td>
+      </tr>
+    <%end%>
+  <%else%>
+    <%employee_obj=MgEmployee.find_by(:mg_user_id=>user_obj.id,:is_deleted=>0,:mg_school_id=>session[:current_user_school_id])%>
+    <%if employee_obj.present?%>
+      <tr>
+        <td class="mg-td-width-half" valign="top">
+          <label class="mg-label"><%=t('name')%></label>
+        </td>
+        <td class="mg-td-width-half mg-capitalize-text" valign="top" style="">
+          <%= employee_obj.try(:first_name)%><%=" "%><%= employee_obj.try(:last_name)%>
+        </td>
+      </tr>
+      <tr>
+        <td class="mg-td-width-half" valign="top">
+          <label class="mg-label"><%=t('employee_number')%></label>
+        </td>
+        <td class="mg-td-width-half mg-capitalize-text" valign="top" style="">
+          <%= employee_obj.try(:employee_number)%>
+        </td>
+      </tr>
+    <%end%>
+  <%end%>
+
+  <tr>
+    <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"><%=t('admitted_date')%></label>
+    </td>
+    <td class="mg-td-width-half " valign="top" style="">
+      <%= @bed_assign_detail.try(:admitted_date).try(:strftime, @dateFormat) %>
+    </td>
+  </tr>
+
+  <tr>
+    <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"><%=t('admitted_time')%></label>
+    </td>
+    <td class="mg-td-width-half " valign="top" style="">
+      <%= @bed_assign_detail.try(:admitted_time).try(:strftime,"%l:%M%P") %>
+    </td>
+  </tr>
+
+  <tr>
+    <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"><%=t('discharge_date')%></label>
+    </td>
+    <td class="mg-td-width-half " valign="top" style="">
+      <%= @bed_assign_detail.try(:discharge_date).try(:strftime, @dateFormat) %>
+    </td>
+  </tr>
+
+  <tr>
+    <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"><%=t('discharge_time')%></label>
+    </td>
+    <td class="mg-td-width-half " valign="top" style="">
+      <%= @bed_assign_detail.try(:discharge_time).try(:strftime,"%l:%M%P") %>
+    </td>
+  </tr>
+
+  <tr>
+    <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"><%=t('doctor_incharge')%></label>
+    </td>
+    <td class="mg-td-width-half " valign="top" style="">
+      <%= MgUser.find_by(:id=>@bed_assign_detail.try(:mg_doctor_id),:is_deleted=>0).try(:user_name)%>
+    </td>
+  </tr>
+  <tr>
+    <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"><%=t('doctor_comments')%></label>
+    </td>
+    <td class="mg-td-width-half " valign="top" style="">
+      <div class="text-scroll-for-log-text-cls comments-space">
+        <%= @bed_assign_detail.try(:comments) %>
+      </div>
+    </td>
+  </tr>
+
+  <tr>
+    <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('status')%></label>
+    </td>
+    <td class="mg-td-width-half mg-capitalize-text" valign="top">
+      <%= @bed_assign_detail.try(:status) %>
+    </td>
+  </tr>
+</table>
+<p class="mg-p-mgtop">
+  <a class="mg-small-form-btn cancel-form-dialog"><%=t('cancel')%></a>
+</p>
+
+  
+<script type="text/javascript">
+  $(document).ready(function () {
+    textSeeMoreLess();
+  });
+</script>

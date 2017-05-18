@@ -1,0 +1,73 @@
+
+add_committee_members
+add_committees_member
+admission_number
+albums_list
+all
+committee_name
+create_new_event_committees
+employee_number
+event_committees
+event_committees_list
+name
+none
+manage_event_committees
+manage_employee
+manage_student
+select
+select_committee
+select_department
+select_section
+
+
+
+
+
+
+
+<label class="mg-label"><%=t('select_committee') %></lable> <%=select_tag :committee_id ,options_for_select(@event_committees),:prompt=>"Select" , :id=>"selectCommitteeSelectTagID" ,:class=>"mg-select-btn"%><br>
+
+<!-- <label class="mg-label"> --><%#=t('select') %><!-- </lable>  --><%#=select_tag :select_student_or_employee ,options_for_select([["Student","student"],["Employee","employee"]]),:prompt=>"Select" , :id=>"selectCommitteeMemberTagID" ,:class=>"mg-select-btn"%>
+
+ <div id="addStudentToCommiteeDIVID">
+	<%#= render  partial: 'add_student_to_commitee.html.erb' %>
+</div>
+<div id="addEmployeeToCommiteeDIVID">
+	<%#= render  partial: 'add_employee_to_commitee.html.erb' %>
+</div>
+
+
+
+ <%= form_for :event_committees, url: event_committees_path, method: :post, :html => {
+                            :id => 'eventCommitteesFormID' } do |f| %>
+
+<p>
+    <%= f.label :mg_event_type_id, t('eventtype') ,:class=>"mg-label"%><span class="required-field"> *</span><br>
+  <%= f.collection_select(:committee, MgEventCommittee.where(:is_deleted=>0, :mg_school_id=>session[:current_user_school_id]), :id, :committee_name,{:include_blank => 'Select'} ,:class=>"mg-select-btn")  %>
+  </p>
+
+  <%= f.hidden_field :is_deleted, :value => 0%> 
+  <%= f.hidden_field :created_by, :value => session[:user_id]%> 
+  <%= f.hidden_field :updated_by, :value => session[:user_id]%> 
+  <%= f.hidden_field :mg_school_id, :value => session[:current_user_school_id]%> 
+
+  <p>
+    <%= f.submit t('save') ,:class=>"mg-small-form-btn"%>
+      <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+
+  </p>
+<% end %>
+
+
+
+
+<div id="selectDepartmentDIVID" class="select-department-div-cls" style="display:none">
+		<br><label class="mg-label"><%=t('select_department') %></lable> <%=select_tag :mg_committee_id ,options_for_select(@departmets),:onchange=>"optionForDepartment(this.value)",:prompt=>t('select') , :id=>"selectEmployeeDepartmentTagID" ,:class=>"mg-select-btn"%>
+	</div>
+
+	<div id="selectClassDIVID" style="display:none">
+		<label class="mg-label"><%=t('select_class') %></lable> <%=select_tag :mg_committee_id ,options_for_select(@event_committees),:onchange=>"optionForMembers(this.value)",:prompt=>t('select') , :id=>"selectCommitteeSelectTagID" ,:class=>"mg-select-btn"%>
+	</div>
+	<div id="selectSectionDIVID" style="display:none">
+		<label class="mg-label"><%=t('select_committee') %></lable> <%=select_tag :mg_committee_id ,options_for_select(@event_committees),:onchange=>"optionForMembers(this.value)",:prompt=>t('select') , :id=>"selectCommitteeSelectTagID" ,:class=>"mg-select-btn"%>
+	</div>

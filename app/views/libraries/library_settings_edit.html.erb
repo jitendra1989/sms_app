@@ -1,0 +1,228 @@
+
+
+ 
+
+<h4 class="mg-h4"><%=t('edit_library_settings')%></h4>
+
+
+<%=form_for :library_settings, :url=>{:controller=>'libraries',:action=>'library_settings_update',:id=>@library_settings.id},:html=>{:id=>"library_settings_data"} do |f|%>
+
+      
+
+
+
+        <%= f.hidden_field :is_deleted ,:value=>0%>
+        <%= f.hidden_field :mg_school_id ,:value=>@school_id%>
+       
+        
+<table class="mg-tbl-margin mg-show-tbl-width mg-inner-table-align">
+    <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="maxBooksIssuable"><%= t ('max_books_issuable') %><span class="required-field">&nbsp;*</span></label><br/>
+        <%= f.text_field :max_books_issuable,:class=>"mg-text-field"%>
+      </td>
+    </tr>
+    <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="maxBorrowDays"><%= t ('max_borrow_days') %><span class="required-field">&nbsp;*</span></label><br/>
+        <%= f.text_field :max_borrow_days,:class=>"mg-text-field"%>
+      </td>
+    </tr>
+    
+    <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="fineForLateReturn"><%= "#{"Fine For Late Return"}(#{"Per Day"})" %><span class="required-field">&nbsp;*</span></label><br/>
+        <%= f.text_field :fine_for_late_return ,:class=>"mg-text-field"%>
+      </td>
+    </tr>
+    
+    <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label mg-label-text-transform-none" for="maxDaysonReservationAfterReturn"><%= t ('max_days_on_reservation_after_return') %><span class="required-field">&nbsp;*</span></label><br/>
+        <%= f.text_field  :max_days_on_reservation_after_return,:class=>"mg-text-field"%>
+      </td>
+    </tr>
+
+        </table>
+
+<h4 class="mg-h4"><%=t('library_incharge')%></h4>
+
+
+<table class="mg-tbl-margin mg-show-tbl-width mg-inner-table-align">
+
+    <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="selectDepartment"><%= t('select_department') %><span class="required-field">&nbsp;*</span></label><br/>
+      
+
+          <span style="margin-right:50px; vertical-align: top;">
+        <%
+        department_data=MgEmployeeDepartment.where(:is_deleted=>0, :mg_school_id=>session[:current_user_school_id]).pluck(:department_name,:id)
+        %>
+    <%=select_tag :notSelected, options_for_select(department_data),:multiple => true,:size =>10, :class=>"mg-add-library-particular"%>
+    </span>
+    
+ <!--  <a  id="addingdatas" class="mg-custom-form-btn mg-fee-btn">Select Dept</a>  -->
+<span id="selected_students" style="vertical-align: top;">
+<%=select_tag :selectedEmployees,options_for_select([]),:multiple => true,:size =>10 ,:class=>"mg-add-library-particular"%>
+</span>
+<a  id="editaddingemployeedatas" class="mg-custom-form-btn mg-add-rem-btn">Add</a> 
+
+<span id="removing_employees" style="display: inline-block;">
+<%
+library_employee_data=MgLibraryEmployee.where(:mg_school_id=>session[:current_user_school_id],:is_deleted=>0).pluck(:mg_employee_id)
+@employee_data=MgEmployee.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id],:id=>library_employee_data).pluck(:first_name,:id)
+%>
+<%=select_tag :selected_employees,options_for_select(@employee_data,:selected=>library_employee_data),:multiple => true,:size =>10 ,:class=>"mg-add-library-particular"%>
+</span>
+
+<a  id="removingdata" class="mg-custom-form-btn mg-add-rem-btn">Remove</a>
+</td>
+    </tr>
+
+    </table>
+    <br/>
+    <br/>
+ <%= f.submit t('save'), class: "submit mg-small-form-btn mg-custom-labels",:id=>"input_field"%>
+      <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+<%end%>
+
+
+
+
+<script>
+
+
+$(document).on("click","#input_field",function(e){
+  
+$("#selected_employees option").prop('selected',true)
+ 
+});
+$(document).ready(function () {
+        focusCurrentTab("librarysettingsAID","librarysettingsLiID");
+        focusMasterSettings();
+  $("#library_settings_data").validate({
+        //debug: true,
+        rules: {
+                  "library_settings[max_books_issuable]": {required: true,number: true},
+                  "library_settings[max_borrow_days]": {required: true,number: true},
+                  "library_settings[fine_for_late_return]": {required: true,number: true},
+
+                  "library_settings[max_days_on_reservation_after_return]": {required: true,number: true},
+                  "selected_employees[]":  {required: true}
+                  
+        }
+
+    });
+
+    });
+ $(document).on("click","#editaddingemployeedatas",function(e){
+
+ 
+
+ var demo=$("#selectedEmployees").val();
+ 
+ var texts=$("#selectedEmployees :selected").text();
+var text=texts.split(" ")
+ 
+ var array=[];
+
+$("#selected_employees option").each(
+
+function() {
+array.push(this.value);
+
+}
+
+);
+
+
+ for(var i=0;i<demo.length;i++)
+ {
+var a =false;
+
+for(var j=0;j<array.length;j++){
+  
+ if (demo[i]==array[j]){
+ a=true;
+  
+}
+
+}
+
+if (a){
+
+  }
+else{
+
+ var addselectedOption=$("#selectedEmployees option:selected")
+ 
+var str="<option value="+demo[i]+">"+text[i]+"</option>"
+
+  $("#selected_employees").append(str);
+
+}
+
+}
+
+
+ });
+
+
+
+
+$(document).on("click","#removingdata",function(e){
+
+var selectedOption=$("#selected_employees option:selected").remove();
+
+//$("#selectedEmployees").append(selectedOption);
+
+  });
+
+
+
+
+ $(document).on("click","#notSelected",function(e){
+    
+    var dept_values=$("#notSelected").val();
+   
+ $.ajax({
+            url: "/libraries/select_employees",
+            type: "GET",
+            data: {"dept_data":dept_values},
+            dataType: "html",
+            success: function(data) {
+              //console.log(data);
+               // $(".fee-particular-admission-number-cls").empty();
+               // $(".fee-particular-admission-number-cls").append(data);
+             $("#selected_students").empty();
+
+             $("#selected_students").append(data);
+             
+              
+            },
+            error:function(){
+              alert("Something went wrong!");
+            }
+        });
+    
+});
+
+
+</script>
+
+<style>
+
+.error {
+  display: block;
+  font-size: 12px;
+}
+
+.mg-add-rem-btn {
+  cursor: pointer;
+  position: relative;
+  top: -6em;
+  vertical-align: middle;
+}
+
+</style>

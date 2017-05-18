@@ -1,0 +1,102 @@
+<% navigation_add t('interview_rounds'), :controller=>'placements', :action=>'interview_rounds' %>
+<%= render  partial: 'placements_left' %>
+<h4 class="mg-h4"><%= t('interview_rounds_list')%></h4>
+<button class="new-interview-rounds-btn mg-btn-bottom-margin mg-custom-form-btn"><%= t('create_new_interview_rounds')%></button>  
+<%if @interview_rounds.present?%>
+<div class="mg_pagination">
+<table class="batch-tbl mg-tbl-margin">   <!-- border="2" --> 
+ <tr >
+  	<th><%=t('name')%></th>
+    <th> <%=t('description')%></th>
+    <th><%=t('actions')%></th>
+  </tr>
+  <% @interview_rounds.each do |e| %>
+    <tr>
+      <td class="mg-capitalize-text"><%= e.name %></td>
+      <td><%=truncate(e.description.to_s, :length => 25, :separator => ' ')  %></td>
+      <td>
+        <button title="Show" id="<%=raw e.id %>-showinterviewRoundsBTNID" class="show-interview-rounds-btn mg-icon-btn"><i class="fa fa-eye"></i></button>
+        <button title="Edit" id="<%=raw e.id %>-editinterviewRoundsBTNID" class="edit-interview-rounds-btn mg-icon-btn"><i class="fa fa-pencil-square-o"></i></button>
+        <button title="Delete" id="<%=raw e.id %>-deleteinterviewRoundsBTNID" onclick="confirm('Are you sure to delete?') ? window.location.href='/placements/<%=e.id%>/interview_rounds_delete' : ''" class="delete-interview-rounds-btn mg-icon-btn"><i class="fa fa-trash"></i></button></td>
+    </tr>
+  <% end %>
+</table>
+<div>
+ <%= will_paginate @interview_rounds, :container => false %>
+  </div>
+  <%else%>
+  	<p>Please create some interview rounds</p>
+  <%end%>
+<div id="interviewRoundsDIVID"></div>
+<%= render  partial: 'application/common_left_close' %>
+<script>
+	$( document ).ready(function() {
+	    focusCurrentTab("placementsInterviewRoundsAID","placementsInterviewRoundsLiID");
+	});
+
+	$(document).on("click", ".new-interview-rounds-btn", function(e){
+			$("#interviewRoundsDIVID").html("");
+	        var urlLink = "/placements/interview_rounds_new";
+	        $.ajax({
+	            url: urlLink ,
+	            cache: false,
+	            success: function(html){
+	                  $('#interviewRoundsDIVID').dialog({
+	                    modal: true,
+	                    minHeight: 'auto',
+	                    title: "New Interview Round",
+	                    open: function () {
+	                        
+	                        $(this).html(html);
+	                    }
+	                }); 
+	               
+	            }
+	        });
+	});
+	$(document).on("click", ".edit-interview-rounds-btn", function(e){
+		$("#interviewRoundsDIVID").html("");
+		var id=$(this).attr("id").split("-")[0];
+	        var urlLink = "/placements/"+id+"/interview_rounds_edit";
+	        $.ajax({
+	            url: urlLink ,
+	            cache: false,
+	            success: function(html){
+	                  $('#interviewRoundsDIVID').dialog({
+	                    modal: true,
+	                    minHeight: 'auto',
+              			width: 'auto',
+	                    title: "Edit Interview Round",
+	                    open: function () {
+	                        
+	                        $(this).html(html);
+	                    }
+	                }); 
+	               
+	            }
+	        });
+	});
+	$(document).on("click", ".show-interview-rounds-btn", function(e){
+		$("#interviewRoundsDIVID").html("");
+		var id=$(this).attr("id").split("-")[0];
+	        var urlLink = "/placements/"+id+"/interview_rounds_show";
+	        $.ajax({
+	            url: urlLink ,
+	            cache: false,
+	            success: function(html){
+	                  $('#interviewRoundsDIVID').dialog({
+	                    modal: true,
+	                    minHeight: 'auto',
+              			width: 'auto',
+	                    title: "Show Interview Round",
+	                    open: function () {
+	                        
+	                        $(this).html(html);
+	                    }
+	                }); 
+	               
+	            }
+	        });
+	});
+</script>
+

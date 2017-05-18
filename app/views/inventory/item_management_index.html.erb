@@ -1,0 +1,91 @@
+<% navigation_add 'Stock', item_management_index_path %>
+<%=render partial:"inventory_left"%>
+	<h4 class="mg-h4"><%=t('stock_list')%></h4>
+	<%= button_to t('add_stock'), {:controller => "inventory", :action => "item_management_new" } ,:class=>"mg-custom-form-btn"%><br>
+	<%if @items.length > 0%>
+		<div class="mg_pagination">
+			<!-- <div class="mg-scroll-page-inner mg-tbl-border"> -->
+				<table class="batch-tbl mg-tbl-layout mg-left-align-nil" id="electiveGroupTableID">
+					<tr class="subject-table-header">
+			            <th><%= t('category') %></th>
+			            <th><%= t('item_name') %></th>
+			           <!--  <th><%#= t('item_identification_number') %></th> -->
+			            <th><%= t('label_text') %></th>
+			            <!-- <th><%#= t('item_type') %></th> -->
+			            <th><%= t('room') %></th>
+			            <th><%= t('rack') %></th>
+			            <th><%= t('quantity') %></th>
+			            <th><%= t('available_quantity') %></th>
+			            <!-- <th><%#= t('expiry_date') %></th> -->
+			        	<!-- <th><%#= t('minimum_quantity') %></th> -->
+			            <th><%= t('actions') %></th>
+			        </tr>
+			        <% @items.each do |item| %>
+				        <tr>
+				        	<%
+				        	 item_category=MgInventoryItemCategory.find_by(:id=>item.mg_inventory_item_category_id)	
+				        	 item_name=MgInventoryItem.find_by(:id=>item.mg_inventory_item_id)
+				        	 room=MgInventoryRoomManagement.find_by(:id=>item.mg_inventory_room_id)
+				        	 rack=InventoryStackManagement.find_by(:id=>item.mg_inventory_rack_id)
+				        	%>
+				        	<td><%=item_category.name%></td>
+				        	<td><%=item_name.name%></td>
+				        	<!-- <td><%=item.item_prefix%></td> -->
+				        	<td><%=item.label_text%></td>
+				        <!-- 	<td class="mg-capitalize-text"><%#=item.item_type%></td> -->
+				        	<td><%=room.room_no%></td>
+				        	<td><%=rack.rack_no%></td>
+				        	<td><%=item.quantity%></td>
+				        	<td><%=item.quantity_available%></td>
+				        	<!-- <td>
+				        		<%#school=MgSchool.find(session[:current_user_school_id])%>
+				        		<%#if item.date_of_expiry.present?%>
+								<%#=item.try(:date_of_expiry).strftime(school.date_format)%>
+								<%#end%>
+				        	</td> -->
+				        	<!-- <td><%#=item_name.minimum_quantity_required%></td>  -->
+				        	<td>
+				        	<%#= link_to "<i class=\"fa fa-eye\"></i>".html_safe, item_management_show_path(item.id),:class=>"mg-icon-btn"%>
+				        		<!-- <button title="Show" class="showManageItem mg-icon-btn" id="<%#= item.id%>"><i class="fa fa-eye"></i></button> -->
+				        		<%= link_to "<i class=\"fa fa-pencil-square-o\"></i>".html_safe, item_management_edit_path(item.id),:class=>"mg-icon-btn" ,:style=>"margin-right: 3px;"%>
+	                			<!-- <button title="Edit" class="editManageItem mg-icon-btn" id="<%= item.id%>"><i class="fa fa-pencil-square-o"></i></button> -->
+	                			<%= link_to "<i class=\"fa fa-trash\"></i>".html_safe, item_management_delete_path(item.id),data: { confirm: 'Are you sure to delete?' },:class=>"mg-icon-btn"%>
+	                			<!-- <button title="Edit" class="deleteManageItem mg-icon-btn" id="deleteID-<%#= item.id%>"><i class="fa fa-trash"></i></button> -->
+				        	</td>
+				        </tr>
+			        <%end%>
+				</table>
+			<!-- </div> -->
+			<%= will_paginate @items, :container => false %>
+		</div>
+
+	<%else%>
+		<h5>Please add some stocks... </h5>
+	<%end%>
+	<div id="editItemManagementDialogID"></div>
+
+<%=render partial:"common_left_close"%>
+
+<script>
+$(document).ready(function(){
+	focusCurrentTab("itemManagementAID","itemManagementLiID");
+});
+
+// $(document).on("click",".editManageItem",function(){
+// 	var item_id=$(this).attr("id");
+// 	$.ajax({
+// 		url:"/inventory/item_management_edit",
+// 		data:{"id":item_id},
+// 		success:function(html){
+// 			$("#editItemManagementDialogID").dialog({
+// 				title:"Edit Item Management",
+// 				open:function(){
+// 					$(this).html(html);
+// 				}
+// 			});
+// 		}
+// 	});
+// });
+
+
+</script>

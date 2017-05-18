@@ -1,0 +1,81 @@
+		<%@student_id=MgAssignmentSubmission.where(:mg_assignment_id=>params[:assig_id]).pluck(:mg_student_id)%>
+		<p>
+		    <label class="mg-label" ><%= t('select_student') %><span class="required-field">&nbsp;*</span></label><span id="error_for_validation" class="error"></span>
+		<br/>
+		<%if @students.length>0%>
+		<div class="mg-scroll-bar">
+		<br/>
+<label class="mg-label"><%=t('select')%></label> <a id="checkAllCheckBoxInFeeParticularId" class="mg-pop-link">All</a>
+    <a id="unCheckAllCheckBoxInFeeParticularId" class="mg-pop-link">None</a>
+<!-- <label class="mg-label" style="width:140px"><%#= t('select_all') %><span class="required-field">&nbsp;*</span></label> -->
+   <%#= check_box_tag 'selectAll_students', 1,false, {:onclick=>"toggle(this)", :class=>"select-all-event-check-box-class"}%>
+
+		<table class="batch-tbl mg-tbl-margin">
+		<tr class="subject-table-header">
+			 <th>
+			 	<%=t('student_name')%>
+			 </th>
+			 <th>
+			 	<%=t('select')%>
+			 </th>
+		</tr>
+
+
+
+		<%@students.each do |student|%>
+			<tr>
+				<%if student.first_name.present?%>
+					<td>
+					<%=student.first_name%>
+					</td>
+					<td>
+
+						<%=check_box_tag 'mg_student_id[]',student.id,@student_id.include?(student.id) ? true : false,{:class=>"class-check-box-Class "} %>
+					</td>
+					
+				<%end%>
+			</tr>
+		<%end%>
+		
+		</table>
+
+		</div>
+		<%else%>
+<h4 style="color: #0000FF; font-size: 12pt">No Student in this Class </h4>
+<%end%>
+		</p>
+
+<style>
+.mg-scroll-bar{
+       border: 1px solid #b2b2b2;
+       width: 177px;
+       height: 303px;
+       overflow-y: scroll;
+   }
+</style>
+<script>
+$( ".class-check-box-Class" ).on( "click", function() {
+$("#error_for_validation").empty();
+});
+
+$( ".select-all-event-check-box-class" ).on( "click", function() {
+$("#error_for_validation").empty();
+});
+
+
+  $(document).on("click", "#checkAllCheckBoxInFeeParticularId", function(e){
+
+        $(".class-check-box-Class").prop('checked', true);
+        e.preventDefault();
+        
+  });
+
+  $(document).on("click", "#unCheckAllCheckBoxInFeeParticularId", function(e){
+
+        $(".class-check-box-Class").prop('checked', false);
+        e.preventDefault();
+  });
+
+
+</script>
+

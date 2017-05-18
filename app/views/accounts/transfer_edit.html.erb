@@ -1,0 +1,70 @@
+<%= form_for :account, :url=>{:controller=>'accounts',:action=>'transfer_update',:id=>@account.id},:html => {:id => 'accountTransferCentralInchargeEditID' } do |f| %>
+<%= f.hidden_field :is_deleted, :value => 0 %>
+<%= f.hidden_field :mg_school_id, :value => session[:current_user_school_id] %>
+<%= f.hidden_field :updated_by, :value => session[:user_id] %>
+<%= hidden_field_tag :is_status, @account.status %>
+<p>
+    <label class="mg-label" style="width:140px"><%= t('select_account') %><span class="required-field">&nbsp;*</span></label>
+    <br/>
+    <%if @account.status=="accepted"%>
+    <%= f.collection_select(:mg_to_account_id,MgAccount.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]), :id, :mg_account_name,{:include_blank => t("select")},:class => "mg-select-btn",:disabled=>true)%>
+    <%else%>
+   <%= f.collection_select(:mg_to_account_id,MgAccount.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]), :id, :mg_account_name,{:include_blank => t("select")},:class => "mg-select-btn")%>
+   <%end%>
+</p>
+
+<p>
+    <label class="mg-label" style="width:140px"><%= t('amount') %><span class="required-field">&nbsp;*</span></label>
+    <br/>
+    <%if @account.status=="accepted"%>
+      <%= f.text_field :amount,:class=>"mg-text-field",:readonly=>true %>
+    <%else%>
+      <%= f.text_field :amount,:class=>"mg-text-field" %>
+    <%end%>
+</p>
+
+<p>
+    <label class="mg-label" style="width:140px"><%= t('purpose') %><span class="required-field">&nbsp;</span></label>
+    <br/>
+    <%if @account.status=="accepted"%>
+      <%= f.text_area :purpose,:class=>"mg-text-field",:readonly=>true %>
+      <%else%>
+      <%= f.text_area :purpose,:class=>"mg-text-field" %>
+      <%end%>
+</p>
+
+<p>
+    <label class="mg-label" style="width:140px"><%= t('status') %><span class="required-field">&nbsp;</span></label>
+    <br/>
+    <%#=f.select :status,options_for_select([["Accepted", "accepted"], ["Rejected", "rejected"]],{:class=>"mg-select-btn"}),:prompt=> t('select'), :readonly=>true%>
+
+    <%=f.select :status, [["Pending", "pending"],["Accepted", "accepted"], ["Rejected", "rejected"]], {}, {:class=> "mg-select-btn", :disabled=>true}%>
+
+</p>
+
+<p>
+    <label class="mg-label" style="width:140px"><%= t('reason') %><span class="required-field">&nbsp;</span></label>
+    <br/>
+      <%= f.text_area :Reason,:class=>"mg-text-field", :readonly=>true%>
+</p>
+<p class="mg-p-mgtop">
+    <!-- <%#= f.submit t('save') ,:class=>"mg-small-form-btn"%> -->
+    <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("save")%></a>
+    <%#= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+<a class="mg-small-form-btn cancel-form-dialog"><%=t("cancel")%></a>
+
+</p>
+<% end %>
+
+<%#= render  partial: 'application/common_left_close' %>
+
+<script>
+
+
+$("#accountTransferCentralInchargeEditID").validate({
+        rules: {        
+        "account[mg_to_account_id]": {required: true},
+        "account[amount]": {required: true}
+      }
+    });
+</script>

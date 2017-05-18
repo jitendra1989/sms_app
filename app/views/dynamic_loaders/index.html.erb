@@ -1,0 +1,69 @@
+<!-- Sec --> 
+<section id="userBodyContentBox" style="margin: 0 auto;">
+    <table width=100% border="0" cellspacing="0" cellpadding="0">
+        <tr>
+            <td valign="top" class="userBodyContentBox1">
+                <aside class="userMenuBoxLeft">
+                    <ul class="menuListHome">
+                        <li class="myAccountMenu">Dynamic Loader</li>
+                        <li >
+                            <a class="menuItemsMailbox" href="#" id="create_dynamic" >
+                                <div class="setMenu"><i class="fa fa-envelope-o">&nbsp;&nbsp;</i>Create New<i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px;"></i>
+                                </div>
+                            </a>
+                        </li>
+                        <li >
+                            <a class="menuItemsActivities" href="#" id="view_dynamic">
+                                <div class="setMenu"><i class="fa fa-tachometer">&nbsp;&nbsp;</i>View All<i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px;"></i>
+                                </div>
+                            </a>
+                        </li>
+                        
+                        
+                    </ul>
+                </aside>
+            </td>
+            <td id="recent_posts">
+             
+            </td>
+        </tr>
+    </table>
+</section>
+<br/>
+<br/>
+
+<script>
+    $(document).on("click", "#view_dynamic", function(e){
+          
+           $("li").removeClass( "active" );
+           $("a").removeClass( "activeMenu" );
+
+            $( this ).parent().addClass("active");
+            $(this).addClass("activeMenu");
+
+            $.ajax({
+            url: "/dynamic_loaders/new",
+            cache: false,
+            success: function(html){
+                $("#recent_posts").empty();
+              $("#recent_posts").append(html);
+            }
+        });
+    }); 
+    $(document).on("click", "#create_dynamic", function(e){
+
+         $("li").removeClass( "active" );
+           $("a").removeClass( "activeMenu" );
+            $( this ).parent().addClass("active");
+            $(this).addClass("activeMenu");
+
+            $.ajax({
+            url: "/dynamic_loaders/edit",
+            cache: false,
+            success: function(html){
+                $("#recent_posts").empty();
+              $("#recent_posts").append(html);
+            }
+        });
+    }); 
+</script>

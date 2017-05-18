@@ -1,0 +1,127 @@
+<%if flash[:error].present?%>
+<%=flash[:error]%>
+<%end%>
+<%
+    @school_id=session[:current_user_school_id]
+
+    %>
+
+<h4 class="mg-h4"><%=t('book_details')%></h4>
+
+
+<table border="1" class="mg-showdata-bg mg-show-tbl-width" cellspacing="1" cellpadding="1">
+
+
+ <tr>
+      <td class="mg-td-width-half" valign="top">
+       <label class="mg-label" for="publisher"><%= t ('status') %></label>
+      </td>
+      <td class="mg-td-width-half" valign="top">
+        <label class="mg-label-inner-form"> <%=@inventory_data.status %></label>
+      </td>
+  </tr>  
+
+<tr>
+      <td class="mg-td-width-half" valign="top">
+       <label class="mg-label" for="bookNo"><%= t ('book_no') %></label>
+      </td>
+      <td class="mg-td-width-half" valign="top">
+        <label class="mg-label-inner-form"> <%=@inventory_data.book_no%></label>
+      </td>
+  </tr>
+ <tr>
+      <td class="mg-td-width-half" valign="top">
+       <label class="mg-label" for="bookName"><%= t ('book_name') %></label>
+      </td>
+      <td class="mg-td-width-half" valign="top">
+        <label class="mg-label-inner-form"><%=@inventory_data.book_name%></label>
+      </td>
+  </tr>
+
+   <tr>
+      <td class="mg-td-width-half" valign="top">
+       <label class="mg-label" for="author"><%= t ('author') %></label>
+      </td>
+      <td class="mg-td-width-half" valign="top">
+        <label class="mg-label-inner-form"><%=@inventory_data.author%></label>
+      </td>
+  </tr>
+
+  <tr>
+      <td class="mg-td-width-half" valign="top">
+       <label class="mg-label" for="publisher"><%= t ('publisher') %></label>
+      </td>
+      <td class="mg-td-width-half" valign="top">
+        <label class="mg-label-inner-form"> <%=@inventory_data.publisher%></label>
+      </td>
+  </tr>  
+<tr>
+      <td class="mg-td-width-half" valign="top">
+       <label class="mg-label" for="publisher"><%= t ('edition') %></label>
+      </td>
+      <td class="mg-td-width-half" valign="top">
+        <label class="mg-label-inner-form"> <%=@inventory_data.edition%></label>
+      </td>
+  </tr>  
+  <tr>
+      <td class="mg-td-width-half" valign="top">
+       <label class="mg-label" for="publisher"><%= t ('category_name') %></label>
+      </td>
+      <%
+          books_category=MgBooksCategory.find(@inventory_data.mg_books_category_id)
+          %>
+      <td class="mg-td-width-half" valign="top">
+        <label class="mg-label-inner-form"> <%=books_category.category_name%></label>
+      </td>
+  </tr>  
+  <tr>
+      <td class="mg-td-width-half" valign="top">
+       <label class="mg-label" for="publisher"><%= t ('class') %></label>
+      </td>
+      <%
+          course_data=MgCourse.find(@inventory_data.mg_course_id)
+          %>
+      <td class="mg-td-width-half" valign="top">
+        <label class="mg-label-inner-form"> <%=course_data.course_name%></label>
+      </td>
+  </tr>  
+
+
+  </table><br/>
+  <%settings_data=MgLibrarySetting.find_by(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id])%>
+<%if (settings_data.max_books_issuable==0 && @inventory_data.reserved_by==0) && (@inventory_data.reserved_by==0) && (@inventory_data.status!="On-shelf")%>
+<%if @inventory_data.issued_to.to_i==@student_id.id.to_i%>
+<%else%>
+<button  id='Reserved-<%=@inventory_data.id %>-<%=@student_id.id%>' class="submits_function_for_student  form_close_calss mg-custom-form-btn">Reserve</button>
+<%end%>
+<%else%>
+ <%if (@student_lib_inforamtion.length<settings_data.max_books_issuable  && @inventory_data.reserved_by==0) && (@inventory_data.reserved_by==0) && (@inventory_data.status!="On-shelf")%>
+<button  id='Reserved-<%=@inventory_data.id %>-<%=@student_id.id%>' class="submits_function_for_student  form_close_calss mg-custom-form-btn">Reserve</button>
+ <%else%>
+ 
+ <%end%>
+ 
+<%end%>
+ <%#if (@student_lib_inforamtion.length>=3 && @inventory_data.reserved_by!=0)%>
+
+ <%#else%>
+  <!-- <button  id='Issue-<%=@inventory_data.id %>' class="submits_function_for_issue  form_close_calss mg-custom-form-btn">Issue</button> -->
+ <!--  
+ <button  id='cancel_reservation-<%=@inventory_data.id %>' class="cancel-reservation-submits-function-for-second-time  form_close_calss mg-custom-form-btn"> Reservation</button>
+ -->
+ <%#end%>
+<%if @inventory_data.reserved_by==@student_id.id.to_i%>
+<button  id='cancel_reservation-<%=@inventory_data.id %>' class="cancel_reservation_submits_function  form_close_calss mg-custom-form-btn">Cancel Reservation</button>
+<%end%>
+
+<div id="fine_pop_up">
+
+</div>
+<div id="renew_fine_pop_up">
+</div>
+<div id="reserved_pop_up">
+</div>
+
+<div id="issued_pop_up">
+</div>
+

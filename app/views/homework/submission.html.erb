@@ -1,0 +1,128 @@
+<%= render  partial: 'homework/homework_left' %>
+
+<%if flash[:notice].present?%>
+<%=flash[:notice]%>
+<%end%>
+<h4 class="mg-h4"><%= t('assignments') %></h4>
+
+<p>
+<!-- ========================================================================== -->
+<%= form_for :short_lab_wise, url: homework_submission_path, :html => {
+                            :id => 'homeworkindexCourseID' } do |f| %>
+<!-- ========================================================================== -->
+    <%
+      batch=MgTimeTableEntry.select(:mg_batch_id,:mg_subject_id).where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id],:mg_employee_id=>@emp[0].id).uniq
+      batch_array=Array.new
+      batch.each do |batch_obj|
+        small_array=Array.new
+                  batches=MgBatch.find(batch_obj.mg_batch_id)
+                  courseObj = MgCourse.find(batches.mg_course_id)
+               # subject=MgSubject.find(batch_obj.mg_subject_id)
+                small_array.push("#{courseObj.course_name}-#{batches.name}")
+                small_array.push("#{batch_obj.mg_batch_id}")
+                               batch_array.push(small_array)
+                          end
+    %>
+ <%=f.select :mg_batch_id,options_for_select(batch_array,:selected=> @id),{:prompt=>t('select_all')},:onchange => 'this.form.submit();',:class => "table-td-select" %>
+
+<%= f.submit t('save') ,:class=>"mg-small-form-btn hidden-button-onchange-submit-class" , :style=>"display:none"%>
+
+<%end%>
+<!-- ============================================================================= -->
+</p>
+<%if @assignment.length>0%>
+<div class="mg-custom-labels">
+<div class="mg_pagination">
+<table  class="batch-tbl mg-tbl-margin">   <!-- border="2" --> 
+  <tr class="subject-table-header">
+    <!-- <th>Subject Id</th> -->
+    <th><%= t('class') %></th>
+    <th><%= t('subject') %></th>
+    <th><%= t('title') %></th>
+    <th><%= t('created_date') %></th>
+    <th><%= t('due_date') %></th>
+    <th><%= t('actions') %></th>
+  </tr>
+ 
+  <% @assignment.each do |assignment| %>
+    <tr>
+    <%
+        batch=MgBatch.find(assignment.mg_batch_id)
+        course=MgCourse.find(batch.mg_course_id)
+    %>
+      <td><%=course.course_name%>-<%= batch.name %></td>
+      <%subject=MgSubject.find(assignment.mg_subject_id)%>
+      <td><%= subject.subject_name %></td>
+      <td><%= assignment.title %></td>
+      <% timeformat=MgSchool.find_by_id(assignment.mg_school_id)%>
+      <% if timeformat.present?%>
+      <td><%= assignment.created_at.strftime(timeformat.date_format) %></td>
+      <td><%= assignment.due_date.strftime(timeformat.date_format) %></td>
+      <%else%>
+      <td></td>
+      <td></td>
+      <%end %>
+      <td>
+            
+            <%= link_to "Select".html_safe, {:controller => "homework", :action => "student_list",:id =>assignment.id} , :method=>'post' ,:title=>"Select" ,:class=>"mg-icon-btn mg-custom-form-btn mg-right-align"%>
+    
+            <%#= link_to t('back'), :back, {:class=>"mg-custom-form-btn cancel-form-dialog"} %>
+
+      </td>
+    </tr>
+  <% end %>
+</table>
+<br/>
+<div class="pagination-align" style="position: relative; bottom: 10px;">
+              <%= will_paginate @assignment, :container => false %>
+           </div>
+  </div>
+</div>
+<%else%>
+  <h4 style="color: #0000FF; font-size: 12pt">No Assignment is created </h4>
+<%end%>
+<div id="showAssignmentManagementDIVID"></div>
+
+
+<%= render  partial: 'application/common_left_close' %>
+
+<script>
+$( document ).ready(function() {
+      //      focusCurrentTab("viewHomeworkSubmissionIndex","viewHomeworkSubmissionLiID");
+          //focusStudentHeaderBox();
+            focusCurrentTab("viewHomeworkSubmissionIndex","viewHomeworkSubmissionLiID");
+
+});
+
+
+$(document).on("click", ".show-assignment-management-btn", function(e){
+        var myID =$(this).attr('id');
+        var Id=myID.split("-");
+        var urlLink = "/homework/show/"+Id[0];
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(html){
+                  $('#showAssignmentManagementDIVID').dialog({
+                    modal: true,
+                    minHeight: 'auto',
+                    width: 'auto',
+                    title: "Assignment",
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+});
+</script>
+<style>
+	.table-td-select {
+    padding: 1px;
+    width: 13.5em;
+}
+
+</style>
+

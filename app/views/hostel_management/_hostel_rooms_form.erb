@@ -1,0 +1,201 @@
+<%#= render  partial: 'hostel_management_left' %>
+<%= render  partial: 'hostel_management_left' %>
+
+<% navigation_add t('rooms'), :controller=>'hostel_management', :action=>'hostel_rooms' %>
+
+<% if @action=='new'%>
+  <h4 class="mg-h4"><%=t('add_room_details')%></h4>
+  <% navigation_add t('new_room'),:controller=>'hostel_management',:action=>'hostel_rooms_new' %>
+<% else %>
+  <h4 class="mg-h4"><%=t('edit_room_details')%></h4>
+  <% navigation_add  t('edit_room'), :controller=>'hostel_management', :action=>'hostel_rooms_edit',:id=>params[:id] %>
+<%end%>
+
+
+<%= form_for :hostel_rooms , url: @action=="new" ? 'hostel_rooms_create' :
+ '/hostel_management/'+@hostel_rooms.try(:id).to_s+'/hostel_rooms_update',:html => {:id => 'hostel_roomsID' } do |f| %>
+
+
+
+  <%= f.hidden_field :mg_school_id, :value => session[:current_user_school_id]%>
+  <%= f.hidden_field :created_by, :value => session[:user_id]%> 
+  <%= f.hidden_field :updated_by, :value => session[:user_id]%> 
+  <%= f.hidden_field :is_deleted, :value => 0%>
+
+   <p>
+    <%= f.label :select_hostel, t('hostel') ,:class=>"mg-label mg-rm-text-trans"%><br>
+    <% hostel_data=MgHostelDetails.where(:is_deleted=>0).pluck(:name,:id)%>
+    <% if @action=='new'%>
+        <%#= f.select :mg_hostel_details_id,options_for_select(hostel_data),:prompt=>"Select" ,:class=> 'mg-text-field'  %>
+
+        <%hostel_warden=MgHostelWarden.find_by(:mg_user_id=>session[:user_id],:is_deleted=>0,:mg_school_id=>session[:current_user_school_id])
+        hostel_details=MgHostelDetails.find_by(:id=>hostel_warden.mg_hostel_details_id)
+
+        %>
+        <%= f.hidden_field :mg_hostel_details_id ,:value=>hostel_warden.mg_hostel_details_id%>
+        <%= text_field_tag :mg_hostel_id ,hostel_details.try(:name),:readonly=>true,:class=>"mg-text-field"%>
+    
+
+
+    <% else %>
+      <%hostel_warden=MgHostelWarden.find_by(:mg_user_id=>session[:user_id],:is_deleted=>0,:mg_school_id=>session[:current_user_school_id])
+        hostel_details=MgHostelDetails.find_by(:id=>hostel_warden.mg_hostel_details_id)
+
+        %>
+        <%= f.hidden_field :mg_hostel_details_id ,:value=>hostel_warden.mg_hostel_details_id%>
+        <%= text_field_tag :mg_hostel_id ,hostel_details.try(:name),:readonly=>true,:class=>"mg-text-field"%>
+        <%#= f.select :mg_hostel_details_id,options_for_select(hostel_data,:selected=>@hostel_rooms.mg_hostel_details_id),:prompt=>"Select" ,:class=> 'mg-text-field'   %>
+    <%end%>
+
+
+  </p>
+
+  <p>
+    <%= f.label :select_floor, t('select_floor') ,:class=>"mg-label mg-rm-text-trans"%><span class="required-field"> *</span><br>
+    <%    hostel_warden=MgHostelWarden.find_by(:mg_user_id=>session[:user_id],:is_deleted=>0,:mg_school_id=>session[:current_user_school_id])        
+%>
+    <% floor_data=MgHostelFloor.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id],:mg_hostel_details_id=>hostel_warden.mg_hostel_details_id).pluck(:name,:id)%>
+    <% if @action=='new'%>
+
+      <%= f.select :mg_hostel_floor_id,options_for_select(floor_data),:prompt=>"Select" ,:class=> 'mg-text-field'  %>
+    <% else %>
+      <%= f.select :mg_hostel_floor_id,options_for_select(floor_data,:selected=>@hostel_rooms.mg_hostel_floor_id),:prompt=>"Select" ,:class=> 'mg-text-field'  %>
+    <%end%>
+  </p>
+
+   <p>
+
+    <%= f.label :name, t('name / no') ,:class=>"mg-rm-text-trans mg-label"%><span class="required-field"> *</span><br>
+    <% if @action=='new'%>
+      <%= f.text_field :name   ,:class=> 'mg-text-field'%>
+    <% else %>
+      <%= f.text_field :name   ,:class=> 'mg-text-field',:value=>@hostel_rooms.name%>
+
+    <%end%>
+
+  </p>
+
+  <p>
+    <%= f.label :select_room_type, t('select_room_type') ,:class=>"mg-label mg-rm-text-trans"%><span class="required-field"> *</span><br>
+<%    hostel_warden=MgHostelWarden.find_by(:mg_user_id=>session[:user_id],:is_deleted=>0,:mg_school_id=>session[:current_user_school_id])        
+%>
+    <% room_data=MgHostelRoomType.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id],:mg_hostel_details_id=>hostel_warden.mg_hostel_details_id).pluck(:name,:id)%>
+    <% if @action=='new'%>
+
+      <%=f.select :mg_hostel_room_type_id,options_for_select(room_data),{include_blank: false,:prompt=>"Select"},:onchange => 'roomType();' ,:class=> 'mg-text-field room-type'%>
+    <% else %>
+        <%=hidden_field_tag "room_capacity",@hostel_rooms.mg_hostel_room_type_id%>
+
+    <%=f.select :mg_hostel_room_type_id,options_for_select(room_data,:selected=>@hostel_rooms.mg_hostel_room_type_id),{include_blank: false,:prompt=>"Select"},:onchange => 'roomType();' ,:class=> 'mg-text-field room-type'%>
+    <%end%>
+  </p>
+
+  <p>
+
+    <%= f.label :capacity, t('capacity') ,:class=>"mg-label"%><br>
+  <div id="capacity_id_data">
+    <% if @action=="new"%>
+      <%= text_field_tag 'capacity', nil ,:class=>"mg-select-btn mg-text-field",:readonly=>true  %>
+    <% else %>
+      <%= text_field_tag 'capacity', nil ,:class=>"mg-select-btn mg-text-field",:readonly=>true, :value=>@hostel_rooms.capacity  %>
+    <% end %>
+    </div>
+  </p>
+
+  <p>
+        <label class="mg-label" for="is_occupiable"><%= t('is_occupiable?') %>
+        <% if @action=='new'%>
+            <%= f.check_box :is_occupiable ,:checked=>true  %>
+        <% else %>
+            <%= f.check_box :is_occupiable,:checked=>@hostel_rooms.is_occupiable  %>
+        <%end%>
+  </p>
+
+<p>  
+    <% if @action=='new'%>
+      <%= f.label :reason, t('reason') ,:class=>"mg-label reason", :style=>"display:none"%><br>
+    
+      <%= f.text_area :reason,:class=>"reason mg-select-btn mg-text-field",:style=>"display:none  " %>
+
+    <% else %>
+
+        <%= f.label :reason, t('reason') ,:class=>"mg-label reason"%><br>
+
+        <%= f.text_area :reason,:class=>"reason mg-select-btn mg-text-field",:value=>@hostel_rooms.reason %>
+    <% end %>
+
+</p>
+
+
+
+  
+  
+
+  <p class="mg-p-mgtop">
+
+       <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("save")%></a>
+      <%= link_to t('cancel'), {:controller=>'hostel_management',:action=>'hostel_rooms'}, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+  </p>
+
+<% end %>
+
+
+<%= render  partial: 'application/common_left_close' %>
+
+
+<script type="text/javascript">
+$( document ).ready(function() {
+      focusCurrentTab("hostelRoomsAID","hostelRoomsLiID");
+
+      $("#hostel_roomsID").validate({
+
+    rules: {
+      "hostel_rooms[mg_hostel_details_id]": {required: true},
+      "hostel_rooms[mg_hostel_floor_id]": {required: true},
+      "hostel_rooms[name]": {required: true},
+      "hostel_rooms[mg_hostel_room_type_id]": {required: true}
+      }
+  });
+
+
+   
+    $("#hostel_rooms_is_occupiable").click(function(){
+      reasonField();
+    });
+    function reasonField(){
+      if(!$("#hostel_rooms_is_occupiable").is(':checked')){
+        $(".reason").show();
+      }else{
+        $(".reason").hide();
+      }
+    }
+
+    if(!$("#hostel_rooms_is_occupiable").is(':checked')){
+        $(".reason").show();
+      }else{
+        $(".reason").hide();
+      }
+
+  });
+
+  
+
+
+
+function roomType(){
+        
+        var roomDataId = $( ".room-type" ).val();
+       if(roomDataId > 0) {
+  
+           var urlLink = "/hostel_management/room_type_capacity/"+roomDataId;
+          $.ajax({
+             url: urlLink,
+             cache: false,
+             success: function(data){
+                    $("#capacity_id_data").empty().append(data);
+                }
+         });
+  }
+  }
+
+</script>

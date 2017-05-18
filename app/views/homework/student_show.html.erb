@@ -1,0 +1,76 @@
+<%#= render  partial: 'homework/homework_left' %>
+<% navigation_add 'Assignments', :controller => 'homework', :action => 'submission' %>
+<%= render  partial: 'dashboards/employee_left' %>
+<%#= render  partial: 'homework/homework_left' %>
+<%if flash[:notice].present?%>
+ <div class="alert alert-info mg-success-msg">
+        <%=flash[:notice]%>
+      </div>
+<%end%>
+<h4 class="mg-h4"><%= t('assignment') %></h4>
+
+
+<div class="mg-custom-labels">
+
+<%= form_for :assignment, url:homework_review_update_path(@assignment.id), :html => {:id => 'homeworkReviewUpdateID' } do |f| %>
+
+<p>
+<label class="mg-label" style="width:140px"><%= t('status') %><span class="required-field">&nbsp;*</span></label>
+<br/>
+<%= select_tag :status, options_for_select([[t("Select"), ""], [t("pending"), "pending"], [t("submitted"), "submitted"], [t("completed"), "completed"]],:selected => @assignment.status) %>
+</p>
+<!-- ===========if Student has uploaded assignment starts========================== -->
+<p>
+<%@student_documents=MgAssignmentDocumentation.where(:mg_assignment_id=>@assignment.mg_assignment_id,:mg_student_id=>@assignment.mg_student_id,:user_type=>"student",:is_deleted=>0,:mg_school_id=>session[:current_user_school_id])
+
+        if @student_documents.length>0
+%>
+
+<label class="mg-label" style="width:140px"><%= t('assignment') %><span class="required-field">&nbsp;*</span></label><br/>
+
+<%html_icon='<span title="Download" class="mg-icon-btn"><i class="fa fa-download"></i></span>'
+
+@student_documents.each do |doc|%>
+<p>
+    <%= link_to_if doc.file.url, html_icon.html_safe, doc.file.url , :target=>"_blank"%>
+    <%=doc.file_file_name%>
+    </p>
+<%end
+end%>
+</p>
+<!-- ===========if Student has uploaded assignment ends============================ -->
+<p>
+    <label class="mg-label" style="width:140px"><%= t('remarks') %><span class="required-field">&nbsp;</span></label>
+    <br/>
+   <%= f.text_area :remarks,:class=>"mg-text-field",:row=>20 %>
+</p>
+<P>
+    <!-- <%#= f.submit t('save') ,:class=>"mg-small-form-btn"%> -->
+    <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("save")%></a>
+    <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+</p>
+
+
+<%= link_to "Notify Guardian".html_safe, {:controller => "homework", :action => "notify_guardian",:id =>@assignment.id} , :method=>'post' ,:title=>"Notify Guardian" ,:class=>"mg-icon-btn mg-button-width-set mg-rm-a-link "%>
+<% end %>
+</div>
+<%= render  partial: 'application/common_left_close' %>
+
+<script>
+$(document).ready(function(){
+            focusCurrentTab("viewCreateHomework","viewCreateHomeworkLiID");
+            
+    
+})
+$("#homeworkReviewUpdateID").validate({
+	rules:{
+		"status": {required: true}
+	}
+})
+</script>
+<style>
+.mg-button-width-set {
+    padding: 1px;
+    width: 14.8em !important;
+}
+</style>

@@ -1,0 +1,75 @@
+<%=render :partial=>'entrance_exam_details/entrance_exam_left' %>
+<% navigation_add t('about_student'),{:controller=>'mg_student_admissions',:action=>'index'}  %>
+<h4 class="mg-h4"><%= t('admission') %></h4>
+<%= button_to t('add_student'), {:controller => "mg_student_admissions", :action => "new" } ,:class=>"mg-custom-form-btn"%>
+<div class="mg_pagination">
+<%if @student_admission.length>0%>
+<table  class="batch-tbl mg-tbl-margin">   <!-- border="2" --> 
+  <tr class="subject-table-header">
+    <!-- <th>Subject Id</th> -->
+    <th><%= t('name') %></th>
+    <th class="mg-rm-text-trans"><%= t('dateofbirth') %></th>
+    <th><%= t('semester_name') %></th>
+    <th><%= t('actions') %></th>
+  </tr>
+  <% @student_admission.each do |admission| %>
+    <tr>
+
+      <td class="mg-capitalize-text"><%= admission.first_name%>&nbsp;<%= admission.middle_name %>&nbsp;<%= admission.last_name %></td>
+      
+      <% @dateFormat = MgSchool.find_by_id(session[:current_user_school_id]).date_format %>
+      <%if admission.date_of_birth.present?%>
+        <td class="mg-align-center"><%= admission.date_of_birth.strftime(@dateFormat) %></td>
+      <%else%>
+        <td></td>
+      <%end%>
+      
+      <%if admission.mg_course_id.present?%>
+      <% course = MgCourse.find(admission.mg_course_id)
+        if(course.present?)
+         course_name = course.course_name
+        end
+       %> 
+      <% if !course.nil? %>
+        <td>
+          <%=course_name%>
+        </td>
+      <%else%>
+       <td></td>
+      <%end%>
+      <%else%>
+        <td></td>
+      <%end%>
+
+
+      <td>
+        <span style="margin-right: -8px;">
+        	<%= link_to "<i class=\"fa fa-eye\"></i>".html_safe, mg_student_admission_path(admission.id),:title=>"Show",:class=>"mg-icon-btn" %>
+        </span>
+        <span style="margin-right: -8px;">      
+          <%= link_to "<i class=\"fa fa-pencil-square-o\"></i>".html_safe, edit_mg_student_admission_path(admission),:title=>"Edit",:class=>"edit-student-admission mg-icon-btn" %>
+        </span>
+        <span>
+          <%= link_to "<i class=\"fa fa-trash\"></i>".html_safe,mg_student_admission_path(admission),
+                method: :delete,data: { confirm: t('are_you_suer_to_delete') },:title=>"Delete",:class=>"mg-icon-btn" %>
+        </span>
+      </td>
+    </tr>
+  <% end %>
+</table>
+<br/>
+ <div class="pagination-align" style="position: relative; bottom: 10px;">
+    <%= will_paginate @student_admission, :container => false %>
+  </div>
+<%else%>
+<h5 ><%=t('no_student_detail_is_created')%></h5>
+<%end%>
+</div>
+<div id="editStudentAdmissionDialogID"></div>
+
+<%= render  partial: 'application/common_left_close' %>
+<script>
+  $(document).ready(function(){   
+    focusCurrentTab("manageStudentLID","manageStudentID");
+  });
+</script>

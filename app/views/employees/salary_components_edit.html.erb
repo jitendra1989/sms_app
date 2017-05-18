@@ -1,0 +1,52 @@
+<%= form_for :salary_components, url: salary_components_update_path, method: :patch, :html => {
+                            :id => 'employeeEditSalaryComponentFormID' } do |f| %>
+ 
+  <p>
+    <%= f.label :name ,:class=>"mg-label"%> <span class="required-field">&nbsp;*</span>     <br>
+    <%= f.text_field :name %>
+  </p>
+  <p>
+    <%= f.label :is_deduction ,:class=>"mg-label"%><span class="required-field">&nbsp;*</span><br>
+    <%= f.check_box :is_deduction %>
+    
+  </p>
+  <%
+    account=Array.new
+    account.push("Central","central")
+    accounts=MgAccount.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:mg_account_name,:id)
+    accounts.insert(0,account)
+  %>
+  <p>
+    <%= f.label :select_account ,:class=>"mg-label"%> <span class="required-field">&nbsp;*</span><br>
+    <%if @salary_components.mg_account_id.present?%>
+      <%=f.select :mg_account_id,options_for_select(accounts,@salary_components.mg_account_id),{:include_blank => t('Select')},:class=> "mg-select-btn" %>
+    <%else @salary_components.is_from_central.present?%>
+      <%=f.select :mg_account_id,options_for_select(accounts,"central"),{:include_blank => t('Select')},:class=> "mg-select-btn" %>
+    <%end%>
+  </p>
+
+    <%= f.hidden_field :is_deleted, :value => 0 %>
+    <%= f.hidden_field :mg_school_id, :value => session[:current_user_school_id]%>
+    <%= f.hidden_field :created_by, :value => session[:user_id]%>
+    <%= f.hidden_field :updated_by, :value => session[:user_id]%>
+
+  <p>
+    <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("save")%></a>
+      <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+  </p>
+  
+<% end %>
+
+<script>
+  $(document).ready(function(){
+    
+    $("#employeeEditSalaryComponentFormID").validate({
+                      rules: {
+                "salary_components[name]": {required: true},
+				"salary_components[mg_account_id]": {required: true}
+                }
+    });
+  });
+
+
+</script>

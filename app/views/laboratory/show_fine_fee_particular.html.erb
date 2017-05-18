@@ -1,0 +1,55 @@
+<!-- Sec --> 
+
+<table border="1" class="mg-showdata-bg mg-tbl-layout mg-btn-bottom-margin" cellspacing="1" cellpadding="1">
+    <tr>
+     <td class="mg-td-width-half" valign="top">
+  		<label class="mg-label"> Fine Name</label>
+  	 </td>
+  	 <td class="mg-td-width-half" valign="top">
+  		<%= @fine_particular.fine_name %>
+  	 </td>
+ 	</tr>
+
+	<tr>
+		<td class="mg-td-width-half" valign="top">
+  			<label class="mg-label">Description </label>
+  		</td>
+  		<td class="mg-td-width-half" valign="top">
+  			<%= @fine_particular.description %>
+  		</td>
+	</tr>
+ 
+	<tr>
+		<td class="mg-td-width-half" valign="top">
+  			<label class="mg-label"><%=t("subject_name")%></label>
+  		</td>
+      <%subject=MgLaboratorySubject.find_by(:id=>@fine_particular.mg_laboratory_subject_id)%>
+  		<td class="mg-td-width-half" valign="top">
+  			<%= subject.name %>
+  		</td>
+	</tr>
+
+  <tr>
+    <td class="mg-td-width-half" valign="top">
+        <label class="mg-label"><%=t("room_no")%></label>
+      </td>
+      <%room=MgLab.find_by(:id=>@fine_particular.mg_laboratory_room_id)%>
+      <td class="mg-td-width-half" valign="top">
+        <%= room.room_no %>
+      </td>
+  </tr>
+
+
+ 	<tr>
+ 		<td class="mg-td-width-half" valign="top">
+  			<label class="mg-label">Amount </label>
+  		</td>
+  		<td class="mg-td-width-half" valign="top">
+  			<%= @fine_particular.amount %>
+  		</td>
+	</tr>
+</table>
+
+<a class="mg-small-form-btn cancel-form-dialog"><%=t("cancel")%></a>
+
+

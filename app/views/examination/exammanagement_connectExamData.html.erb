@@ -1,0 +1,169 @@
+<!-- breadcrumbs Work -->
+<% navigation_add 'Examinations', examinations_path %>
+<% navigation_add 'Exam Management', examination_exammanagement_index_path %>
+
+<%# navigation_add 'Connect Exam', exammanagement_connectExamData_path(@id) %>
+<!-- breadcrumbs Work -->
+
+
+<%= render  partial: 'examination_table_left'%>
+<h4 class="mg-h4">Connect Exam</h4>
+<div class="mg-custom-labels">
+<%#= form_for :connect_Exam, :url=>{:controller=>'examination',:action=>
+	'connect_Exam_create'},:html => {
+                            :id => 'connectExamNewFormId', :class => 'elm_class',
+                            :style => 'elm_style' } do |f| %>
+
+<h5><%="Sum of all Weightages should be equivalent to 100%."%></h5>
+
+<%=hidden_field_tag :mg_batch_id,@id%>
+<%=check_box_tag :full_course_all ,:class=>"mg-text-field",:value=>0%>
+ <%="All"%><br/>
+ <%i=1%> 
+ <table>
+ <tr>
+
+<td id="checkedTdIDS">
+<%@IDS.each do |data|%>
+
+
+<%= check_box_tag "weekdays[#{data}]", 1, @ID.include?(data) ? true : false ,:class=>"connect-check-box-cls" %>
+
+<%#<input id="full_course" name="full_course[#{data}]" type="checkbox" class="connect-check-box-cls" value="data"%>
+<%@datas=MgExamGroup.find(data)%>
+<%@weightage=MgGroupedExam.where(:mg_exam_group_id=>data,:is_deleted=>0,:mg_school_id=>session[:current_user_school_id])%>
+  <%=@datas.name%>
+  <%=@weightage[0].weightage%>
+        <%weightages_=Array.new%>
+  <%=text_field_tag 'weightages' ,@weightage ? @weightage[0].weightage : nil,:class=>"connect-input-cls"%>
+  <%#:disabled=>true%>
+ <br/><br/><br/>
+
+<%#end%>
+<!--<button id="save" class="mg-small-form-btn">Submit</button>-->
+
+
+<%end%>
+<p>
+<label class="mg-label"><%="Weightage"%></label>
+<%=text_field_tag 'allWeightage' ,nil,:class=>"connects-inputs-cls" %><br/>
+</p>
+<button id="submit" class="btn btn-delete">Submit</button>
+</td>
+</tr>
+</table>
+
+
+
+</div>
+<%= render  partial: 'examination_table_close'%>
+
+
+
+
+
+<script>
+
+// $(function).on('change',".connect-input-cls",function(){
+// 	alert("hi");
+    
+
+// });
+
+$(".connect-input-cls").change(function(e){
+	
+     onchange("hello");	
+
+});
+
+function onchange(arg)
+{
+	
+	var total=0;
+ $(".connect-input-cls").each(function()
+ {
+ 	
+
+      var maximumMarks=$(this).val();
+      Marks=parseInt(maximumMarks);
+       total += Marks;
+     
+     //alert(total);
+     
+      if(total!=""){
+      	
+         //$("#allWeightage").(function() {
+            //var currentElement = $(this);
+            $(".connects-inputs-cls").val(total);
+
+          }
+
+        });
+};
+
+
+
+
+
+
+ $(document).on("click","#submit",function(e){
+  alert("hi");
+        e.preventDefault();
+        var value="";
+        
+         var batchId=$("#mg_batch_id").val();
+          var weightage=$("#allWeightage").val();
+           $("#checkedTdIDS > input:text").each(function(index) {
+             console.log("$this"); 
+             console.log($(this)); 
+             value += $(this).val()+",";
+            });
+            alert(value);
+            
+
+                
+         // weightage=$("#weightages").val();
+        //console.log(value);
+         var checkedvalue="";
+         var uncheckedvalue="";
+        $("#checkedTdIDS > input").each(function(index) {
+                 var currentInputID = $(this).attr("id");
+                // alert(currentInputID);
+                 var checked=$("input#"+currentInputID).is(':checked');
+                 //alert(checked)
+                 if(checked){
+                    checkedvalue+=currentInputID.split("_")[1]+","; 
+                    //break
+
+                 }
+                 else{
+                    uncheckedvalue+=currentInputID.split("_")[1]+",";
+                    //break
+                 }
+                //alert(checkedvalue);
+                 //alert(uncheckedvalue);
+          });
+        
+                
+        jQuery.ajax({
+            url: "/examination/connect_Exam_create/",
+            type: "GET",
+            data: {"mg_batch_id":batchId,"Value":value,
+            "checked":checkedvalue,"allWeightage":weightage,
+            "unchecked":uncheckedvalue},
+            dataType: "html",
+            success: function(data) {
+                alert(data)
+            },
+            error:function(){
+                alert("Something went wrong!");
+            }
+        });
+    });
+
+  $(document).ready(function() {
+        focusCurrentTab("createNewStudentAID","createNewStudentLiID");
+        focusExaminationHeaderBox();
+  });
+
+</script>

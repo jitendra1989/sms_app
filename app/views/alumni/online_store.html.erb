@@ -1,0 +1,247 @@
+<% navigation_add 'Online Store', :controller=>'alumni', :action=>'online_store' %>
+<%=render partial: 'alumni_left'%>
+    <label class="mg-label ">Select Category</label>
+   <%=select_tag :mg_category_id,options_for_select(@category),:prompt=>"All", :onchange=>"online_store_mg_category_get_list(this.value)" ,:class=>"mg-select-btn"%>
+   &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+    <label class="mg-label  ">Select Item</label>
+   <%=select_tag :mg_inventory_item_id,options_for_select([]),:prompt=>"All",:id=>"onleneStoreInventoryItemDDID",  :onchange=>"filter_online_store_mg_category_get_list('mg_inventory_item_id')" ,:class=>"mg-select-btn"%>
+   
+    <div class="mg-back-btn-align-report">
+           <a class="show-cart-history-in-online-store-cls" href="/alumni/online_store_history"><i class="fa fa-history"></i></a>&nbsp;<a class="show-cart-detail-in-online-store-cls"><i class="fa fa-shopping-cart fa-1x"> CART <span class="badge" id="spanCartCountSpanID"><%= @cart_detail.length%></span></i></a>
+    </div>
+   <h4 class="mg-h4">Item List</h4>
+
+   <%if @items.present?%>
+    <% @items.each do |i| %>
+      <%mg_document_management=i.mg_document_managements.find_by(:is_deleted=>0, :mg_school_id=>session[:current_user_school_id])%>
+        <div class="img" id="<%=i.mg_category_id%>-<%=i.id%>-MgCategoryID">
+          <a class="online-shop-inventory-item-show-details-cls" id="<%=i.id%>-onlineShopInventoryItemShowDetailsAID"> 
+            <img src="<%=mg_document_management.present? ? mg_document_management.file.url : image_url('stores_icon.png')%>" alt="Fjords" width="300" height="200">
+          </a> 
+          <div class="desc">
+            <%=i.name%>
+            <br>
+          <i class="fa fa-inr"></i> <%=i.try(:online_price).to_f.round(2)%>
+          </div>
+        </div>  
+    <%end%>
+    <%else%>
+      <p>No Items</p>
+    <%end%>
+<%#=image_tag    ,:class=>"title-part"%>
+
+    <div id="hideAndShowWhetItemThereOrNotDIVID" style="display:none;"> <p>No Items</p></div>
+
+    <div id="onlineShopInventoryItemShowDetailsDIVID"></div>
+
+<%= render  partial: 'application/common_left_close' %>
+<script>
+$(document).ready(function(){
+  focusCurrentTab("alumniOnlineStoreAID","alumniOnlineStoreLId");
+});
+
+function online_store_mg_category_get_list(mg_category_id){
+   
+  if(mg_category_id){
+    var urlLink = "/alumni/online_store_item_list/"+mg_category_id;
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(data){
+              $("#onleneStoreInventoryItemDDID").html(data.data);
+            }
+        });
+       
+  }else{
+    $("#onleneStoreInventoryItemDDID").html("<option value=''>All</option>");
+  }
+  filter_online_store_mg_category_get_list('mg_category_id');
+}
+
+function filter_online_store_mg_category_get_list(selecter){
+  var mg_category_id=$("#mg_category_id").val();
+  var mg_inventory_item_id=selecter=="mg_category_id" ? "" : $("#onleneStoreInventoryItemDDID").val();
+  var arr=[];
+  $(".img").each(function(){
+    $(this).hide();
+    if($(this).attr("id")==(mg_category_id ? mg_category_id : $(this).attr("id").split("-")[0])+'-'+(mg_inventory_item_id ? mg_inventory_item_id : $(this).attr("id").split("-")[1])+"-MgCategoryID"){
+       $(this).show();
+    }
+    arr.push(($(this).css('display') == 'none'))
+  });
+  if(jQuery.inArray(false, arr) != -1) {
+      $("#hideAndShowWhetItemThereOrNotDIVID").hide();
+  } else {
+      $("#hideAndShowWhetItemThereOrNotDIVID").show();
+  }
+
+}
+
+
+$(document).on("click", ".online-shop-inventory-item-show-details-cls",function(){
+var id=$(this).attr("id");
+ var urlLink = "/alumni/online_store_item_show/"+id.split("-")[0];
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(html){
+              // $("#onleneStoreInventoryItemDDID").html(data.data);
+               $('#onlineShopInventoryItemShowDetailsDIVID').dialog({
+                    modal: true,
+                    minHeight: 500,
+                    title: "Item Details",
+                    minWidth: 650,
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+
+
+            }
+        });
+
+
+});
+$(document).on("click", ".show-cart-detail-in-online-store-cls",function(){
+  console.log("hello");
+   var urlLink = "/alumni/online_store_cart_show/";
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(html){
+              // $("#onleneStoreInventoryItemDDID").html(data.data);
+               $('#onlineShopInventoryItemShowDetailsDIVID').dialog({
+                    modal: true,
+                    minHeight: 500,
+                    title: "Item Details",
+                    minWidth: 650,
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+
+
+            }
+        });
+});
+
+$(document).on("click", ".delete-item-from-cart-btn-cls",function(){
+  var id=$(this).attr("id");
+  var that=$(this);
+  var retVal = confirm("Are you sure to delete?");
+  if(retVal){
+    var urlLink = "/alumni/online_store_item_delete_from_cart/"+id.split("-")[0];
+          $.ajax({
+              url: urlLink ,
+              cache: false,
+              data:{
+                selecter: "delete_one"
+              },
+              success: function(data){
+                console.log(data.result);
+                if(data.result){
+                  $(that).parent('td').parent('.item-online-store-list-tr-cls').remove();
+                  var cart_count=$("#spanCartCountSpanID").html();
+                  console.log("cart_count---> "+parseInt(cart_count));
+
+                  if(parseInt(cart_count)>0){
+                    $("#spanCartCountSpanID").html(parseInt(cart_count)-1);
+                  }
+                }else{
+                  alert("Error to delete, Please try later.")
+                }
+
+
+              }
+          });
+
+  }
+});
+
+function cartBuyItemList(){
+  console.log("hello");
+  var arr=[];
+  $(".item-online-store-list-tr-cls").each(function(){
+    arr.push(($(this).attr("id")).split("-")[0]);
+  });
+  console.log(arr);
+  if(arr.length>0){
+    var urlLink = "/alumni/online_store_item_buy_from_cart/";
+        $.ajax({
+            url: urlLink ,
+            data:{
+              arr: arr,
+              selecter: "delete_all"
+            },
+            cache: false,
+            success: function(data){
+              console.log(data.result);
+              window.location.href="/alumni/online_store"
+            }
+        });
+  }
+
+  
+}
+
+
+
+
+</script>
+
+
+
+
+<style>
+div.img {
+    margin: 5px;
+    border: 1px solid #ccc;
+    float: left;
+    width: 174px;
+}
+
+div.img:hover {
+    border: 1px solid #777;
+}
+
+div.img img {
+    width: 100%;
+    height: 200px;
+    cursor: pointer;
+}
+
+div.desc {
+    padding: 15px;
+    text-align: center;
+}
+
+.show-cart-history-in-online-store-cls {
+    background: linear-gradient(to bottom, #ececec, #bcbcbc) repeat scroll 0 0 rgba(0, 0, 0, 0) !important;
+    border-radius: 5px;
+    color: #000;
+    padding: 5px;
+    font-size: 11px;
+    border: 1px solid #B0AEAE;
+}
+
+.show-cart-history-in-online-store-cls:hover {
+   color: #000;
+}
+
+.show-cart-detail-in-online-store-cls {
+    background: linear-gradient(to bottom, #ececec, #bcbcbc) repeat scroll 0 0 rgba(0, 0, 0, 0) !important;
+    border-radius: 5px;
+    color: #000;
+    padding: 5px;
+    font-size: 11px;
+    cursor: pointer;
+    border: 1px solid #B0AEAE;
+}
+
+.show-cart-detail-in-online-store-cls:hover {
+  color: #000000;
+}
+
+</style>

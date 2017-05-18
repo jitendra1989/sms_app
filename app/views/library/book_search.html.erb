@@ -1,0 +1,77 @@
+<%= render  partial: 'library/library_book_search' %>
+ 
+
+ <%= form_for :library, url: library_inventory_create_path, :html => {
+                            :id => 'libraryResourceInventoryCreateID' } do |f| %>
+
+<p>
+    <label class="mg-label" style="width:140px"><%= t('select_resource_category') %><span class="required-field">&nbsp;*</span></label>
+    <br/>
+    <%= f.collection_select(:mg_resource_category_id,MgResourceCategory.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]), :id, :name,{:include_blank => t("select")},:id => "libraryResourceCategoryId",:class => "libraries-resource-inventory-new-category-class")%>
+</p>
+
+<p>
+    <label class="mg-label" style="width:140px"><%= t('select_resource_type') %><span class="required-field">&nbsp;*</span></label>
+    <br/>
+    <%= f.collection_select(:mg_resource_type_id,MgResourceType.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]), :id, :name,{:include_blank => t("select")},:id => "libraryResourceTypeId" ,:class => "libraries-resource-inventory-new-type-class")%>
+</p>
+
+<%end%>
+
+
+<div id="type_wise_data_Id"></div>
+<%= render  partial: 'application/common_left_close' %>
+
+<script>
+$(document).on('change','.libraries-resource-inventory-new-category-class',function(){
+      var labID = $(this).val();
+      var apdStr = '<option value="">Choose Category</option>';
+      $(".libraries-resource-inventory-new-type-class").empty().append(apdStr);
+      if(labID > 0) {
+           var urlLink = "/library/resource_type_list/"+labID;
+           $.ajax({ 
+               url: urlLink,
+               cache: false,
+               success: function(data){
+                  if(data.length > 0){
+                      var apdStr = '<option value="select">Select</option>';
+                     for(key in data){
+                        apdStr += '<option value="'+data[key].id+'">'+data[key].name+'</option>'
+                      }
+                      $(".libraries-resource-inventory-new-type-class").empty().append(apdStr);
+                  }
+               }
+           });
+    }else{
+      var apdStr = '<option value="">Choose Category</option>';
+      $(".libraries-resource-inventory-new-type-class").empty().append(apdStr);
+    }
+  });
+
+
+$(document).on('change','.libraries-resource-inventory-new-type-class',function(){
+     var temp=$(".libraries-resource-inventory-new-type-class").val();
+  if(temp>0)
+  {
+        var urlLink = "/library/type_wise_search/";
+        $.ajax({
+            url: urlLink ,
+            data:{"id":temp},
+            cache: false,
+            success: function(html)
+            {
+                $("#type_wise_data_Id").empty();
+                $("#type_wise_data_Id").append(html);
+            }
+        });
+  }
+  else{
+        $("#type_wise_data_Id").empty();
+  }
+  });
+
+
+
+
+
+</script>

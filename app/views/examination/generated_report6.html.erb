@@ -1,0 +1,134 @@
+<% navigation_add 'Examinations', examinations_path %>
+<% navigation_add 'Exam Report', examination_report_center_path %>
+<% navigation_add 'View Report', examination_section_subjects_path %>
+<% navigation_add 'Comparision Report', examination_generated_report6_path %>
+
+<%= render  partial: 'examination_table_left' %>
+
+<h4 class="mg-h4">Exam Result</h4>
+
+<%= link_to "Generate PDF", {:action=>"generate_pdf6",:id=>"#{@batch_id}"} ,:class=>"mg-custom-form-btn"%><br><br>
+<%@exam_groups = MgExamGroup.where(:mg_batch_id=>@batch_id,:is_deleted=>0,:mg_school_id=>session[:current_user_school_id])%>
+
+<% @exam_groups.each do |exam_group| %>
+<div class="mg-scroll-employee-bar">
+<label class="mg-label"><%= exam_group.name %></label>
+<table class="batch-tbl mg-tbl-layout">
+<tr>
+	<th>Subjects
+	</th>
+	<th>Highest
+	</th>
+	<th>lowest
+	</th>
+	<th>Average
+	</th>
+</tr>
+<%total_max_marks=0%>
+<%total_min_marks=0%>
+<%total_avreage_marks=0%>
+
+<%@subjects.each do |sub|%>
+<tr>
+<td><%=sub[0]%></td>
+ <%@subject=MgBatchSubject.find_by(:mg_subject_id=>sub[1],:mg_batch_id=>params[:mg_batch_id],:is_deleted=>0,:mg_school_id=>session[:current_user_school_id])%>
+  <%@subjectsId=MgSubject.find_by(:id=>@subject.mg_subject_id,:is_deleted=>0,:mg_school_id=>session[:current_user_school_id])%>
+
+<%@batch = @subject.mg_batch%>
+
+     <%@students = @batch.mg_students%>
+     <%#=@students.inspect%>
+<% exam = MgExam.find_by(:mg_subject_id=>@subjectsId.id,:mg_exam_group_id=>exam_group.id,:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]) %>
+
+ <% exam_score_max=MgExamScore.where(:mg_exam_id=>exam.id,:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:marks).max unless exam.nil?%>
+<% exam_score_min=MgExamScore.where(:mg_exam_id=>exam.id,:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:marks).min unless exam.nil?%>
+ 
+            
+         
+         <td><%=exam_score_max.present? ? exam_score_max : '-'%></td>
+
+<td><%=exam_score_min.present? ? exam_score_min : '-'%></td>
+<td> <%=exam_group.subject_wise_batch_average_marks(@subjectsId.id).present? ? exam_group.subject_wise_batch_average_marks(@subjectsId.id) : '-' %></td>
+
+</tr>
+          
+<%end%>
+<%#logger.infosdkfs%>
+<%
+
+
+
+#@studentIds=@Id[0]
+
+      @demodatas=""
+      @exam_group = MgExamGroup.find( exam_group.id)
+      # @batch = @exam_group.mg_batch
+     # @students=@batch.mg_students.by_first_name
+     @count=0
+     @total_marks=Array.new
+     @students.each do |stu|
+      @student = MgStudent.find_by(:id=>stu.id)
+      
+     @total_marks_obtained=0
+      
+      @batch = @student.mg_batch
+      @general_subjects = MgBatchSubject.where(@student.mg_batch.id)
+      
+      @exams = []
+      @general_subjects.each do |sub|
+         exam = MgExam.find_by(:mg_exam_group_id=>@exam_group.id,:mg_subject_id=>sub.id,:is_deleted=>0,:mg_school_id=>session[:current_user_school_id])
+        @exams.push exam unless exam.nil?
+
+     end
+
+      exam_score = [] 
+     @exams.each do |exam| 
+
+
+exam_score.push exam.mg_exam_scores.find_by(:mg_student_id=>@student.id,:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]) unless exam.mg_exam_scores.find_by(:mg_student_id=>@student.id).nil?
+
+ end
+
+ exam_score.each do |es|
+es.mg_exam.mg_subject.subject_name
+
+ marks_obtained=es.marks.to_f 
+ #maximum_marks=es.mg_exam.maximum_marks.to_f 
+ puts "ajfhkshdkhfkskhdfkks"
+ puts marks_obtained.inspect
+ if es.marks.present?
+  @total_marks_obtained +=es.marks.to_f
+  end
+
+end
+ @count +=1
+@total_marks.push(@total_marks_obtained)
+end
+@max_element=@total_marks.max{ |a,b| a.to_f <=> b.to_f }
+@min_element=@total_marks.min{ |a,b| a.to_f <=> b.to_f }
+%>
+
+
+<tr>
+<th>Total</th>
+<th><%=@max_element%></th>
+<th><%=@min_element%></th>
+<th><%=((@total_marks.inject{|sum,x| sum + x })/@count).round(2)%></th>
+
+</tr>
+
+</table>
+</div>
+ <% end %>
+
+<%= render  partial: 'examination_table_close' %>
+
+
+
+<script type="text/javascript">
+  $(document).ready(function() {
+       focusCurrentTab("viewResultAID","viewResultLiID");
+        focusExaminationHeaderBox();
+  });
+
+</script>

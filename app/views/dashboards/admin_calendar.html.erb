@@ -1,0 +1,168 @@
+<h4 class="mg-h4">Admin Calendar</h4>
+<label class="mg-label">Select Batches</label>
+<%=select_tag :batch,options_for_select(@batches),:prompt=>"All batches",:class=>"mg-select-btn"%>
+<div id='calendarID' class="mg-tbl-margin"></div>
+<div id="newEventCalenderDIVID"></div>
+
+
+<script type="text/javascript">
+
+var str='';
+
+$(document).ready(function(){
+     var urlLink = "/events/allevents";
+          $.ajax({
+            url: urlLink ,
+            cache: false,
+            data:
+            {
+                event: "event"
+                
+            },
+            success: function(data)
+            {
+                console.log("step 1----------------------")
+              console.log(data);
+
+            //   str +='[';
+            //     for(key in data.events) {
+            //             var start=data.events[key].start;
+            //             var end=data.events[key].end;
+            //             var event_date=data.events[key].event_date;
+            //             var message=data.events[key].message;
+
+            //     str +='{ title: "'+message+'", start: "'+event_date+'", end: "'+event_date+'"},';
+            // }
+            //     str +='{ title: "morning", start: "2015-01-01", end: "2015-01-01"}]';
+
+            //    console.log("all dat from ");
+            //    console.log(str);
+            }
+
+           
+        });
+
+
+
+});
+
+  // var str1 = JSON.parse(str);
+
+
+$(document).on("change","#batch",function() {
+            console.log("after convertion to json");
+
+       // var obj= JSON.parse(str);
+       //      console.log("after convertion to json");
+       //      console.log(obj);
+
+ // var obj = JSON.parse(str);
+
+
+
+    //     {
+    //         title  : 'event2',
+    //         start  : '2015-01-05',
+    //         end    : '2015-01-07'
+    //     },
+    //     {
+    //         title  : 'event3',
+    //         start  : '2015-01-09T12:30:00',
+    //         allDay : false // will make the time show
+    //     }
+    // ]";
+
+
+      console.log("Step -- 1") ; 
+      console.log(str) ; 
+      console.log("Step -- 1")  ;
+		
+    $('#calendarID').fullCalendar({
+    	header: {
+    				left:   'today prev,next',
+    				center: 'title',
+    				right:  'month,agendaWeek,agendaDay',
+    			},
+        weekends:false,
+    	defaultView: 'month',
+        hiddenDays: [ 2, 4 ],        
+        businessHours:true,
+        minTime: "8:00:00",
+        maxTime: '18:00:00',
+        // startParam: "10:00:00", 
+        // slotDuration:'00:20:00',
+        //slotMinutes: 20,
+        allDaySlot: false,
+         lazyFetching: true,
+
+ eventSources: [
+
+        // your event source
+        {
+        url: '/events/allevents',
+        error:function(){
+            //    alert('Error');
+        },
+        // color: 'yellow',
+        textColor: 'black'
+        }
+
+    ],
+
+
+	
+		
+     dayClick: function(date, allDay, jsEvent, view) {
+        console.log($(this));
+        //alert('Clicked on: ' + date.format());
+        var urlLink = "/events/new/";
+        var clickDate=date.format();
+        //alert("clickDate :"+clickDate);
+        $.ajax({
+        url: urlLink,
+        cache: false,
+        data:{
+
+            currentDate: clickDate, abc:"abc"
+        },
+        success: function(html) {
+             $('#newEventCalenderDIVID').dialog({
+                    modal: true,
+                    minHeight: 'auto',
+                    title: "Create New Event",
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+        }
+
+    });
+
+
+
+
+        // change the day's background color just for fun
+
+        $(this).css('background-color', 'red');
+
+    },
+    eventClick: function(event, element) {
+
+        //alert('Event: ' + calEvent.title);
+       // alert('Coordinates: ' + jsEvent.pageX + ',' + jsEvent.pageY);
+        //alert('View: ' + view.name);
+
+        event.title = "changed";
+    }
+          
+    });
+});
+
+
+ 
+</script>
+
+<!-- 
+  '<div class="fc-event-inner fc-event-skin"><div class="fc-event-time">lkjkljl<div style="position:absolute; top:0px; right:-1px; width:20px; height:20px"><svg xml:space="preserve" enable-background="new 0 0 20 20" viewBox="0 0 20 20" height="20px" width="20px" y="0px" x="0px" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg" id="Layer_1" version="1.1"><path d="M0,0.004h17c0,0,3-0.303,3,2.728c0,3.011,0,17.272,0,17.272L0,0.004z" fill="#f78fa4" clip-rule="evenodd" fill-rule="evenodd"/></svg></div></div><span class="fc-event-title"><strong>Time : </strong>7:30<br><strong>Details</strong> : kjhjhk...</span></div>' -->

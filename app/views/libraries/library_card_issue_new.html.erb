@@ -1,0 +1,179 @@
+
+
+
+<%= render  partial: 'library_left' %>
+
+<% navigation_add 'Create Library Card', library_card_issue_new_path %>
+
+<h4 class="mg-h4"><%= t('library_card_issue')%></h4>
+
+  <%if flash[:error].present?%>
+  <div class="alert alert-info mg-success-msg">
+
+        <%=flash[:error]%>
+        </div>
+   <%end%>
+
+
+
+<%=form_for :card_issue, :url=>{:controller=>'libraries',:action=>'library_card_issue_create'},:html=>{:id=>"library_card_issue_create_data"} do |f|%>
+
+      
+
+
+
+        <%= f.hidden_field :is_deleted ,:value=>0%>
+        <%= f.hidden_field :mg_school_id ,:value=>@school_id%>
+       
+        <%=render :partial => 'course_section' %>
+<table class="mg-tbl-margin mg-show-tbl-width">
+    
+    <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="validFrom"><%= t ('valid_from') %><span class="required-field">&nbsp;*</span></label><br/>
+        <%= f.text_field  :valid_from,:class=>"mg-text-field"%>
+      </td>
+    </tr>
+    <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="valid_to"><%= t ('valid_to') %><span class="required-field">&nbsp;*</span></label><br/>
+        <%= f.text_field :valid_to ,:class=>"mg-text-field"%>
+      </td>
+      </tr>
+       
+
+</table>
+<br/>
+    <br/>
+     <a onclick="$(this).closest('form').submit()" class="submit_pdf_for_library_card mg-small-form-btn"><%=t("print")%></a>
+ <%#= f.submit 'print',class: "submit_pdf_for_library_card mg-small-form-btn mg-custom-labels"%>
+
+      <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+<%end%>
+
+<%= render  partial: 'schools/school_left_close' %>
+
+<script>
+$(document).ready(function () {
+        focusCurrentTab("librarycardissueAID","librarycardissueLiID");
+        focusLibrary();
+        
+
+        $(function () {
+    $.validator.addMethod('dateFormat',
+    function (value, element) {
+      dateFormatStr =  getJsDateFormat();
+        if (this.optional(element)) {
+            return true;
+        }
+        var ok = true;
+        try {
+            $.datepicker.parseDate(dateFormatStr, value);
+        }
+        catch (err) {
+            ok = false;
+        }
+        return ok;
+    },
+
+
+      "Please enter a date in the format "+ getDateFormat(dateFormatStr) +".");
+      dateFormatStr =  getJsDateFormat();
+
+    $(".datefield").datepicker({ dateFormat: dateFormatStr, changeYear: true });
+});
+
+        $("#library_card_issue_create_data").validate({
+
+          rules: {
+
+        "card_issue[valid_from]":{required: true,dateFormat:true},
+        "card_issue[valid_to]":{required: true,dateFormat:true},
+        "mg_student_id":{required: true},
+        "mg_batch_id_for_data":{required: true},
+        "mg_course_id":{required: true}
+          }
+
+        });
+
+
+
+
+        dateFormatStr =  getJsDateFormat();
+      $( "#card_issue_valid_from" ).datepicker({ changeMonth: true,
+                changeYear: true,yearRange: "-50:+10",dateFormat: dateFormatStr});
+
+      $( "#card_issue_valid_to" ).datepicker({ changeMonth: true,
+                changeYear: true,yearRange: "-50:+10",dateFormat: dateFormatStr});
+
+    });
+$('.submit_pdf_for_library_card').click(function(e) {
+    e.preventDefault();
+    $(this).closest('form').attr('target', '_blank').submit()
+});
+
+
+$(document).on("change","#card_issue_valid_from",function(e){
+      var end_date=$("#card_issue_valid_to").val();
+      if(!(end_date==""))
+      {
+            var start_date=$(this).val();
+
+     // console.log("Changed dob"); 
+     // console.log(new Date(Date.parse(dob,dateFormatStr)).toString());
+     // console.log(new Date(Date.parse(admission_date,dateFormatStr)).toString());
+
+     if(getDateObj(start_date,dateFormatStr)>getDateObj(end_date,dateFormatStr)){
+        alert("Valid From Date should be less than Valid To Date");
+        document.getElementById('card_issue_valid_from').value ="";
+      }
+
+      //var temp=$("#fee_schedule_due_date").val();
+//       if(!temp=="")
+//       {
+//       var end_date=$("#fee_schedule_end_date").val();
+//       var start_date=$("#fee_schedule_start_date").val();
+//       var due_date=$("#fee_schedule_due_date").val();
+
+//      if(!(getDateObj(due_date,dateFormatStr)>=getDateObj(start_date,dateFormatStr)&&getDateObj(due_date,dateFormatStr)<=getDateObj(end_date,dateFormatStr))){
+//         alert("Due Date should be between Start Date and End Date");
+//         document.getElementById('fee_schedule_start_date').value ="";
+//       }
+// }
+      }
+      
+   });
+
+
+    $(document).on("change","#card_issue_valid_to",function(e){
+      var start_date=$("#card_issue_valid_from").val();
+      if(!(start_date==""))
+      {
+        var end_date=$(this).val();
+
+     // console.log("Changed dob"); 
+     // console.log(new Date(Date.parse(dob,dateFormatStr)).toString());
+     // console.log(new Date(Date.parse(admission_date,dateFormatStr)).toString());
+
+     if(getDateObj(start_date,dateFormatStr)>getDateObj(end_date,dateFormatStr)){
+        alert("Valid To should be more than Valid From");
+        document.getElementById('card_issue_valid_to').value ="";
+      }
+// var temp=$("#fee_schedule_due_date").val();
+//       if(!temp=="")
+//       {
+//       var end_date=$("#fee_schedule_end_date").val();
+//       var start_date=$("#fee_schedule_start_date").val();
+//       var due_date=$("#fee_schedule_due_date").val();
+
+//      if(!(getDateObj(due_date,dateFormatStr)>=getDateObj(start_date,dateFormatStr)&&getDateObj(due_date,dateFormatStr)<=getDateObj(end_date,dateFormatStr))){
+//         alert("Due Date should be between Start Date and End Date");
+//         document.getElementById('fee_schedule_end_date').value ="";
+//       }
+// }
+      }
+      
+   });
+
+
+</script>

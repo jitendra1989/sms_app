@@ -1,0 +1,279 @@
+
+<%= render  partial: 'laboratory/laboratry_left' %>
+<% navigation_add t('about_inventory'), "/laboratory/management/" %>
+
+<%
+ @isUserIncharge=0
+  if session[:user_type]=="employee"
+    employee=MgEmployee.find_by(:mg_user_id=>session[:user_id])
+    inchargeCount=MgLaboratoryIncharge.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id],:mg_employee_id=>employee.id,:incharge_type=>"Incharge").count
+    if inchargeCount>0
+      @isUserIncharge=1
+      @inchargeSubject=MgLaboratoryIncharge.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id],:mg_employee_id=>employee.id,:incharge_type=>"Incharge").pluck(:mg_subject_id)
+      @lab_ids=MgLab.find_by(:mg_laboratory_subject_id=>@inchargeSubject[0])
+    end
+  end
+%>
+
+
+<h4 class="mg-h4"><%= t('edit_inventory') %></h4>
+ <div class="mg-custom-labels">
+ <%= form_for :laboratry, url:management_update_path(@laboratry.id), :html => {:id => 'laboratryManagementUpdateID' } do |f| %>
+<%= f.hidden_field :is_deleted, :value => 0 %>
+<%= f.hidden_field :mg_school_id, :value => session[:current_user_school_id] %>
+<%= f.hidden_field :updated_by, :value => session[:user_id] %>
+
+<p>
+      <label class="mg-label mg-tt-width" style="width:185px"><%= t('select_subject') %><span class="required-field">&nbsp;*</span></label>
+      <%#= f.label :select_subject ,:class=>"mg-label"%><!-- <span class="required-field"> *</span><br> -->
+      <%= f.collection_select(:mg_laboratory_subject_id,MgLaboratorySubject.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]), :id, :name,{:include_blank => t("select")},:class => "call-purpose-class lab-laboratory-management-details-class mg-select-btn", :disabled => "disabled")%>
+</p>
+
+<!-- ============================================================================================= -->
+<p>
+<label class="mg-label" style="width:185px"><%= t('select_lab') %><span class="required-field">&nbsp;*</span></label>
+<%= f.collection_select(:mg_lab_id,MgLab.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]), :id, :lab_name,{:include_blank => t("select")},:class => "call-purpose-class lab-details-class mg-select-btn", :disabled => "disabled")%>
+</p>
+
+<!-- ================================================================================================= -->
+
+
+<p>
+      <label class="mg-label mg-tt-width" style="width:185px"><%= t('select_room') %><span class="required-field">&nbsp;*</span></label>
+      <%#= f.label :select_room ,:class=>"mg-label"%><!-- <span class="required-field"> *</span><br> -->
+      <%#= f.select :mg_laboratory_room_id, [ ], {:include_blank => t('Select')} ,:class=>"call-purpose-class laboratory-category-room-new-class mg-select-btn" %>
+      <!-- ============================================================================================================== -->
+
+<%room_list=MgLab.where(:mg_laboratory_subject_id=>@laboratry.mg_laboratory_subject_id,:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:room_no,:id)%>
+
+<%=select_tag :mg_laboratory_room_id,options_for_select(room_list,:selected=>@laboratry.mg_laboratory_room_id), :prompt=>"Select", :class=>"call-purpose-class laboratory-category-room-new-class mg-select-btn", :disabled => "disabled"%>
+
+
+      <!-- ==================================================================================================================== -->
+</p>
+
+<p>
+<label class="mg-label" style="width:185px"><%= t('select_category') %><span class="required-field">&nbsp;*</span></label>
+<%category_name=MgLabInventory.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id])%>
+<%= f.collection_select(:mg_category_id,category_name, :id, :category_name,{:include_blank => t("select")},:class => "call-purpose-class lab-details-class mg-select-btn", :disabled => "disabled")%>
+
+<%#= f.collection_select(:mg_category_id,MgLabInventory.where(:is_deleted=>5,:mg_school_id=>session[:current_user_school_id]), :id, :category_name,{:include_blank => t("select")},:class => "call-purpose-class")%>
+</p>
+
+<p>
+    <label class="mg-label" style="width:185px"><%= t('item_identification_number') %><span class="required-field">&nbsp;</span></label>
+    
+   <%= f.text_field :item_identification_number,:class=>"mg-text-field",:id=>"laboratory_new_resource_number_ID",:readonly=>true %>
+</p>
+
+
+
+
+
+<p>
+    <label class="mg-label" style="width:185px"><%= t('item_name') %><span class="required-field">&nbsp;*</span></label>
+   <%= f.text_field :item_name,:class=>"mg-text-field" %>
+</p>
+<p class="formfield">
+    <label class="mg-label" style="width:185px" align="top" style="vertical-align:middle"><%= t('item_description') %></label>
+   <%= f.text_area :item_description,:class=>"mg-text-field" %>
+</p>
+
+<p>
+    <label class="mg-label" style="width:185px"><%= t('valid_upto') %><span class="required-field">&nbsp;*</span></label>
+    <%= f.text_field :valid_upto,:class=>"mg-text-field" %>
+</p>
+
+<p>
+    <label class="mg-label" style="width:185px"><%= t('quantity') %><span class="required-field">&nbsp;*</span></label>
+   <%= f.text_field :quantity,:class=>"mg-text-field" %>
+</p>
+<p>
+<label class="mg-label" style="width:185px"><%= t('select_unit') %><span class="required-field">&nbsp;*</span></label>
+<%= f.collection_select(:mg_unit_id,MgLabUnit.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]), :id, :unit_name,{:include_blank => t("select")},:class => "call-purpose-class mg-select-btn")%>
+</p>
+
+<p>
+    <label class="mg-label" style="width:185px"><%= t('item_location') %><span class="required-field">&nbsp;</span></label>
+    <%= f.text_field :item_location,:class=>"mg-text-field" %>
+</p>
+
+
+<p class="mg-p-mgtop">
+   
+      <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("save")%></a>   
+  
+    <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+</p>
+<% end %>
+</div>
+<%= render  partial: 'application/common_left_close' %>
+<script>
+
+
+
+$( document ).ready(function() {
+          focusCurrentTab("viewLabInventryManagementIndex","viewLabInventryManagementLiID");
+
+dateFormatStr =  getJsDateFormat();
+    $('#laboratry_valid_upto').datepicker({ changeMonth: true,
+                changeYear: true,yearRange: "-50:+50",dateFormat: dateFormatStr});
+
+     var validity_date =  $.datepicker.formatDate(dateFormatStr,new Date($('#laboratry_valid_upto').val()));
+
+//alert(joiningDate);
+$('#laboratry_valid_upto').val(validity_date);
+
+
+          $(".lab-details-class").change(function(){
+      var labID = $( ".lab-details-class" ).val();
+      var apdStr = '<option value="">Choose Category</option>';
+      $("#laboratry_mg_category_id").empty().append(apdStr);
+      if(labID > 0) {
+           var urlLink = "/laboratory/category_list_for_purchase/"+labID;
+           $.ajax({ 
+               url: urlLink,
+               cache: false,
+               success: function(data){
+                 // console.log();
+                  if(data.length > 0){
+                      var apdStr = '<option value="select">Select</option>';
+                     for(key in data){
+                        apdStr += '<option value="'+data[key].id+'">'+data[key].category_name+'</option>'
+                      }
+                    // console.log(apdStr);
+                      $("#laboratry_mg_category_id").empty().append(apdStr);
+
+                  }
+
+               }
+                  
+           });
+
+    }else{
+      var apdStr = '<option value="">Choose Category</option>';
+      $("#laboratry_mg_category_id").empty().append(apdStr);
+      // alert("Please select category");
+    }
+  });
+
+// ================================subject and room=================================
+
+  $(".lab-laboratory-management-details-class").change(function(){
+      var subjectID = $( ".lab-laboratory-management-details-class" ).val();
+      var apdStr = '<option value="">Choose Subject</option>';
+      $("#mg_laboratory_room_id").empty().append(apdStr);
+      if(subjectID > 0) {
+           var urlLink = "/laboratory/room_list/"+subjectID;
+           $.ajax({ 
+               url: urlLink,
+               cache: false,
+               success: function(data){
+                 // console.log();
+                  if(data.length > 0){
+                      var apdStr = '<option value="select">Select</option>';
+                     for(key in data){
+                        apdStr += '<option value="'+data[key].id+'">'+data[key].room_no+'</option>'
+                      }
+                    // console.log(apdStr);
+                      $("#mg_laboratory_room_id").empty().append(apdStr);
+                      subjectToLab();
+
+                  }
+
+               }
+                  
+           });
+
+    }else{
+      var apdStr = '<option value="">Choose Subject</option>';
+      $("#mg_laboratory_room_id").empty().append(apdStr);
+      // alert("Please select category");
+    }
+  });
+
+
+// =======================================================================================================
+
+// ================================subject and Lab=================================
+
+  function subjectToLab(){
+        var subjectID = $( ".lab-laboratory-management-details-class" ).val();
+      var apdStr = '<option value="">Choose Subject</option>';
+      $("#laboratry_mg_lab_id").empty().append(apdStr);
+      if(subjectID > 0) {
+           var urlLink = "/laboratory/lab_list/"+subjectID;
+           $.ajax({ 
+               url: urlLink,
+               cache: false,
+               success: function(data){
+                  console.log(data);
+                  if(data.length > 0){
+                      var apdStr = '<option value="select">Select</option>';
+                     for(key in data){
+                        apdStr += '<option value="'+data[key].id+'">'+data[key].lab_name+'</option>'
+                      }
+                    // console.log(apdStr);
+                      $("#laboratry_mg_lab_id").empty().append(apdStr);
+
+                  }
+
+               }
+                  
+           });
+
+    }else{
+      var apdStr = '<option value="">Choose Subject</option>';
+      $("#laboratry_mg_lab_id").empty().append(apdStr);
+      // alert("Please select category");
+    }
+  }
+      
+  
+
+
+// =======================================================================================================
+
+$(function () {
+    $.validator.addMethod('dateFormat',
+    function (value, element) {
+      dateFormatStr =  getJsDateFormat();
+        if (this.optional(element)) {
+            return true;
+        }
+        var ok = true;
+        try {
+            $.datepicker.parseDate(dateFormatStr, value);
+        }
+        catch (err) {
+            ok = false;
+        }
+        return ok;
+    },
+      "Please enter a date in the format "+ getDateFormat(dateFormatStr) +".");
+      dateFormatStr =  getJsDateFormat();
+
+    $(".datefield").datepicker({ dateFormat: dateFormatStr, changeYear: true });
+});
+
+
+
+});
+$("#laboratryManagementUpdateID").validate({
+        rules: {   
+        "laboratry[valid_upto]": {dateFormat: true,required: true}, 
+
+        "laboratry[mg_lab_id]": {required: true}, 
+        "laboratry[mg_category_id]": {required: true},    
+        "laboratry[item_name]": {required: true, maxlength: 35},
+        "laboratry[quantity]": {required: true, number: true},
+     //   "laboratry[item_location]": {required: true, number: true},
+        "laboratry[mg_unit_id]": {required: true}
+      }
+    });
+</script>
+<style>
+.formfield * {
+    vertical-align: middle;
+}
+</style>

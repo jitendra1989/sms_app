@@ -1,0 +1,51 @@
+<%#=@vendor.inspect%>
+<h4 class="mg-h4"><%=t('gate_pass')%></h4>
+<table border="1" class="mg-showdata-bg" cellspacing="1" cellpadding="1">
+   
+
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+  		<label class="mg-label"><%=t('school_name')%></label>
+  	 </td>
+  	 <td class="mg-td-width-half" valign="top">
+  		<%= @school.try(:school_name) %>
+  	 </td>
+ </tr>
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+   		<label class="mg-label"> <%= t('vendor_name')%></label>
+   	 </td>
+   	 <td class="mg-td-width-half" valign="top">
+  		<%= @vendor.try(:name) %>
+  	 </td>
+ </tr>
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+   		<label class="mg-label"> <%= t('contact_name')%></label>
+   	 </td>
+   	 <td class="mg-td-width-half" valign="top">
+  		<%= @vendor.try(:contact_name) %>
+  	 </td>
+ </tr>
+  <tr>
+     <td class="mg-td-width-half" valign="top">
+   		<label class="mg-label"> <%= t('phone_number')%></label>
+   	 </td>
+   	 <td class="mg-td-width-half" valign="top">
+  		<%= @vendor.try(:phone_number) %>
+  	 </td>
+ </tr>
+  <tr>
+     <td class="mg-td-width-half" valign="top">
+   		<label class="mg-label"> <%= t('email_id')%></label>
+   	 </td>
+   	 <td class="mg-td-width-half" valign="top">
+  		<%= @vendor.try(:email) %>
+  	 </td>
+ </tr>
+</table>
+
+<p class="mg-p-mgtop">
+	<%= link_to t('pdf'), {:controller=>'inventory',:action=>"gate_pass_pdf",:id=>"#{@vendor.try(:id)}" } ,:class=>"mg-small-form-btn"%> 
+	 <%= link_to t('back'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+</p>

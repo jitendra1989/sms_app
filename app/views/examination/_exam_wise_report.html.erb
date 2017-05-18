@@ -1,0 +1,108 @@
+<% exam_score = [] %>
+       <%#= link_to t('generate_ppdf'), :action=>"consolidated_exam_report",:id=> @student.id- @exam_group.id %>
+      
+<%@exams%>
+<% @exams.each do |exam| %>
+
+
+<%exam_score.push exam.mg_exam_scores.find_by(:mg_student_id=>@student.id) unless exam.mg_exam_scores.find_by(:mg_student_id=>@student.id).nil?%>
+
+<% end %>
+
+<% total_credits=0 %>
+  <% total_weighted_marks=0 %>
+
+  <div id="score-table">
+    <div class="custom_header">
+      <span class="student" style="font-style: italic; font-size: 0.9em;"><%= "#{@student.first_name} - #{@student.admission_number}" %></span>
+    </div>
+    <% total_max_marks = 0 %>
+    <!-- <table id="listing" align="center" width="100%" cellpadding="1" cellspacing="1"> -->
+    <%
+    total_marks_obtained=0.0
+    total_percentage=0.0
+    max_marks=0
+    count=0
+    %>
+    <table class="batch-tbl mg-tbl-margin mg-tbl-layout">
+      <tr class="tr-head">
+       <!--  <th><%#= t('subject_code') %></th> -->
+        <th><%= t('subject') %></th>
+        <th><%= t('marks_obtained') %></th>
+        <th><%= t('max_marks')%></th>
+        <th><%= t('grade') %></th>
+        <!-- <td><%#= "marks"%></td> -->
+         <th><%= t('percentage') %></th>
+
+        <!-- <td><%#= "credit"%></td>
+        
+        <td><%#= "weighted_marks" %></td> -->
+      </tr>
+      <% exam_score.each do |es| %>
+     
+      <%#=es.mg_exam.maximum_marks%>
+
+
+
+        <tr class="tr-<%= cycle('odd', 'even') %>">
+          <!-- <td class="col-1"> <%#= es.mg_exam.mg_subject.subject_code %></td> -->
+          <td class="col-1"> <%= es.mg_exam.mg_subject.subject_name %></td>
+           <td class="col-2"><%= es.marks.present? ? marks_obtained=es.marks.to_f : '-' %></td>
+           
+
+          <td class="col-2"><%= es.marks.present? ? maximum_marks=es.mg_exam.maximum_marks.to_f : '-' %></td>
+          <% total_max_marks = total_max_marks+es.mg_exam.maximum_marks%>
+          <%#=total_max_marks%>
+          <!--  <td class="col-2"><%#= es.mg_exam.mg_subject.credit_hours %></td>
+           <%# total_credits = total_credits + es.exam.subject.credit_hours.to_f %>  -->
+
+           <%#=es.mg_grading_level.inspect%>
+          <td class="col-2"><%= es.mg_grading_level.present? ? es.mg_grading_level.name : "-" %></td>
+          <%# weighted_mark=0 %> 
+          <%# weighted_mark = mark.to_f * es.mg_exam.mg_subject.credit_hours.to_f if es.marks.present? %>
+          <%# total_weighted_marks = total_weighted_marks + weighted_mark %>
+         <!--  <td class="col-1"><%#= weighted_mark %></td> -->
+         <!-- <td class="col-2"><%#= es.marks.present? ?  mark=(number_with_precision(es.marks.to_f/es.mg_exam.maximum_marks.to_f)*100, :precision => 2): '-' %></td> -->
+     <td class="col-2"><%= es.marks.present? ? percentage=((es.marks.to_f/es.mg_exam.maximum_marks.to_f)*100).round(2) : '-' %></td> 
+
+      <%
+          if es.marks.present?
+            total_marks_obtained +=es.marks.to_f
+            total_percentage +=percentage.to_f
+            max_marks +=maximum_marks 
+            count +=1
+          end
+        %>
+
+        </tr>
+      <%end%>
+      <!-- <tr class="tr-blank"></tr> -->
+      <tr class="tr-head">
+        <td><%= t("total_marks") %></td>
+        <td><%= total_marks_obtained %></td>
+        <td><%= max_marks %></td>
+        <td>-</td>
+        <td><%= (total_percentage/count).round(2) %></td>
+        <!-- <td><%#= total_weighted_marks %></td> -->
+      </tr>
+      <tr>
+      <div class="custom_header">
+      <%#=@exam_group.batch_average_marks('marks')%>
+        <td colspan="5"><label class="mg-label"><%= t('class_average_marks') %></label> :
+      <%= "%.2f" %(@exam_group.batch_average_marks('marks')) unless total_max_marks == 0 %> 
+        </td>
+        </div>
+        </tr>
+        <tr>
+        <div class="custom_header">
+        
+        <td colspan="5"> <label class="mg-label"><%= t('class_average') %> % </label>: 
+        <%=  "%.2f" %(@exam_group.batch_average_marks('marks')*100/total_max_marks) unless total_max_marks == 0 %>
+        </td>
+        
+      </div>
+      </tr>
+    </table>
+  </div>
+
+

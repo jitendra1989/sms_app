@@ -1,0 +1,41 @@
+<!-- Sec --> 
+
+<%= fields_for :email do |eml| %>
+
+  <%= eml.hidden_field :email_type,:value => "home"%>
+   <%= eml.hidden_field :mg_school_id, :value => session[:current_user_school_id] %>
+  <%= eml.hidden_field :is_deleted, :value => 0 %>
+  <table width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-left: 14px;" class="mg-btn-bottom-margin">
+    <tbody>
+      <tr>
+        <td width="33%" valign="bottom">
+          <%= eml.label t('emailid') , :class=>"mg-label"%>
+          <span class="required-field">*</span>
+        </td>
+        <td> </td>
+        <td width="33%" valign="bottom">
+          <%= eml.label t('notification')  , :class=>"mg-label"%>
+        </td>
+        <td> </td>
+        <td width="33%" valign="bottom">
+          <%= eml.label t('subscription')   , :class=>"mg-label"%>
+        </td>
+      </tr>
+      <tr>
+        <td valign="top">
+          <%= eml.text_field :mg_email_id ,:class=>"mg-text-field"%>
+        </td>
+        <td> </td>
+        <td valign="top">
+          <%=eml.check_box :notification %>
+        </td>
+        <td> </td>
+        <td valign="top">
+          <%=eml.check_box :subscription %>
+        </td>
+      </tr>
+    </tbody> 
+  </table>
+ 
+
+ <% end %>        

@@ -1,0 +1,344 @@
+ <h4 class="mg-h4">Employee Attendance For Current Month</h4>
+                          
+                                            <%department_name_data='a'
+                                              present_number_data='1'
+                                              absent_number_data='1'
+
+                                            @departmentList=MgEmployeeDepartment.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id])
+
+                                             @chart_dataHash=Hash.new
+                                             @current_month=Date.today.strftime("%m")
+                                             @current_Year=Date.today.strftime("%Y")
+                                             @days = Time.days_in_month(@current_month.to_i,@current_Year.to_i)
+                                              
+                                              @departmentList.each do |department|
+                                              @absent_student_count=MgEmployeeAttendance.where(:mg_employee_department_id=>department.id,:is_approved=>1,:mg_school_id=>session[:current_user_school_id],:is_deleted=>0).where('extract(MONTH from absent_date )=MONTH(now())').count
+                                              @present_day_count=@days-@absent_student_count
+                                                  array=Array.new
+                                                 array.push("Present",department.department_name)
+                                                 department_name_data +=",#{department.department_name}"
+                                                   @chart_dataHash[array]=@present_day_count
+                                                  present_number_data +=",#{@present_day_count}"
+                                                  array=Array.new
+                                                  array.push("Absent",department.department_name)
+                                                  @chart_dataHash[array]=-@absent_student_count
+                                                  absent_number_data +=",#{@absent_student_count}"
+                                                 
+                                              end
+                                            %>
+                                            <%#= column_chart(@chart_dataHash)%>
+                                            <%#= @chart_dataHash%>
+                                            <% #itemValue_dummy=[2,3,4,5,6,7,7,9,6,3,2,4,8,7,8,9,9,0,5,4,3,3];
+                                           
+                                            chart_size=650
+                                            if @chart_dataHash.length>5
+                                             #if  itemValue_dummy.length>7
+                                              chart_size=@chart_dataHash.length*90
+                                              # chart_size=itemValue_dummy.length*100
+
+                                              end%>
+                                          
+                        
+
+<div id="wrapperAttendanceDIVID" class="mg-scroll-page-inner" style="padding: 30px;" >
+    <canvas id="attendanceChartCanvasDivID" height="600" width="<%=chart_size%>" style="overflow: scroll; "></canvas>
+    <canvas id="tipAttendanceID" width="200" height="75"></canvas>
+</div>
+
+
+<script>
+ $(document).ready(function(){
+    attendance_graph();
+});
+
+  
+  // var itemName=["A------>1","A------>1","A------>2","A------>3","A------>4","A------>5","A------>6"];//,"A------>1","A------>1","A------>1","A------>1","A------>1","A------>","A","A","A","A","A","A","A","A","A","A"];
+  // var itemValue=[0,0,26,25,24,23,23];//,21,6,3,2,4,8,7,8,9,9,0,5,26,27,27];
+  // var itemValue_absent=[30,30,4,5,6,7,7];//,9,24,27,28,26,22,23,22,21,21,30,25,4,3,3];
+
+function attendance_graph() {
+   var department_name_data='<%=department_name_data%>'.split(',');//.shift();
+ var present_number_data='<%=present_number_data%>'.split(',');//.shift();
+ var absent_number_data='<%=absent_number_data%>'.split(',');
+
+
+var canvas1 ;
+var context1 ;
+var Val_Max;
+var Val_Min;
+var sections;
+var xScale;
+var yScale;
+var y;
+var month=daysInMonth(new Date().getMonth(),new Date().getFullYear());
+var month=32;//daysInMonth(new Date().getMonth(),new Date().getFullYear());
+
+ var k;
+ var department_name=[];
+ var present_number=[];
+ var absent_number=[];
+
+
+ for(k=1;k<department_name_data.length;k++){
+  department_name.push(department_name_data[k]);
+  present_number.push(present_number_data[k]);
+  absent_number.push(absent_number_data[k])
+ }
+
+
+
+//Month is 1 based
+function daysInMonth(month,year) {
+    return new Date(year, month, 0).getDate();
+}
+
+    // intialize values for each variables
+  sections = present_number.length;
+  Val_Max = Math.max.apply(Math, present_number);
+  var barwidth=.5;
+  var bar_width=100;
+  
+  var stepSize = 1;
+  var columnSize = 25;
+  var rowSize = 60;
+  var margin = 2;
+  var header = "No of days"
+  canvas1 = document.getElementById("attendanceChartCanvasDivID");
+  context1 = canvas1.getContext("2d");
+  var tipCanvas = document.getElementById("tipAttendanceID");
+  var tipCtx = tipCanvas.getContext("2d");
+  context1.fillStyle = "#000;"
+   var canvas_hight=canvas1.height*80/100;
+  var canvas_width=canvas1.width*80/100;
+
+  yScale = (canvas_hight - columnSize - margin) / (month+month);
+  xScale = bar_width ;
+  
+  context1.strokeStyle="#000;"; // background black lines
+  context1.beginPath();
+    // column names 
+  context1.font = "19 pt Arial;"
+  context1.fillText(header, 0,columnSize - margin-10);
+    // draw lines in the background
+  context1.font = "16 pt Helvetica"
+  var count =  0;
+  for (scale=32;scale>=-32;scale = scale - 8) {
+    y = columnSize + (yScale * count * 8); 
+    if(scale==32){
+    context1.fillText(scale-1, margin,y + margin);
+    }else if(scale==-32){
+    context1.fillText(scale+1, margin,y + margin);
+    }else{
+    context1.fillText(scale, margin,y + margin);
+    }
+    count++;
+  }
+ var count1 =  0;
+  for (scale=32;scale>=-32;scale = scale - 1) {
+    y = columnSize + (yScale * count1 * 1);
+     if(scale==0){
+      context1.beginPath();
+      context1.moveTo(60, 20);
+      context1.lineTo(60,canvas_hight);
+      context1.stroke();
+      context1.beginPath();
+      context1.moveTo(20,y);
+      context1.lineTo(canvas_width,y);
+      context1.stroke();
+    }
+    count1++;
+  }
+  context1.font= 10 + 'px Arial';
+  context1.textBaseline="bottom";
+  var temp_hight=canvas_hight;
+  var valiable=.5;
+  for (i=0;i<present_number.length;i++) {
+   	y= computeHeight_attendance_graph(present_number[i], canvas_hight, yScale);
+    var temp=9-present_number[i];
+    	context1.rotate(0.2);
+    	context1.fillText(department_name[i], (bar_width* (i+2))-valiable ,temp_hight+30);
+     	context1.rotate(-0.2);
+    	valiable=valiable+=2.3;
+    	temp_hight=temp_hight-22;
+  }
+  
+  function getMousePos(canvas, evt) {
+        var rect = canvas.getBoundingClientRect();
+        return {
+          x: evt.clientX - rect.left,
+          y: evt.clientY - rect.top
+        };
+      }
+      	var canvas = document.getElementById('attendanceChartCanvasDivID');
+      	var context = canvas.getContext('2d');
+      	canvas.addEventListener('mousemove', function(evt) {
+        var mousePos = getMousePos(canvas, evt);
+        var message = 'Mouse position: ' + mousePos.x + ',' + mousePos.y;
+        handleMouseMove(mousePos);
+      }, false); 
+  
+
+ function handleMouseMove(e) {
+    mouseX = parseInt(e.x);
+    mouseY = parseInt(e.y)-90;
+    var hit = false;
+   var count_tip=0;
+   var bar_width_tip=0;
+   //&& e.y>(canvas.height*3/100)+10
+   if(e.x>(canvas.width*80/100)-20 ){
+        
+      var colour_with_data={"Present":"#deacba","Absent":"#6ab0b1"}//,"#e95c60","#29708b","#897d92","#479b9c","#b16a8d","#a295f0","#308c5d","#e9e2a6","#b94e83","#5ca060","#4b4890","#c0b2cc","#a83c41","#cb6088","#c5a68a","#1a684d","#e76947","#906cab","#ebbd7c","#672a41","#c7a4e2","#739a87","#a1c3e1","#ae2753","#c6d1a3","#e9d1bc","#2f986f","#6a4587","#ce999b"];
+      var temp_colour_pos=1;
+      var temp_colour=0;
+      for (var prop in colour_with_data) {
+          var x_pos1=(canvas.width*80/100)-20;
+          var x_pos2=(canvas.width*80/100)-5;
+          var y_pos1=(canvas.height*3/100)-5+temp_colour;
+          
+          var y_pos2= (canvas.height*3/100)-5+temp_colour+15;
+          //e.y>y_pos1
+          if(e.x>x_pos1 && e.x<x_pos2 &&  e.y>y_pos1 && e.y<y_pos2){
+          var tip_tool=canvas.width*80/100;
+           tipCanvas.style.left = (mouseX) -100+ "px";
+          tipCanvas.style.top = (mouseY) +150+ "px";
+          tipCtx.clearRect(0, 0, tipCanvas.width, tipCanvas.height);
+          tipCtx.fillStyle = '#3D2E4C';
+          tipCtx.fill();
+          tipCtx.fillText(prop, 5, 15);
+         hit = true;
+          }
+      temp_colour+=30;
+      }
+   }else{
+    for(var i in present_number){
+    	var  y_present =computeHeight_attendance_graph(present_number[i],canvas_hight,yScale);
+     	var  y_Absent =computeHeight_attendance_graph(absent_number[i],canvas_hight,yScale);
+       	var x_pos1=bar_width+bar_width_tip;
+       	var x_pos2=x_pos1+bar_width/2;
+       	var y_pos1=y_present-10;
+       	var y_pos2=canvas_hight-y_Absent+margin+month+4;
+	         if(e.x>x_pos1 && e.x<x_pos2 && e.y<y_pos1 && e.y>y_pos2){
+				var maxWidth = 50;
+      			var lineHeight = 15;
+		         tipCanvas.style.left = (mouseX) +50+ "px";
+		         tipCanvas.style.top = (mouseY) +50+ "px";
+		         tipCtx.clearRect(0, 0, tipCanvas.width, tipCanvas.height);
+		         tipCtx.fillStyle = ' #3D2E4C';
+		         tipCtx.fill();
+		       //  tipCtx.fillText("Department :"+department_name[i], 5, 15);
+				wrapText(tipCtx,"Department :"+department_name[i], 5, 28, maxWidth, lineHeight);
+		       	 tipCtx.fillText("Present :"+present_number[i], 5, 15);
+		       	 tipCtx.fillText("Absent :"+absent_number[i], 5, 30);
+		       hit = true;
+	        }
+    	bar_width_tip=bar_width_tip+bar_width;
+    }
+   }
+   
+
+    if (!hit) {
+        tipCanvas.style.top = "-1000000px";
+    }
+}
+
+function wrapText(context, text, x, y, maxWidth, lineHeight) {
+    
+     // var words = text.split('');
+     	var letter = text.length;
+     
+    
+        var line = '';
+     // alert(text.length);
+     	
+
+        for(var n = 0; n < letter; n++) {
+          //alert(n+"          ");
+          //alert(text.charAt(n));
+          // var res = str.charAt(0);
+          var testLine = line + text.charAt(n) + '';
+          // alert(testline);
+          
+          var metrics = context.measureText(testLine);
+          var testWidth = metrics.width;
+          //  alert(n);
+          if ( n%21==0) {
+            // alert(x +"             "+y)
+            context.fillText(line, x, y);
+            line = text.charAt(n) + '';
+            y += lineHeight;
+          }
+          else {
+            line = testLine;
+          }
+        }
+        context.fillText(line, x, y);
+      }
+  
+  var colour_with_data={"Present":"#deacba","Absent":"#6ab0b1"}
+    var temp_colour=0;
+      for (var prop in colour_with_data) {
+        context.beginPath();
+        context.fillStyle=colour_with_data[prop];
+        context.font = '10pt Arial';
+        var tip_tool=canvas.width*80/100;
+        context.fillStyle = '#000000';
+        context.fillText(prop, tip_tool,(canvas.height*temp_colour*3/100)+25);
+        context.rect(tip_tool-20, (canvas.height*temp_colour*3/100)+10, 15, 15);
+        context.fillStyle = colour_with_data[prop];
+        context.fill();
+        context.stroke();
+        temp_colour+=2;
+  }
+
+  
+  // translate to bottom of graph  inorder to match the data 
+  context1.translate(0,canvas_hight- margin);
+  context1.scale(xScale,-1 * yScale);
+  
+    // draw each graph bars 
+  
+  for (i=0;i<present_number.length;i++) {
+    context1.fillStyle="#deacba";
+    context1.fillRect(i+1, month, barwidth, present_number[i]);
+    context1.fillStyle="#6ab0b1";
+    context1.fillRect(i+1, month, barwidth, -absent_number[i]);
+  }
+
+}
+
+function computeHeight_attendance_graph(value, canvas_hight, yScale) {
+  y = canvas_hight- value * yScale ; 
+  return y;
+}
+
+
+
+</script>
+
+<style>
+
+body {
+/*    background-color: ivory;*/
+   /* margin-top:35px;*/
+}
+#wrapperAttendanceDIVID {
+    position:relative;
+    /*   width:300px;
+    height:150px; */
+}
+  
+
+  
+  
+#tipAttendanceID {
+    background-color:white;
+    border:1px solid #2A4647;
+    box-shadow: -2px 5px 7px #474747;
+    position:absolute;
+    left:-200000px;
+    top:100px;
+    padding: 0px;
+}
+  
+
+</style>

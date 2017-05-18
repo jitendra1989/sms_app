@@ -1,0 +1,45 @@
+<%= form_for :meal_category, :url=> @action=='new' ? '/canteen_managements/create_meal_category' : 
+'/canteen_managements/update_meal_category', :method=> @action=='new' ? "post" : "patch" ,:html => {:id => 'mealCategoryFormID'} do |f| %>
+
+  <%= f.hidden_field :is_deleted, :value => 0 %>
+  <%= f.hidden_field :mg_school_id, :value => session[:current_user_school_id] %>
+  <% if @action=='new'%>
+    <%= f.hidden_field :created_by, :value => session[:user_id] %>
+    <%= f.hidden_field :updated_by, :value => session[:user_id] %>
+  <%else%>
+    <%= f.hidden_field :updated_by, :value => session[:user_id] %>
+    <%= f.hidden_field :id, :value => @meal_category.try(:id) %>
+  <%end%>
+
+  <p>
+    <label class="mg-label"><%= t('name') %><span class="required-field">&nbsp;*</span></label><br/>
+     <%= f.text_field :name,:class=>"mg-text-field" %>
+  </p>
+
+  <p>
+        
+    <label class="mg-label mg-label-text-transform-none"><%= t('meal_sequence_of_the_day') %><span class="required-field">&nbsp;*</span></label><br/>
+     <%= f.text_field :priority,:class=>"mg-text-field" %>
+  </p>
+
+  <p>
+    <label class="mg-label"><%= t('description') %><span class="required-field">&nbsp;</span></label><br/>
+     <%= f.text_area :description,:class=>"mg-text-field" %>
+  </p>
+  <p class="mg-p-mgtop">
+    <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("save")%></a>
+    <a class="mg-small-form-btn cancel-form-dialog"><%=t("cancel")%></a>
+  </p>
+<% end %>
+
+
+
+<script>
+
+  $("#mealCategoryFormID").validate({
+    rules: {        
+    "meal_category[name]": {required: true,name_validate: true},
+    "meal_category[priority]": {required: true, number: true},
+    }
+  });
+</script>

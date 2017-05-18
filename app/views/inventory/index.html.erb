@@ -1,0 +1,152 @@
+<% navigation_add 'About Item Category', :controller => 'inventory', :action => 'index' %>
+
+
+<% if !params[:notice].blank? %>
+  <div class="alert alert-info mg-danger-msg">
+   <%= params[:notice] %>
+  </div>
+<% end %>
+
+<%= render  partial: 'inventory/inventory_left' %>
+
+<h4 class="mg-h4"><%= t('item_category_list') %></h4>
+
+<button class="new-add-inventory-category mg-btn-bottom-margin mg-custom-form-btn"><%= t('add_item_category')%></button>
+
+<div class="mg_pagination">
+<%if @itemCategory.present?%>
+<table  class="batch-tbl mg-tbl-margin">   <!-- border="2" --> 
+  <tr class="subject-table-header">
+    <!-- <th>Subject Id</th> -->
+    <th><%= t('name') %></th>
+    <th><%= t('description') %></th>
+    <th style="width: 102px;"><%= t('actions') %></th>
+
+  </tr>
+ 
+  <% @itemCategory.each do |category| %>
+    <tr>
+      <td><%= category.name %></td>
+      <td class="mg-desc-text-justify"><%= truncate(category.description.to_s, :length => 25, :separator => ' ') %></td>
+      <td>
+      	
+      <button title="Show" id="<%=raw category.id %>-showlabBTNID" class="show-inventory-category-btn mg-icon-btn"><i class="fa fa-eye"></i></button>
+
+        <button title="Edit" id="<%=raw category.id %>-editlabBTNID" class="edit-inventory-category-btn mg-icon-btn"><i class="fa fa-pencil-square-o"></i></button>
+
+        <button title="Delete" id="<%=raw category.id %>-deletelabBTNID" class="delete-inventory-category-btn mg-icon-btn"><i class="fa fa-trash"></i></button>
+
+      </td>
+    </tr>
+  <% end %>
+</table>
+<br/>
+ <div class="pagination-align" style="position: relative; bottom: 10px;">
+              <%= will_paginate @itemCategory, :container => false %>
+           </div>
+<%else%>
+<h5>No item category is created </h5>
+<%end%>
+</div>
+<div id="newAddInventoryCategoryDIVID"></div>
+<div id="editInventoryCategoryDIVID"></div>
+
+
+<div id="showinventorycategoryDIVID"></div>
+
+
+<%= render  partial: 'application/common_left_close' %>
+
+<script>
+$( document ).ready(function() {
+            focusCurrentTab("viewInventoryCategoryIndex","viewInventoryCategoryLiID");
+          //focusStudentHeaderBox();
+});
+
+
+$(document).on("click", ".show-inventory-category-btn", function(e){
+        var myID =$(this).attr('id');
+        var Id=myID.split("-");
+        var urlLink = "/inventory/show/"+Id[0];
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(html){
+                  $('#showinventorycategoryDIVID').dialog({
+                    modal: true,
+                     minHeight: 'auto',
+                     width: 'auto',
+                     title: "Show Item Category",
+                     open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+});
+
+
+$(document).on("click", ".edit-inventory-category-btn", function(e){
+        var myID =$(this).attr('id');
+        var Id=myID.split("-");
+        var urlLink = "/inventory/edit/"+Id[0];
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(html){
+                  $('#editInventoryCategoryDIVID').dialog({
+                    modal: true,
+                     minHeight: 'auto',
+                    minWidth: 260,
+                    title: "Edit Item Category",
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+});
+
+$(document).on("click", ".new-add-inventory-category", function(e){
+        var urlLink = "/inventory/new";
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(html){
+                  $('#newAddInventoryCategoryDIVID').dialog({
+                    modal: true,
+                     minHeight: 'auto',
+                    minWidth: 260,
+                    title: "Add Item Category",
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+});
+</script>
+<style>
+
+
+.table-batchs-tbl {
+   /* font-family: verdana,arial,sans-serif;*/
+    font-size:13px;
+    color:#363131;
+    border-width: 1px;
+    border-color:  #363131;
+    border-collapse: collapse;
+    padding: 12px ;
+    font-size: 0.8em;
+    width: 261px !important;
+    /* margin-left: 2px; */
+}
+</style>
+
+

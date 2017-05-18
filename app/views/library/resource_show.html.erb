@@ -1,0 +1,118 @@
+<table border="1" class="mg-showdata-bg mg-tbl-layout" cellspacing="1" cellpadding="1">
+   <tr>
+     <td class="mg-td-width-half" valign="top">
+   		<label class="mg-label mg-label-text-transform-none"><%= t('type_of_resource') %></label>
+   	 </td>
+   	 <td class="mg-td-width-half" valign="top">
+  		<%if @resource.name.present?%>
+     <%=@resource.name%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+  	 </td>
+ </tr>
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+   		<label class="mg-label"> <%= t('description')%></label>
+   	 </td>
+   	 <td class="mg-td-width-half" valign="top">
+  		<%if @resource.description.present?%>
+     <%#=@library.description%>
+
+     <%=@resource.description%>
+ <%#= text_area_tag "details",@resource.description, :readonly => true, :class => "mg-text-field", :size=>15 ,:style=>"width: 500px; height: 100px;"%>
+
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+  	 </td>
+ </tr>
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('resource_category')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+      <%if @resource.mg_resource_category_id.present?%>
+      <%category=MgResourceCategory.find_by(:id=>@resource.mg_resource_category_id)%>
+     <%= category.name %>
+      <%else%>
+      <%="No Data"%>
+      <%end%>
+     </td>
+ </tr>
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('max_issuable_count')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+      <%if @resource.max_issuable_count.present?%>
+     <%=@resource.try(:max_issuable_count)%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+     </td>
+ </tr>
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('max_borrow_days')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+      <%if @resource.max_borrow_day.present?%>
+     <%=@resource.try(:max_borrow_day)%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+     </td>
+ </tr>
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('Renewal_period(days)')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+      <%if @resource.renewal_period.present?%>
+     <%=@resource.try(:renewal_period)%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+     </td>
+ </tr>
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label mg-label-text-transform-none"> <%= t('max_no_of_renewals_allowed')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+      <%if @resource.max_renewals_allowed.present?%>
+     <%=@resource.try(:max_renewals_allowed)%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+     </td>
+ </tr>
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%="#{"fine"}(#{"per day"})"%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+      <%if @resource.fine_per_day.present?%>
+     <%=@resource.try(:fine_per_day)%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+     </td>
+ </tr>
+  <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('prefix')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+      <%if @resource.prefix.present?%>
+     <%=@resource.try(:prefix)%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+     </td>
+ </tr>
+
+</table>
+<br/>
+<%= link_to 'Cancel', library_resource_path ,:style=>"font-size: 0.8em; color: #297ACC; text-decoration: none;" ,:class=>"mg-custom-form-btn"%>

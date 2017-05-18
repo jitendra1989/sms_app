@@ -1,0 +1,92 @@
+<%if @classTimingNameTable.length>0 %>
+<%#=@classTimingNameTable.inspect
+%>
+<div class="mg-scroll-timetbl-page">
+<%@count=0%>
+	<%@classTimingNameTable.each do |td| %>
+	<table class="batch-tbl mg-tbl-margin mg-std-tbl-width mg-custom-labels">
+ 	<tr>
+ 		<!-- <th>Weekday</th> -->
+ 		<th>Name</th>
+ 		<th>Start Time</th>
+ 		<th>End Time</th>
+ 		<th>Subject</th>
+ 		<th>Teacher</th>
+ 	</tr>
+ 	<%@weekday=MgWeekday.find(td.mg_weekday_id).weekday%>
+ 	<% if @weekday=='0'%>
+		<tr><h4 class="mg-h4">Sunday</h4></tr>
+		<%elsif @weekday=='1'%>
+		<tr><h4 class="mg-h4">Monday</h4></tr>
+		<%elsif @weekday=='2'%>
+		<tr><h4 class="mg-h4">Tuesday</h4></tr>
+		<%elsif @weekday=='3'%>
+		<tr><h4 class="mg-h4">Wednesday</h4></tr>
+		<%elsif @weekday=='4'%>
+		<tr><h4 class="mg-h4">Thursday</h4></tr>
+		<%elsif @weekday=='5'%>
+		<tr><h4 class="mg-h4">Friday</h4></tr>
+		<%elsif @weekday=='6'%>
+		<tr><h4 class="mg-h4">Saturday</h4></tr>
+	<%end%>
+<tr>
+        	<%# @day="Sunday"%>
+        	<!-- <td><%#=@day%></td> -->
+			<td><%=td.name%></td>
+			<td><%=td.start_time.strftime("%k:%M%p")%></td>
+			<td><%=td.end_time.strftime("%k:%M%p")%></td>
+			<%= hidden_field_tag "weekday_id[]", td.mg_weekday_id%> 
+			<%= hidden_field_tag "mg_class_timings_id[]", td.id%> 
+			<%@time_table_entry=MgTimeTableEntry.where(:mg_class_timings_id=>td.id, :mg_weekday_id=>td.mg_weekday_id, :is_deleted=>0, :mg_batch_id=>@batch_id, :mg_timetable_id=>@mg_time_table_id)%>
+			<%#=@time_table_entry.inspect%>
+			<%if @time_table_entry.present?%>
+			<%sql="select b.first_name, b.id from mg_employee_subjects a, mg_employees b where a.mg_subject_id=#{@time_table_entry[0].mg_subject_id} and a.mg_employee_id=b.id"
+     			 @employee=MgEmployeeSubject.find_by_sql(sql)%>
+			<td><%=select_tag 'subject[]',options_for_select(@subject, :selected=>@time_table_entry[0].mg_subject_id),:prompt=>"Select Subject" ,:onchange=>"selectTeacherForSubject(this.value, #{@count}, #{@weekday}, #{td.id}, #{td.mg_weekday_id})"%></td>
+			<td id="Select Employee">
+			<div id="<%=@count%>DIVID">
+					<%= collection_select(:employees, :ids, @employee, :id, :first_name, {:selected => @time_table_entry[0].mg_employee_id}, {:name => 'employees[]' }) %>
+			</div></td>
+			<%@count +=1%>
+			<%else%>
+			<td><%=select_tag 'subject[]',options_for_select(@subject),:prompt=>"Select Subject" ,:onchange=>"selectTeacherForSubject(this.value, #{@count}, #{@weekday}, #{td.id}, #{td.mg_weekday_id})"%></td>
+			<td id="Select Employee">
+			<div id="<%=@count%>DIVID"><%=select_tag 'employees[]',options_for_select(@employee),:prompt=>"Select Teacher"%></div></td>
+			<%@count +=1%>
+			<%end%>
+	      </tr>
+ 		 </table><br>
+ 		<%end%>
+ 		<%else%>
+	<h5>No Class Timings allocated for this batch.</h5>
+<%end%>
+<%= hidden_field_tag :mg_school_id, session[:current_user_school_id]%> 
+<%= hidden_field_tag :is_deleted, 0%> 
+</div>
+<script>
+
+	function selectTeacherForSubject(subject, count, weekday_id, mg_class_timings_id, mg_weekday_id){
+		$("#weekday_id").val(weekday_id);
+		var mg_time_table_id=$("#mg_time_table_id").val();
+		// alert("mg_time_table_id :"+mg_time_table_id);
+		var batch=$("#batch").val();
+
+		$.ajax({
+		url:'/timetable/teacher_for_subject',
+		data:{"subject": subject, "sub":"Subject",mg_time_table_id: mg_time_table_id, batch: batch, mg_class_timings_id: mg_class_timings_id, mg_weekday_id: mg_weekday_id },
+		type:"GET",
+		success:function(html){	
+			var divid=count+"DIVID";
+			 $("#"+divid).empty();
+             $("#"+divid).append(html);
+		}, 	 	
+		error:function(){
+			alert("inside error");
+		}
+	});
+	}
+
+
+</script>
+
+

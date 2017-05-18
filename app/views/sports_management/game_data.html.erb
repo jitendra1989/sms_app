@@ -1,0 +1,16 @@
+<p>
+
+	
+	<%=label_tag 'select_game', t('select_game'), class: 'mg-label mg-rm-text-trans' %><span class="required-field"> *</span><br>
+	<% if params[:schedule_edit].present?%>
+		<%=select_tag :mg_sport_game_id,options_for_select(@game,:selected=>@game_data.mg_sport_game_id),:prompt=>"Select",:onchange=>"team()"%>
+	<% elsif params[:schedule].present?  %>
+		<%=select_tag :mg_sport_game_id,options_for_select(@game),:prompt=>"Select",:onchange=>"team()",:selected=>@game_data.mg_sport_game_id%>
+	<% elsif params[:data]=="edit"%>
+
+		<%=select_tag :mg_sport_game_id,options_for_select(@game,:selected=>@game_data.mg_sport_game_id),:prompt=>"Select"%>
+	<%else%>
+		<%=select_tag :mg_sport_game_id,options_for_select(@game),:prompt=>"Select"%>
+	<%end%>
+
+</p>

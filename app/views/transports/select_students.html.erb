@@ -1,0 +1,52 @@
+
+<%="Select Students:"%>
+<table class="mg-tbl-margin mg-tbl-layout">
+<tr>
+<td class="mg-td-width-one-third" valign="top">
+ <span id="selected_students">
+
+    <%=select_tag :selectedStudentsId, options_for_select(@student_hash),:multiple => true,:size =>10 ,:class=>"mg-add-library-particular"%>
+</span>
+
+    <a  id="AddTransportFees" class="mg-custom-form-btn mg-add-rem-btn">Add</a> 
+</td>
+<td class="mg-td-width-one-third" valign="top">
+    <span id="removing_employees">
+
+<%=select_tag :transportSelectedStudents,options_for_select([]),:multiple => true,:size =>10 ,:class=>"mg-add-library-particular"%>
+</span>
+
+<a  id="RemoveTransportFees" class="mg-custom-form-btn mg-add-rem-btn">Remove</a>
+</td>
+</tr>
+</table><br/>
+<script>
+$(document).on("click","#AddTransportFees",function(e){
+
+
+
+ var selectedOptions=$("#selectedStudentsId option:selected").remove();
+
+
+$("#transportSelectedStudents").append(selectedOptions);
+
+
+  });
+$(document).on("click","#RemoveTransportFees",function(e){
+
+var selectedOption=$("#transportSelectedStudents option:selected").remove();
+
+$("#selectedStudentsId").append(selectedOption);
+
+  });
+</script>
+
+<style>
+
+.mg-add-rem-btn {
+	position: relative;
+	top: -7em;
+	margin-right: 5px;
+}
+
+</style>

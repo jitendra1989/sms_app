@@ -1,0 +1,41 @@
+<!-- Sec --> 
+<%#= render  partial: 'students/student_left' %>
+ <h4 class="mg-h4"><%= t('topic') %></h4>
+ <div class="mg-custom-labels">
+	<%= form_for :curriculum, url: curriculum_topic_create_path, :html => {
+	                            :id => 'topicEditCurriculamManagementsID' } do |f| %>
+	<%= f.hidden_field :is_deleted, :value => 0 %>
+	<%= f.hidden_field :mg_school_id, :value => session[:current_user_school_id] %>
+	<!--#Syllabus.where(:is_deleted => '0')-->
+	<label class="mg-label" style="width:140px"><%= t('selectsyllabus') %></label><br/>
+	<%= f.collection_select(:mg_syllabus_id,MgSyllabus.where(:is_deleted => '0', :mg_school_id=>session[:current_user_school_id]), :id, :name,{:include_blank => t("select")},:class => "unit-syllabus-id-class")%>
+	<br/><br/>
+
+	<p>
+			<label class="mg-label" style="width:140px"><%= t('selectunit') %></label><br/>
+			<%= f.collection_select(:mg_unit_id,MgUnit.where(:is_deleted => '0', :mg_school_id=>session[:current_user_school_id]), :id, :unit_name,{:include_blank => t("select")},:class => "unit-subject-id-class")%>
+	</p>
+	<p>
+	   <label class="mg-label" style="width:140px"><%= t('topic') %></label><br/>
+	   <%= f.text_field :topic_name,:class=>"mg-text-field" %>
+	 </p>
+	 <p>
+	   <label class="mg-label" style="width:140px"><%= t('description') %></label><br/>
+	   <%= f.text_area :description ,:class=>"mg-text-field" %>
+	 </p>
+	    <%= f.submit t('save') ,:class=>"mg-small-form-btn"%>
+	  </p>
+	<% end %>
+</div>
+ <script>
+$(document).ready(function () {
+$("#topicEditCurriculamManagementsID").validate({
+
+rules: {
+"curriculum[mg_syllabus_id]": {required: true},
+"curriculum[mg_unit_id]": {required: true},
+"curriculum[topic_name]": {required: true}
+}
+});
+});
+ </script>

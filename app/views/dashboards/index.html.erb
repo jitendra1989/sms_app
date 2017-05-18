@@ -1,0 +1,45 @@
+<!-- Sec --> 
+
+
+<%if @rollnamequery['role_name']=="admin"%>
+	
+ 	<%= render partial: 'admin' %>
+
+
+<%elsif @rollnamequery['role_name']=="student"  %>
+	
+	<%#= render partial: 'student' %>
+<%elsif @rollnamequery['role_name']=="employee" %>
+	
+	<%#= render partial: 'employee'%>
+
+<%elsif @rollnamequery['role_name']=="parent" %>
+	
+	<%#= render partial: 'parent' %>
+
+<%elsif @rollnamequery['role_name']=="principle" %>
+	
+	<%#= render partial: 'principle_dashboard' %>
+<%end%>
+
+
+<script id="my_vars_json" type="text/json">
+    <%= @roleName.to_json %>
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

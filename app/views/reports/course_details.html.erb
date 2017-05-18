@@ -1,0 +1,20 @@
+<h4 class="mg-h4">Course Batch Detail</h4>
+<table class="batch-tbl">
+	<tr>
+		<th>Course Name</th>
+		<th>Total Batch</th>
+	</tr>
+	<%@courses.each do |course|%>
+	<tr>
+		<td><%=course.course_name%></td>
+		<%@batches=MgBatch.where(:mg_course_id=>course.id,:is_deleted=> 0)%>
+		<%#
+			@batch_name=Array.new
+		%>
+		<%#@batches.each do|batch|%>
+			<%#@batch_name.push(batch.name + ",")%>
+		<%#end%>
+		<td><%=@batches.length%></td>
+	</tr>
+	<%end%>
+</table>

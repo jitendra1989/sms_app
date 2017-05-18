@@ -1,0 +1,56 @@
+<%= render  partial: 'warden_form' %>
+<script>
+$(document).ready(function () {
+	$("#userLoginCreateFormID").validate({
+		rules: {
+			"user[user_name]": {required: true},
+			"user[password]": {required: true},
+			"user[confirm_password]": {required: true}
+		}
+	});
+var urlLink = "/hostel_management/select_employee";
+	var department_id=$("#mg_employee_department_id").val();
+	var user_id=$("#user_user_id_data").val();
+
+	        $.ajax({
+	            url: urlLink ,
+	            cache: false,
+	            data:{department:department_id,user_id:user_id},
+	            success: function(html){
+	            	
+	                  $("#mg_employee_id").empty().html(html.main);
+	               
+	            }
+	        });
+
+});
+$(document).on("change","#mg_employee_department_id",function () {
+	var urlLink = "/hostel_management/select_employee";
+	var department_id=$(this).val();
+	        $.ajax({
+	            url: urlLink ,
+	            cache: false,
+	            data:{department:department_id},
+	            success: function(html){
+	            	
+	                  $("#mg_employee_id").empty().html(html.main);
+	               
+	            }
+	        });
+});
+
+
+ $("#reUserPassword").focusout(function(){
+      var new_password=$("#newUserPassword").val();
+      var retype_password=$(this).val();
+      if(new_password==retype_password)
+      {
+        ("#passwordfeedbackdivId").val("");
+      }
+      else
+      {
+        $("#passwordfeedbackdivId").text("Password doesn't matches..");
+        $("#reUserPassword").val("");
+      }
+    });
+</script>

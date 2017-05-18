@@ -1,0 +1,44 @@
+<table border="1" class="mg-showdata-bg" cellspacing="1" cellpadding="1">
+  <tr>
+    <td valign="top">
+      <label class="mg-label"> <%= t('name')%></label>
+    </td>
+    <td valign="top">
+       <%=@meal_category.try(:name)%>
+    </td>
+  </tr>
+
+  <tr>
+    <td valign="top">
+      <label class="mg-label mg-label-text-transform-none"> <%= t('meal_sequence_of_the_day')%></label>
+    </td>
+    <td valign="top">
+       <%=@meal_category.try(:priority)%>
+    </td>
+  </tr>
+
+  <tr>
+    <td valign="top">
+      <label class="mg-label"> <%= t('description')%></label>
+    </td>
+
+    <td class="mg-td-width-half" valign="top">
+      <div class="text-scroll-for-log-text-cls comments-space">
+        <%= @meal_category.try(:description) %>
+      </div>
+    </td>
+  </tr>
+</table>
+<br/>
+
+<a class="mg-small-form-btn cancel-form-dialog"><%=t("cancel")%></a>
+
+
+
+
+<script type="text/javascript">
+$(document).ready(function () {
+  textSeeMoreLess();
+});
+
+</script>

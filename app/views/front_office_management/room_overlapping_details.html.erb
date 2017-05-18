@@ -1,0 +1,35 @@
+<%if @overlapObj.present?%>
+<h4 class="mg-h5"><%=t('dates_overlapping_with_given_date')%></h4>
+
+<table  class="batch-tbl mg-tbl-margin mg-scroll-faq-bar">
+  <tr class="subject-table-header">
+    <th><%= t('start_date') %></th>
+    <th><%= t('start_time') %></th>
+    <th><%= t('end_date') %></th>
+    <th><%= t('end_time') %></th>
+    <th><%= t('booked_by') %></th>
+    <th><%= t('attendees') %></th>
+  </tr>
+  <% @overlapObj.each do |s| %>
+    <tr>
+      <%@dateFormat = MgSchool.find_by(:id=>session[:current_user_school_id]).date_format 
+      date_time_format=@dateFormat +"     " + "%k:%M%p"%>
+      <td><%=s.try(:start_date).try(:strftime, @dateFormat)%></td>
+      <td><%=s.try(:start_time).strftime("%I:%M %p")%></td>
+      <td><%=s.try(:end_date).try(:strftime, @dateFormat)%></td>
+      <td><%=s.try(:end_time).strftime("%I:%M %p")%></td>
+      <%emp=MgEmployee.find_by(:id=>s.mg_employee_id)%>
+      <td><%= emp.try(:first_name) %> <%= emp.try(:last_name) %></td>
+      <td class="mg-align-center"><%= s.try(:number_of_attendees)%></td>
+    </tr>
+  <% end %>
+</table>
+<%end%>
+
+
+<style>
+.mg-scroll-faq-bar {
+    overflow-y: scroll;
+    width: -moz-available;
+}   
+</style>

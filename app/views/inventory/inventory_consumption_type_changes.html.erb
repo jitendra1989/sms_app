@@ -1,0 +1,5 @@
+<label class="mg-label mg-tt-width" style="width:185px"><%=t('select_consumer_type')%><span class="required-field"> *</span></label>
+<%=select_tag :mg_consumer_type_id,options_for_select([["Student","student"],["Employee","employee"]]),:prompt=>"Select",:class=>"mg-select-btn"%>
+<p id="employee-consumed-p"></p>
+<p id="student-consumed-p"></p>
+

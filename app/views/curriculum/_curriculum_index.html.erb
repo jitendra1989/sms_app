@@ -1,0 +1,71 @@
+<h4 class="mg-h4"><%= t('curriculum') %></h4>
+<%@unit=MgUnit.where(:is_deleted=>0)%>
+      <% @unit.each do |curr| %>
+    
+      <div style="color:#0000FF"><%= curr.unit_name%></div>
+      <p></p>
+      <div>
+      <p><%= curr.description%></p>
+      </div>
+        <%@topics=MgTopic.where(:is_deleted => '0' ,:mg_unit_id => curr)%>
+    
+      <% @topics.each do |topic| %>
+      <!-- <tr> -->
+        <div style="color:#2E8B57"><%= topic.topic_name %></div>
+
+
+ <div><!-- <textarea name="test" rows="2" cols="12"><#%= topic.description %></textarea> -->
+  <p><%= topic.description %></p>
+
+ </div>
+
+
+
+
+
+        <!-- <td><%= topic.description %></td> -->
+       <!--  </tr> -->
+      <%end%>
+<!-- </tr> -->
+<%end%>
+
+
+
+<script>
+$(document).ready(function () {
+ 
+ focusCurrentTab("batchSyllabusCurriculamId","BatchSyllabusCurriculumLiID");
+        //focusCurriculum();
+});
+ </script>
+
+
+<!-- 
+<h4 class="mg-h4"><#%= t('add_syllabus') %></h4>
+
+<#%= form_for :curriculum_managements, url: curriculum_managements_student_curriculum_create_path, :html => {
+                            :id => 'studentCurriculamManagementsID' } do |f| %>
+
+<#%= f.hidden_field :is_deleted, :value => 0 %>
+<#%= f.hidden_field :mg_user_id, :value => session[:user_id] %>
+
+<div class="mg-curriculum-labels">
+	<table>
+		<tr>
+			<td>
+               <#%@subject=MgSubject.pluck(:subject_name, :id)%>
+               <#%=select_tag :mg_subject_id, options_for_select(@subject),:prompt=>"Select A Subject",:onchange=>"mySubjectFunction(this.value)" %><br>
+			</td>
+		</tr>
+	</table>
+</div>
+
+<div id="TopicClassID">
+</div>
+
+<div id="SyllabusShowID">
+</div>
+
+      <#%= f.submit t('submit') %>
+<#% end %> -->
+

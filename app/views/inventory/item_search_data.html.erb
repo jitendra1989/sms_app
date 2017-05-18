@@ -1,0 +1,119 @@
+<%if @items.present?%>
+	<%
+		item_name=""
+		item_code=""
+		#@items[0].each do |item|
+			item_name+=@items[0].try(:name)
+			item_name+=", "
+			item_code+=@items[0].try(:code)
+			item_code+=", "
+		#end
+		nameLength=item_name.length
+		codeLength=item_code.length
+      	reqItemName=item_name.slice(0,nameLength-2)
+      	reqItemCode=item_code.slice(0,codeLength-2)
+	%>
+	<%if @item_name.present? && @item_code.present?%>
+		<h4 class="mg-h4">Result for Name:<%=reqItemName%></h4>
+		<h4 class="mg-h4">Result for Code:<%=reqItemCode%></h4>
+	<%elsif @item_code.present?%>
+		<h4 class="mg-h4">Result for Code:<%=reqItemCode%></h4>
+	<%else%>
+		<h4 class="mg-h4">Result for Name:<%=reqItemName%></h4>
+	<%end%>
+	<div class="mg-scroll-employee-bar">
+	<table border="1" class="mg-showdata-bg mg-homework-tbl" cellspacing="1" cellpadding="1">
+		<tr>
+		<!-- 	<th>
+				<label class="mg-label mg-td-width-half" valign="top"> <%#= t('item_category')%></label>
+			</th> -->
+			<th>
+				<label class="mg-label mg-td-width-half" valign="top"> <%= t('item_name')%></label>
+			</th>
+			<th>
+				<label class="mg-label mg-td-width-half" valign="top"> <%= t('total_available')%></label>
+			</th>
+			<!-- <th>
+				<label class="mg-label mg-td-width-half" valign="top"> <%#= t('quantity_consumed')%></label>
+			</th> -->
+			<th>
+				<label class="mg-label mg-td-width-half mg-label-text-transform-none" valign="top"> <%= t('date_of_expiry')%></label>
+			</th>
+			<th>
+				<label class="mg-label mg-td-width-half" valign="top"> <%= t('remark')%></label>
+			</th>
+			<th class="mg-align-center">
+				<label class="mg-label mg-td-width-half mg-align-center" valign="top" > <%= t('action')%></label>
+			</th>
+		</tr>
+		<%#=@items[0].name%>
+		<%@items=MgInventoryItemManagement.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id], :mg_inventory_item_id=>@items[0].id)%>
+		<%@items.each do |item|%> 
+			<%#
+				item_category=MgInventoryItemCategory.find_by(:id=>item.mg_category_id)
+				item_quantity=MgInventoryItemManagement.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id],:mg_inventory_item_id=>item.id)
+    			quantity_available=0
+    			item_quantity.each do |i_quantity|
+      				quantity_available=quantity_available.to_i + i_quantity.quantity.to_i
+    			end
+    		
+    			item_consumed=MgInventoryItemConsumption.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id],:mg_inventory_item_id=>item.id)
+    			consumed_value=0
+	      		item_consumed.each do |item_c|
+	        		consumed_value=consumed_value.to_i + item_c.quantity_consumed.to_i
+	      		end
+	      		available_quantity=quantity_available - consumed_value
+			%>
+			<tr>
+				<!-- <td><%#=item_category.name%></td> -->
+				<td>
+				<%@items=MgInventoryItem.find_by(:id=>item.mg_inventory_item_id)%>
+				<%=@items.name%></td>
+				<td><%=item.try(:quantity)%></td>
+				<td>
+				<%if item.date_of_expiry.present?%>
+        		<%
+        		@dateFormat = MgSchool.find_by(:id=>session[:current_user_school_id]).date_format
+          		if @dateFormat.present?
+                %>
+                <%=item.date_of_expiry.present? ? item.date_of_expiry.strftime(@dateFormat) : "No Data"%>
+                <%else%><%=t("no_data")%>
+        		<%end%>
+        			<%else%><%=t("no_data")%>
+        		<%end%>
+
+
+
+
+				<%#=item.date_of_expiry%></td>
+				<td><%=item.remark.present? ? item.remark : "No Data" %></td>
+				<td class="mg-align-center"><button title="Show" class="showItemSearch mg-icon-btn" id="<%=item.id%>"><i class="fa fa-eye"></i></button></td>
+			</tr>
+		<%end%>
+	</table>
+	</div>
+	<br/>
+	<%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+<%else%>
+	<br/>
+	<h4>No Results found<h4>
+<%end%>
+<div id="itemShowDialog"></div>
+
+<script type="text/javascript">
+	$(document).on("click",".showItemSearch",function(){
+		var item_id=$(this).attr("id")
+		$.ajax({
+			url:"/inventory/item_management_show/"+item_id,
+			success:function(html){
+				$("#itemShowDialog").dialog({
+				title:"Item Detail",
+				open:function(){
+					$(this).html(html);
+				}
+				});
+			}
+		});
+	});
+	
+</script>

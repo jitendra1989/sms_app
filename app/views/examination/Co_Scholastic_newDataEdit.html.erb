@@ -1,0 +1,63 @@
+<%= form_for :observation, :url=>{:controller=>'examination',:action=>'Co_Scholastic_newDataUpdate',:id=>@observation.id},:html => {:id => 'gradeSetEditDataCategoryNewFormId', :class => 'elm_class',:style => 'elm_style' } do |f| %>
+<%= f.hidden_field :observation_kind,:value=>0%>
+  <div> 
+
+      <p>
+        <label class="mg-label" for="name"> <%= t('name') %><span class="required-field">&nbsp;*</span></label><br/>
+        <%= f.text_field :name ,:class=>"mg-text-field"%>
+      </p>
+      <p>
+        <label class="mg-label" for="header_name"> <%= t('header_name') %><span class="required-field">&nbsp;*</span></label><br/>
+        <%= f.text_field :header_name ,:class=>"mg-text-field"%>
+      </p>
+      <p>
+  <label class="mg-label" for="description"> <%= t('description') %><span class="required-field">&nbsp;*</span></label><br/>
+        <%= f.text_area :description,:class=>"mg-text-field"%>
+      </p>
+     
+<p>
+  <label class="mg-label" for="cce_grades_sets"> <%= t('cce_grades_sets') %><span class="required-field">&nbsp;*</span></label><br/>
+<%=f.select :mg_cce_grades_set_id, options_for_select(@observations,:selected=>@observation.mg_cce_grades_set_id),{:include_blank=>"Select Category"} ,:class=>"mg-select-btn"%><br>
+      </p>
+     
+ <p>
+  <label class="mg-label" for="type"> <%= t('type') %><span class="required-field">&nbsp;*</span></label><br/>
+    <%= f.select :observation_kind, options_for_select([["Co Scholastic Area","3"], ["Co Scholastic Activity","1"],["Scholastic","0"]],:selected=>@observation.observation_kind),{:include_blank=>"Select Category"} ,:class=>"mg-select-btn"%>
+
+</p> 
+  <div style="display:none;">
+      <p>
+        <label for="is_deleted" class="mg-label "><%=t('status')%></label><br />
+        <label for="is_deleted" class="mg-label-inner-form "><%=t('active')%></label>
+        <%= f.radio_button :is_deleted, false , :checked => true%>
+        <label for="is_deleted" class="mg-label-inner-form "><%=t('inactive')%></label>
+        <%= f.radio_button :is_deleted, true %>
+      </p>
+  </div>
+  <p class="mg-p-mgtop">
+       <%#= f.submit t('save') ,:class=>"mg-small-form-btn"%>
+       <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("save")%></a>
+       <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %> 
+  </p>
+<%end%>
+
+
+
+
+<script>
+ $("#gradeSetEditDataCategoryNewFormId").validate({
+        //debug: true,
+        rules: {
+                  "observation[name]": {required: true},
+                  "observation[header_name]": {required: true},
+                  "observation[description]": {required: true},
+                 
+                  "observation[criteria_type]": {required: true},
+                  "observation[mg_cce_grades_set_id]": {required: true},
+                  "observation[observation_kind]": {required: true},
+                  
+                      
+        }
+      });
+ 
+</script>

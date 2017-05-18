@@ -1,0 +1,31 @@
+
+<%@school_id=session[:current_user_school_id]%>
+<table class="mg-tbl-margin mg-show-tbl-width">
+    <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="selectClass"><%= t ('select_class') %><span class="required-field">&nbsp;*</span></label><br/>
+        <%
+        course_data=MgCourse.where(:is_deleted=>0,:mg_school_id=>@school_id).pluck(:course_name,:id)
+        %>
+       <%=select_tag :mg_course_id, options_for_select(course_data),:prompt=>t('select'),:onchange=>"selectedcourseid(this.value)"%>
+      </td>
+    </tr>
+    <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="selectSection"><%= t ('select_section') %><span class="required-field">&nbsp;*</span></label><br/>
+        <div class="select_sections_validate">
+        <%=select_tag :mg_batch_id_for_data, options_for_select([]),:prompt=>t('select'),:class=>"mg_batch_id_for_data",:onchange=>"selectedBatchIdforissue(this.value)"%>
+       </div>
+      </td>
+    </tr>
+    
+    <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="selectStudent"><%= t ('select_student') %><span class="required-field">&nbsp;*</span></label><br/>
+        <div class="select_students">
+
+       <%=select_tag :mg_student_id, options_for_select([]),:prompt=>t('select')%>
+       </div>
+      </td>
+    </tr>
+    </table>

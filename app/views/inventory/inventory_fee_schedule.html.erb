@@ -1,0 +1,138 @@
+<!-- Sec --> 
+<!-- breadcrumbs Work -->
+<%# navigation_add 'Inventory', fees_path %>
+<% navigation_add 'Inventory Fees Schedule', inventory_inventory_fee_schedule_path %>
+<!-- breadcrumbs Work -->
+
+
+<%= render partial: 'inventory_left' %>
+<h4 class="mg-h4"><%= t('inventory_fee_schedule') %></h4>
+<div>
+<!-- <a href='#' id='addNewFeeScheduleID'  >Create New Fee Schedule </a> -->
+<button id='inventoryAddNewFeeScheduleID' class="mg-custom-form-btn">Create Inventory New Fee Schedule</button>
+
+    <% if @fee_collection_list.length > 0 %>
+  <div class="mg_pagination">
+
+    <table class="batch-tbl mg-tbl-margin" >   <!-- border="2" --> 
+      <tr >
+        <th>Name</th>
+        <th><%=t('semester')%></th>
+        <th>Start Date</th>
+        <th>End Date</th>
+        <th>Due Date</th>
+        
+        <th style="width: 9em;" align="center"><%=t('actions')%></th>
+       </tr>
+
+    <%@fee_collection_list.each_with_index do |c| %>
+          <tr>
+            <td><%= c.name %></td>
+            <%@mgBatch=MgBatch.find_by_id( c.mg_batch_id)%>
+            <%if@mgBatch!=nil%>
+
+                <%@course=MgCourse.select(:course_name).find_by_id(@mgBatch.mg_course_id)%>
+                <%if@course!=nil%>
+                  <td><%= @course.course_name %> - <%= @mgBatch.name %></td>
+                <%else%>
+                  <td><%= @mgBatch.name %></td> 
+                <%end%>
+                
+            <%else%>
+                <td></td>
+            <%end%>
+          <% @dateFormat = MgSchool.find_by(5).date_format %>  
+          <td><%= c.start_date.strftime(@dateFormat) %></td>
+            <td><%= c.end_date.strftime(@dateFormat) %></td>
+            <td><%= c.due_date.strftime(@dateFormat) %></td>
+        
+            <td>
+          
+                <button title="Show" id='<%=c.id %>' class="show-fee-schedule-class mg-icon-btn"><i class="fa fa-eye"></i></button>
+                
+              <button title="Edit" id='<%=c.id %>' class="inventory-edit-fee-schedule-class mg-icon-btn"><i class="fa fa-pencil-square-o"></i></button>
+                
+            <span style="left: -2px; position: relative; float: right; top:-2px;"> 
+                <%= link_to "<i class=\"fa fa-trash\"></i>".html_safe,{ action: "inventory_delete_fee_schedule", id: c.id },data: { confirm: "Are you sure?" } ,:title=> "Delete" ,:class=>"mg-icon-btn"%> 
+            </span>
+          </tr>
+
+    <% end %>
+        </table>
+
+      <%= will_paginate @fee_collection_list, :container => false %>
+  </div>
+
+    <% else %>
+      <h5>Please Create Some Fee Schedule... </h5>
+
+    <% end %>
+
+  <div id="createFeeScheduleId"></div>  
+  <div id="showFeeScheduleId"></div>    
+  <div id="editFeeScheduleId"></div>
+</div>
+<%= render partial: 'application/common_left_close' %>
+
+
+<script type="text/javascript">
+    $(document).ready(function(){
+   
+    focusCurrentTab("inventory_fees_scheduleAid","inventory_fees_scheduleLiID");
+    
+    });
+
+
+   $(document).on("click", "#inventoryAddNewFeeScheduleID", function(e){
+        e.preventDefault();
+        var urlLink = "/fees/fee_schedule/";
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            data:{"demo":"demo123"},
+            success: function(html){  
+                  //$('<div class="fancybox-outer" style="padding: 15px; width: auto; height: auto;"></div>').dialog({
+                  $('#createFeeScheduleId').dialog({
+                  
+                    modal: true,
+                    title: "Create Inventory New Fee Schedule",
+                    minWidth: 530,
+                    minHeight: 270,
+                    open: function () {
+                        
+                        $('#createFeeScheduleId').html(html);
+                    }
+                }); 
+               
+            }
+        });
+ });
+
+   $(document).on("click", ".inventory-edit-fee-schedule-class", function(e){
+        e.preventDefault();
+        var feeSheduleID =$(this).attr('id');
+        var urlLink = "/fees/edit_fee_schedule/"+feeSheduleID;
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            data: {"demo":"demo345"},
+            success: function(html){  
+                 // $('<div class="fancybox-outer" style="padding: 15px; width: auto; height: auto;"></div>').dialog({
+                   $('#editFeeScheduleId').dialog({
+                  
+                    modal: true,
+                    title: "Edit Inventory Fee Schedule",
+                    minWidth: 530,
+                    minHeight: 270,
+                    open: function () {
+                        
+                        console.log(this);
+                        $('#editFeeScheduleId').html(html);
+
+                    }
+                }); 
+               
+            }
+        });
+ });  
+</script>

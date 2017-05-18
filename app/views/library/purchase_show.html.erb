@@ -1,0 +1,219 @@
+<table border="1" class="mg-tbl-layout mg-showdata-bg mg-show-tbl-width" cellspacing="1" cellpadding="1">
+   <tr>
+     <td class="mg-td-width-half" valign="top">
+     <label class="mg-label"> <%= t('vendor_name')%></label>
+     </td>
+
+     <td class="mg-td-width-half mg-label-inner-form" valign="top">
+     <%if @purchase.vendor_name.present?%>
+     <%=@purchase.vendor_name%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+     </td>
+ </tr>
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+     <label class="mg-label mg-label-text-transform-none"> <%= t('date_of_purchase')%></label>
+     </td>
+     <td class="mg-td-width-half mg-label-inner-form" valign="top">
+     <% @timeformat=MgSchool.find_by_id(@purchase.mg_school_id)%>
+      <% if @timeformat.present?%>
+      <%= @purchase.date_of_purchase.strftime(@timeformat.date_format) %>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+     </td>
+ </tr>
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+     <label class="mg-label"> <%= t('amount_paid')%></label>
+     </td>
+     <td class="mg-td-width-half mg-label-inner-form" valign="top">
+     <%if @purchase.amount_paid.present?%>
+     <%=@purchase.amount_paid%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+     </td>
+ </tr>
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+     <label class="mg-label"> <%= t('invoice_number')%></label>
+     </td>
+     <td class="mg-td-width-half mg-label-inner-form" valign="top">
+     <%if @purchase.invoice_number.present?%>
+     <%=@purchase.invoice_number%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+     </td>
+ </tr>
+ 
+ </table><br>
+ <%@information=MgResourceInformation.where(:mg_resource_purchase_id=>params[:id],:is_deleted=>0,:mg_school_id=>session[:current_user_school_id])%>
+ <div class="mg-scroll-employee-bar">
+<table border="1" class="mg-table-nowrap mg-showdata-bg mg-show-tbl-width" cellspacing="1" cellpadding="1">
+ 
+<tr>
+<th> <label class="mg-label"> <%= t('resource_category')%></label>
+</th>
+<th> <label class="mg-label"> <%= t('resource_type')%></label>
+</th>
+<th> <label class="mg-label"> <%= t('name/title')%></label>
+</th>
+<th> <label class="mg-label"> <%= t('author')%></label>
+</th>
+<th> <label class="mg-label"> <%= t('volume/edition')%></label>
+</th>
+<th> <label class="mg-label"> <%= t('year')%></label>
+</th>
+<th> <label class="mg-label"> <%= t('publication/company')%></label>
+</th>
+<th> <label class="mg-label"> <%= t('isbn')%></label>
+</th>
+<th> <label class="mg-label"> <%= t('class')%></label>
+</th>
+<th> <label class="mg-label"> <%= t('subjectes')%></label>
+</th>
+<th> <label class="mg-label"> <%= t('cost')%></label>
+</th>
+<th> <label class="mg-label mg-label-text-transform-none"> <%= t('no_of_copies')%></label>
+</th>
+<th> <label class="mg-label"> <%= t('total')%></label>
+</th>
+
+<%@information.each do |info|%>
+<tr>
+     <td class="mg-td-width-half" valign="top">
+     <%if info.mg_resource_category_id.present?
+          category=MgResourceCategory.find_by(:id=>info.mg_resource_category_id)
+          %>
+     <%=category.name%>
+     <%else%>
+     <h5><%="No Data"%></h5>
+     <%end%>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+     <%if info.mg_resource_type_id.present?
+          type=MgResourceType.find_by(:id=>info.mg_resource_type_id)
+          %>
+     <%=type.name%>
+     <%else%>
+     <h5><%="No Data"%></h5>
+     <%end%>
+     </td>
+ 
+     <td class="mg-td-width-half" valign="top">
+     <%if info.name.present?%>
+     <%=info.name%>
+     <%else%>
+     <h5><%="No Data"%></h5>
+     <%end%>
+     </td>
+ 
+     
+     <td class="mg-td-width-half" valign="top">
+         <%if info.author.present?%>
+            <%=info.author%>
+         <%else%>
+            <h5><%="No Data"%></h5>
+         <%end%>
+     </td>
+ 
+     
+     <td class="mg-td-width-half" valign="top">
+     <%if info.volume.present?%>
+     <%=info.volume%>
+     <%else%>
+     <h5><%="No Data"%></h5>
+     <%end%>
+     </td>
+
+     <td class="mg-td-width-half" valign="top">
+     <%if info.year.present?%>
+     <%=info.year%>
+     <%else%>
+     <h5><%="No Data"%></h5>
+     <%end%>
+     </td>
+
+     <td class="mg-td-width-half" valign="top">
+     <%if info.publication.present?%>
+     <%=info.publication%>
+     <%else%>
+     <h5><%="No Data"%></h5>
+     <%end%>
+     </td>
+
+     <td class="mg-td-width-half" valign="top">
+     <%if info.isbn.present?%>
+     <%=info.isbn%>
+     <%else%>
+     <h5><%="No Data"%></h5>
+     <%end%>
+     </td>
+
+     <td class="mg-td-width-half" valign="top">
+     <%if info.mg_course_id.present?%>
+     <%course=MgCourse.find_by(:id=>info.mg_course_id)%>
+     <%=course.code%>
+     <%else%>
+     <h5><%="No Data"%></h5>
+     <%end%>
+     </td>
+
+     <td class="mg-td-width-half" valign="top">
+     <%if info.mg_subject_id.present?%>
+     <%subject=MgManageSubject.find_by(:id=>info.mg_subject_id)%>
+     <%=subject.name%>
+     <%else%>
+     <h5><%="No Data"%></h5>
+     <%end%>
+     </td>
+
+     <td class="mg-td-width-half" valign="top">
+     <%if info.cost.present?%>
+     <%=info.cost%>
+     <%else%>
+     <h5><%="No Data"%></h5>
+     <%end%>
+     </td>
+
+     <td class="mg-td-width-half" valign="top">
+     <%if info.no_of_copy.present?%>
+     <%=info.no_of_copy%>
+     <%else%>
+     <h5><%="No Data"%></h5>
+     <%end%>
+     </td>
+
+     <td class="mg-td-width-half" valign="top">
+     <%if info.total.present?%>
+     <%=info.total%>
+     <%else%>
+     <h5><%="No Data"%></h5>
+     <%end%>
+     </td>
+ </tr>
+
+
+
+ <%end%>
+
+</table>
+</div>
+<br/>
+<%= link_to 'Cancel', library_purchase_path ,:style=>"font-size: 0.8em; color: #297ACC; text-decoration: none;" ,:class=>"mg-custom-form-btn"%>
+<style>
+/*.mg-show-tbl-width {
+    width: 64% !important; 
+}*/
+.table.batch-tbl th {
+    border-color: #363131;
+    border-style: solid;
+    border-width: 1px;
+    padding: 3px;
+    text-align: center;
+}
+</style>

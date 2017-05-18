@@ -1,0 +1,31 @@
+ 
+ <%= form_for :guardian,:html => { :id => 'employeeCProfileAddressEditFormID'}, url: edit_crrespondance_address_by_employee_path(@employee[0].id), method: :patch do |f| %>
+
+       <%=render :partial => 'employees/address' , :locals => {:addresstype => "Temporary"}%>
+
+       
+<p class="mg-p-mgtop">
+       <%#= submit_tag t('save'), class: "submit" ,:class=>"mg-small-form-btn mg-custom-labels" %>
+       <a onclick="$(this).closest('form').submit()" class="submit mg-small-form-btn mg-custom-labels"><%=t("save")%></a>
+        <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+</p>
+<% end %>
+
+<script>
+	$(document).ready(function(){
+
+			      $("#employeeCProfileAddressEditFormID").validate({
+	        //debug: true,
+				rules: {
+	                  "Temporary[address_line1]": {required: true},
+	                  // "Temporary[address_line2]": {required: true},
+	                  "Temporary[city]": {required: true},
+	                  "Temporary[state]": {required: true},
+	                  "Temporary[country]": {required: true},
+	                  "Temporary[pin_code]": {required: true, number: true, minlength: 6,maxlength: 6}
+	              }
+	
+	      });
+	});
+
+</script>

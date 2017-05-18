@@ -1,0 +1,59 @@
+<%if @assignment.present?%>
+<div class="mg-scroll-employee-bar">
+<table border="1" class="mg-showdata-bg mg-homework-tbl" cellspacing="1" cellpadding="1">
+<tr>
+	<th>
+		<label class="mg-label mg-td-width-half" valign="top"> <%= t('teacher')%></label>    
+	</th>
+	<th>
+		<label class="mg-label mg-td-width-half" valign="top"> <%= t('class')%></label>
+	</th>
+	
+	<th>
+		<label class="mg-label mg-td-width-half" valign="top"> <%= t('subject')%></label>
+	</th>
+	<th style="width: 100px;">
+		<label class="mg-label mg-td-width-half" valign="top"> <%= t('submissions')%></label>
+	</th>
+	</tr>
+	<%
+	@assignment.each do |assign|
+	if assign.mg_employee_id.present?
+	%>
+	<tr>
+		<%name=MgEmployee.find_by(:id=>assign.mg_employee_id)%>
+		<td class="mg-td-width-half" valign="top"><%=name.first_name%></td>
+		<%else%>
+			<td class="mg-td-width-half" valign="top"></td>
+		<%end
+		if assign.mg_batch_id.present?%>
+		<%batch=MgBatch.find_by(:id=>assign.mg_batch_id)
+		course=MgCourse.find_by(:id=>batch.mg_course_id)
+		%>
+
+		<td class="mg-td-width-half" valign="top"><%=course.code.to_s%>-<%=batch.name.to_s%></td>
+		<%else%>
+			<td class="mg-td-width-half" valign="top"></td>
+		<%end
+		if assign.mg_subject_id.present?%>
+		<%subject=MgSubject.find_by(:id=>assign.mg_subject_id)%>
+		<td class="mg-td-width-half" valign="top"><%=subject.subject_name.to_s%></td>
+		<%else%>
+			<td class="mg-td-width-half" valign="top"></td>
+		<%end
+
+		assignment_given_count=MgAssignmentSubmission.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id],:mg_assignment_id=>assign.id).count
+		
+		student_submission_count=MgAssignmentSubmission.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id],:mg_assignment_id=>assign.id,:status=>["submitted","completed"]).count
+%>
+		<td class="mg-td-width-half" valign="top"><%=student_submission_count%>/<%=assignment_given_count%></td>
+</tr>
+	<%end%>
+</table>
+</div>
+<br/>
+<%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+<%else%>
+<br/>
+<h4>No Assignment given on particular date<h4>
+<%end%>

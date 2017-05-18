@@ -1,0 +1,78 @@
+<% navigation_add 'Search', multiple_item_search_path %>
+
+<%=render partial:"inventory_left"%>
+<h4 class="mg-h4"><%= t('Search') %></h4>
+
+<p style="display:false" id="search_by_order_numberID">
+	<label class="mg-label" style="width:76px"><%= t('search_by') %><span class="required-field">&nbsp;*</span></label>
+	
+	<%= select_tag :search_by, options_for_select([[t("select"), ""], [t("order_number"), "order_number"], [t("item_name"), "item_name"], [t("item_code"), "item_code"], [t("supplier_name"), "supplier_name"], [t("supplier_code"), "supplier_code"]]) %>
+	</br>
+</p><p>
+	<label class="mg-label" style="width:76px"><%=  %><span class="required-field">&nbsp;</span></label>
+	<%= text_field_tag :search_by_value,nil,:class=>"mg-text-field inventory-order_number-search-field  keyup-search-class" %>
+</p>
+
+<p class="mg-p-mgtop">
+    <button type="button" class="inventory-search-result-submit-btn mg-small-form-btn" style=""><%=t("save")%></button>
+</p>
+
+	<div id="showVendorDIVID"></div>
+	<div id="submitted_items_result_ID"></div>
+
+<%=render partial:"common_left_close"%>
+
+<script>
+	$(document).ready(function(){
+		focusCurrentTab("multiple_item_search_optionAid","multiple_item_search_option_LiID");
+	});
+
+$(".inventory-search-result-submit-btn").click(function(e){
+	e.preventDefault();
+	var search_by=$("#search_by").val();
+	var temp_val=$("#search_by_value").val();
+ if (temp_val!="")
+ {
+ 	var urlLink = "/inventory/inventory_all_search_data/";
+    $.ajax({ 
+               url: urlLink,
+               cache: false,
+               data:
+            {
+                 "temp_val":temp_val , "search_by":search_by
+            },
+            success: function(html){
+                  $("#submitted_items_result_ID").empty();
+                  $("#submitted_items_result_ID").append(html);
+            }  
+    });
+ }
+});
+
+
+
+$(".keyup-search-class").keyup(function(){
+	text_count=$(this).val();
+	if (text_count.length>1)
+	$(".inventory-search-result-submit-btn").click();
+})
+
+function changeItemFunction(a,b){
+        $("#category_wise_item_ID").empty();
+    var vendorId=b;
+    var categoryId=a.value;
+      $.ajax({
+            url: "/inventory/category_wise_item",
+            type: "GET",
+            data: {"mg_category_id":categoryId , "vendor_id":vendorId},
+            success: function(data) {
+             $("#category_wise_item_ID").empty();
+             $("#category_wise_item_ID").append(data);
+            }
+        });
+}
+</script>
+
+<style>
+a { cursor: pointer; cursor: hand; }
+</style>

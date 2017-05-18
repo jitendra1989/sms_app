@@ -1,0 +1,97 @@
+<!-- Sec --> 
+
+ <%= form_for :fesses, :url=>{:controller=>"Inventory",:action=>"inventory_fee_category_create"}, :html => {
+                            :id => 'inventoryFeeCategoryCreateFormId', :class => 'elm_class',
+                            :style => 'elm_style' } do |f| %>
+
+ 
+
+  <div> 
+<%= f.hidden_field :mg_school_id, :value=> session[:current_user_school_id]%>
+<%= hidden_field_tag 'items_categorys_name',"Inventory",:class=>"mg-text-field"%>
+      <p>
+        <%= f.label :name ,:class=>"mg-label"%><br>
+        <%= text_field_tag 'items_categorys_name',"Inventory",:disabled=>true,:class=>"mg-text-field"%>
+      </p>
+     <%items_categories=MgInventoryItemCategory.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:name,:id)%>
+      <p>
+        <%= f.label :item_category ,:class=>"mg-label"%><span class="required-field"> *</span><br>
+        <%= select_tag :name,options_for_select(items_categories),:prompt=>"Select",:onchange=>"inventoryItemCategory(this.value)"%>
+      </p>
+
+       <p id="feess_particularss_datas">
+        
+      </p>
+
+
+
+
+
+
+
+        <div id="delete" style="display:none;">
+      <p>
+
+      <%= f.label :is_deleted, "Is Active" ,:class=>"mg-label"%><br />
+        <label for="is_deleted" class="mg-label-inner-form "><%=t('active')%></label>
+
+        <%= f.radio_button :is_deleted, false , :checked => true%>
+         <label for="is_deleted" class="mg-label-inner-form "><%=t('inactive')%></label>
+
+        <%#= f.label :is_deleted, "In Active", :value => "false" ,:class=>"mg-label-inner-form"%>
+
+        <%= f.radio_button :is_deleted, true %>
+      </p>
+      </div>
+
+      <p class="mg-p-mgtop">
+      <%#= f.submit t('save') ,:class=>"mg-small-form-btn"%>
+      <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("save")%></a>
+       <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+       </p>
+
+  </div>
+
+
+<% end %>
+
+
+<style type="text/css">
+  .mg-scroll-bar{
+      width: 200px;
+      height: 157px;
+      overflow: scroll;
+  }
+</style>
+
+<script>
+  $(document).ready(function(){
+
+    $("#inventoryFeeCategoryCreateFormId").validate({
+      rules: 
+      {
+          "name": {required: true},
+          "inventorySelectedParticulars[]": {required: true},
+          
+      }
+    });
+
+
+  });
+
+  function inventoryItemCategory(datas){
+ var urlLink = "/inventory/inventory_fee_category_item_data/";
+     $.ajax({
+            url: urlLink ,
+            cache: false,
+            data:{"id":datas},
+            success: function(html){
+                  $("#feess_particularss_datas").empty();
+                  $("#feess_particularss_datas").append(html);
+
+               
+            }
+        });
+  }
+</script>
+

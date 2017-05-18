@@ -1,0 +1,37 @@
+<!-- Sec --> 
+
+<%= form_for :student_category, url: student_categories_path ,:html => { :id => "studentCategoryFormID" ,:multipart => true } do |f| %>
+
+	  <%= f.hidden_field :is_deleted, :value => 0 %>
+	  <%= f.hidden_field :mg_school_id, :value => session[:current_user_school_id] %>
+	  <p class="field">
+	    <label class="mg-label" for="name"><%= t('name') %><span class="required-field"> *</span></label><br>
+	    <%= f.text_field :name ,:class=>"mg-text-field" %>
+	  </p>
+	  <p class="field">
+	    
+	  </p>
+	  <p class="actions">
+	    <%#= f.submit t('save') , :class=>"mg-small-form-btn"%>
+		<a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("save")%></a>
+	    <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+	  </p>
+
+<% end %>
+
+<!-- <span class="mg-cncl-btn-align">
+	<button class="cancel-form-dialog btn btn-cancel"><%#= t('cancel') %></button>
+</span> -->
+
+
+<script>
+	$(document).ready(function(){
+		$("#studentCategoryFormID").validate({
+      rules:{
+        "student_category[name]":{required:true}
+      }
+    });
+
+	});
+</script>
+

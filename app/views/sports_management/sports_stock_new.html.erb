@@ -1,0 +1,99 @@
+<% navigation_add t('sports_equipment_stock'),:controller=>'sports_management', 
+:action=>'sports_stock' %>
+<% navigation_add t('New_sports_equipment_stock'),:controller=>'sports_management', :action=>'sports_stock_new' %>
+
+<%=render partial:"sports_left"%>
+<h4 class="mg-h4">New Stock</h4>
+<%=form_for :mg_inventory_item_management,
+url:sports_management_sports_stock_create_path,:html => {:id => 'newItemManagementFormID'} do |f|%>
+	<%= f.hidden_field :is_deleted, :value => 0 %>
+	<%= f.hidden_field :mg_school_id, :value => session[:current_user_school_id] %>
+	<%= f.hidden_field :created_by, :value => session[:user_id] %>
+	<%= f.hidden_field :updated_by, :value => session[:user_id] %>
+	<p>
+		<label class="mg-label mg-tt-width" style="width:185px">
+		<%=t('select_item_category')%><span class="required-field"> 
+		*</span></label>
+		<%=f.collection_select(:mg_inventory_item_category_id,MgInventoryItemCategory.where(:is_deleted=>0, :mg_school_id=>session[:current_user_school_id],:name=>'sports'),:id, :name,{:include_blank => t('select')},:class=>"mg-select-btn",:onchange=>"itemCategoryChangeFunction(this.value)")%>
+	</p>
+
+
+	<p>
+		<label class="mg-label mg-tt-width" style="width:185px"><%=t('select_item_name')%><span class="required-field"> *</span></label>
+		<%=f.select :mg_inventory_item_id,options_for_select([]),:prompt=>"Select",:class=>"mg-select-btn inventory-item-name-class"%>
+	</p>
+
+	<p>
+		<label class="mg-label mg-tt-width" style="width:185px"><%=t('item_unit')%></label>
+		<%=text_field_tag :item_unit_view,nil,:readonly=>true,:class=>"mg-text-field"%>
+	</p>
+
+	<p>
+		<label class="mg-label mg-tt-width" style="width:185px"><%=t('auto_generated_id')%></label>
+		<%=f.text_field :item_prefix,:readonly=>true,:class=>"mg-text-field mg-select-btn"%>
+	</p>
+
+	<p>
+		<label class="mg-label mg-tt-width" style="width:185px"><%=t('label_text')%></label>
+		<%=f.text_field :label_text,:class=>"mg-text-field"%>
+	</p>
+
+<!-- 	<p>
+		<label class="mg-label mg-tt-width" style="width:185px"><%#=t('select_item_type')%><span class="required-field"> *</span></label>
+		<%#=f.select :item_type,options_for_select([["Sale","sale"],["Consumption","consumption"]]),:prompt=>"Select",:class=>"mg-select-btn"%>
+	</p> -->
+
+	<p>
+		<label class="mg-label mg-tt-width" style="width:185px"><%=t('select_room')%><span class="required-field"> *</span></label>
+		<%=f.collection_select(:mg_inventory_room_id,MgInventoryRoomManagement.where(:is_deleted=>0, :mg_school_id=>session[:current_user_school_id]),:id, :room_no,{:include_blank => t('select')},:class=>"mg-select-btn",:onchange=>"roomChangeFunction(this.value)")%>
+	</p>
+	<p>
+		<label class="mg-label mg-tt-width" style="width:185px"><%=t('select_rack')%><span class="required-field"> *</span></label>
+		<%=f.select :mg_inventory_rack_id,options_for_select([]),:prompt=>"Select",:class=>"mg-select-btn"%>
+	</p>
+	<p>
+		<label class="mg-label mg-tt-width" style="width:185px"><%=t('quantity')%><span class="required-field"> *</span></label>
+		<%=f.text_field :quantity,:class=>"mg-text-field"%>
+	</p>
+
+	<p>
+		<label class="mg-label mg-tt-width mg-label-text-transform-none" style="width:185px"><%=t('date_of_expiry')%></label>
+		<%=f.text_field :date_of_expiry,:class=>"mg-text-field inventory-date-of-expiry-class"%>
+	</p>
+
+	<p class="mg-p-mgtop">
+    	<a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("save")%></a>
+    	<%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+	</p>
+	
+<%end%>
+<%= render partial: 'application/common_left_close' %>
+
+<script>
+$(document).ready(function(){
+
+	dateFormatStr =  getJsDateFormat();
+    $( ".inventory-date-of-expiry-class").datepicker({ changeMonth: true,
+                changeYear: true,yearRange: "-0:+50",minDate: "0" ,dateFormat: dateFormatStr});
+
+	focusCurrentTab("itemManagementAID","itemManagementLiID");
+	$("#newItemManagementFormID").validate({
+		rules: {
+			"mg_inventory_item_management[mg_inventory_item_category_id]": {required: true},
+			"mg_inventory_item_management[mg_inventory_item_id]": {required: true},
+			"mg_inventory_item_management[mg_inventory_room_id]": {required: true},
+			"mg_inventory_item_management[mg_inventory_rack_id]": {required: true},
+			"mg_inventory_item_management[item_type]": {required: true},
+			"mg_inventory_item_management[quantity]": {required: true,number:true,min: 0}
+			// "mg_inventory_item_management[minimum_quantity]": {number:true,min: 0}
+		}
+	});
+});
+
+
+$(document).ready(function(){
+  focusCurrentTab("sportsStockAID","sportsStockLiID");
+});
+
+
+</script>

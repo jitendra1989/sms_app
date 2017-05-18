@@ -1,0 +1,95 @@
+/* comm */
+// Place all the styles related to the MgActions controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+
+.mg_pagination {
+    background: white;
+    cursor: default;
+  /* self-clearing method: */;
+}
+
+.mg_pagination a, .mg_pagination span, .mg_pagination em {
+    padding: 0.2em 0.5em;
+    display: block;
+    float: left;
+    margin-right: 1px;
+}
+
+.mg_pagination .disabled {
+    color: #999999;
+    border: 1px solid #dddddd;
+}
+
+.mg_pagination .current {
+    font-style: normal;
+    font-weight: bold;
+    background: #343131;
+    color: white;
+    border: 1px solid #343131;
+}
+
+.mg_pagination a {
+    text-decoration: none;
+    color: #343131;
+    border: 1px solid #343131;
+}
+
+.mg_pagination a.link-pagination {
+    background: linear-gradient(to bottom, #ffffff, #f2f2f2);
+    background: -khtml-linear-gradient(to bottom, #ffffff, #f2f2f2);
+    background: -moz-linear-gradient(to bottom, #ffffff, #f2f2f2);
+    background: -ms-linear-gradient(to bottom, #ffffff, #f2f2f2);
+    background: -o-linear-gradient(to bottom, #ffffff, #f2f2f2);
+    background: -webkit-linear-gradient(to bottom, #ffffff, #f2f2f2);
+    border: 1px solid #B8B8B8;
+    border-radius: 5px;
+    color: #363131;
+    font-size: 1em;
+    margin-right: 4px;
+    padding: 1px 5px 2px;
+    position: relative;
+    top: 1.5px;
+}
+
+.mg_pagination a.link-pagination:hover {
+    border: 1px solid #B8B8B8;   
+}
+
+.mg_pagination a:hover, .mg_pagination a:focus {
+   /* color: #000033;*/
+    border-color: #000033;
+}
+
+.mg_pagination .page_info {
+    background: #2e6ab1;
+    color: white;
+    padding: 0.4em 0.6em;
+    width: 22em;
+    margin-bottom: 0.3em;
+    text-align: center;
+}
+
+.mg_pagination .page_info b {
+    color: #000033;
+    background: #6aa6ed;
+    padding: 0.1em 0.25em;
+}
+
+.mg_pagination:after {
+    content: ".";
+    display: block;
+    height: 0;
+    clear: both;
+    visibility: hidden;
+}
+
+* html .mg_pagination {
+    height: 1%;
+}
+
+*:first-child + html .mg_pagination {
+    overflow: hidden;
+}
+

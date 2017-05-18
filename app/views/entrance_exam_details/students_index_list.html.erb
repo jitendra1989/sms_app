@@ -1,0 +1,54 @@
+<% if @student_marks_list.length>0 %>
+  <h4 class="mg-h4"><%=t('student_list')%></h4>
+  <div class="mg-scroll-employee-bar mg-btn-bottom-margin">
+  
+    
+    <table class="batch-tbl mg-tbl-margin table-batchs-tbl">
+      <tr class="subject-table-header">
+        <th><%= t('student_id') %></th>
+        <th><%= t('name') %></th>
+        <th class="mg-rm-text-trans"><%= t('dateofbirth') %></th>
+        <th><%= t('index') %><span class="required-field"> *</span></label></th>  
+      </tr>
+      
+      <tbody id="">  
+        <% @student_marks_list.each do |f| %>
+          <%= hidden_field_tag "student_admisstion_id[]" , f.id %>
+
+          <tr class="">
+            <td class="mg-align-center"><%= f.try(:student_temporary_id) %></td>            
+            <td class="mg-capitalize-text"><%= f.try(:first_name) %>&nbsp;<%= f.try(:middle_name) %>&nbsp;<%= f.try(:last_name) %></td>
+            <% @dateFormat = MgSchool.find_by(:id=>session[:current_user_school_id]).date_format %>
+            <td class="mg-align-center"><%= f.try(:date_of_birth).try(:strftime,@dateFormat) %></td>   
+            </td>
+            
+            <td class="mg-align-center">
+              <%= text_field_tag "index[#{f.id}]",f.selection_index,:placeholder => "Selection Index",:id=>"studentmarks_#{f.id}", class: 'mg-text-field student_admission_index_cls' %>
+            </td>
+          </tr>                      
+        <% end %>
+      </tbody>      
+    </table>
+  </div>  
+  <p class="mg-p-mgtop">
+    <a onclick="$(this).closest('form').submit()" id="" class="submit mg-small-form-btn"><%=t("save")%></a> 
+    <%=link_to t('cancel'),:back,:class=>"mg-small-form-btn"%>
+  </p>
+<% else %>
+    <h5 class="mg-custom-labels"><%= t('no_student_display') %></h5>
+<% end %>
+
+<script>
+$(document).ready(function(){ 
+
+  $.validator.addClassRules({
+    student_admission_index_cls:{
+      required: true
+    }
+  });
+  $("#studetnIndexFormID").validate();
+});
+
+
+</script>
+

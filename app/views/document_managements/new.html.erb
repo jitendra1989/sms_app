@@ -1,0 +1,84 @@
+
+
+ <%= form_for :document_managements, url: document_managements_path, :html => {
+                            :id => 'documentManagementsFormID' } do |f| %>
+
+  <!-- <p>
+    <%#= f.label :name, t('name')%><span class="required-field"> *</span><br>
+    <%#= f.text_field :name   %>
+  </p> -->
+  <p>
+
+    <%= f.label :file, 'Add documents ‎(5MB max)‎' ,:class=>"mg-label"%><span class="required-field"> *</span><br>
+    <%= f.file_field :file ,:onchange =>"validateFiles(this);",:data => {:max_file_size => 5.megabytes}  %>
+  </p>
+
+   <p>
+ 
+    <%= f.hidden_field :mg_user_id, :value=>session[:user_id]%>
+    <%= f.hidden_field :mg_employee_folder_id, :value=>@mg_employee_folder_id%>
+
+  </p>
+
+
+<p>
+  <%=f.hidden_field :is_deleted, :value=>0%>
+</p>
+
+<%= f.hidden_field :mg_school_id, :value => session[:current_user_school_id]%>
+  <%#=session[:current_user_school_id]%>
+
+  <%#= f.hidden_field :mg_school_id, :value => 5%> 
+  <%= f.hidden_field :created_by, :value => session[:user_id]%> 
+  <%= f.hidden_field :updated_by, :value => session[:user_id]%> 
+
+  <p class="mg-p-mgtop">
+    <%#= f.submit t('submit') ,:class=>"mg-small-form-btn"%>
+    <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("save")%></a>
+    <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+
+<% end %>
+
+<script>
+$(document).ready(function () {
+$("#documentManagementsFormID").validate({
+
+rules: {
+"document_managements[name]": {required: true},
+"document_managements[file]": {required: true}
+
+}
+});
+});
+
+
+function validateFiles(inputFile) {
+  var maxExceededMessage = "This file exceeds the maximum allowed file size (5 MB)";
+  // var extErrorMessage = "Only image file with extension: .jpg, .jpeg, .gif or .png is allowed";
+  // var allowedExtension = ["jpg", "jpeg", "gif", "png"];
+  var allowedExtension = [];
+
+  
+  var extName;
+  var maxFileSize = $(inputFile).data('max-file-size');
+  var sizeExceeded = false;
+  var extError = false;
+  
+  $.each(inputFile.files, function() {
+    if (this.size && maxFileSize && this.size > parseInt(maxFileSize)) {sizeExceeded=true;};
+    extName = this.name.split('.').pop();
+    if ($.inArray(extName, allowedExtension) == -1) {extError=true;};
+  });
+  if (sizeExceeded) {
+    window.alert(maxExceededMessage);
+    $(inputFile).val('');
+  };
+  
+  // if (extError) {
+  //   window.alert(extErrorMessage);
+  //   $(inputFile).val('');
+  // };
+}
+</script>
+
+

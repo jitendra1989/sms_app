@@ -1,0 +1,36 @@
+<h4 class="mg-h4">Current Address</h4> 
+ <%= form_for :guardian,:html => { :id => 'guardianStudentProfileCAddressEditFormID'}, url: student_Caddress_update_by_guardian_path(@student[0].id), method: :patch do |f| %>
+
+       <%=render :partial => 'students/address_with_street' , :locals => {:addresstype => "Correspondance"}%>
+
+       <br/>
+
+       <%= submit_tag t('save'), class: "submit" ,:class=>"mg-small-form-btn mg-inner-tbl-align" %><!-- <button id="cancelEditStudentProfileBTNID"><%#=t('cancel')%></button> --> <%= link_to t('cancel'), '#', {:class=>"mg-small-form-btn cancel-form-dialog"} %>			
+<% end %>
+
+<script>
+
+$(document).on("click", "#cancelEditStudentProfileBTNID", function(e){
+  $(".ui-dialog-titlebar-close").click();
+});
+	$(document).ready(function(){
+
+			      $("#guardianStudentProfileCAddressEditFormID").validate({
+	        //debug: true,
+				rules: {
+	                  "Correspondance[address_line1]": {required: true},
+	                  // "Correspondance[address_line2]": {required: true},
+	                  // "Correspondance[street]": {required: true},
+	                  "Correspondance[city]": {required: true},
+	                  "Correspondance[state]": {required: true},
+	                  "Correspondance[country]": {required: true},
+	                  "Correspondance[pin_code]": {required: true, number: true,minlength: 6,maxlength: 6}
+	              },
+	              messages: {
+        			"Correspondance[pin_code]": {minlength: "Please enter 6 digits.",maxlength: "Please enter only  6 digits"}
+    			}
+	
+	      });
+	});
+
+</script>

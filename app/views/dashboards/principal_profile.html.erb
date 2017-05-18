@@ -1,0 +1,377 @@
+<!-- Sec --> 
+
+<!-- Partial left content -->
+<%= render partial: 'principle_dashboard_left' %>
+
+<section id="viewStudentID" style="margin: 0 auto;">
+<div>
+    <table class="mg-tbl-size-width">
+        <tr>
+             <td valign="top">
+              <aside class="userMenuBoxLeft" style="width: 150px;">
+                <div class="empleftbx">
+                    <div class="empimgbx" style="padding:10px 10px 0;">
+                         <%= image_tag @employee.photo.url(:medium, timestamp: false),:class => 'img-size'  %>
+                                <div>
+                                <%= @employeequery['first_name'] %>&nbsp; <%= @employeequery['middle_name'] %> &nbsp;<%= @employeequery['last_name'] %>
+                            </div>
+                    </div>
+                    <div class="clear"></div>
+                    <div class="prof_detail">
+                        
+                        <span>
+                        <strong style="padding:14px 0 20px 10px; font-size: 0.9em;"><%= t('employeenumber') %> :</strong>
+                        <%= @employeequery['employee_number'] %><br/>
+                        </span>
+
+                        
+                        <button class="change-password-btn mg-custom-form-btn mg-custom-labels mg-btn-bottom-margin" id="principleChangePasswordID"><%= t('changepassword')%></button>
+
+                        <%= link_to 'Download Profile', {:controller => "principals", :action => "pdf_gen",:id =>@employee.id },:target=>"_blank",:class=>"mg-custom-form-btn mg-text-margin mg-custom-labels" %>
+
+                    </div>
+                    <div class="clear"></div>
+                    <div class="clear"></div>
+                </div>
+                </aside>
+            </td>
+            <td valign="top">
+                <h4 class="mg-h4"><%= t('general') %></h4>
+                <table class="mg-tbl-size-width">
+                    <tr>
+                        <td class="mg-td-width-half">
+                            <label class="mg-label mg-form-width"><%= t('employeenumber') %></label>
+                            <label><%= @employeequery['employee_number'] %></label>
+                        </td>
+                        <td class="mg-td-width-half">
+                            <label class="mg-label mg-form-width"><%= t('joining date') %></label>
+                                <% @id = @employeequery['mg_school_id'] %>  
+                                <% @dateFormat = MgSchool.find_by(@id).date_format %> 
+                                
+
+
+                                <%if @employeequery['joining_date'].present? %>
+
+                             <label><%= @employeequery['joining_date'].strftime(@dateFormat) %></label>
+                             <%end%>
+                        </td>
+                        
+                    </tr>
+                    </table>
+
+                 <h4 class="mg-h4"><%= t('general details') %></h4>
+                    <table class="mg-tbl-size-width">
+                    <tr>
+                        <td class="mg-td-width-half">
+                            <label class="mg-label mg-form-width"><%= t('name') %></label>
+                            <label class="mg-label-inner-form"><%= @employee.first_name %>&nbsp;<%= @employee.middle_name %>&nbsp;<%= @employee.last_name %></label>
+                        </td>
+                        
+                    </tr>
+                    <tr>
+                        <td  class="mg-td-width-half">
+                            <label class="mg-label mg-form-width"><%= t('gender') %></label>
+                            <label class="mg-capitalize-text mg-label-inner-form"><%= @employee['gender'] %></label>
+                        </td>
+                        <td  class="mg-td-width-half">
+ 
+                                <%puts "====================================="%>  
+                                <%puts @employee.date_of_birth%>
+                                <%puts "====================================="%>  
+
+
+
+                            <label class="mg-label mg-rm-text-trans mg-form-width"><%= t('dateofbirth') %></label>
+                                <% @id = @employee.mg_school_id %>  
+                                <% @dateFormat = MgSchool.find_by(@id).date_format %>
+                                
+                             <label class="mg-label-inner-form">
+                            <%if @employee.date_of_birth.present?%>
+                             <%= @employee.date_of_birth.strftime(@dateFormat) %>
+                            <%end%>
+                             </label>
+                        </td>
+                        
+                        
+                    </tr>
+                    <tr>
+                         <td class="mg-td-width-half">
+                                 <label class="mg-label mg-form-width"><%= t('mother tongue') %></label>
+                            <label class="mg-label-inner-form"><%=@employee.language%></label>
+                        </td>
+                         <td class="mg-td-width-half">
+                            <label class="mg-label mg-form-width"><%= t('bloodgroup') %></label>
+                            <label class="mg-label-inner-form"><%= @employee.blood_group %></label>
+                        </td>
+
+                    </tr>
+                    <tr>
+                        <td class="mg-td-width-half"><label class="mg-label mg-form-width"><%= t('job title') %></label>
+                    
+                           <label><%= @employee.job_title%></label></td>
+                        <td class="mg-td-width-half"><label class="mg-label mg-form-width"><%= t('qualification') %></label>
+                           <label class="mg-label-inner-form"><%= @employee.qualification%></label>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class="mg-td-width-half">
+                        <label class="mg-label mg-form-width"><%= t('total year experience') %></label>
+                           <label class="mg-label-inner-form"><%= @employee.experience_year%></label>
+                        </td>
+                         <td class="mg-td-width-half">
+                        <label class="mg-label mg-form-width"><%= t('total month experience') %></label>
+                           <label class="mg-label-inner-form"><%= @employee.experience_month%></label>
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                        <td class="mg-td-width-half">
+                            
+                        </td>
+                        <td class="mg-td-width-half">
+                         
+                    </tr>
+                    </table>
+                     <h4 class="mg-h4"><%= t('personal details') %></h4>
+                     <table class="mg-tbl-size-width">
+                         <tr>
+                             <td class="mg-td-width-half">
+                                  <label class="mg-label mg-form-width"><%= t('marital status') %></label>
+                            <label><%= @employee.marital_status %></label>
+                             </td>
+                            <td class="mg-td-width-half">
+                                  <label class="mg-label mg-form-width"><%= t("Mother's Name") %></label>
+                                    <label><%= @employee.mother_name %></label>
+                             </td>
+                         </tr>
+
+                          <tr>
+                             <td class="mg-td-width-half" >
+                                  <label class="mg-label mg-form-width"><%= t("Father's Name") %></label>
+                            <label ><%=@employee.father_name %></label>
+                             </td>
+                            <td class="mg-td-width-half">
+                                  <label class="mg-label mg-form-width"><%= t("nationality") %></label>
+                                    <label><%=@employee.nationality %></label>
+                             </td>
+                         </tr>
+                     </table>
+
+                    <h4 class="mg-h4"><%= t('temporaryaddress') %>
+                        <button class="principle-c-address-edit-btn mg-icon-btn mg-edit-right-btn" id=""><i class="fa fa-pencil-square-o"></i></button></h4>
+                         <table class="mg-tbl-size-width">
+                    <tr>
+                        <td >
+                            <label class="mg-label mg-form-width"><%= t('addressline1') %></label>
+                            <label><%= @address[0].address_line1 %></label>
+                        </td>
+                        <td>
+                            <label class="mg-label mg-form-width"><%= t('addressline2') %></label>
+                            <label><%= @address[0].address_line2 %></label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label class="mg-label mg-form-width"><%= t('city') %></label>
+                            <label><%= @address[0].city %></label>
+                        </td>
+                        <td class="mg-td-width-half">
+                            <label class="mg-label mg-form-width"><%= t('state') %></label>
+                            <label><%= @address[0].state %></label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="mg-td-width-half">
+                            <label class="mg-label mg-form-width"><%= t('pincode') %></label>
+                            <label><%= @address[0].pin_code %></label>
+                        </td>
+                        <td class="mg-td-width-half">
+                            <label class="mg-label mg-form-width"><%= t('country') %></label>
+                            <label><%= @address[0].country %></label>
+                        </td>
+                    </tr>
+                    </table>
+                   
+                    <h4 class="mg-h4"><%= t('permanentaddress') %>
+
+                    <button class="principle-p-address-edit-btn mg-icon-btn mg-edit-right-btn" id=""><i class="fa fa-pencil-square-o"></i></button></h4>
+
+                     <table class="mg-tbl-size-width">
+                    <tr>
+                        <td class="mg-td-width-half">
+                            <label class="mg-label mg-form-width"><%= t('addressline1') %></label>
+                            <label><%= @address[1].address_line1 %></label>
+                        </td>
+                        <td class="mg-td-width-half">
+                            <label class="mg-label mg-form-width"><%= t('addressline2') %></label>
+                            <label><%= @address[1].address_line2 %></label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="mg-td-width-half">
+                            <label class="mg-label mg-form-width"><%= t('city') %></label>
+                            <label><%= @address[1].city %></label>
+                        </td>
+                        <td class="mg-td-width-half">
+                            <label class="mg-label mg-form-width"><%= t('state') %></label>
+                            <label><%= @address[1].state %></label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="mg-td-width-half">
+                            <label class="mg-label mg-form-width"><%= t('pincode') %></label>
+                            <label><%= @address[1].pin_code %></label>
+                        </td>
+                        <td class="mg-td-width-half"> 
+                            <label class="mg-label mg-form-width"><%= t('country') %></label>
+                            <label><%= @address[1].country %></label>
+                        </td>
+                    </tr>
+                    </table>
+                   
+
+                    <h4 class="mg-h4"><%= t('contactdetails') %>
+                    <button class="principle-contact-edit-btn mg-icon-btn mg-edit-right-btn" id=""><i class="fa fa-pencil-square-o"></i></button></h4>
+                    <table class="mg-tbl-size-width">
+                    <tr>
+                        <td class="mg-td-width-half">
+                            <label class="mg-label mg-form-width"><%= t('phonenumber') %></label>
+                            <label>
+                            <%if @contact[0].present? %>
+                            <%= @contact[0].phone_number %>
+                            <%end%></label>
+                        </td>
+                       <td class="mg-td-width-half">
+                            <label class="mg-label mg-form-width"><%= t('mobilenumber') %></label>
+                            <label>+91-
+                            <%if @contact[1].present? %>
+                            <%= @contact[1].phone_number %>
+                            <%end%></label>
+                        </td> 
+                    </tr>
+                    </table>
+                    <table>
+                        <tr>
+                            <td style="mg-email-form-width">
+                                <label class="mg-label mg-form-width"><%= t('emailid') %></label>
+                                <label><%if @email[0].present? %><%= @email[0].mg_email_id %><%end%>
+                            </label>
+                            </td>
+                        </tr>
+                    </table>
+            </td>
+        </tr>
+    </table>
+</div>
+<div id="principleChangePasswordDialogID"></div>
+
+<!-- Partial left content -->
+<%= render partial: 'application/common_left_close' %>
+<div id="editPrincipalCAddressDialogDiv" class="mg-pop-up-padding" style="overflow: hidden;"></div>
+<div id="editPrincipalPAddressDialogDiv" class="mg-pop-up-padding" style="overflow: hidden;"></div>
+<div id="editPrincipalContactDialogID" class="mg-pop-up-padding" style="overflow: hidden;"></div>
+
+<script type="text/javascript">
+    
+
+ $(document).ready(function(){
+
+    focusCurrentTab("viewPrincipleProfile","viewPrincipleProfileLiID");
+    focusDashboards();
+
+});
+$(document).on("click","#principleChangePasswordID",function(){
+                        //alert("setting btn clicked");
+            var urlLink = "/dashboards/principle_change_password";
+           // alert(urlLink);
+            $.ajax({
+                url: urlLink ,
+                cache: false,
+                success: function(html){
+                      $('#principleChangePasswordDialogID').dialog({
+                        modal: true,
+                        minHeight: 260,
+                        minWidth:300,
+                        title: "Change Password",
+
+                        open: function () {
+                            $(this).html(html);
+                        }
+                    }); 
+                }
+            });
+    });
+
+
+     $(document).on("click",".principle-contact-edit-btn",function(){
+                        // alert("setting btn clicked");
+            var urlLink = "/dashboards/edit_principal_contact/9";
+           // alert(urlLink);
+            $.ajax({
+                url: urlLink ,
+                cache: false,
+                success: function(html){
+                      $('#editPrincipalContactDialogID').dialog({
+                        modal: true,
+                        minHeight: 300,
+                        minWidth:680,
+                        title: "Edit Contact Detail",
+
+                        open: function () {
+                            $(this).html(html);
+                        }
+                    }); 
+                }
+            });
+
+});
+
+     $(document).on("click",".principle-p-address-edit-btn",function(){
+            var urlLink = "/dashboards/edit_principal_permanent_address/9";
+            $.ajax({
+                url: urlLink ,
+                cache: false,
+                success: function(html){
+                      $("#editPrincipalPAddressDialogDiv").dialog({
+                        modal: true,
+                        minHeight: 300,
+                        minWidth:680,
+                        title: "Edit Permanent Address",
+
+                        open: function () {
+                            $(this).html(html);
+                        }
+                    }); 
+                }
+            });
+
+});
+
+     $(document).on("click",".principle-c-address-edit-btn",function(){
+            var urlLink = "/dashboards/edit_principal_correspondnce_address/9";
+            $.ajax({
+                url: urlLink ,
+                cache: false,
+                success: function(html){
+                      $('#editPrincipalCAddressDialogDiv').dialog({
+                        modal: true,
+                        minHeight: 300,
+                        minWidth:680,
+                        title: "Edit Current Address",
+
+                        open: function () {
+                            $(this).html(html);
+                        }
+                    }); 
+                }
+            });
+
+});
+
+
+
+
+
+
+</script>

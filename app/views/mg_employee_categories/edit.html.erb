@@ -1,0 +1,49 @@
+<!-- Sec --> 
+<%= form_for @mg_employee_category, url:  mg_employee_category_path, method: :patch, html: {role: :form,:id=>"editCategoryFormID"} do |f| %>
+  <p>
+    <%= f.label t('categoryname') ,:class=>"mg-label"%><span class="required-field">&nbsp;*</span><br>
+    <%= f.text_field :category_name ,:class=>"mg-text-field"%>
+  </p>
+   <p>
+    <%= f.label t("prefix") ,:class=>"mg-label"%><span class="required-field">&nbsp;*</span><br>
+    <%= f.text_field :prefix ,:class=>"mg-text-field"%>
+  </p>
+   <p>
+    <%= f.label t("suffix") ,:class=>"mg-label"%><span class="required-field">&nbsp;*</span><br>
+    <%= f.text_field :suffix ,:class=>"mg-text-field"%>
+  </p>
+<div style="display:none">
+  <p>
+      <%= f.label t("status") ,:class=>"mg-label"%>       <br />
+      <%= f.label :status, t("active"), :value => "true" ,:class=>"mg-label-inner-form" %>
+      <%= f.radio_button :status, false , :checked => true%>
+      <%= f.label :status, t("inactive"), :value => "false" ,:class=>"mg-label-inner-form"%>
+      <%= f.radio_button :status, true %> <br />
+    </p>
+</div>
+  <p>
+    <%= f.submit t("save") ,:class=>"mg-small-form-btn"%>
+     <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+  </p>
+<% end %>
+
+<!-- <span class="mg-cncl-btn-align">
+<button class="cancel-form-dialog btn btn-cancel"><%#= t('cancel') %></button>
+</span> -->
+
+<script>
+ 
+$(document).ready(function(){
+
+   $("#editCategoryFormID").validate({
+      rules: {
+        
+        "mg_employee_category[category_name]": {required:true},
+              "mg_employee_category[prefix]": {required:true},
+              "mg_employee_category[suffix]": {required:true}
+      }
+      });
+
+
+});
+ </script>

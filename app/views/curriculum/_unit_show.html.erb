@@ -1,0 +1,63 @@
+<% navigation_add 'Unit', :controller => 'curriculum', :action => 'unit_show' %>
+<!-- Sec --> 
+<%@curriculum=MgUnit.where(:is_deleted => '0',:mg_school_id=>session[:current_user_school_id])%>
+ <h4 class="mg-h4"><%= t('curriculum_management') %></h4>
+<%= button_to 'Add Unit', {:controller => "curriculum", :action => "unit_index" } ,:class=>"mg-custom-form-btn"%>
+
+<%if @curriculum.length>0%>
+<div>
+
+<table  class="batch-tbl mg-tbl-margin">   <!-- border="2" --> 
+  <tr class="subject-table-header">
+    <th><%=t('syllabus')%></th>
+  	<th><%=t('name')%></th>
+    <th><%=t('description')%></th>
+    <!-- <th><%#=t('durationinhr')%></th>
+    <th><%#=t('durationinmin')%></th> -->
+     <th>Periods Alloted</th>
+     <th><%=t('actions')%></th>
+  </tr>
+ 
+  <% @curriculum.each do |curr| %>
+    <tr>
+      <!-- <td> <#%@temp=Syllabus.find_by_id( curr.mg_syllabus_id)%>
+      <#%= @temp.class_name%></td> -->
+      <!-- <td><#%= curr.mg_syllabus_id %></td> -->
+      <td>
+      <%syllabus=MgSyllabus.where(:id=>curr.mg_syllabus_id)%>
+          <%=syllabus[0].name%>
+
+      </td>
+      <td><%= curr.unit_name %></td>
+      <td><%= curr.description %></td>
+      <!-- <td><%= curr.hour %></td>
+       <td><%= curr.min %></td> -->
+       
+
+     <%if curr.time!=nil%>
+      <th><%=curr.time%></th>
+      <%else%>
+      <td></td>
+      <%end%>
+
+
+      <td>
+      <%= link_to "<i class=\"fa fa-pencil-square-o\"></i>".html_safe, {:controller => "curriculum", :action => "unit_edit",:id =>curr.id } , :method=>'post' ,:title=>"Edit" ,:class=>"mg-icon-btn"%>
+      <%= link_to "<i class=\"fa fa-trash\"></i>".html_safe, {:controller => "curriculum", :action => "unit_delete",:id =>curr.id } , :method=>'post' ,:title=>"Delete" ,:class=>"mg-icon-btn" ,data: { confirm: 'Are you sure to delete?' }%>
+      </td>
+
+    </tr>
+  <% end %>
+</table>
+</div>
+<%else%>
+  <h5>No Units created...</h5>
+<%end%>
+
+<script>
+$(document).ready(function () {
+
+focusCurrentTab("unitCurriculamManagementsAID","unitLiID");
+        //focusCurriculum();
+      });
+</script>

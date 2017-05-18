@@ -1,0 +1,191 @@
+<p>
+
+    <%= label :next_round_date, t('next_round_date') ,:class=>"mg-label mg-rm-text-trans"%><span class="required-field"> *</span><br>
+    <%= text_field_tag :next_round_date,@student_list.next_round_date %>
+
+  </p>
+
+  <p>
+
+    <%= label :select_rounds, t('select_rounds') ,:class=>"mg-label mg-rm-text-trans"%><span class="required-field"> *</span><br>
+
+    <%=select_tag :mg_interview_round_id,options_for_select(@rounds_array,:selected=>@student_list.mg_interview_round_id),:prompt=>"Select" %>
+   
+
+  </p>
+  <%=hidden_field_tag :round_data,@id_array%>
+  <div class="mg-scrl-width-bar ">
+
+  <table border="1" class="mg-showdata-bg batch-tbl mg-tbl-margin" cellspacing="1" cellpadding="1">
+  <tr>
+  	<th>Student Name</th>
+  	<th>Admission Number</th>
+  	<% (1..10).each do |i| %>
+        <% if @placement_data.public_send("round#{i}").present? %>
+         
+               	 <% round_data=MgInterviewRound.find_by(:id=>@placement_data.public_send("round#{i}"))%>
+                  <th>  <%= "Round "+ i.to_s%>(<%= round_data.name %>)</th>
+                  <th><%= "Round "+ i.to_s%><%=" date"%></th>
+   
+        <% end %>
+    <% end %>
+  	
+  </tr>
+  <%@student_data.each_with_index do |data,index|%>
+<tr>
+	
+	<td><%="#{data.first_name} #{data.last_name}"%></td>
+	<td><%=data.admission_number%></td>
+<% (1..10).each do |i| %>
+        <% if @placement_data.public_send("round#{i}").present? %>
+         	 <% round_data=MgInterviewRound.find_by(:id=>@placement_data.public_send("round#{i}"))%>
+            <%if round_data.id.to_i==@interview.id.to_i%>
+            <%#=@placement_data_array[index].is_round_selected%>
+           <td>  <%=check_box_tag "student_id_data[#{data.id}]",round_data.id,@placement_data_array[index].is_round_selected,:class=>"class#{round_data.id}"%>
+        
+                  <td><%= text_field_tag "interview_data[#{data.id}]",@placement_data_array[index].interview_selected_date,:class=>"class1#{round_data.id} date_picker_texts_fields_clsses data_filed_class"%></td>
+   
+   <%else%>
+      <td>  <%=check_box_tag "student_id_data[#{data.id}]",round_data.id,false,:disabled=>true,:class=>"class#{round_data.id}"%></td>
+                  <td><%= text_field_tag "interview_data[#{data.id}]",nil,:disabled=>true,:class=>"class1#{round_data.id} date_picker_texts_fields_clsses data_filed_class"%></td>
+     <%end%>
+        <% end %>
+    <% end %>
+
+</tr>
+<%end%>
+
+  </table> 
+  </div>
+
+  <script>
+
+  dateFormatStr =  getJsDateFormat();
+
+ $( "#next_round_date" ).datepicker({ 
+            changeMonth: true,
+            changeYear: true,yearRange: "-50:+10",maxDate: "10000",
+            dateFormat: dateFormatStr})
+  var next_round_date =  $.datepicker.formatDate(dateFormatStr,new Date($('#next_round_date').val()));
+      
+      $('#next_round_date').val(next_round_date);
+
+ $('.date_picker_texts_fields_clsses').each(function(){
+      $(this).removeAttr('id').removeClass('hasDatepicker'); // added the removeClass part.
+      $('.date_picker_texts_fields_clsses').datepicker({changeMonth: true,
+            changeYear: true,yearRange: "-50:+10",maxDate: "10000",
+            dateFormat: dateFormatStr});
+
+       var round_date =  $.datepicker.formatDate(dateFormatStr,new Date($(this).val()));
+      if (round_date=="NaN/NaN/NaN"){
+      $(this).val("");
+     
+    }
+    else{
+       $(this).val(round_date);
+    }
+
+      
+
+    }); 
+
+ $(document).ready(function () {
+  var data=$("#mg_interview_round_id").val();
+    var data1=$("#round_data").val();
+    
+    $(".class"+data).removeAttr("disabled");
+    $(".class"+data).each(function(){
+     if($(this).prop("checked") == true){
+
+              // var data=$(this).val();
+               //$(this).parent().siblings().find(".class1"+data).removeAttr("disabled");
+                //$(this).siblings().css({"color": "red", "border": "2px solid red"})
+
+            }
+            else if($(this).prop("checked") == false){
+
+              var data=$(this).val();
+               //$(this).parent().siblings().find(".class1"+data).val("");
+               $(this).parent().siblings().find(".class1"+data).attr("disabled", true);
+            }
+
+});
+});
+
+  
+
+$(document).on("change","#mg_interview_round_id",function(){
+    var data=$(this).val();
+    var data1=$("#round_data").val();
+    console.log(data1)
+    for (i = 0; i < data1.length; i++) {
+    //$(".class"+data1[i]).prop("checked", false);
+    //$(".class"+data1[i]).val("");
+    $(".class"+data1[i]).attr("disabled", true);
+    $(".class1"+data1[i]).attr("disabled", true);
+
+     
+ }
+ $(".class"+data). removeAttr("disabled");
+    $(".class"+data).each(function(){
+
+      if($(this).prop("checked") == true){
+
+               var data=$(this).val();
+               $(this).parent().siblings().find(".class1"+data).removeAttr("disabled");
+                //$(this).siblings().css({"color": "red", "border": "2px solid red"})
+
+            }
+
+});
+  });
+
+$('input[type="checkbox"]').click(function(){
+
+            if($(this).prop("checked") == true){
+
+               var data=$(this).val();
+               $(this).parent().siblings().find(".class1"+data).removeAttr("disabled");
+                //$(this).siblings().css({"color": "red", "border": "2px solid red"})
+
+            }
+
+            else if($(this).prop("checked") == false){
+
+              var data=$(this).val();
+               $(this).parent().siblings().find(".class1"+data).val("");
+               $(this).parent().siblings().find(".class1"+data).attr("disabled", true);
+            }
+
+        });
+
+//   $(document).on("change","#mg_interview_round_id",function(){
+//   	var data=$(this).val();
+//   	var data1=$("#round_data").val();
+//   	console.log(data1)
+//   	for (i = 0; i < data1.length; i++) {
+//   	//$(".class"+data1[i]).prop("checked", false);
+//   	//$(".class"+data1[i]).val("");
+//     $(".class"+data1[i]).attr("disabled", true);
+//     $(".class1"+data1[i]).attr("disabled", true);
+     
+//  }
+//   	$(".class"+data).removeAttr("disabled");
+   
+//     $(".class"+data).each(function(){
+
+//       if($(this).prop("checked") == true){
+
+//                var data=$(this).val();
+//                $(this).parent().siblings().find(".class1"+data).removeAttr("disabled");
+//                 //$(this).siblings().css({"color": "red", "border": "2px solid red"})
+
+//             }
+
+
+
+// })
+
+
+//   });
+  </script>

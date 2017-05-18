@@ -1,0 +1,65 @@
+
+
+<% navigation_add 'Examinations', examinations_path %>
+<% navigation_add 'Exam Report', examination_report_center_path %>
+<% navigation_add 'View Report', examination_exam_wise_reports_path %>
+
+<%= render  partial: 'examination_table_left' %>
+
+<h4 class="mg-h4">Exam Wise Report</h4>
+<div>
+  <%= form_for :exam_report, :url=>{:controller=>'examination',:action=>'generated_report'} do |f| %>
+
+<!--   <label class="mg-label"><%#= image_tag("/images/examination/show_exam.png") %></label> -->
+
+
+  <%
+   # :onChange =>remote_function(:url => {:controller=>"examination",:action =>'list_exam_types'}, :with => "'id=' + $('#exam_report_mg_batch_id').val()")
+  %>
+  <div>
+
+      <% unless flash[:notice].nil? %>
+      <h5 class="flash-msg"> <%= flash[:notice] %> </h5>
+    <% end %>
+
+  <div>
+  <%#= select :exam_report, :mg_batch_id,
+     @batches.map {|b| [b.full_name, b.id]},:prompt => "select_a_batch", :html_options=>{:onchange=>"myreportFunction(this.value);"}%>
+     <label class="mg-label mg-tt-width"><%="Select Section"%></label>
+     <%=select_tag :mg_batch_id,options_from_collection_for_select(@batches,"id","full_name"),:prompt=>"Select",:onchange=>"myreportFunction(this.value)"%>
+  </div>
+
+  <div class="examinationreportID">
+  </div>
+<br>
+  <%#= f.submit t('view'), :class => "submit_button mg-small-form-btn" %>
+  <a onclick="$(this).closest('form').submit()" class="submit_button mg-small-form-btn"><%=t("view")%></a>
+  <%end%>
+  </div>
+</div>
+<%= render  partial: 'examination_table_close' %>
+<script>
+  $(document).ready(function() {
+        focusCurrentTab("viewResultAID","viewResultLiID");
+        focusExaminationHeaderBox();
+  });
+
+
+function myreportFunction(batchid){
+    var urlLink = "/examination/list_exam_types/";
+      
+  
+        $.ajax({
+            url: urlLink ,
+            data:{"mg_batch_id":batchid},
+            cache: false,
+            success: function(data){
+                //alert("hii")
+            //console.log(html);
+            $(".examinationreportID").empty();
+            $(".examinationreportID").append(data);
+        }
+       
+      }); 
+    }
+</script>

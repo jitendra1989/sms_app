@@ -1,0 +1,131 @@
+<%= render  partial: 'vehicle_left' %>
+<% navigation_add 'Vehicles', vehicles_path %>
+<% navigation_add 'Add Report', vehicles_vehicle_report_index_path %>
+
+<% navigation_add 'New', vehicles_vehicle_report_new_path %>
+
+
+
+ <%if flash[:error].present?%>
+  <div class="alert alert-info mg-success-msg">
+
+        <%=flash[:error]%>
+  <div class="alert alert-info mg-success-msg">
+        
+   <%end%>
+<h4 class="mg-h4"><%= t('Add Report')%></h4>
+<div class="box">
+<%= form_for :vehicle_report ,  :url=>{:controller=>'vehicles',:action=>'vehicle_report_create'}, :html=>{:id=>'vehicle_report_form',:multipart => true} do |f| %>
+
+        <%= f.hidden_field :is_deleted ,:value=>0%>
+        <%= f.hidden_field :mg_school_id ,:value=>@school_id%>
+        <%#= f.text_field :vehicle_number ,:class=>"mg-text-field"%>
+        
+<table class="pop-up-inner-text mg-tbl-margin mg-show-tbl-width">
+    <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="selectVehicle"><%= t ('select_vehicle') %><span class="required-field">&nbsp;*</span></label><br/>
+          <%=f.select :mg_vehicle_id	,options_for_select(@vehicle_index),:prompt=>"Select"%><br>
+
+     
+      </td>
+    </tr>
+    <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="selectReportType"><%= t ('select_report_type') %><span class="required-field">&nbsp;*</span></label><br/>
+
+        <%=f.select :mg_report_type_id,options_for_select(@add_payment_type),:prompt=>"Select"%><br>
+      </td>
+    </tr>
+     <tr>
+      
+      <td class="mg-td-width-one-third">
+        <label class="mg-label"  for="vendorName"><%#= t ('vendor_name') %></label><br/>
+        <%#= f.text_field :vendor_name ,:class=>"mg-text-field mg-end-time-field"%>
+      </td>
+    </tr>
+    <tr>
+    <tr>
+      
+      <td class="mg-td-width-one-third">
+        <label class="mg-label"  for="validFrom"><%= t ('payment_date') %></label><br/>
+        <%= f.text_field :valid_from ,:class=>"mg-text-field mg-end-time-field"%>
+      </td>
+    </tr>
+    <tr>
+    <td>
+        <label class="mg-label" for="validTo"><%= t ('valid_to') %></label><br/>
+          <%= f.text_field :valid_to,:class=>"mg-text-field"%>
+      </td>
+    </tr>
+    <tr>
+      
+      <td class="mg-td-width-one-third">
+        <label class="mg-label"  for="amount"><%= t ('amount') %></label><br/>
+        <%= f.text_field :amount ,:class=>"mg-text-field mg-end-time-field"%>
+      </td>
+    </tr>
+    <tr>
+    <tr>
+    <tr>
+    <td>
+        <label class="mg-label" for="comments"><%= t ('comments') %></label><br/>
+         <%= f.cktext_area :comments,:class=>"mg-text-field"%>
+    </tr>
+
+    <tr>
+    <td>
+        <label class="mg-label" for="LastServiceDate"><%= t ('upload_report') %></label><br/>
+        <div>
+        <div class="student_file_file_div" id="dueFineDivId" style="float: left; width: 100%;">
+   <span style="float: left;">
+         <%= file_field_tag 'files[]' %>
+ 
+</span>
+  <a href="#" class="reports-upload mg-custom-form-btn mg-icon-btn" style="color: #297ACC; font-size:0.8em; float: left; position: relative; right: 0px; margin-top: 3px;"><i class="fa fa-trash"></i></a>
+ </div>
+  <a href="#" id="add_file_reports_uploads" class="mg-label-inner-form mg-custom-form-btn mg-icon-btn" style="color: #297ACC; font-size:0.8em;" ><i class="fa fa-plus">&nbsp;Add File</i></a> <br/>
+  </div>
+          
+      </td>
+    </tr>
+    
+</table>
+<br/> <p class="mg-custom-labels">
+<%= submit_tag t("save"),:class=>"mg-small-form-btn"%>
+ <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+ </p>
+  </div>
+<%end%>
+
+<%=render partial: 'vehicle_left_close'%>
+<script>
+ $(document).ready(function(){
+
+
+  focusCurrentTab("vehiclereportAssociateAID","vehiclereportAssociateLiID");
+
+dateFormatStr =  getJsDateFormat();
+
+    $('#vehicle_report_valid_from').datepicker({ changeMonth: true,
+                changeYear: true,yearRange: "-50:+0",maxDate: "0",dateFormat: dateFormatStr});
+
+    $('#vehicle_report_valid_to').datepicker({ changeMonth: true,
+                changeYear: true,yearRange: "-50:+50",dateFormat: dateFormatStr});
+
+
+    $("#vehicle_report_form").validate({
+      rules:{
+        "vehicle_report[mg_vehicle_id]":{required:true},
+        "vehicle_report[mg_report_type_id]":{required:true}
+        
+      },
+     });
+
+
+});
+
+
+    
+ 
+</script>

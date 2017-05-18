@@ -1,0 +1,66 @@
+<% navigation_add 'Unit', :controller => 'curriculum', :action => 'unit_show' %>
+<% navigation_add 'Add Unit', curriculum_unit_show_path %>
+
+
+ <h4 class="mg-h4"><%= t('add_unit') %></h4>
+ <div>
+<%= form_for :curriculum, url: curriculum_unit_create_path, :html => {
+                            :id => 'unitCurriculamManagementsID' } do |f| %>
+<!--#Syllabus.where(:is_deleted => '0')-->
+<%= f.hidden_field :is_deleted, :value => 0 %>
+<%= f.hidden_field :mg_school_id, :value => session[:current_user_school_id] %>
+<p>
+<label class="mg-label" style="width:140px"><%= t('selectsyllabus') %><span class="required-field">&nbsp;*</span></label>
+<br/>
+<%= f.collection_select(:mg_syllabus_id,MgSyllabus.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]), :id, :name,{:include_blank => t("select")},:class => "unit-syllabus-id-class")%>
+</p>
+<p>
+    <label class="mg-label" style="width:140px"><%= t('unitname') %><span class="required-field">&nbsp;*</span></label>
+    <br/>
+   <%= f.text_field :unit_name,:class=>"mg-text-field" %>
+ </p>
+ <p>
+    <label class="mg-label" style="width:140px"><%= t('description') %></label><br/>
+   <%= f.text_area :description ,:class=>"mg-text-field" %>
+ </p>
+
+
+ <p>
+    <label class="mg-label" style="width:140px"><%= t('periods_alloted') %><span class="required-field">&nbsp;*</span></label>
+    <br/>
+   <%= f.text_field :time ,:class=>"mg-text-field" %>
+
+ </p>
+
+<!--  <p>
+    <label class="mg-label" style="width:140px"><%#= t('duration') %><span class="required-field">*</span></label>
+    <br/>
+   <%= f.text_field :hour ,:class=>"mg-text-field" %>
+   <%= f.text_field :min ,:class=>"mg-text-field" %>
+ </p> -->
+ <p class="mg-p-mgtop">
+    <%#= f.submit t('save') ,:class=>"mg-small-form-btn"%>
+    <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("save")%></a>
+    <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+  </p>
+<% end %>
+</div>
+<script>
+$(document).ready(function () {
+
+focusCurrentTab("unitCurriculamManagementsAID","unitLiID");
+        //focusCurriculum();
+  
+$("#unitCurriculamManagementsID").validate({
+
+
+rules: {
+"curriculum[mg_syllabus_id]": {required: true},
+"curriculum[unit_name]": {required: true},
+"curriculum[time]": {required: true}
+//"curriculum[hour]": {required: true},
+//"curriculum[min]": {required: true}
+}
+});
+});
+// </script>

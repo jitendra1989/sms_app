@@ -1,0 +1,34 @@
+ <%= form_for :type_of_query_type, :url=>{:action=>"type_of_query_create"}, :html => {
+                            :id => 'type_of_query_fom_id' } do |f| %>
+
+  <p>
+    <%= f.label :name, t('name') ,:class=>"mg-label"%><span class="required-field"> *</span><br>
+    <%= f.text_field :name, :class=>"mg-text-field"%>
+  </p>
+  <p>
+    <%= f.label :description, t('description') ,:class=>"mg-label"%><br>
+    <%= f.text_area :description, :class=>"mg-text-field"%>
+  </p>
+  <%= f.hidden_field :mg_school_id, :value => session[:current_user_school_id]%>
+
+  <%= f.hidden_field :created_by, :value => session[:user_id]%> 
+  <%= f.hidden_field :updated_by, :value => session[:user_id]%> 
+
+  <%= f.hidden_field :is_deleted, :value => 0%> 
+
+  <p class="mg-p-mgtop">
+    <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("save")%></a>
+    <a class="mg-small-form-btn cancel-form-dialog"><%=t('cancel')%></a>
+  </p>
+<% end %>
+
+<script>
+$(document).ready(function () {
+$("#type_of_query_fom_id").validate({
+
+rules: {
+"type_of_query_type[name]": {required: true}
+}
+});
+});
+</script>

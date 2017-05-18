@@ -1,0 +1,16 @@
+<% navigation_add t('albums'), student_albums_path %>
+
+<%= render partial: 'dashboards/student_dashboard_left' %>
+<%= render partial: 'album_list' %>
+
+
+<%= render partial: 'application/common_left_close' %>
+
+
+<script>
+$(document).ready(function () {
+	focusCurrentTab("viewStudentAlbumAID","viewStudentAlbumLiID");
+      focusDashboards();
+
+});
+</script>

@@ -1,0 +1,50 @@
+<!-- Sec --> 
+<h3>Reset All Employee Leaves</h3>
+
+<a href='#', id='88' class="select_reset_all_class">Reset</a>
+
+
+<h3>Department Reset</h3>
+<a href='#', id='88' class="departmentResetclass">Reset</a>
+
+
+
+<div id ="show-dept-reset" style="display:none">
+<%= form_for :employees_attendances, url: employees_attendances_path, :html => {
+                                    :id => 'elm_id', :class => 'elm_class',
+                                    :style => 'elm_style' } do |f| %>
+        <table>
+            <tr>
+            <td><%= f.collection_select(:mg_dept_id, MgEmployeeDepartment.all, :id, :department_name, :prompt => 'Select Department') %></td>
+
+            </tr>
+            <tr>
+                <td>  <input type="submit" id="88" class="dept-reset" value="Reset" name="commit"></td>
+            </tr>
+
+
+        </table>
+<% end %>
+</div>
+
+<h3>Individual Reset</h3>
+<a href='#', id='848' class="individualResetclass">Reset</a>
+
+ <div id ="show-indi-reset" style="display:none"> 
+
+<%= form_for :employees_attendances, url: employees_attendances_path, :html => {
+                                    :id => 'elm_id', :class => 'elm_class',
+                                    :style => 'elm_style' } do |f| %>
+        <table>
+            <tr>
+            <td><%= f.collection_select(:mg_dept_id, MgEmployeeDepartment.all, :id, :department_name, :prompt => 'Select Department') %></td>
+
+            </tr>
+            <tr>
+                <td>  <input type="submit" id="88" class="dept-reset" value="Reset" name="commit"></td>
+            </tr>
+
+
+        </table>
+<% end %>
+ </div> 

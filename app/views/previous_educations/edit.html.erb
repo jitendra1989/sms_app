@@ -1,0 +1,53 @@
+<!-- Sec --> 
+
+ 
+<%= form_for :previous_educations, url: previous_education_path, id: @previous_educations.id, method: :patch do |f| %>
+                        
+<p>
+<label class="mg-label" for="school_name"><%= t('school_name') %>  </label>
+   <br>
+   <%= f.text_field :school_name %>
+ </p>
+ <p>
+    <%= f.label :course %><br>
+    <%= f.text_field :course   %>
+  </p>
+ 
+  <p>
+    <%= f.label :year %><br>
+    <%= f.text_field :year %>
+  </p>
+
+
+   <p>
+    <%= f.label :marks_obtained ,:class=> "mg-label"%><br>
+    <%= f.text_field :marks_obtained,:class=>"mg-text-field"%>
+  </p>
+
+  <p>
+    <%= f.label :total_marks %><br>
+    <%= f.text_field :total_marks %>
+  </p>
+  
+  <p>
+    <%= f.submit t('save'),:class=>"mg-small-form-btn" %>
+    <%= button_tag "Back",:type => 'button',:class => "backBtn", :onclick => "location.href = '#{students_path()}'" %>
+  </p>
+<% end %>
+ 
+<% link_to 'Back',previous_educations_path %>
+
+<script>
+$(document).ready(function () {
+$("#elm_id").validate({
+
+rules: {
+"previous_educations[school_name]": {required: true},
+"previous_educations[course]": {required: true},
+"previous_educations[year]": {required: true, minlength: 4,  number: true},
+"previous_educations[total_marks]" :{required: true, number: true}
+
+}
+});
+});
+</script>

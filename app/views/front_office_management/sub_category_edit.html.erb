@@ -1,0 +1,44 @@
+
+<%#= render  partial: 'laboratory/laboratry_left' %>
+
+ <div class="mg-custom-labels">
+
+<%= form_for :category, :url=>{:controller=>'front_office_management',:action=>'sub_category_update',:id=>@category.id},:html => {:id => 'subCategoryUpdateID' } do |f| %>
+<%= f.hidden_field :is_deleted, :value => 0 %>
+<%= f.hidden_field :mg_school_id, :value => session[:current_user_school_id] %>
+<%= f.hidden_field :updated_by, :value => session[:user_id] %>
+
+<p>
+    <label class="mg-label" style="width:140px"><%= t('select_category') %><span class="required-field">&nbsp;*</span></label>
+    <br/>
+
+    <%= f.collection_select(:mg_faq_category_id,MgFaqCategory.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]), :id, :category_name,{:include_blank => t("select")},:class => "mg-select-btn")%>
+</p>
+
+
+<p>
+    <label class="mg-label" style="width:140px"><%= t('sub_category') %><span class="required-field">&nbsp;*</span></label>
+    <br/>
+   <%= f.text_field :sub_category_name,:class=>"mg-text-field" %>
+</p>
+
+<p class="mg-p-mgtop">
+    <!-- <%#= f.submit t('save') ,:class=>"mg-small-form-btn"%> -->
+    <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("save")%></a>
+    <%#= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+<a class="mg-small-form-btn cancel-form-dialog"><%=t("cancel")%></a>
+
+</p>
+<% end %>
+</div>
+<%#= render  partial: 'application/common_left_close' %>
+
+<script>
+$("#subCategoryUpdateID").validate({
+        rules: {        
+        "category[mg_category_id]": {required: true},
+        "category[sub_category_name]": {required: true},
+        "category[mg_faq_category_id]": {required: true}
+      }
+    });
+</script>

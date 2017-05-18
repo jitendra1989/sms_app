@@ -1,0 +1,110 @@
+<%= render  partial: 'master_settings/master_settings_left' %>
+
+<h4 class="mg-h4"><%=t('select_library_incharge')%></h4>
+<%=form_for :select_incharge, :url=>{:controller=>'library',:action=>'library_incharge_create'},:html=>{:id=>"library_settings_data"} do |f|%>
+
+      
+
+
+
+        <%= f.hidden_field :is_deleted ,:value=>0%>
+        <%= f.hidden_field :mg_school_id ,:value=>@school_id%>
+
+
+
+<table class="mg-tbl-margin mg-show-tbl-width mg-inner-table-align">
+
+    <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="selectDepartment"><%= t('select_department') %><span class="required-field">&nbsp;*</span></label><br/>
+      
+
+          <span style="margin-right:50px; vertical-align: top;">
+        <%
+        department_data=MgEmployeeDepartment.where(:is_deleted=>0, :mg_school_id=>session[:current_user_school_id]).pluck(:department_name,:id)
+        %>
+    <%=select_tag :notSelectedemployee, options_for_select(department_data),:multiple => true,:size =>10, :class=>"mg-add-library-particular"%>
+    </span>
+    
+ <!--  <a  id="addingdatas" class="mg-custom-form-btn mg-fee-btn">Select Dept</a>  -->
+<span id="selected_students" style="vertical-align: top;">
+<%=select_tag :selectedEmployees,options_for_select([]),:multiple => true,:size =>10 ,:class=>"mg-add-library-particular"%>
+</span>
+<a  id="addingemployeedatas" class="mg-custom-form-btn mg-add-rem-btn">Add</a> 
+
+<span id="removing_employees" style="display: inline-block;">
+<%
+library_employee_data=MgLibraryEmployee.where(:mg_school_id=>session[:current_user_school_id],:is_deleted=>0).pluck(:mg_employee_id)
+@employee_data=MgEmployee.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id],:id=>library_employee_data).pluck(:first_name,:id)
+%>
+<%=select_tag :selected_employees,options_for_select([]),:multiple => true,:size =>10 ,:class=>"mg-add-library-particular"%>
+</span>
+
+<a  id="removingdata" class="mg-custom-form-btn mg-add-rem-btn">Remove</a>
+</td>
+    </tr>
+
+    </table>
+    <br/>
+    <br/>
+ <%= f.submit t('save'), class: "submit mg-small-form-btn mg-custom-labels",:id=>"input_field"%>
+      <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+<%end%>
+
+<%= render  partial: 'schools/school_left_close' %>
+
+<script>
+$(document).on("click","#notSelectedemployee",function(e){
+    
+    var dept_values=$("#notSelectedemployee").val();
+   
+ $.ajax({
+            url: "/library/library_select_employees",
+            type: "GET",
+            data: {"dept_data":dept_values},
+            dataType: "html",
+            success: function(data) {
+              //console.log(data);
+               // $(".fee-particular-admission-number-cls").empty();
+               // $(".fee-particular-admission-number-cls").append(data);
+             $("#selected_students").empty();
+
+             $("#selected_students").append(data);
+             
+              
+            },
+            error:function(){
+              alert("Something went wrong!");
+            }
+        });
+    
+});
+
+$(document).on("click","#input_field",function(e){
+  
+$("#selected_employees option").prop('selected',true)
+ 
+});
+ $(document).on("click","#addingemployeedatas",function(e){
+
+
+
+ var selectedOption=$("#selectedEmployees option:selected").remove();
+
+$("#selected_employees").append(selectedOption);
+
+
+  });
+
+
+$(document).on("click","#removingdata",function(e){
+
+var selectedOption=$("#selected_employees option:selected").remove();
+
+$("#selectedEmployees").append(selectedOption);
+
+  });
+
+
+
+</script>

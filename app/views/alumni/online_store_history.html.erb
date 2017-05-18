@@ -1,0 +1,177 @@
+<% navigation_add 'Online Store', :controller=>'alumni', :action=>'online_store' %>
+<% navigation_add 'History', :controller=>'alumni', :action=>'online_store_history' %>
+
+<%=render partial: 'alumni_left'%>
+<%#= link_to t('back'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+<button  class="mg-small-form-btn" onclick="window.location.href='/alumni/online_store'"><%= t('back')%></button>
+</br></br>
+
+<h4 class="mg-h4">Item List</h4>
+ 	<% if @online_store_history.present?%>
+ 	<div class="mg-onlineStore-width-bar">
+ 	<table class="mg-tbl-layout" width="100%" >
+	<%@online_store_history.group(:order_number).each do |items|%>
+		<!-- items.order_number -->
+		<tr class="mg-h4"><td><%=t('order_number')%> : <%=items.order_number%></td></tr>
+		<tr class="item-online-store-list-tr-cls tr-onlene-store-hidtory" id="<%=items.id%>-itemOnlineStoreListTRID" >
+			<td class="mg-td-width-half">
+			<%order_item_uniq=[]%>
+			<%@online_store_history.where(:order_number=>items.order_number).order(:mg_inventory_item_id).each do |item|%>
+				<%order_item_uniq.push(item.mg_inventory_item_id)%>
+				<%if order_item_uniq.count(item.mg_inventory_item_id)<2%>
+					<table style="border: 1px solid black;" class="mg-tbl-layout" width="100%">
+						<tr>
+							<td>
+								<table width="100%">
+									<tr >
+										<td width="10%"><%=t('name')%></td>
+										<td width="2%"> : </td>
+										<td width="28%"><%=item.mg_inventory_item.try(:name).try(:capitalize)%></td>
+										<td></td>
+									</tr>
+									<tr>
+										<td><%=t('price')%></td>
+										<td> : </td>
+										<td><%=item.price.to_f.round(2)%></td>
+										<td></td>
+
+									</tr>
+									<tr>
+										<td><%=t('quantity')%></td>
+										<td> : </td>
+										<td><%#=item.required_quantity%><%=@online_store_history.where(:order_number=>item.order_number, :mg_inventory_item_id=>item.mg_inventory_item_id).sum(:required_quantity)%></td>
+										<td></td>
+
+									</tr>
+									<tr>
+										<td><%=t('status')%></td>
+										<td> : </td>
+										<td>
+											<%colorr_status="	"
+												if(item.try(:status)=='pending')
+													colorr_status='Black'
+												elsif item.try(:status)=='accepted'
+													colorr_status='green'
+												elsif item.try(:status)=='rejected'
+													colorr_status='red'
+												elsif item.try(:status)=='shipped'
+													colorr_status='green'
+												elsif item.try(:status)=='delivered'
+													colorr_status='green'
+												end
+											%>
+											<font color="<%=colorr_status%>"><%=item.try(:status).try(:capitalize)%></font>
+										</td>
+										<td></td>
+
+									</tr>
+									<tr>
+										<td><%=t('order_date')%></td>
+										<td> : </td>
+										<td><%=item.created_at.present? ? item.created_at.strftime(@school.date_format) : ""%></td>
+										<td></td>
+
+									</tr>
+									<tr>
+										<td><%=t('order_number')%></td>
+										<td> : </td>
+										<td><%=item.try(:order_number)%></td>
+										<td></td>
+
+									</tr>
+
+									<tr>
+										<td><strong><%=t('total_price')%></strong></td>
+										<td> : </td>
+										<td><strong><%=(item.price.to_f*(@online_store_history.where(:order_number=>item.order_number).sum(:required_quantity)).to_i).to_f.round(2)%></strong></td>
+										<td></td>
+
+									</tr>
+								</table>
+
+						</td>
+						<td>
+							 <%mg_document_management=item.mg_inventory_item.mg_document_managements.find_by(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id])%>                 
+							<div class="img-show" id="<%#=i.mg_category_id%>-<%#=i.id%>-MgCategoryID">
+								<a class="online-shop-inventory-item-show-details-cls" id="<%#=i.id%>-onlineShopInventoryItemShowDetailsAID">
+									<img src="<%=mg_document_management.present? ? mg_document_management.file.url : ""%>" alt="Fjords" width="300" height="200">
+								</a>
+							</div>
+						</td>
+				
+
+				
+					</tr>
+				</table>
+				<%end%>
+			<%end%>
+			</td>
+			
+		</tr>
+
+	<%end%>
+	</table>
+	<%else%>
+	<p>No items in cart</p>
+	<%end%>
+	</div>
+</div>
+
+
+
+
+
+
+
+
+
+
+<%= render  partial: 'application/common_left_close' %>
+<script>
+$(document).ready(function(){
+  focusCurrentTab("alumniOnlineStoreAID","alumniOnlineStoreLId");
+});
+</script>
+<style type="text/css">
+	
+div.img-show {
+    margin: 5px;
+    border: 1px solid #ccc;
+    float: left;
+    width: 120px;
+}
+
+div.img-show:hover {
+    border: 1px solid #777;
+}
+
+div.img-show img {
+    width: 100%;
+    height: 100px;
+}
+
+div.desc {
+    padding: 15px;
+    text-align: center;
+}
+
+.tr-onlene-store-hidtory {
+    border-radius: 25px;
+    border-bottom	: 2px solid #d9d9d9;
+    height: 150px;    
+}
+
+.tr-onlene-store-hidtory td {
+	padding: 1px 8px;
+}
+
+.mg-onlineStore-width-bar {
+	border: 1px solid #b2b2b2;
+    display: inline-block;
+    height: 500px;
+    max-width: 735px;
+    min-height: 400px;
+    overflow-y: scroll;
+}
+
+</style>

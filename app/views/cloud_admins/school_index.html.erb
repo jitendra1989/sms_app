@@ -1,0 +1,19 @@
+
+<!-- Partial left content -->
+<%= render partial: 'dashboards/cloud_admin_dashboard_left' %>
+<!-- Partial Index -->
+<%= render partial: 'schools/index' %>
+<!-- Partial Section close-->
+<%= render partial: 'application/common_left_close' %>
+
+
+<script type="text/javascript">
+
+ $(document).ready(function() {
+
+    focusCurrentTab("viewCloudAdminDashboardSchoolList","viewCloudAdminDashboardSchoolListLiID");
+    focusDashboards();
+
+});
+
+</script>

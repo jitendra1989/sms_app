@@ -1,0 +1,59 @@
+<% navigation_add 'Section Syllabus List', :controller => 'curriculum', :action => 'batch_syllabus_show' %>
+<% navigation_add 'Edit Syllabus Section', :controller => 'curriculum', :action => 'batch_syllabus_edit' %>
+
+
+
+
+<%= render partial: 'curriculum/curr_left' %>
+
+
+
+<h4 class="mg-h4"><%= t('edit_syllabus_section') %></h4>
+<div>
+<%= form_for :curriculum, url: batch_syllabus_update_path(@curriculum.id), :html => {
+                            :id => 'batchSyllabusEditCurriculumManagementsID' }, id: @curriculum.id, method: :patch do |f| %>
+                        
+<%= f.hidden_field :is_deleted, :value => 0 %>
+<p>
+<label class="mg-label"><%= t('selectsyllabus')%><span class="required-field">&nbsp;*</span></label><br/>
+
+<%= f.collection_select(:mg_syllabus_id,MgSyllabus.where(:is_deleted => '0',:mg_school_id=>session[:current_user_school_id]), :id, :name,{:include_blank => t("select")},:class => "subject_id-class")%>
+
+</p>
+
+<p>
+<label class="mg-label"><%= t('select_class_section')%><span class="required-field">&nbsp;*</span></label><br/>
+
+<%= f.collection_select(:mg_batch_id,MgBatch.where(:is_deleted => '0',:mg_school_id=>session[:current_user_school_id]), :id, :course_batch_name,{:include_blank => t("select")},:class => "subject_id-class")%>
+
+  </p>
+  <p class="mg-p-mgtop">
+    <%#= f.submit t('save'),:class=>"curriculum-managements-form-btn mg-small-form-btn" %>
+    <a onclick="$(this).closest('form').submit()" class="curriculum-managements-form-btn mg-small-form-btn"><%=t("save")%></a>
+    <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+  </p>
+<% end %>
+</div>
+
+
+<script>
+$(document).ready(function () {
+focusCurrentTab("batchSyllabusCurriculamManagementsId","BatchSyllabusLiID");
+        //focusCurriculum();
+$("#batchSyllabusEditCurriculumManagementsID").validate({
+
+rules: {
+"curriculum[mg_syllabus_id]": {required: true},
+"curriculum[mg_batch_id]": {required: true}
+}
+});
+});
+</script>
+
+
+
+
+
+
+<%= render partial: 'application/emp_section_close' %>
+

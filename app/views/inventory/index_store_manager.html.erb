@@ -1,0 +1,158 @@
+<%= render  partial: 'master_settings/master_settings_left' %>
+<% navigation_add 'Assign Store Manager',index_store_manager_path %>
+
+<h4 class="mg-h4"><%= t('assign_store_manager') %></h4>
+
+<button class="assign_store_manager mg-btn-bottom-margin mg-custom-form-btn"><%= t('add_manager')%></button>
+
+
+<div class="mg_pagination">
+
+<%if @store_manager.length>0%>
+<table  class="batch-tbl mg-tbl-margin">
+  <tr class="subject-table-header">
+    <th><%= t('store') %></th>
+    <th><%= t('user_name') %></th>
+    <th><%= t('action') %></th>
+  </tr>
+ 
+  <% @store_manager.each do |f| %>
+    <tr>
+    
+      <%
+        store_manager=MgInventoryStoreManager.where(:mg_user_id=>f.id)
+        if store_manager.present?
+          store=MgInventoryStoreManagement.find_by(:id=>store_manager[0].mg_inventory_store_management_id)
+        end
+      %>
+      <td>
+        <%= store.try(:store_name) %>
+      </td>
+      <td><%= f.user_name %></td>
+      
+      <td>
+        <button title="Change Password" id="<%=raw f.id %>-showlabBTNID" class="show-store-manager-btn mg-icon-btn"><i class="fa fa-exchange"></i></button>
+
+        <button title="Edit" id="<%=raw f.id %>-editlabBTNID" class="edit-store-manager-btn mg-icon-btn"><i class="fa fa-pencil-square-o"></i></button>
+
+        <button title="Delete" id="<%=raw f.id %>-deletelabBTNID" class="delete-store-manager-btn mg-icon-btn"><i class="fa fa-trash"></i></button>
+      </td>
+
+    </tr>
+  <% end %>
+</table>
+<br/>
+ <div class="pagination-align" style="position: relative; bottom: 10px;">
+    <%= will_paginate @store_manager, :container => false %>
+  </div>
+<%else%>
+<h5>No Store Manager is created </h5>
+<%end%>
+</div>
+
+<div id="showstoreManagerkDIVID"></div>
+<div id="newAddstoreManagerDIVID"></div>
+<div id="editStoreManagerDIVID"></div>
+
+<%= render  partial: 'application/common_left_close' %>
+
+
+<script>
+$( document ).ready(function() {
+  focusCurrentTab("assign_store_managerAid","vassign_store_managerLiID");
+});
+
+$(document).on("click", ".assign_store_manager", function(e){
+  var urlLink = "/inventory/new_store_manager";
+  $.ajax({
+      url: urlLink ,
+      cache: false,
+      success: function(html){
+        $('#newAddstoreManagerDIVID').dialog({
+          modal: true,
+          title: "Add Store Manager",
+          open: function () {
+            $(this).html(html);
+          }
+        }); 
+      }
+  });
+});
+
+$(document).on("click", ".edit-store-manager-btn", function(e){
+  var myID =$(this).attr('id');
+  var Id=myID.split("-");
+  var urlLink = "/inventory/edit_store_manager/"+Id[0];
+  $.ajax({
+      url: urlLink ,
+      cache: false,
+      data: {"change_store_username":"change_username_by_admin"},
+      success: function(html){
+        $('#editStoreManagerDIVID').dialog({
+          modal: true,
+          title: "Edit Store Manager",
+          open: function () {
+              $(this).html(html);
+          }
+        }); 
+      }
+  });
+});
+
+$(document).on("click", ".delete-store-manager-btn", function(e){
+  e.preventDefault();
+  var myID =$(this).attr('id');
+  var Id=myID.split("-");
+  var retVal = confirm("Are you sure to delete?");
+  if(retVal){
+    var urlLink = "/inventory/delete_store_manager/"+Id[0];
+    $.ajax({
+      url: urlLink ,
+      cache: false,
+      success: function(html){
+        window.location.reload();
+      }
+    });
+  }
+  else{
+    return false;
+  }
+}); 
+
+
+$(document).on("click", ".show-store-manager-btn", function(e){
+  var myID =$(this).attr('id');
+  var Id=myID.split("-");
+  var urlLink = "/inventory/show_store_manager/"+Id[0];
+  $.ajax({
+      url: urlLink ,
+      cache: false,
+      data: {"change_store_password":"change_password_by_admin"},
+      success: function(html){
+            $('#showstoreManagerkDIVID').dialog({
+              modal: true,
+               minHeight: 'auto',
+              width: 'auto',
+              title: "Change Password",
+              open: function () {
+                  
+                  $(this).html(html);
+              }
+          }); 
+         
+      }
+  });
+});
+
+
+
+
+</script>
+
+<style>
+
+</style>
+
+
+
+

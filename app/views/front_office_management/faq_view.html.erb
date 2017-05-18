@@ -1,0 +1,164 @@
+<% navigation_add t('faq'), front_office_management_faq_view_path %>
+<%if session[:user_type]=="principal"%>
+<%= render partial: 'dashboards/principle_dashboard_left' %>
+<%else%>
+<%=render partial: 'front_office_management_left'%>
+<%end%>
+<!-- <%#= render  partial: 'laboratory/laboratry_left' %> -->
+<h4 class="mg-h4"><%= t('faq') %></h4>
+
+
+ <div class="mg-custom-labels">
+<%= form_for :category, :html => {
+                            :id => 'faqViewCreateID' } do |f| %>
+<table>
+<tr>
+<td>
+  <p>
+    <label class="mg-label" style="width:140px"><%= t('select_category') %><span class="required-field">&nbsp;*</span></label>
+    <br/>
+
+    <%= f.collection_select(:mg_faq_category_id,MgFaqCategory.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]), :id, :category_name,{:include_blank => t("select")},:class => "mg-select-btn sub-category-as-per-category")%>
+</p>
+</td>
+<td style="width:50px;"></td>
+<td>
+<p>
+    <label class="mg-label" style="width:140px"><%= t('select_sub_category') %><span class="required-field">&nbsp;*</span></label>
+    <br/>
+   <%#= f.text_field :sub_category_name,:class=>"mg-text-field" %>
+   <%= f.select :mg_faq_sub_category_id, [ ], {:include_blank => t('Select')} ,:class=>"mg-select-btn" %>
+</p>
+</td></tr>
+</table>
+<% end %>
+</div>
+
+<p class="mg-p-mgtop">
+    <a id="submit-for-question-ans-btn" class="mg-small-form-btn submit-for-question-ans-btn-cls" style="display:none"><%=t("save")%></a>
+    <!-- <a class="mg-small-form-btn cancel-form-dialog"><%#=t("cancel")%></a> -->
+</p>
+
+<div id="questionAnswerAppendID">
+
+ <%= render  partial: 'application/common_left_close' %> 
+<script>
+$( document ).ready(function() {
+            focusCurrentTab("frontOfficeManagerFaqViewPAFAID","frontOfficeManagerPAFaqViewAdminliId");
+          //focusStudentHeaderBox();
+});
+
+$("#category_mg_faq_sub_category_id").change(function(){
+  $(".submit-for-question-ans-btn-cls").click();
+});
+
+$("#category_mg_faq_category_id").change(function(){
+  $(".submit-for-question-ans-btn-cls").click();
+});
+
+
+$("#faqViewCreateID").validate({
+        rules: {        
+        "category[mg_faq_category_id]": {required: true},
+        "category[mg_faq_sub_category_id]": {required: true}
+      }
+    });
+
+$("#submit-for-question-ans-btn").click(function(){
+  var catVal=$("#category_mg_faq_category_id").val();
+  var subCatVal=$("#category_mg_faq_sub_category_id").val();
+ // if (catVal<1 || subCatVal<1 || subCatVal=="select")
+  if (catVal<1)
+  {
+    $("#questionAnswerAppendID").empty();
+    $("#questionAnswerAppendID").append("<h4>Please select Category</h4>");
+  }
+  else{
+    showQueAns();
+  }
+})
+
+
+// ========================================================
+$("#submit-for-question-ans-btn").click(function(){
+    executing_submit();
+})
+
+// ========================================================
+function executing_submit(){
+  var catVal=$("#category_mg_faq_category_id").val();
+  var subCatVal=$("#category_mg_faq_sub_category_id").val();
+ // if (catVal<1 || subCatVal<1 || subCatVal=="select")
+  if (catVal<1)
+  {
+    $("#questionAnswerAppendID").empty();
+     $("#questionAnswerAppendID").append("<h4>Please select Category</h4>");
+  }
+  else{
+    showQueAns();
+  }
+}
+// ========================================================
+
+
+$(".sub-category-as-per-category").change(function(){
+      var category_id = $( ".sub-category-as-per-category" ).val();
+      var apdStr = '<option value="">Choose Category</option>';
+      $("#category_mg_faq_sub_category_id").empty().append(apdStr);
+      if(category_id > 0) {
+           var urlLink = "/front_office_management/sub_category_list/"+category_id;
+           $.ajax({ 
+               url: urlLink,
+               cache: false,
+               success: function(data){
+                 // console.log();
+                  if(data.length > 0){
+                      var apdStr = '<option value="select">Select All</option>';
+                     for(key in data){
+                        apdStr += '<option value="'+data[key].id+'">'+data[key].sub_category_name+'</option>'
+                      }
+                      $("#category_mg_faq_sub_category_id").empty().append(apdStr);
+                  }
+
+               }
+                  
+           });
+
+    }else{
+      var apdStr = '<option value="">Choose Category</option>';
+      $("#category_mg_faq_sub_category_id").empty().append(apdStr);
+      // alert("Please select category");
+    }
+  });
+
+
+function showQueAns(){
+  var category_id=$("#category_mg_faq_category_id").val();
+  var sub_category_id=$("#category_mg_faq_sub_category_id").val();
+  
+  if (sub_category_id<1 || sub_category_id=="select")
+  {
+    sub_category_id="not_selected";
+  }
+
+
+  var urlLink = "/front_office_management/faq_status/";
+           $.ajax({ 
+               url: urlLink,
+               cache: false,
+               data:
+            {
+                 category_id:category_id , sub_category_id:sub_category_id
+             },
+               success: function(html){
+                 
+                  $("#questionAnswerAppendID").empty();
+                  $("#questionAnswerAppendID").append(html);
+               }  
+           });
+}
+
+
+
+
+</script>

@@ -1,0 +1,25 @@
+<%= form_for :hostler_attendance,:url=>{:action=>"select_student_list_data_create"},:html=>{:id=>"hostlerAttendanceID"} do |f|%>
+  <%=hidden_field_tag 'alumni_demo_data',nil%>
+  <%=hidden_field_tag 'hostel_id',params[:hostel_id]%>
+  <%=hidden_field_tag 'programme_id',params[:wing_id]%>
+
+  <div class="mg_pagination drop_down_company_list">
+    <table class="batch-tbl mg-tbl-margin">
+      <tr>
+        <th><%="Student Name"%></th>
+      </tr>
+
+      <%@hostel_list.each do |data|%>
+        <%student_data=MgStudent.find_by(:id=>data.mg_student_id)%>
+        <tr>
+          <td><%="#{student_data.first_name} #{student_data.last_name}"%></td>
+        </tr>
+      <%end%>
+    </table>
+  </div>
+ 
+<%end%>
+
+<script>
+
+</script>

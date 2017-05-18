@@ -1,0 +1,366 @@
+<!-- Sec -->
+<!-- <h4 class="mg-h4">Student List</h4>
+<table class="batch-tbl mg-btn-bottom-margin " id='guardianStudentsTableID'>
+        <tr>
+          <th>First Name</th>
+          <th>Last Name</th>
+          <th>Admission Number</th>
+          <th><%#=t("actions")%></th>
+        </tr>
+        
+
+        <%# @StudentListQuery.each do |student| %>
+          <%#= render partial: 'table_row_guardian_student_profile', locals: {student: student} %>
+        <%# end %>
+</table> -->
+<div class="mg-scroll-page">
+
+<div id="guardianStudentProfileViewDIV"><div>
+
+<div id="profileDialogID"></div> 
+
+<div id="guardianStudentProfileEditDialogDIVID"></div>  
+
+
+<!-- notification start -->
+   <%#= render partial: 'notifications/show_notify' %>
+   <h4 class="mg-h4" style="width: 736px;"><%=t('notifications')%></h4>
+  <% if @notifications.length > 0 %>
+  <div class="mg_pagination">
+  <div class="container mg-btn-bottom-margin" style="width: 736px; margin-left: -14px;">
+  <!--  s<button type="button" class="btn btn-info" data-toggle="collapse" data-target="#showNotificationPage">Notifications <span class="badge"><%#= @size %></span></button> -->
+        <div id="showNotificationPage2" class="collapse-sh">
+
+       
+        <div class="notification-list" style="width: 711px;">
+            <%  @notifications.each do |notification| %>
+        
+               <a href="/notifications/view_notification/<%= notification.id %>" class="anchor-btn mg-rm-pagination-style" >
+            <% if notification.status %>
+              <div class="notification notification-seen">
+            <% else %>
+              <div class="notification notification-unseen">
+            <% end %>
+            
+              <div class="notification-label">
+                <%= notification.subject %>
+              </div>
+              <div class="notification-data mg-file-clr">
+                <%= notification.description %>
+              </div>
+            </div>
+                </a>
+                 
+            <% end %>
+          </div>
+        
+        </div>
+  </div>
+  
+  </div>
+  <% else %>
+  <h5>No notification...</h5>
+  <% end %>
+   
+    <br>
+
+  <!-- notification end -->
+   <h4 class="mg-h4">Attendance</h4>
+     <div class="mg-scroll-page-inner mg-tbl-border">
+  <div id="attendanceCalendarguardianDashboardDIVID"></div> 
+  </div>
+ <!-- </div> -->
+
+ <!-- event -->
+<!-- <div id="employeeDashboardGuardianCalenderDIVID" style="display:none" > -->
+
+<br><h4 class="mg-h4"> <%= t('events') %></h4>
+<%if @events.present?%>
+<table class="batch-tbl mg-tbl-margin">   <!-- border="2" --> 
+ <tr >
+    <th><%=t('title')%></th>
+    <th><%=t('eventtype')%></th>
+    <th><%=t('eventdescription')%></th>
+    <th><%=t('startdate')%></th>
+    <th><%=t('starttime')%></th>
+    <th><%=t('enddate')%></th>
+    <th><%=t('endtime')%></th>
+  </tr>
+  <% @events.each do |e| %>
+    <tr> 
+      <td><%= e.title %></td>
+      <% @name=MgEventType.where(:id=>e.mg_event_type_id, :is_deleted=>0).pluck(:name)%>
+      <td><%= @name[0] %></td>
+      <td><%= e.event_description %></td>
+      <td><%= e.event_date.strftime(@school.date_format) %></td>
+      <td><%= e.start_time.strftime('%I:%M%p') %></td>
+      <td><%= e.end_date.strftime(@school.date_format) %></td>
+      <td><%= e.end_time.strftime('%I:%M%p') %></td>
+    </tr>
+  <% end %>
+</table>
+<%else%>
+<h5>No Events...</h5>
+<%end%>
+<!-- </div> -->
+<!-- event end-->
+
+
+<!-- <div id="feeReciptForGuardianDashboardDIVID" style="display:none">  -->
+  <h4 class="mg-h4" style="width: 736px;"><%=t('Student List')%></h4>
+  <div>
+<%if @finance_fee_hash.empty?%>
+<h5><%="No Fee Records"%></h5>
+<%else%>
+ <table class="batch-tbl">
+<tr>
+<th>Fee Collection Name</th>
+<th>Start Date</th>
+<th>Due Date</th>
+<th><%=t('actions')%></th>
+<th>Receipts</th>
+</tr>
+<%@finance_fee_hash.each do |finance_fee|%>
+<tr>
+
+<%
+@school=MgSchool.find(session[:current_user_school_id])
+fee_collection=MgFeeCollection.find(finance_fee.mg_fee_collection_id)
+
+
+finance_transaction_details=MgFinanceTransactionDetail.where('mg_student_id in (@studentListQuery_fee) AND mg_collection_id= ? AND mg_fee_particular_id IS NOT NULL',finance_fee.mg_fee_collection_id).pluck(:mg_transaction_id).uniq
+
+finance_transaction_details+=MgFinanceTransactionDetail.where('mg_student_id =? AND mg_collection_id IS NULL',params[:id]).uniq
+@student_id=params[:id]
+
+%>
+
+<td><%=fee_collection.name%></td>
+<td><%=fee_collection.start_date.strftime(@school.date_format)%></td>
+<td><%=fee_collection.due_date.strftime(@school.date_format)%></td>
+<%if finance_fee.is_paid==true%>
+<td><%="Fee Paid"%></td>
+<%else%>
+    
+<td><button id="<%=raw finance_fee.student_id%>-<%=raw fee_collection.id%>" class="guardian-student-fee_recipt-dashboard mg-custom-form-btn">Pay Fee</button></td>
+
+<%end%>
+<td>
+    <%finance_transaction_details.each do |ftd|
+         paid_date = MgFinanceTransaction.find(ftd).transaction_date %>
+    <%=ftd%>
+    <%= link_to "#{paid_date.strftime(@school.date_format)}", generate_fee_pdf_path(ftd),:target=>"_blank" %>
+    <%end%>
+</td>
+</tr>
+<%end%>
+
+</table> 
+<%end%>
+
+  <!-- </div> -->
+  <div id="employeeDashboardCalenderGuardianShowDIVID"> </div>
+  <div id="fee_recipt_for_student_dashboard"></div>
+  </div>
+<script>
+
+
+$(document).on("click",".guardian-student-fee_recipt-dashboard",function(e){
+        e.preventDefault();
+      
+        var Id=$(this).attr("id");
+                    var Ids=Id.split('-')
+                    //alert(Ids);
+        $.ajax({
+             url: "/fees/student_fee_submission/",
+             data:{"id":Ids[0],"Collectionid":Ids[1]},
+            
+            success: function(html){
+                   
+
+                      $("#fee_recipt_for_student_dashboard").dialog({
+                        modal: true,
+                        title: "Fee Details",
+                        //top: 50px,
+                        minWidth: 785,
+                        open: function () {
+                            
+                            $(this).html(html);
+                        }
+                    }); //end confirm dialog
+
+              // $("#fee_recipt_for_student").empty();
+              // $("#fee_recipt_for_student").append(html);
+
+                   
+                }
+            });  
+
+        });
+
+
+$(document).ready(function(){
+                    
+                    var days = new Array(7);
+                    days[0]=  "Sun";
+                    days[1] = "Mon";
+                    days[2] = "Tues";
+                    days[3] = "Wed";
+                    days[4] = "Thur";
+                    days[5] = "Fri";
+                    days[6] = "Sat";
+
+
+
+                    Date.prototype.getDayName = function() {
+                            return days[ this.getDay() ];
+                        };
+                    var totalDays = parseInt(daysInMonth(new Date().getMonth()+1, new Date().getFullYear()));
+                    var strDates = "<table class='att-calendar'><tr><th>Name</th>"
+                    for(var index=1; index <= totalDays;index++){
+                               var now = new Date(new Date().getFullYear(), new Date().getMonth(), index);
+                               strDates +="<th>"+index+"<br/>"+now.getDayName()+"</th>";
+                    }
+                  $('.header-row-data').empty();
+                    $('.header-row-data').prepend( strDates );
+                     var urlLink = "/attendances/gardian_index/"; 
+                   $.ajax({
+                        url: urlLink,
+                        cache: false, 
+                        success: function(data) {
+                        var day=new Date().getDate();
+                        var strName = "";
+                        var d1 = new Date();
+                        var month1 = d1.getMonth();
+                        var year1=d1.getFullYear();
+                        var month = parseInt(month1) + 1;
+                        var year = parseInt(year1);
+                                for(var outerIndex = 0;outerIndex < data[0].length;outerIndex++){
+                                    strName += "<tr><td>"+data[0][outerIndex].first_name+"</td>"
+                                    for(var index=1; index <= totalDays;index++){
+                                    
+                                      var value=0;
+                                        if(day<index){
+                              value=4;
+                              }else{
+                                       if(data[1].length >0){
+                                             for(var dbindex=0;dbindex< data[1].length;dbindex++){
+                                                      var checkDate=month+'/'+index+'/'+year;
+                                                      d = new Date(checkDate);
+                                                      x = d.getDay(); 
+                                                      if(x==0){
+                                                        value = 2;
+                                                      }
+                                                      if(data[1][dbindex].year ==year && data[1][dbindex].month ==month && data[1][dbindex].day== index && data[1][dbindex].mg_student_id==data[0][outerIndex].id && x !=0){
+                                                         value = 1;
+                                                      }
+                                           }
+                                     }else{
+                                    var checkDate=month+'/'+index+'/'+year;
+                                    // alert(checkDate)
+                                            x = new Date(checkDate).getDay();
+                                            if(x==0){
+                                              value = 2;
+                                            }
+                                   }
+                               }
+                          if(value!=4)
+                      {
+                                      if(value == 2){
+                                        strName +="<td><i class='fa fa-ellipsis-h'></i></td>"
+                                      }
+                                     if(value ==1){
+
+                                                  strName +="<td><i class='fa fa-circle' > </i></td>"
+                                                }else{
+                                                    if(value != 2){
+                                                   strName +="<td><i class='fa fa-check' > </i></td>"
+                                                  }
+                                                }
+                            }else{
+                              strName +="<td></td>";
+                      
+                            }
+                                    }
+                                    strName +="</tr></table"
+                                }
+                                $('#attendanceCalendarguardianDashboardDIVID').empty();
+                                $('#attendanceCalendarguardianDashboardDIVID').append( strDates+"</tr>"+strName );
+                                console.log(strName);
+                              },
+                        error: function() {
+                                // alert("Ajax error!")
+                              }
+                });
+                function daysInMonth(iMonth, iYear){
+                    return new Date(iYear, iMonth, 0).getDate();
+                }  
+        });  
+
+
+function eventDashboardStudentCalender(){
+   $('#employeeDashboardguardianCalender').fullCalendar({
+      header: {
+            left:   'today prev,next',
+            center: 'title',
+            right:  'year,month,agendaWeek,agendaDay',
+          },
+        // weekends:false,
+      defaultView: 'month',
+      // defaultView: 'basicWeek'
+        //hiddenDays: [ 2, 4 ],        
+        businessHours:true,
+        minTime: "8:00:00",
+        maxTime: '18:00:00',
+        startParam: "10:00:00",
+        slotDuration:'00:20:00',
+        //slotMinutes: 20,
+        allDaySlot: false,
+         lazyFetching: true,
+
+ eventSources: [
+        {
+        url: '/dashboards/allevents',
+         data:{
+
+            calenderType: "Guardian_dashboard"
+        },
+
+        error:function(){
+        },
+        textColor: 'black'
+        }
+
+    ],
+     dayClick: function(date, allDay, jsEvent, view) {
+
+    },
+    eventClick: function(event, element, current_event_id) {
+        event.title = "CLICKED!";
+        var eventID=event.id;
+        var urlLink = "/events/"+eventID;
+        $.ajax({
+        url: urlLink,
+        cache: false,
+        success: function(html) {
+             $('#employeeDashboardCalenderGuardianShowDIVID').dialog({
+                    modal: true,
+                    width: 'auto',
+                    title: "Event Detail",
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+        }
+    });
+        // $('#calendar').fullCalendar('updateEvent', event);
+    }
+          
+    });
+}
+     
+
+
+     </script>

@@ -1,0 +1,290 @@
+<!-- Sec --><section id="userBodyContentBox" >
+    <table width=100% border="0" cellspacing="0" cellpadding="0">
+        <tr>
+            <td valign="top" class="userBodyContentBox1">
+                <div class="userMenuBoxLeft" style="width: 210px;">
+                    <ul class="menuListHome">
+                    <%=hidden_field_tag "user_type",session[:user_type]%>
+                        <%if session[:user_type]=="admin" || session[:user_type]=="principal"%>
+                            <li class="myAccountMenu mg-toggle-plus"><%=t('inventory_management')%></li>
+                        <%end%>
+
+                        <div class="mg-left-sub-menu-title">
+                            <%if session[:user_type]=="admin" || session[:user_type]=="principal"%>
+                            <li id="viewInventoryCategoryLiID">
+                                <a class="menuItemsActivities" href="/inventory/index/" id="viewInventoryCategoryIndex">
+                                    <div class="setMenu"><i class="fa fa-sitemap">&nbsp;&nbsp;</i><%=t('item_category')%>
+                                    </div>
+                                </a>
+                            </li>
+                            <li id="viewInventoryItemLiID">
+                                <a class="menuItemsActivities" href="/inventory/item/" id="viewInventoryItemIndex">
+                                    <div class="setMenu"><i class="fa fa-bars">&nbsp;&nbsp;</i><%=t('item')%>
+                                    </div>
+                                </a>
+                            </li>
+                            <li id="viewInventoryVendorLiID">
+                                <a class="menuItemsActivities" href="/inventory/vendor/" id="viewInventoryVendorIndex">
+                                    <div class="setMenu"><i class="fa fa-users">&nbsp;&nbsp;</i><%=t('vendor')%>
+                                    </div>
+                                </a>
+                            </li>
+                             <li id="viewSearchVendorLiID">
+                                <a class="menuItemsActivities" href="/inventory/search_vendor/" id="viewInventoryVendorsearchIndex">
+                                    <div class="setMenu"><i class="fa fa-search">&nbsp;&nbsp;</i><%=t('search_vendor')%>
+                                    </div>
+                                </a>
+                            </li>
+                            <!-- Comparing vendor Added for SMS Application only given below-->
+                            <li id="viewComparingVendorLiID">
+                                <a class="menuItemsActivities" href="/inventory/comparing_vendor/" id="viewInventoryVendorcomparingIndex">
+                                    <div class="setMenu"><i class="fa fa-sliders">&nbsp;&nbsp;</i><%=t('comparing_vendor')%>
+                                    </div>
+                                </a>
+                            </li>
+                            <!-- Comparing vendor Added for SMS Application only given above-->
+                            <li id="viewInventorystoremanagementLiID">
+                                <a class="menuItemsActivities" href="/inventory/inventory_store_management/" id="viewInventorystoremanagementAid">
+                                    <div class="setMenu"><i class="fa fa-sitemap">&nbsp;&nbsp;</i><%=t('store')%>
+                                    </div>
+                                </a>
+                            </li>
+                            <li id="InventorynagementLiID">
+                                <a class="menuItemsActivities" href="/inventory/inventory_room_management/" id="InventorynagementAid">
+                                    <div class="setMenu"><i class="fa fa-sitemap">&nbsp;&nbsp;</i><%=t('room')%>
+                                    </div>
+                                </a>
+                            </li>
+               
+                            <li id="viewInventorystackmanagementLiID">
+                                <a class="menuItemsActivities" href="/inventory/inventory_stack_management/" id="viewInventorystackmanagementAid">
+                                    <div class="setMenu"><i class="fa fa-sitemap">&nbsp;&nbsp;</i><%=t('rack')%>
+                                    </div>
+                                </a>
+                            </li>
+
+                            <li id="multiple_item_search_option_LiID">                   
+                                <a class="menuItemsActivities" href="/inventory/multiple_item_search/" id="multiple_item_search_optionAid">
+                                    <div class="setMenu"><i class="fa fa-search">&nbsp;&nbsp;</i><%=t('search')%>
+                                    </div>
+                                </a>
+                            </li>
+
+                            <!-- <li id="vassign_store_managerLiID">
+                                <a class="menuItemsActivities" href="/inventory/index_store_manager/" id="assign_store_managerAid">
+                                    <div class="setMenu"><i class="fa fa-sitemap">&nbsp;&nbsp;</i><%#=t('store_manager')%>
+                                    </div>
+                                </a>
+                            </li> -->
+
+                            <!-- <li id="assign_financial_officerLiID">                   
+                                <a class="menuItemsActivities" href="/inventory/index_financial_officer/" id="assign_financial_officerAid">
+                                    <div class="setMenu"><i class="fa fa-sitemap">&nbsp;&nbsp;</i><%#=t('finance_manager')%>
+                                    </div>
+                                </a>
+                            </li> -->
+
+                            
+
+
+                            <!-- <li id="gatePassLiID">                   
+                                <a class="menuItemsActivities" href="/inventory/gate_pass/" id="gatePassAid">
+                                    <div class="setMenu"><i class="fa fa-sitemap">&nbsp;&nbsp;</i><%#=t('gate_pass')%>
+                                    </div>
+                                </a>
+                            </li> -->
+                        
+                        <%if session[:user_type]=="principal"%>
+               <!-- <li class="myAccountMenu"><%#=t('inventory_management')%></li>-->
+                    <li id="viewItemProposalReviewLiID">
+                      <a class="menuItemsActivities" href="/inventory/proposal_review/" id="viewInventoryItemProposalReviewIndex">
+                          <div class="setMenu"><i class="fa fa-sitemap">&nbsp;&nbsp;</i><%=t('proposal_review')%>
+                          </div>
+                      </a>
+                  </li>
+
+                  <li id="viewItemProjectionReviewLiID">
+                      <a class="menuItemsActivities" href="/inventory/projection_review/" id="viewInventoryItemProjectionReviewIndex">
+                          <div class="setMenu"><i class="fa fa-bars">&nbsp;&nbsp;</i><%=t('projection_review')%>
+                          </div>
+                      </a>
+                  </li>
+                <%end%>
+</div>
+
+                        <li class="myAccountMenu mg-toggle-plus"><%=t('reports')%></li>
+                        <div class="mg-left-sub-menu-title">
+                            <li id="goods_purchasedLiID">
+                                <a class="menuItemsActivities" href="/inventory/inventory_goods_purchased/" id="goods_purchasedAid">
+                                    <div class="setMenu"><i class="fa fa-search">&nbsp;&nbsp;</i><%=t('goods_purchased')%>
+                                    </div>
+                                </a>
+                            </li>
+                            <li id="goods_orderedLiID">
+                                <a class="menuItemsActivities" href="/inventory/inventory_goods_ordered/" id="goods_orderedAid">
+                                    <div class="setMenu"><i class="fa fa-search">&nbsp;&nbsp;</i><%=t('goods_ordered')%>
+                                    </div>
+                                </a>
+                            </li>
+                            <li id="damaged_goodsLiID">
+                                <a class="menuItemsActivities" href="/inventory/inventory_damaged_goods/" id="damaged_goodsAid">
+                                    <div class="setMenu"><i class="fa fa-search">&nbsp;&nbsp;</i><%=t('damaged_goods')%>
+                                    </div>
+                                </a>
+                            </li>
+                            <!-- Bindhu Added starts -->
+                            <li id="itemReportLiID">
+                                <a class="menuItemsActivities" href="/inventory/inventory_item_report/" id="itemReportAID">
+                                    <div class="setMenu"><i class="fa fa-search">&nbsp;&nbsp;</i><%=t('item_report')%>
+                                    </div>
+                                </a>
+                            </li>
+                            <!-- Bindhu Added ends -->
+                            <li id="requirement_reportsLiID">
+                                <a class="menuItemsActivities" href="/inventory/requirement_report/" id="requirement_report_Aid">
+                                    <div class="setMenu"><i class="fa fa-search">&nbsp;&nbsp;</i><%=t('requirement')%>
+                                    </div>
+                                </a>
+                            </li>
+                            <li id="fee_module_communicationLiID">
+                                <a class="menuItemsActivities" href="/inventory/fee_module_communication/" id="fee_module_communicationAid">
+                                    <div class="setMenu"><i class="fa fa-search">&nbsp;&nbsp;</i><%=t('fee_module_communication')%>
+                                    </div>
+                                </a>
+                            </li>
+                             <li id="cashTransactionReportsLiID">
+                                <a class="menuItemsActivities" href="/inventory/cash_transaction/" id="cashTransactionReportsAid">
+                                    <div class="setMenu"><i class="fa fa-search">&nbsp;&nbsp;</i><%=t('cash_transaction')%>
+                                    </div>
+                                </a>
+                            </li>
+        <!-- ====================Payment Status Starts==================== -->
+                            <!-- <li id="paymentStatusReportsLiID">
+                                <a class="menuItemsActivities" href="/inventory/payment_status/" id="paymentStatusReportsAid">
+                                    <div class="setMenu"><i class="fa fa-search">&nbsp;&nbsp;</i><%#=t('payment_status')%>
+                                    </div>
+                                </a>
+                            </li> -->
+        <!-- ====================Payment Status Ends====================== -->
+                            <%end%>
+                        
+
+                        <%#end%>
+
+                        <!-- ======================================================================================= -->
+                        </div>
+                        <%if session[:user_type]=="store_manager"%>
+                             <li class="myAccountMenu mg-toggle-plus"><%=t('store_manager')%></li>
+                            <div class="mg-left-sub-menu-title">
+                                <li id="storeInformationLidID">
+                                    <a class="menuItemsActivities" href="/inventory/store_information/" id="storeInformationID">
+                                        <div class="setMenu"><i class="fa fa-cogs">&nbsp;&nbsp;</i><%=t('store_information')%>
+                                        </div>
+                                    </a>
+                                </li>
+
+                                <li id="viewItemProposalLiID">
+                                    <a class="menuItemsActivities" href="/inventory/proposal/" id="viewInventoryItemProposalIndex">
+                                        <div class="setMenu"><i class="fa fa-sitemap">&nbsp;&nbsp;</i><%=t('item_proposal')%>
+                                        </div>
+                                    </a>
+                                </li>
+
+                                <li id="viewItemProjectionLiID">
+                                    <a class="menuItemsActivities" href="/inventory/projection/" id="viewInventoryItemProjectionIndex">
+                                        <div class="setMenu"><i class="fa fa-bars">&nbsp;&nbsp;</i><%=t('item_projection')%>
+                                        </div>
+                                    </a>
+                                </li>
+                            </div>
+
+                            <li class="myAccountMenu mg-toggle-plus"><%=t('stock_management')%></li>
+
+                        <div class="mg-left-sub-menu-title">
+                            <li id="itemManagementLiID">
+                                <a class="menuItemsActivities" href="/inventory/item_management_index/" id="itemManagementAID">
+                                    <div class="setMenu"><i class="fa fa-sitemap">&nbsp;&nbsp;</i><%=t('stock')%>
+                                    </div>
+                                </a>
+                            </li>
+                            <li id="itemconsumptionLiID">
+                                <a class="menuItemsActivities" href="/inventory/inventory_item_consumption_index/" id="itemconsumptionAID">
+                                    <div class="setMenu"><i class="fa fa-sitemap">&nbsp;&nbsp;</i><%=t('consumption')%>
+                                    </div>
+                                </a>
+                            </li>
+                            <li id="itemSearchLiID">
+                                <a class="menuItemsActivities" href="/inventory/item_search/" id="itemSearchAID">
+                                    <div class="setMenu"><i class="fa fa-search">&nbsp;&nbsp;</i><%=t('search_item')%>
+                                    </div>
+                                </a>
+                            </li>
+                            <!-- Bindhu Work Ends -->
+                            <li id="inventory_salesLiID">
+                                <a class="menuItemsActivities" href="/inventory/inventory_sales_index/" id="inventory_salesAid">
+                                    <div class="setMenu"><i class="fa fa-sitemap">&nbsp;&nbsp;</i><%=t('Sales')%>
+                                    </div>
+                                </a>
+                            </li>
+                            <li id="inventory_feesLiID">
+                                <a class="menuItemsActivities" href="/inventory/inventory_fee_category/" id="inventory_feesAid">
+                                    <div class="setMenu"><i class="fa fa-sitemap">&nbsp;&nbsp;</i><%=t('inventory_fees')%>
+                                    </div>
+                                </a>
+                            </li>
+                            <li id="inventory_fees_scheduleLiID">
+                                <a class="menuItemsActivities" href="/inventory/inventory_fee_schedule/" id="inventory_fees_scheduleAid">
+                                    <div class="setMenu"><i class="fa fa-sitemap">&nbsp;&nbsp;</i><%=t('inventory_fees_schedule')%>
+                                    </div>
+                                </a>
+                            </li>
+                            <!-- Bindhu Added for generate fine starts -->
+                            <li id="generateFineLiID">
+                                <a class="menuItemsActivities" href="/inventory/inventory_generate_fine/" id="generateFineAID">
+                                    <div class="setMenu"><i class="fa fa-money">&nbsp;&nbsp;</i><%=t('generate_fine')%>
+                                    </div>
+                                </a>
+                            </li>
+                        </div>
+                        <%end%>
+<!-- =========================================================== -->
+<!--                 <%#if session[:user_type]=="financial_manager"%>
+                <li class="myAccountMenu"><%#=t('financial_manager')%></li>
+
+
+                  <li id="viewItemProposalReviewLiID">
+                      <a class="menuItemsActivities" href="/inventory/proposal_review/" id="viewInventoryItemProposalReviewIndex">
+                          <div class="setMenu"><i class="fa fa-sitemap">&nbsp;&nbsp;</i><%#=t('proposal_review')%>
+                          </div>
+                      </a>
+                  </li>
+
+                  <li id="viewItemProjectionReviewLiID">
+                      <a class="menuItemsActivities" href="/inventory/projection_review/" id="viewInventoryItemProjectionReviewIndex">
+                          <div class="setMenu"><i class="fa fa-bars">&nbsp;&nbsp;</i><%#=t('projection_review')%>
+                          </div>
+                      </a>
+                  </li>
+                <%#end%> -->
+<!-- ===================================================================== -->
+<!-- ===================================================================== -->
+
+
+<!-- ===================================================================== -->
+                    </ul>
+                </div>
+            </td>
+            <td  valign="top" id="manageAdminCategoryID" class="mg-table-td-main-2">
+              
+<%=render partial: 'layouts/messages'%>
+
+<script>
+$( document ).ready(function() {
+    var user_type=$("#user_type").val();
+    if ((user_type=="admin")||(user_type=="store_manager") || (user_type=="principal"))
+    {
+        collapseLeftMenu();
+    }
+    focusheaderBox("INVENTORY");
+});
+</script>

@@ -1,0 +1,67 @@
+<!-- breadcrumbs Work -->
+<% navigation_add 'Examinations', examinations_path %>
+<% navigation_add 'Exam Management', examination_exammanagement_index_path %>
+
+<!-- breadcrumbs Work -->
+
+
+
+<%= render  partial: 'examination_table_left' %>
+<h4 class="mg-h4">Exam Details</h5>
+<div>
+<button id='<%=@examgroupids%>-<%=@category_id%>'  class="exammanagementGroups-new-datas mg-custom-form-btn">New </button><br/>
+
+<div id="exammanagementGroupsc_datas">
+</div>
+<div id="exammanagementGroupsc_datasEdit">
+</div>
+
+<!-- <table class="batch-tbl" cellspacing="0" style="padding:0;width:50%;height:75%; border-collapse:collapse;"> -->
+<%ids=params[:id].split('-').last%>
+<div class="mg-scroll-employee-bar mg-tbl-margin">
+<table class="batch-tbl mg-tbl-layout" cellspacing="0" style="padding:0; border-collapse:collapse;">
+ 
+<%if  @groupData[0].to_s.empty? %>
+<h5><%="No Records Found"%></h5>
+<%else%>
+
+  <tr>
+    <th>Subject</th>
+    <th>Maximum Marks</th>
+    <th>Pass Marks</th>
+   
+    <th><%=t('actions')%></th>
+  </tr>
+  <% @groupData.each do |data| %>
+      
+      <%@data=MgSubject.find(data.mg_subject_id)%>
+       <%#@subID=MgSubject.find(data.mg_subject_id)%>
+    <tr>
+    <td><a href="/examination/exammanagement_resultEntryIndex/<%=raw data.id%>-<%=raw @data.id%>-<%=raw @category_id%>" class="exammanagement-examGroups-edit-class"><%= @data.subject_name %></a></td>
+      <td><%= data.maximum_marks %></td>
+      <td><%= data.minimum_marks%></td>
+       
+
+      <td>
+        <a title="Edit" href="#" id=<%=raw data.id%>-<%=@category_id%> class="exammanagement-examGroups-edit-class"><button class="mg-text-exam mg-icon-btn"><i class="fa fa-pencil-square-o"></i></button></a>
+        <a title="Delete" href="#" id=<%=raw data.id%>-<%=@category_id%> class="exammanagement-examGroups-delete-class"><button class="mg-text-exam mg-icon-btn"><i class="fa fa-trash"></i></button></a>
+      </td>
+    </tr>
+  <% end %>
+  <%end%>
+</table>
+</div>
+</div>
+
+<p class="mg-p-mgtop">
+     <%= link_to t('back'), {:controller=>'examination',:action=>'exammanagement_newLink',:id=>ids}, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+</p>
+<%= render  partial: 'examination_table_close' %><br/>
+
+<script type="text/javascript">
+  $(document).ready(function() {
+        focusCurrentTab("createNewStudentAID","createNewStudentLiID");
+        focusExaminationHeaderBox();
+  });
+
+</script>

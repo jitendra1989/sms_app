@@ -1,0 +1,31 @@
+<table border="1" class="mg-showdata-bg" cellspacing="1" cellpadding="1">
+   <tr>
+     <td class="mg-td-width-half" valign="top">
+        <label class="mg-label"> <%= t('store_name')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+        
+    
+    <%=@show_store_data.store_name%>
+   
+     </td>
+ </tr>
+ <tr>
+     <td valign="top">
+        <label class="mg-label"> <%= t('description')%></label>
+     </td>
+     <td valign="top" style="width: 100%;">
+    <%if @show_store_data.description.present?%>
+  <%=@show_store_data.description%>
+     
+     <%else%>
+     <h5><%="No Data"%></h5>
+     <%end%>
+     </td>
+ </tr>
+
+</table>
+
+<p class="mg-p-mgtop">
+      <a class="mg-small-form-btn cancel-form-dialog"><%=t('cancel')%></a>
+</p>

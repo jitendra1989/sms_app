@@ -1,0 +1,219 @@
+<% navigation_add 'My Content', my_questions_path %>
+
+<%user=MgUser.find(session[:user_id])%>
+<%if user.user_type=='principal' || user.user_type=='superprincipal'%>
+<%= render partial: 'dashboards/principle_dashboard_left' %>
+<%else%>
+<%= render partial: 'dashboards/employee_left' %>
+<%end%>
+
+  <h4 class="mg-h4">Content list</h4>
+  <div>
+<%= button_to "New Content", new_my_question_path ,:class=>"mg-custom-form-btn mg-btn-bottom-margin"%>
+
+  <% if !params[:notice].blank? %>
+  <div class="alert alert-info mg-success-msg">
+  <%= params[:notice] %>
+  </div>
+<% end %>
+  <div class="mg_pagination">
+<%if @my_questions.length>0 %>
+
+<table class="batch-tbl mg-tbl-margin">   <!-- border="2" --> 
+ <tr >
+    <th><%=t('title')%></th>
+ 
+    <th><%=t('actions')%></th>
+  </tr>
+
+<% @my_questions.each do |article| %>
+   <tr >
+  <td><%= article.title.html_safe %></td>
+  <td>
+      <button title="Show" id="<%=raw article.id %>-showQuestionPaperBTNID" class="show-question-paper-BTN mg-icon-btn"><i class="fa fa-eye"></i></button>
+      <button title="Edit" id="<%=raw article.id %>-editQuestionPaperBTNID" class="edit-question-paper-BTN mg-icon-btn"><i class="fa fa-pencil-square-o"></i></button>
+       <button title="Share" id="<%=raw article.id %>-shareQuestionPaperBTNID" class="share-question-paper-BTN mg-icon-btn"><i class="fa fa-share-alt"></i></button> 
+      <button title="Delete" id="<%=raw article.id %>-deleteQuestionPaperBTNID" class="delete-question-paper-BTN mg-icon-btn"><i class="fa fa-trash"></i></button></td>
+
+ <tr/>
+<% end %>
+
+</table>
+ <%= will_paginate @my_questions, :container => false %>
+</div>
+</div>
+<% if @shared.present?%>
+ <!-- <div class="mg_pagination"> -->
+  <h4 class="mg-h4">Shared Contents</h4>
+
+    <table class="batch-tbl mg-tbl-margin"> 
+     <tr >
+        <th><%=t('title')%></th>
+        <th><%=t('Class') %> & <%=t('section')%></th>
+        <th><%=t('actions')%></th>
+      </tr>
+
+    <% @shared.each do |article| %>
+       <tr >
+       <% @content=MgMyQuestion.find(article.mg_my_question_id)%>
+      <td><%= @content.title.html_safe%></td>
+
+      <%#@content_id=MgBatchContent.where(:mg_my_question_id=>article.id, :is_deleted=>0, :mg_school_id=>session[:current_user_school_id]).pluck(:mg_batch_id)%>
+      <%course_name=MgBatch.find(article.mg_batch_id)%>
+      <td><%=course_name.course_batch_name%></td>
+
+      <td class="mg-align-center">
+          
+          <button title="Delete" id="<%=raw article.id %>-deleteQuestionPaperBTNID" class="delete-shared-question-paper-BTN mg-icon-btn"><i class="fa fa-trash"></i></button></td>
+
+     </tr>
+    <% end %>
+
+    </table>
+    <%#= will_paginate @shared, :container => false %>
+<!-- </div> -->
+    
+<% end %>
+
+
+<%else%>
+<h5>Add some questions paper...</h5>
+<% end %>
+
+<div id="shareContentDIVID"></div>
+<%= render partial: 'application/common_left_close' %>
+
+<script>
+ $(document).ready(function(){
+
+    focusCurrentTab("viewQuestions","viewEmployeeQuestionsLiID");
+    focusDashboards();
+
+});
+
+ $(document).on("click", ".share-question-paper-BTN", function(e){
+        var myID =$(this).attr('id');
+       var splString = myID.split("-");
+
+        var urlLink = "/my_questions/share_to_bach/"+splString[0];
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(html){
+                  $("#shareContentDIVID").dialog({
+                    modal: true,
+                    minHeight: "auto",
+                    title: "Share Content",
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+            }
+        });
+});
+
+
+
+
+ $(document).on("click", ".edit-question-paper-BTN", function(e){
+        var myID =$(this).attr('id');
+       var splString = myID.split("-");
+
+        var urlLink = "/my_questions/"+splString[0]+"/edit/";
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(html){
+    
+                  $('#manageEmployeeCategoryID').empty();
+                  $('#manageEmployeeCategoryID').append(html);
+                
+            }
+        });
+});
+
+$(document).on("click", ".show-question-paper-BTN", function(e){
+        var myID =$(this).attr('id');
+       var splString = myID.split("-");
+
+        var urlLink = "/my_questions/"+splString[0];
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(html){
+               $('#manageEmployeeCategoryID').empty();
+                  $('#manageEmployeeCategoryID').append(html);
+               
+            }
+        });
+});
+
+
+$(document).on("click", ".delete-question-paper-BTN", function(e){
+     
+              var myID =$(this).attr('id');
+              var splString = myID.split("-");
+                
+
+                
+                var retVal = confirm("Are you sure to delete?");
+                if(retVal){
+                  //  alert(retVal);
+                     var urlLink = "/my_questions/delete/"+splString[0];
+
+                      $.ajax({
+                        url: urlLink ,
+                        cache: false,
+                        success: function(html){
+                           // window.location.reload();
+                            window.location = "/my_questions";
+
+                                       
+                        }
+                    });
+
+                }else{
+                   // alert(retVal);     
+                   return false;
+                }
+
+        }); 
+
+$(document).on("click", ".delete-shared-question-paper-BTN", function(e){
+     
+              var myID =$(this).attr('id');
+              var splString = myID.split("-");
+                
+
+                
+                var retVal = confirm("Are you sure to delete?");
+                if(retVal){
+                  //  alert(retVal);
+                     var urlLink = "/my_questions/delete/"+splString[0];
+
+                      $.ajax({
+                        url: urlLink ,
+                        data:{
+                          shared: "shared_file"
+                        },
+                        cache: false,
+                        success: function(html){
+                           // window.location.reload();
+                            window.location = "/my_questions";
+
+                                       
+                        }
+                    });
+
+                }else{
+                   // alert(retVal);     
+                   return false;
+                }
+
+        }); 
+
+
+
+
+</script>

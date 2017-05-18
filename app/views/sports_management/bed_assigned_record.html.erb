@@ -1,0 +1,79 @@
+<%if @user_data.user_type=="student"%>
+  <%if @student_data.present?%>
+    <h4 class="mg-h4"><%= t('student_information') %></h4>
+    <%=hidden_field_tag "user_data", "user_data"%>
+    <table border="1" class="mg-showdata-bg mg-tbl-layout" cellspacing="1" cellpadding
+      ="1">
+      <tr>
+        <td class="mg-td-width-half" valign="top">
+          <label class="mg-label"> <%= t('name')%></label>
+        </td>
+        <td class="mg-td-width-half mg-capitalize-text" valign="top">
+          <%=@student_data.try(:first_name) %><%=" "%><%=@student_data.try(:last_name)%>
+       </td>
+      </tr>
+
+      <tr>
+        <td class="mg-td-width-half" valign="top">
+          <label class="mg-label"> <%= t('semester')%></label>
+        </td>
+        <td class="mg-td-width-half mg-capitalize-text" valign="top">
+         <%
+           batch_data=MgBatch.find_by(:id=>@student_data.mg_batch_id)
+           course_data=MgCourse.find_by(:id=>batch_data.mg_course_id)
+         %>
+          <%="#{course_data.course_name}-#{batch_data.name}"%>
+        </td>
+     </tr>
+    </table>
+  <%end%>
+<%elsif (@user_data.user_type=="employee" ||  @user_data.user_type=="principal") || @user_data.user_type=="admin"%>
+  <%if @employee_data.present?%>
+    <%=hidden_field_tag "user_data", "user_data"%>
+    <h4 class="mg-h4"><%= t('employee_information') %></h4>
+    <table border="1" class="mg-showdata-bg mg-tbl-layout" cellspacing="1" cellpadding="1">
+      <tr>
+        <td class="mg-td-width-half" valign="top">
+          <label class="mg-label"> <%= t('name')%></label>
+        </td>
+        <td class="mg-td-width-half mg-capitalize-text" valign="top">
+          <%=@employee_data.try(:first_name) %><%=" "%><%=@employee_data.try(:last_name)%>
+        </td>
+      </tr>
+      <tr>
+        <td class="mg-td-width-half" valign="top">
+          <label class="mg-label"> <%= t('employee_category')%></label>
+        </td>
+        <td class="mg-td-width-half mg-capitalize-text" valign="top">
+          <%
+           category_data=MgEmployeeCategory.find_by(:id=>@employee_data.mg_employee_category_id)
+          %>
+         <%=category_data.try(:category_name)%>
+        </td>
+     </tr>
+     <tr>
+        <td class="mg-td-width-half" valign="top">
+            <label class="mg-label"> <%= t('employee_department')%></label>
+        </td>
+        <td class="mg-td-width-half mg-capitalize-text" valign="top">
+           <%
+           department_data=MgEmployeeDepartment.find_by(:id=>@employee_data.mg_employee_department_id)
+           %>
+          <%=department_data.try(:department_name)%>
+        </td>
+     </tr>
+     <tr>
+      <td class="mg-td-width-half" valign="top">
+          <label class="mg-label"> <%= t('employee_position')%></label>
+      </td>
+      <td class="mg-td-width-half mg-capitalize-text" valign="top">
+        <%
+         position_data=MgEmployeePosition.find_by(:id=>@employee_data.mg_employee_position_id)
+        %>
+       <%=position_data.try(:position_name)%>
+      </td>
+    </tr>
+    </table>
+  <%end%>
+<%else%>
+<%end%>

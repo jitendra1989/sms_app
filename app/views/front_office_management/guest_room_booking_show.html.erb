@@ -1,0 +1,125 @@
+
+<h4 class="mg-h4"><%=t('show_guest_room_booking')%></h4>
+
+  <table border="1" class="mg-showdata-bg " cellspacing="1" cellpadding="1">
+   
+    <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"><%=t('room_no_name')%></label>
+     </td>
+     <% room_data=MgMeetingRoom.find_by(:id=>@guest_room_booking_data.mg_fom_room_creation_id)%> 
+
+     <td class="mg-td-width-half" valign="top">
+       
+         <%= room_data.try(:room_no) %>
+     </td>
+  </tr>
+
+   <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('start_date')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+      <%= @guest_room_booking_data.start_date.strftime(@timeformat.date_format) %>
+     </td>
+   </tr>
+
+   <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('end_date')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+      <%= @guest_room_booking_data.end_date.strftime(@timeformat.date_format) %>
+     </td>
+   </tr>
+  
+
+    <tr>
+      <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"><%=t('employee_category')%></label>
+      </td>
+     <% booked_by_data=MgEmployeeCategory.find_by(:id=>@guest_room_booking_data.mg_employee_category_id)%> 
+
+     <td class="mg-td-width-half" valign="top" >
+       
+         <%= booked_by_data.try(:category_name) %>
+     </td>
+    </tr> 
+
+
+    <tr>
+      <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"><%=t('employee_profile')%></label>
+      </td>
+     <% profile_data=MgEmployeePosition.find_by(:id=>@guest_room_booking_data.mg_employee_position_id)%> 
+
+     <td class="mg-td-width-half " valign="top">
+       
+         <%= profile_data.try(:position_name) %>
+     </td>
+    </tr>  
+ 
+  <tr>
+      <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"><%=t('employee')%></label>
+      </td>
+     <% employee_data=MgEmployee.find_by(:id=>@guest_room_booking_data.mg_employee_id)%> 
+
+     <td class="mg-td-width-half " valign="top">
+        <%= employee_data.try(:first_name) %>
+     </td>
+   </tr>
+
+   <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('purpose')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+      <%= @guest_room_booking_data.try(:purpose) %>
+     </td>
+   </tr>
+
+   <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('status')%></label>
+     </td>
+     <td class="mg-td-width-half mg-capitalize-text" valign="top">
+      <%= @guest_room_booking_data.try(:status) %>
+     </td>
+   </tr>
+
+   <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('remark')%></label>
+     </td>
+     <td class="mg-td-width-half mg-capitalize-text text-scroll-for-log-text-cls comments-space" valign="top">
+      <%= @guest_room_booking_data.try(:remark) %>
+     </td>
+   </tr>
+
+    <%if @guest_room_booking_data.try(:is_cancelled).present?%>
+     <tr>
+       <td class="mg-td-width-half" valign="top">
+       <label class="mg-label"> <%= t('is_cancelled')%></label>
+       </td>
+       <td class="mg-td-width-half" valign="top">
+        <%= @guest_room_booking_data.try(:is_cancelled)==true ? "Yes" : "No" %>
+       </td>
+     </tr>
+   <%end%>
+
+   
+
+ </table>
+<br>
+<br>
+ <%= link_to t('back'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+
+<script type="text/javascript">
+$(document).ready(function () {
+    focusCurrentTab("guestRoomBookingAID","guestRoomBookingLiID");
+//  textSeeMoreLess();
+});
+
+</script>
+  

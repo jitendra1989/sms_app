@@ -1,0 +1,38 @@
+<% navigation_add t('sports_incharge'), :controller => 'sports_management', :action => 'sports_incharge_login_index' %>
+<%= render  partial: 'master_settings/master_settings_left' %>
+<h4 class="mg-h4"><%= t('about_sports_incharge') %></h4>
+<%if @users.length<1%>
+<button class="add-placement-cell-head mg-btn-bottom-margin mg-custom-form-btn"><%= t('add_sports_incharge')%></button>
+<%end%>
+<%if @users.length>0%>
+  <%= render  partial: 'login_index' %>
+<%else%>
+  <h5>No Sports Incharge created</h5>
+<%end%>
+<%= render  partial: 'application/common_left_close' %>
+<div id="newPlacementCellHeadDivId"></div>
+
+<script>
+  $( document ).ready(function() {
+    focusCurrentTab("sportsInchargeAID","sportsInchargeLID");
+  });
+
+  $(document).on("click", ".add-placement-cell-head", function(e){
+    var urlLink = "/sports_management/new_user";
+    $.ajax({
+      url: urlLink ,
+      cache: false,
+      success: function(html){
+        $('#newPlacementCellHeadDivId').dialog({
+          modal: true,
+          minHeight: 'auto',
+          minWidth: '250px',
+          title: "New Sports Incharge",
+          open: function () {
+          $(this).html(html);
+          }
+        }); 
+      }
+    });
+  });
+</script>

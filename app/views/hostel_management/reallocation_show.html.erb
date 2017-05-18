@@ -1,0 +1,126 @@
+<div>
+    <table border="1" class="mg-showdata-bg mg-tbl-layout" cellspacing="1" cellpadding="1">
+ 
+ 
+ 
+ 
+ 
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('reason')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+      <div class="text-scroll-for-log-text-cls comments-space" style="padding: 5px 40 0 10px">
+     
+      <%= @student_details_data.try(:reason) %>
+      </div>
+     </td>
+ </tr>
+ 
+</table>
+</div>
+<%= form_for :reallotment_warden, :url=>{:action=>"room_reallotment_request_update"},:html => {:id => 'studentDetailNewEditFormId' } do |f| %>
+
+
+
+<p>
+  <label class="mg-label" for="status"><%= t ('status') %><span class="required-field">&nbsp;*</span></label><br/>
+  <%= select_tag :status_data,options_for_select([["Accepted","Accepted"],["Rejected","Rejected"]]),:prompt=>"Select",:onchange=>"statusCheckData(this.value)",:class =>"mg-select-btn"%><br/></p>
+         <%=hidden_field_tag :reallotment,@student_details_data.id%>
+
+
+  <%hostel_warden=MgHostelWarden.find_by(:mg_user_id=>session[:user_id],:is_deleted=>0,:mg_school_id=>session[:current_user_school_id])
+        hostel_details=MgHostelDetails.find_by(:id=>hostel_warden.mg_hostel_details_id)
+
+        %>
+
+
+
+        <p id="availability_data1" style="display:none;">
+         <label class="mg-label" for="hostel_name"><%= t ('hostel_name') %></label><br/>
+         <%=hidden_field_tag :hostel_details,hostel_details.id%>
+         <%=hidden_field_tag :previous_room,params[:room_id]%>
+
+ <%= text_field_tag :hostel_name ,hostel_details.try(:name),:readonly=>true,:class=>"mg-text-field"%>
+  </p>
+  <p id="availability_data2" style="display:none;">
+    <label class="mg-label" for="select_room_no"><%= t ('select_room_no') %><span class="required-field">&nbsp;*</span></label><br/>
+    <%room_data=MgHostelRoom.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id],:mg_hostel_details_id=>hostel_details.id).where("availability is NOT NULL and availability > ?",0).pluck(:name,:id)%>
+ <%= select_tag :mg_hostel_room,options_for_select(room_data,:disabled=>params[:room_id]),:prompt=>"Select",:onchange=>"prepopulateRoomcapacity(this.value)",:class=>"mg-text-field"%>
+
+  </p>
+  <p id="availability_data" style="display:none;">
+    <label class="mg-label" for="availability"><%= t ('availability') %></label><br/>
+
+    <%=text_field_tag "availability",nil,:readonly=>true%>
+
+  </p>
+
+  
+
+
+  <p class="mg-p-mgtop">
+    <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("save")%></a>
+      <%= link_to t('cancel'),:back ,{:class=>"mg-small-form-btn cancel-form-dialog"} %>
+  </p>
+<%end%>
+
+
+<script>
+$(document).ready(function(){
+	focusCurrentTab("room_reallotment_requestAID","room_reallotment_requestLiID");
+
+  $("#studentDetailNewEditFormId").validate({
+
+    rules: {
+      "status_data": {required: true}
+      }
+  });
+
+
+});
+function prepopulateRoomcapacity(data){
+        var hostel_data = $("#allocate_rooms_hostel_id").val();
+
+
+    
+           var urlLink = "/hostel_management/manage_central_data";
+          $.ajax({
+             url: urlLink,
+             cache: false,
+             data:{data:"hostel_data_capacity",room_id:data},
+             success: function(data){
+              $("#availability_data").show();
+              $("#availability").empty().val(data.main);
+                }
+         });
+  
+  }
+  function statusCheckData(data){
+    if(data=="Accepted"){
+
+      $("#availability_data1").show();
+      $("#availability_data2").show();
+
+
+    }
+    else if(data=="Rejected"){
+
+     $("#availability_data1").hide();
+      $("#availability_data2").hide();
+              $("#availability_data").hide();
+
+
+    }
+    else{
+
+$("#availability_data1").hide();
+      $("#availability_data2").hide();
+              $("#availability_data").hide();
+
+
+    }
+
+
+  }
+</script>

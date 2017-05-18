@@ -1,0 +1,56 @@
+<%=render partial: 'healthcare_left'%>
+<% navigation_add t('doctor_detail'),'healthcare/user_detail' %>
+<h4 class="mg-h4"><%= t('doctor_detail') %></h4>
+
+<%if @doctor.present?%>
+<table  class="batch-tbl mg-tbl-margin">
+  <tr class="subject-table-header">
+    <th><%= t('user_name') %></th>
+    <th><%= t('action') %></th>
+  </tr>
+  <tr>
+    <td><%= @doctor.user_name %></td>
+    <td>
+      <button title="Change Password" id="<%=raw @doctor.id %>-showlabBTNID" class="change-doctor-password-btn mg-icon-btn"><i class="fa fa-exchange"></i></button>
+    </td>
+  </tr>
+ 
+</table>
+<br/>
+<%else%>
+  <h5>NoDoctor Created </h5>
+<%end%>
+</div>
+
+<div id="doctorChangePasswordDivId"></div>
+
+<%= render  partial: 'application/common_left_close' %>
+
+
+<script>
+  $( document ).ready(function() {
+    focusCurrentTab("changeDoctorPasswordAID","changeDoctorPasswordLID");
+  });
+
+  $(document).on("click", ".change-doctor-password-btn", function(e){
+    var myID =$(this).attr('id');
+    var Id=myID.split("-");
+    var urlLink = "/healthcare/change_doctor_password/"+Id[0];
+    $.ajax({
+      url: urlLink ,
+      cache: false,
+      success: function(html){
+        $('#doctorChangePasswordDivId').dialog({
+          modal: true,
+          title: "Change Doctor Password",
+          open: function (){
+            $(this).html(html);
+          }
+        }); 
+      }
+    });
+  });
+</script>
+
+
+

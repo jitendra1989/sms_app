@@ -1,0 +1,73 @@
+<%= render  partial: 'examination_table_left' %>
+
+
+<div id="content-header">
+</div>
+
+
+<div id="page-yield">
+
+  <% unless flash[:notice].nil? %>
+    <h5 class="flash-msg"> <%= flash[:notice] %> </h5>
+  <% end %>
+
+  <div class="box">
+    <h4><%= @batch.name %> - <%= @batch.mg_course.full_name %> | <%= @subjects.subject_name %></h4>
+    <div id="score-table">
+      <table id="listing" width="100%" cellpadding="1" cellspacing="1">
+        <tr class="tr-head">
+          <td><%= "name" %></td>
+          <% @exam_groups.each do |exam_group| %>
+            <td><%= exam_group.name %></td>
+          <% end %>
+        </tr>
+
+        <%@students.inspect%>
+        <% @students.each do |student| %>
+    
+
+            <tr>
+              <td class="col-2"><%= student.first_name %></td>
+              <% @exam_groups.each do |exam_group| %>
+          
+                <td class="col-3">
+
+                   <% exam = MgExam.find_by(:mg_subject_id=>@subjects.id,:mg_exam_group_id=>exam_group.id) %>
+                   
+
+                  <% exam_score=MgExamScore.find_by(:mg_student_id=>student.id,:mg_exam_id=>exam.id) unless exam.nil?%>
+                 
+                      <%= exam_score.nil? ? '-' : "#{exam_score.marks || "-"}/"+exam.maximum_marks.to_s %>
+                    
+                </td>
+                 
+              <% end %>
+            </tr>
+          <% end %>
+          
+        
+       < <tr class="tr-head">
+          <td>
+            <%= "Class Average" %>
+          </td>
+          
+             <%@exam_groups.each do |exam_group| %>
+          <td>
+         
+          
+          
+                <%=exam_group.subject_wise_batch_average_marks(@subjects.id) %>
+              </td>
+               <% end %>
+                 
+              
+      
+         
+        </tr>
+         
+      </table>
+    </div>
+    </div>
+    </div>
+
+<%= render  partial: 'examination_table_close' %>

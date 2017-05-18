@@ -1,0 +1,15 @@
+<% navigation_add t('albums'), guardian_albums_path %>
+
+
+<%= render partial: 'dashboards/guardian_dashboard_left' %>
+<%= render partial: 'album_list' %>
+<%= render partial: 'application/common_left_close' %>
+
+
+<script>
+$(document).ready(function () {
+	focusCurrentTab("viewGuardianAlbumbAID","viewGuardianAlbumbLiID");
+      focusDashboards();
+
+});
+</script>

@@ -1,0 +1,141 @@
+<% navigation_add t('job_profile'),"/placements/placement_student_detail_index" %>
+<%= render partial: 'dashboards/student_dashboard_left' %>
+
+<h4 class="mg-h4"><%=t('about_job_profile')%></h4>
+<div>
+	<%if @student_detail.present?%>
+    <table class="mg-show-tbl-width">
+      <tr style="width:140px">
+        <td class="mg-td-width-half">
+          <label class="mg-label" style="width:140px"><%= t('name') %></label>
+          <label><%= @student_detail.try(:name) %></label>
+        </td>
+        <td class="mg-td-width-half">
+          <label class="mg-label" style="width:140px"><%= t('resume_headline') %></label>
+          <label><%=@student_detail.try(:resume_headline) %></label>
+        </td>       
+      </tr>
+      <tr style="width:140px">
+	      <td class="mg-td-width-half">
+          <label class="mg-label" style="width:140px"><%= t('current_position_/designation') %></label>
+          <label><%= @student_detail.try(:current_position) %></label>
+	      </td>
+	      <td class="mg-td-width-half">
+          <label class="mg-label mg-rm-text-trans" style="width:140px"><%= t('dateofbirth') %></label>
+          <label><%=@student_detail.try(:date_of_birth).strftime(@school.date_format)%></label>
+	      </td>
+      </tr>
+
+      <tr style="width:140px">
+        <td class="mg-td-width-half">
+	        <label class="mg-label" style="width:140px"><%= t('last_degree') %></label>
+	       	<label> <%=@student_detail.try(:last_degree) %></label>
+        </td>
+        <td class="mg-td-width-half">
+          <label class="mg-label mg-rm-text-trans" style="width:140px">Year of Passing</label>
+          <label class="mg-capitalize-text"><%= @student_detail.try(:year_of_passing) %></label>
+        </td>
+      </tr>
+
+      <tr style="width:140px">
+        <td class="mg-td-width-half">
+          <label class="mg-label"  style="width:140px"><%= t('functional_area') %></label>
+          <label><%=@student_detail.try(:functional_area)%></label>
+        </td>     
+        <td class="mg-td-width-half">
+          <label class="mg-label" style="width:140px"><%= t('educational_qualification') %></label>
+          <label><%= @student_detail.try(:educational_qualification) %></label>
+        </td>          
+      </tr>
+
+      <tr style="width:140px">
+        <td class="mg-td-width-half">
+         <label class="mg-label"  style="width:140px"><%= t('experience') %></label>
+         <label><%= @student_detail.try(:experience) %></label>
+        </td>      
+        <td class="mg-td-width-half">
+          <label class="mg-label" style="width:140px"><%= t('technical_skills') %></label>
+          <label><%= @student_detail.try(:technical_skills)%></label>
+        </td>          
+      </tr>
+
+      <tr style="width:140px">
+        <td class="mg-td-width-half">
+          <label class="mg-label"  style="width:140px"><%= t('soft_skills') %></label>
+          <label><%= @student_detail.try(:soft_skills) %></label>
+        </td>
+        <td>
+          <label class="mg-label"  style="width:140px"><%= t('salary_expected') %></label>
+          <label><%= @student_detail.try(:salary_expected) %></label>
+        </td>
+      </tr>
+
+      <tr style="width:140px">
+        <td class="mg-td-width-half">
+          <label class="mg-label"  style="width:140px"><%= t('address') %></label>
+          <label><%= @student_detail.try(:address) %></label>
+        </td>
+        <td>
+          <label class="mg-label"  style="width:140px"><%= t('contact_number') %></label>
+          <label><%= @student_detail.try(:contact_number) %></label>
+        </td>
+      </tr>
+
+      <tr style="width:140px">
+        <td class="mg-td-width-half">
+          <label class="mg-label"  style="width:140px"><%= t('email_id') %></label>
+          <label><%= @student_detail.try(:email_id) %></label>
+        </td>
+        <td>
+          <label class="mg-label"  style="width:140px"><%= t('current_location') %></label>
+          <label><%= @student_detail.try(:current_location) %></label>
+        </td>
+      </tr>
+
+      <tr style="width:140px">
+        <td class="mg-td-width-half">
+          <label class="mg-label"  style="width:140px"><%= t('preferred_location') %></label>
+          <label><%= @student_detail.try(:preferred_location) %></label>
+        </td>
+        <td>         
+        </td>
+      </tr>
+    </table>
+    <p class="mg-p-mgtop">      
+  		<%=link_to t("edit_job_profile"),{:controller => "placements", :action => "placement_student_detail_edit",:id =>@student_detail.id},:class=>"mg-custom-form-btn"%>
+  		<%=link_to t("delete_job_profile"),{:controller => "placements", :action => "placement_student_detail_delete",:id =>@student_detail.id} , :method=>'delete',data: { confirm: 'Are you sure to delete?' },:class=>"mg-custom-form-btn"%>
+    </p>
+  <%else%>
+  	<%=link_to t("create_job_profile"),{:controller=>"placements",:action=>"placement_student_detail_new"},:class=>"mg-custom-form-btn"%>
+	  <h5>No job profile added</h5>
+	<%end%>
+</div>
+
+<div id="showStudentPlacementDetailDIVID"></div>
+<%= render partial: 'application/common_left_close' %>
+
+<script>
+$(document).ready(function(){
+	focusCurrentTab("studentPlacementsAID","studentPlacementsLiID");
+});
+
+$(document).on("click", ".show-student_detail-btn", function(e){
+	  var myID =$(this).attr('id');
+	  var Id=myID.split("-");
+	  var urlLink = "/placements/placement_student_detail_show/"+Id[0];
+	  $.ajax({
+	      url: urlLink ,
+	      cache: false,
+	      success: function(html){
+	            $('#showStudentPlacementDetailDIVID').dialog({
+	              modal: true,
+	              width: '700px',
+	              title: "Show Job Profile",
+	              open: function () {
+	                  $(this).html(html);
+	              }
+	          }); 
+	      }
+	  });
+	});
+</script>

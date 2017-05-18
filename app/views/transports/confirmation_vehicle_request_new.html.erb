@@ -1,0 +1,54 @@
+
+
+<%=t('vehicle_number')%>
+<%=
+@mg_vehicle_data.vehicle_number
+%><br/>
+<%="Total Seats:     "%>
+<%=
+@mg_vehicle_data.no_of_seats
+%><br/>
+<%="Seats Available:"%>
+<%=@mg_vehicle_data.no_of_seats-@total_data%><br/>
+<%info_data=@mg_vehicle_data.no_of_seats-@total_data%>
+<%=hidden_field_tag :datas_info_confirmation,info_data%>
+<%if @transport_confirmation_data.size>0%>
+<table class="batch-tbl mg-tbl-margin" cellspacing="0" style="padding:0; border-collapse:collapse;">   <!-- border="2" --> 
+      <tr >
+        <th><%=t('student_name')%></th>
+        <th><%=t('applied_date')%></th>
+        <th align="center"><%=t('actions')%></th>
+       </tr>
+
+    <%@transport_confirmation_data.each_with_index do |transport| %>
+	      <tr>
+	      
+	        <%
+	         student_data=MgStudent.find(transport.mg_student_id)
+	        %>
+	        <td><%=student_data.first_name%></td>
+	        
+	     <td><%=transport.applied_date%></td>
+	        
+	        <%if transport.confirmation_status=="confirmed"%>
+	        <td><button id='<%=transport.id %>' class="cancel-confirm-transport-details-for-student-1234">Cancel Confirmation</button></td>
+	        <%else%>
+	      <td class="mg-align-center">
+	   
+	   <button id='<%=transport.id %>' class="confirm-transport-details-for-student-1234">Confirmation</button>
+	           
+             
+           </td>
+           <%end%>
+	      </tr>
+
+     <% end %>
+	</table>
+  <%else%>
+
+  <%="No Students in this Route"%>
+  <%end%>
+
+<script>
+
+</script>

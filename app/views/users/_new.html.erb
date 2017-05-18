@@ -1,0 +1,66 @@
+<!-- Sec --> 
+<h4 class="mg-h4">Create New User</h4>
+
+<div id="page-yield">
+
+  <div class="box">
+    
+    <%= form_for :user, url: users_path do |f| %>
+
+        <%= f.hidden_field :is_deleted, :value => 0 %>
+        <%= f.hidden_field :user_type, :value => 'admin' %>
+        <%= f.hidden_field :mg_school_id, :value => '5' %>
+
+        <label class="mg-label mg-custom-labels" for="user_name"><%= t('user_name') %></label>
+          <div class="input-container">
+              <%= f.text_field :user_name ,:class=>"mg-custom-labels"%>
+            </div>
+
+          <label class="mg-label mg-custom-labels" for="first_name"><%= t('first_name') %></label>
+            <div class="input-container">
+              <%= f.text_field :first_name ,:class=>"mg-custom-labels"%>
+          </div>
+
+          <label class="mg-label mg-custom-labels" for="middle_name"><%= t('middle_name') %></label>
+            <div class="input-container">
+              <%= f.text_field :middle_name ,:class=>"mg-custom-labels"%>
+          </div>
+
+          <label class="mg-label mg-custom-labels" for="last_name"><%= t('last_name') %></label>
+            <div class="input-container">
+              <%= f.text_field :last_name ,:class=>"mg-custom-labels"%>
+          </div>
+
+          <label class="mg-label mg-custom-labels" for="email"><%= t('email') %></label>
+                      <div class="input-container">
+                        <%= f.email_field :email ,:class=>"mg-custom-labels"%>
+                    </div>
+      
+
+          <div class="label-field-pair">
+            <label class="mg-label mg-custom-labels" for="password"><%= t('password') %> <span class="necessary-field">*</span></label>
+            <div class="text-input-bg"><%= f.password_field :password ,:class=>"mg-custom-labels"%></div>
+          </div><br/>
+
+    
+    
+      <%= submit_tag t('save'), class: "submit" ,:class=>"mg-small-form-btn mg-custom-labels"%>
+
+    <% end %>
+
+    
+
+  </div>
+</div>
+<script type="text/javascript">
+     $(document).ready(function(){
+               focusSettings();
+
+              $("#createUserLiID").addClass( "active" );
+              $("#createUserID").addClass( "activeMenu" );
+            
+              $("#rolePerLiID").removeClass("active");
+              $("#rolePerAID").removeClass("activeMenu");
+
+     }); 
+</script>

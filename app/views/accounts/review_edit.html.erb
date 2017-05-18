@@ -1,0 +1,73 @@
+<% navigation_add 'Accounts Review', :controller => 'accounts', :action => 'review' %>
+<%= render  partial: 'accounts/accounts_left' %>
+<h4 class="mg-h4"><%= t('edit_accounts') %></h4>
+
+
+<%= form_for :account, url: accounts_review_update_path, :html => {
+                            :id => 'accountsTransferNewAssistantReviewCreateID' } do |f| %>
+<%#= f.hidden_field :is_deleted, :value => 0 %>
+<%= hidden_field_tag :ids, @account.id %>
+<%= hidden_field_tag :assistant_incharge_user_id, @account.created_by %>
+<%= f.hidden_field :updated_by, :value => session[:user_id] %>
+<p>
+    <label class="mg-label" style="width:140px"><%= t('select_account') %><span class="required-field">&nbsp;*</span></label>
+    <br/>
+
+   <%= f.collection_select(:mg_to_account_id,MgAccount.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]), :id, :mg_account_name,{:include_blank => t("select")},:class => "mg-select-btn", disabled: true)%>
+</p>
+
+<p>
+    <label class="mg-label" style="width:140px"><%= t('amount') %><span class="required-field">&nbsp;*</span></label>
+    <br/>
+      <%= f.text_field :amount,:class=>"mg-text-field", :readonly=>true %>
+</p>
+
+<p>
+    <label class="mg-label" style="width:140px"><%= t('purpose') %><span class="required-field">&nbsp;</span></label>
+    <br/>
+      <%= f.text_area :purpose,:class=>"mg-text-field", :readonly=>true %>
+</p>
+
+<p>
+    <label class="mg-label" style="width:140px"><%= t('status') %><span class="required-field">&nbsp;</span></label>
+    <br/>
+<%if @account.status=="accepted"%>
+    <%=f.select :status, [["Pending", "pending"],["Accepted", "accepted"], ["Rejected", "rejected"]], {}, {:class=> "mg-select-btn",:disabled=>true}%>
+<%else%>
+    <%=f.select :status, [["Pending", "pending"],["Accepted", "accepted"], ["Rejected", "rejected"]], {}, {:class=> "mg-select-btn"}%>
+<%end%>
+</p>
+
+<p>
+    <label class="mg-label" style="width:140px"><%= t('reason') %><span class="required-field">&nbsp;</span></label>
+    <br/>
+<%if @account.status=="accepted"%>
+      <%= f.text_area :Reason,:class=>"mg-text-field", :readonly=>true%>
+<%else%>
+      <%= f.text_area :Reason,:class=>"mg-text-field"%>
+<%end%>
+</p>
+
+<p class="mg-p-mgtop">
+    <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("save")%></a>
+  <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+</p>
+<% end %>
+</div>
+<%= render  partial: 'application/common_left_close' %>
+
+<script>
+$( document ).ready(function() {
+            focusCurrentTab("viewAccountsCentralInchargeIndex","viewAccountsCentralInchargeLiID");
+          //focusStudentHeaderBox();
+});
+
+$("#accountsTransferNewAssistantReviewCreateID").validate({
+        rules: {        
+       // "account[status]": {required: true},
+       // "account[amount]": {required: true}
+      }
+    });
+
+
+</script>

@@ -1,0 +1,13 @@
+<!-- Sec --> 
+      <tr>
+        <td><%= employee_department.department_name %></td>
+        <td><%= employee_department.department_code %></td>
+      
+       <!--  <td><%#= if employee_department.status then "In Active" else "Active" end %></td> -->
+
+        <td>
+           <button title="Edit" class="edit-employee-department mg-icon-btn" id="editEmployeeDepartmentID-<%= employee_department.id%>"><i class="fa fa-pencil-square-o"></i></button>
+           <button title="Delete" class="delete-employee-department mg-icon-btn" id="deleteEmployeeDepartmentID-<%= employee_department.id%>"><i class="fa fa-trash"></i></button>
+        </td>
+
+      </tr>

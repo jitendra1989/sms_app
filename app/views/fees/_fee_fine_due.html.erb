@@ -1,0 +1,38 @@
+<!-- Sec --> 
+<%= fields_for (dueFine) do |f| %>
+	<%= f.hidden_field :is_percent, :value=> 0%>
+	<%= f.hidden_field :is_deleted, :value=> 0%>
+	<%= f.hidden_field :mg_school_id, :value=> session[:current_user_school_id]%>
+
+<div class="due-fine-content">
+	<div class="due-fine-content-inner">
+		<table width="100%" cellspacing="0" cellpadding="0" border="0" class="due-fine-table-cls mg-table-spacing">
+			<tbody>
+				<tr>
+	              	<td valign="top" style="width:220px;">
+	              		<label class="mg-label" for="days_after_due_date"><%= t('Days After Due Date') %><span class="required-field"> *</span></label>
+	              	</td>
+	              	<td>
+	                	<%= text_field_tag 'days_after_due_date[]' ,nil,:class=>"mg-text-field required-field"%>
+	              	</td>
+	          	</tr>
+
+	          	<tr>
+	              	<td valign="top" >
+	              		<label class="mg-label" for="amount"><%= t('Amount') %><span class="required-field"> *</span></label>
+	              	</td>
+	              	<td>
+	                	<%= text_field_tag 'amount[]' ,nil,:class=>"mg-text-field required-field"%>
+	              	</td>
+	          	</tr>
+
+	          	<tr>
+                  	
+              	</tr>
+
+			</tbody>
+		</table>
+	</div>
+</div>
+
+<% end %> 

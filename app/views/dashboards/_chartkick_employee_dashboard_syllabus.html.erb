@@ -1,0 +1,131 @@
+
+
+
+<h4 class="mg-h4"><%= t('syllabus_progress') %></h4>
+<%
+@empId=MgEmployee.where(:mg_user_id=>session[:user_id]).pluck(:id)
+	@syllabuscheck=MgSyllabusTracker.where(:is_deleted=>0,:mg_employee_id=>@empId).pluck(:mg_syllabus_id).uniq
+%>
+<%if  @syllabuscheck[0].to_s.empty?%>
+<h5 class="mg-custom-labels">No tracks found for this employee...</h5>
+<%else%>
+<%@dataHash=Hash.new%>
+<%@empId=MgEmployee.where(:mg_user_id=>session[:user_id]).pluck(:id)%>
+<%
+syll_tracker=@empId
+
+          @emp_perticular=MgSyllabusTracker.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id],:mg_employee_id=>syll_tracker)
+
+          @syllabus=MgSyllabusTracker.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id],:mg_employee_id=>syll_tracker).pluck(:mg_syllabus_id).uniq
+
+          @batch=MgSyllabusTracker.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id],:mg_employee_id=>syll_tracker).pluck(:mg_batch_id).uniq
+          #@dataHash=Hash.new
+          space=""
+          @batch.each do |batch|
+            @batch_name=MgBatch.where(:id=>batch)
+%>
+
+
+<%
+
+           @syllabus=MgSyllabusTracker.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id],:mg_employee_id=>syll_tracker,:mg_batch_id=>batch).pluck(:mg_syllabus_id).uniq
+
+
+         # @dataHash=Hash.new
+          @alloated_array=Array.new
+          @array=Array.new
+          @temp=""
+
+          @syllabus.each do |syll|
+
+          @syllabus_Id=@emp_perticular[0].mg_syllabus_id
+          @subject=MgSyllabus.where(:id=>syll)
+          
+          @subject_name=MgSubject.where(:id=>@subject[0].mg_subject_id).pluck(:subject_name)
+        @employee_time_taken=MgSyllabusTracker.where(:mg_employee_id=>syll_tracker, :mg_syllabus_id=>syll,:mg_batch_id=>batch).count
+
+        @unit=MgSyllabusTracker.where(:mg_syllabus_id=>syll).last
+
+        alloated_time=MgUnit.where(:id=>@unit.mg_unit_id).pluck(:time)
+
+        @emp_expectedtime=MgSyllabusTracker.where(:mg_employee_id=>syll_tracker, :mg_syllabus_id=>syll,:mg_batch_id=>batch).order(:date).last
+
+        @emp_expectedtime_count=MgSyllabusTracker.where(:mg_employee_id=>syll_tracker, :mg_syllabus_id=>syll,:mg_batch_id=>batch).order(:date).count
+
+        if ((@employee_time_taken+@emp_expectedtime.expected_class)<=alloated_time[0])
+              next
+        end
+
+        if ((@emp_expectedtime_count)<=0)
+              next
+        end
+
+
+                           %>
+                         
+                           <%
+                           
+                           @course_id=MgBatch.where(:id=>batch).pluck(:mg_course_id)
+                           @batch_name=MgBatch.where(:id=>batch).pluck(:name)
+                           @course_name=MgCourse.where(:id=>@course_id).pluck(:code)
+
+
+
+                      @subject_batch =  @course_name <<'-' <<@batch_name[0] <<'/'<< @subject_name[0]
+                        @alloted_array=Array.new
+                          @emp_name=MgEmployee.where(:id=>syll_tracker).pluck(:first_name)
+                       
+                   @alloted_array.push(" #{@course_name[0]} #{@batch_name[0]}-[Alloted]" ,@subject_name[0])
+                          @dataHash[@alloted_array]=alloated_time[0]
+                          @alloted_array=Array.new
+                       space +=" "
+
+                          %>
+
+                          <%
+                         @array=Array.new
+                          #@array.push(@subject_batch,@subject_name[0])
+                          @array.push(" #{@course_name[0]} #{@batch_name[0]}-[Expected]",@subject_name[0])
+
+
+                          if  @emp_expectedtime==nil
+
+                            @dataHash[@array]=@employee_time_taken
+
+                          else
+                            if  @emp_expectedtime.expected_class==nil
+                                @dataHash[@array]=@employee_time_taken
+                            else
+                              %>
+                             
+                               <%
+                            @dataHash[@array]=@employee_time_taken+@emp_expectedtime.expected_class
+                        end
+                   end
+                   @array=Array.new
+                   
+          end
+#end
+
+          %>
+
+
+<%end%>
+                 <% if @dataHash.size>0%>
+            <!-- <span><%#=course.inspect%></span>
+            =================================
+            <span><%#=@dataHash.inspect%></span>
+            ================================= -->
+
+            <% @dataHash.inspect %>
+            <%= column_chart (@dataHash) ,  colors: ["blue", "red"], library: {hAxis: {title: "Subjects"}, vAxis: {title: "No. of Period."}}%>
+            <%end%>
+          <%
+
+        end
+
+            %>
+
+
+
+

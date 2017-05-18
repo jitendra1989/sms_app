@@ -1,0 +1,185 @@
+<%= form_for :inventory, url: inventory_item_create_path, :html => {
+                            :id => 'inventoryItemCreateID', :multipart => true } do |f| %>
+
+<%= f.hidden_field :is_deleted, :value => 0 %>
+<%= f.hidden_field :mg_school_id, :value => session[:current_user_school_id] %>
+<%= f.hidden_field :created_by, :value => session[:user_id] %>
+<%= f.hidden_field :updated_by, :value => session[:user_id] %>
+
+<p>
+    <% @first_item_category = MgInventoryItemCategory.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id])%>
+    <%@categoryids = @first_item_category[0].try(:id)%>
+    <label class="mg-label" style="width:150px"><%= t('select_item_category') %><span class="required-field">&nbsp;*</span></label>
+    <br/>
+    <%= f.collection_select(:mg_category_id,MgInventoryItemCategory.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]), :id, :name,{:include_blank => t("select"),:selected=>@categoryids},:id => "inventory_item_new_Id" ,:class => "inventory-item-new-class mg-select-btn name-to-auto-generate-code")%>
+</p>
+
+<p>
+    <label class="mg-label" style="width:140px"><%= t('item_name') %><span class="required-field">&nbsp;*</span></label>
+    <br/>
+   <%= f.text_field :name,:class=>"mg-text-field" %>
+</p>
+
+<p>
+    <label class="mg-label" style="width:140px"><%= t('select_unit') %><span class="required-field">&nbsp;*</span></label>
+    <br/>
+    <%= f.collection_select(:mg_item_unit_id,MgLabUnit.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]), :id, :unit_name,{:include_blank => t("select")},:id => "inventory_item_new_Id" ,:class => "mg-select-btn")%>
+</p>
+
+<p>
+    <label class="mg-label" style="width:140px"><%= t('item_code') %><span class="required-field">&nbsp;*</span></label>
+    <br/>
+   <%= f.text_field :code,:class=>"mg-text-field code-auto-generated-class", :readonly=>true %>
+</p>
+
+<p>
+    <label class="mg-label" style="width:140px"><%= t('select_item_type') %><span class="required-field">&nbsp;*</span></label>
+    <br/>
+    <%= f.select :item_type, options_for_select([[t("select"), ""], [t("Sale"), "Sale"], [t("Consumption"), "Consumption"], [t("Regular Use"), "Regular Use"]]), {} ,{:class => "mg-select-btn"}%>
+</p>
+
+<p>
+    <label class="mg-label" style="width:140px"><%= t('prefix') %><span class="required-field">&nbsp;*</span></label>
+    <br/>
+   <%= f.text_field :prefix,:class=>"mg-text-field" %>
+</p>
+
+<p>
+    <label class="mg-label mg-tt-width" style="width:185px"><%=t('minimum_quantity')%></label>
+    <br/>
+    <%=f.text_field :minimum_quantity_required,:class=>"mg-text-field"%>
+</p>
+
+<p>
+    <label class="mg-label" style="width:140px"><%= t('description') %><span class="required-field">&nbsp;</span></label>
+    <br/>
+   <%= f.text_area :description,:class=>"mg-text-field" %>
+</p>
+<!-- /////////////////////////////////////////Changes////////////////////////////////////// -->
+
+<p>
+  <label class="mg-label" style="width:140px"><%= t('available_online') %><span class="required-field">&nbsp;</span></label>
+    <!-- <br/> -->
+   <%= f.check_box :available_online,:class=>"available-online-checkbox-class" %>
+</p>
+
+<p class="available-online-class" style="display:none">
+    <label class="mg-label mg-tt-width" style="width:185px"><%=t('reserved_for_offline')%><span class="required-field">&nbsp;*</span></label>
+    <br/>
+    <%=f.text_field :reserved_for_offline,:class=>"mg-text-field"%>
+</p>
+
+<p class="available-online-class" style="display:none">
+  <label class="mg-label mg-tt-width" style="width:185px"><%=t('online_price')%><span class="required-field">&nbsp;*</span></label>
+  <br/>
+  <%=f.text_field :online_price,:class=>"mg-text-field"%>
+</p>
+
+<p class="available-online-class" style="display:none">
+  <label class="mg-label mg-rm-text-trans" for="upload_file" ><%= t('upload_image') %><span class="required-field">&nbsp;*</span></label>
+  <div  class="available-online-class" style="display:none">
+    <div class="student_file_file_div" id="dueFineDivId" style="float: left; width: 100%;">
+      <span style="float: left;">
+        <%= file_field_tag 'file[]'%>
+      </span>
+      <!-- <a class="student_file-upload mg-custom-form-btn mg-icon-btn" style="color: #297ACC; font-size:0.8em; float: left; position: relative; right: 0px; margin-top: 3px;"><i class="fa fa-trash"></i></a> -->
+    </div>
+    <!-- <a id="add_homework_student_uploads" class="mg-label-inner-form mg-custom-form-btn mg-icon-btn" style="color: #297ACC; font-size:0.8em;" ><i class="fa fa-plus">&nbsp;Add File</i></a>  -->
+    <br/>
+  </div>
+</p>
+
+
+
+<!-- //////////////////////////////////Changes////////////////////////////////////// -->
+<p class="mg-p-mgtop">
+    <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("save")%></a>
+<a class="mg-small-form-btn cancel-form-dialog"><%=t("cancel")%></a>
+
+</p>
+<% end %>
+<script>
+
+$(document).ready(function(){
+
+  var categoryId = $("#inventory_item_new_Id").val();
+    if(categoryId > 0) {
+      $.ajax({ 
+        url: "/inventory/auto_number",
+        cache: false,
+        success: function(data){
+          $(".code-auto-generated-class").val(data.str);
+        }
+      });
+    }
+
+});
+
+
+
+  $(document).on("change",".available-online-checkbox-class",function(e){
+    if ($(this).prop( "checked" ))
+    {
+      $(".available-online-class").show();
+    }
+    else
+    {
+      $(".available-online-class").hide();
+    }
+  });
+
+
+
+$("#inventoryItemCreateID").validate({
+        rules: {        
+        "inventory[name]": {required: true},
+        "inventory[code]": {required: true},
+        "inventory[mg_category_id]": {required: true},
+        "inventory[item_type]": {required: true},
+        "inventory[prefix]": {required: true},
+        "inventory[minimum_quantity_required]": {number:true,min: 0},
+        "inventory[reserved_for_offline]": {required: true,number:true,min: 0},
+        "file[]": {required: true},
+        "inventory[online_price]": {required: true,number:true,min: 0}
+      }
+    });
+
+
+
+  $(document).on("click", "#add_homework_student_uploads", function(e){
+    var lastRepeatingGroup = $('.student_file_file_div').last();
+    var cloned = lastRepeatingGroup.clone();
+    cloned.find('input').val('');
+    cloned.insertAfter( lastRepeatingGroup );
+    return false;
+}); 
+
+
+$(document).on("click", ".student_file-upload", function(e){
+   var total = $('.student_file-upload').length
+   if(total!=1)
+   {
+        $(this).parent('div').remove();
+    }
+});
+
+
+
+  $(document).on("change",".name-to-auto-generate-code",function(e){
+      e.preventDefault();
+    var categoryId = $(this).val();
+    if(categoryId > 0) {
+      $.ajax({ 
+        url: "/inventory/auto_number",
+        cache: false,
+        success: function(data){
+          $(".code-auto-generated-class").val(data.str);
+        }
+      });
+    }else{
+      $("#inventory_code").val('');
+    }
+  });
+
+
+</script>

@@ -1,0 +1,406 @@
+<% navigation_add 'Manage Vendor', :controller => 'inventory', :action => 'vendor' %>
+<% navigation_add 'Add Vendor', :controller => 'inventory', :action => 'vendor_new' %>
+
+
+<%= render  partial: 'inventory/inventory_left' %>
+
+<div id="employeeEditFormID"  class="employee-form-cls" >
+            
+    <div class="box">
+
+<%= form_for :inventory, url: inventory_vendor_create_path, :html => {
+                            :id => 'inventoryVendorItemCreateID' } do |f| %>
+<%= f.hidden_field :is_deleted, :value => 0 %>
+<%= f.hidden_field :mg_school_id, :value => session[:current_user_school_id] %>
+<%= f.hidden_field :created_by, :value => session[:user_id] %>
+<%= f.hidden_field :updated_by, :value => session[:user_id] %>
+<%= f.hidden_field :vendor_code, :value => @vendor_code %>
+      <div class="form-content">
+        <div class="form-content-inner">
+          <h4 class="mg-h4"><%= t('add_vendor') %></h4>
+            <table width="100%" cellspacing="0" cellpadding="0" border="0" class="employee-form-cls">
+                <tbody>
+                    <tr>
+                      <td width="33%" valign="bottom">
+                        <label class="mg-label" for="marital_status" ><%= t("vendor_category") %>
+                          <span class="required-field">*</span> 
+                        </label>
+                      </td>
+
+                      <td> </td>
+                      <td width="33%" valign="bottom">
+                        <label class="mg-label" for="mother_name" ><%= t("vendor_name") %>
+                          <span class="required-field">*</span> 
+                        </label>
+                      </td>
+                     
+                      <td> </td>
+                      <!-- <td width="33%" valign="bottom">
+                        <label class="mg-label" for="father_name"><%#= t("vendor_code") %>
+                        <span class="required-field"></span>
+                        </label>
+                      </td> -->
+                      <td width="33%" valign="bottom">
+                        <label class="mg-label" for="father_name"><%= t("contact_person_name") %>
+                        <span class="required-field">*</span>
+                        </label>
+                      </td>
+                    </tr> 
+                    
+                    <tr>
+                      <td valign="top">
+                       <%= f.select :category, options_for_select([[t("select"), ""], [t("Preferable"), "Preferable"], [t("Active"), "Active"], [t("Blacklisted"), "Blacklisted"]]) %>
+                      </td>
+                      <td> </td>
+                       <td valign="top">
+                        <%= f.text_field :name, :class=>"textboxwidth mg-text-field" %>
+                      </td>
+                    
+                      <td> </td>
+                      <!-- <td valign="top">
+                        <%#= f.text_field :vendor_code, :class=>"textboxwidth mg-text-field code-auto-generated-class", :readonly=>true %>
+                      </td> -->
+                      <td valign="top">
+                        <%= f.text_field :contact_name, :class=>"textboxwidth mg-text-field" %>
+                       
+                      </td>
+                    </tr>
+                    
+                    <tr>
+                      <td width="33%" valign="bottom">
+                        <label class="mg-label" for="blood_group" ><%= t('street_address') %>
+                          <span class="required-field">*</span> 
+                          
+                        </label>
+                      </td>
+
+                      <td> </td>
+                      <td width="33%" valign="bottom">
+                      <label class="mg-label" for="mg_nationality_id" ><%= t('city') %>
+                        <span class="required-field">*</span>
+                          
+                        </label>
+                      </td>
+                    
+                      <td> </td>
+                      <td width="33%" valign="bottom">
+                        <label class="mg-label" for="image_file"><%= t('state') %>
+                          <span class="required-field">*</span> 
+
+                        </label> 
+                      </td>
+                    </tr> 
+                    
+                    <tr>
+                      <td valign="top">
+                        <%= f.text_field :street_address, :class=>"textboxwidth mg-text-field" %>
+                       
+                      </td>
+                      <td> </td>
+                      <td valign="top">
+                        <%= f.text_field :city, :class=>"textboxwidth mg-text-field" %>
+                        
+                        
+                      </td>
+                    
+                      <td> </td>
+                      <td valign="top">
+                        <%= f.text_field :state, :class=>"textboxwidth mg-text-field" %>
+                        
+                      </td>
+                    </tr>
+                     <tr>
+                      <td width="33%" valign="bottom">
+                        <label class="mg-label" for="marital_status" ><%= t("pincode") %>
+                          <span class="required-field">*</span> 
+
+                        </label> 
+                      </td>
+
+                      <td> </td>
+                      <td width="33%" valign="bottom">
+                        <label class="mg-label" for="mother_name" ><%= t("country") %>
+                          <span class="required-field">*</span> 
+
+                        </label>
+                      </td>
+                     
+                      <td> </td>
+                      <td width="33%" valign="bottom">
+                        <label class="mg-label" for="father_name"><%= t("phone_number") %>
+                          <span class="required-field">*</span>
+                        </label>
+                        <%= tooltip '<i class="fa fa-question"></i>'.html_safe, { :tooltip => 'Can enter digits only. No arbitrary symbols like -,*,#,etc are allowed. Phone Number should not be initialised with 0, eg: If your number is 06542-2651XX, then enter it like 65422651XX. No need to mention \'0\' in the beginning.' }, :class => 'mytooltip mg-icon-btn' ,:style=>"font-size: 0.85em;"%><br/>
+                      </td>
+                    </tr> 
+                    
+                    <tr>
+                      <td valign="top">
+                       <%= f.text_field :postal_code, :class=>"textboxwidth mg-text-field" %>
+                      </td>
+                      <td> </td>
+                       <td valign="top">
+                        <%= f.country_select :country, ["India"], {}, { :class => "form-control" } %>
+                      </td>
+                    
+                      <td> </td>
+                      <td valign="top">
+                        <%= f.text_field :phone_number, :class=>"textboxwidth mg-text-field" %>
+                      </td>
+                    </tr>
+
+
+                    <tr>
+                    <td width="33%" valign="bottom">
+                        <label class="mg-label" for="fax_number" ><%= t("fax_number") %>
+                        </label>
+                      </td>
+
+                      <td> </td>
+                      <td width="33%" valign="bottom">
+                        <label class="mg-label" for="mother_name" ><%= t("email_id") %>
+                          <span class="required-field">*</span> 
+                        </label>
+                      </td>
+
+                      <td> </td>
+                      <td width="33%" valign="bottom">
+                       <!--  <label class="mg-label" for="mother_name" ><%#= t("email_id") %>
+                          <span class="required-field">*</span> 
+                        </label> -->
+                      </td>
+                     
+                      <td> </td>
+                      
+                    </tr> 
+                    
+                    <tr>
+                      <td valign="top">
+                       <%= f.text_field :fax_number, :class=>"textboxwidth mg-text-field" %>
+                      </td>
+                      <td> </td>
+                       <td valign="top">
+                         <%= f.text_field :email, :class=>"textboxwidth mg-text-field" %>
+                      </td>
+                    
+                      <td> </td>
+                      <td valign="top">
+                        
+                      </td>
+                    </tr>
+                 </tbody>
+            </table>
+            <table>
+              <tbody>
+                <tr>
+                      <td width="33%" valign="bottom">
+                        <label class="mg-label" for="father_name"><%= t("information") %>
+                        <span class="required-field"></span>
+                        </label>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td valign="top">
+                        <%= f.text_area :information, :class=>"textboxwidth mg-text-field" ,:style=>"max-width:700px;" %>
+                      </td>
+                    </tr>
+              </tbody>
+            </table>
+        </div>
+      </div>
+
+
+
+<!-- ============Implementing the select Category, Item and Unit ============? -->
+<h4 class="mg-h4"><%= t('Item Information')%></h4> 
+ <div class="mg-tbl-margin"> 
+ <p>
+ <a id="inventory_details" class="mg-label-inner-form mg-custom-form-btn" style="color: #297ACC; font-size:0.8em; position: relative;" >Add </a></p><br\>
+ <div class="mg-scroll-employee-bar">
+<table class="mg-show-tbl-width mg-table-nowrap batch-tbl mg-adjust-padding width-set-for-purchase-table">  
+
+        <th><%=t("sl_no")%></th>
+        <th><%=t("select_category")%><span class="required-field">&nbsp;*</span></th>
+        <th><%=t("select_item")%><span class="required-field">&nbsp;*</span></th>
+        <th><%=t("unit_price")%><span class="required-field">&nbsp;*</span></th>
+        <th><%=t("action")%></th>
+        <tr class="demo-div">
+            <div id="finalDueFineDivId">
+            <div class="due-fine-div" id="dueFineDivId">
+            <td><span class="required-incremented-field">1</span></td>
+          
+            <td class="mg-align-center mg-inventory-td-class">
+              <%= f.collection_select("mginventoryitemcategory[]",MgInventoryItemCategory.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]), :id, :name,{:include_blank => t("select")},:class => "mg-inventory-item-category-cls",:name=>"mginventoryitemcategory[]")%>
+            </td>
+
+
+            <td class="mg-align-center mg-proposal-item-cls">
+              <%=f.select 'mg_item_id[]',options_for_select([[]]),{:include_blank=>t('select')},:class=>"mg-select-btn delete-item-cls",:name=>'mg_item_id[]' , :onchange=>"vendorList(this);"%>
+
+              <%#= f.collection_select("mg_item_id[]",MgInventoryItem.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]), :id, :name,{:include_blank => t("select")},:class => "call-purpose-class consumption-category-class category-laboratory-class",:name=>"mg_item_id[]")%>
+            </td>
+          <td class="mg-align-center">
+          <%= text_field_tag 'unit_price[]' ,nil,:class=>"mg-inside-tbl-width required-field item-name-class-purchase"%>
+          </td>
+          </td>
+          <td class="mg-align-center">
+                      <a title="Remove" class="remove-inventory-details mg-icon-btn" style="color: #297ACC;"> <i class="fa fa-trash"></i></a>
+            </td>   
+             </div>
+             </div>
+          </tr>
+</table >
+</div>
+  </div>    
+  <div class="checking_validation"></div>            
+  <div class="checking_validation1"></div>  
+
+<!--Ending Select category, unit and price-->
+
+         
+      <p class="mg-p-mgtop">
+    <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("save")%></a>
+<%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+
+</p>
+<% end %>
+
+</div>
+</div>
+<%= render  partial: 'application/common_left_close' %>
+
+<script>
+
+
+$("#inventoryVendorItemCreateID").validate({
+        rules: {        
+        "inventory[category]": {required: true},
+        "inventory[name]": {required: true, name_validate: true, maxlength: 35},
+        "inventory[contact_name]": {required: true},
+        "inventory[street_address]": {required: true},
+        "inventory[city]": {required: true},
+        "inventory[state]": {required: true},
+        "inventory[postal_code]": {required: true, number: true},
+        "inventory[country]": {required: true},
+        "inventory[phone_number]": {required: true, number: true, minlength: 10,maxlength: 10},
+        "inventory[fax_number]": {number: true, minlength: 10,maxlength: 10},
+        "inventory[email]": {required: true,  email: "Your email must be in the format of name@domain.com"},
+        "mginventoryitemcategory[]": {required: true},
+        "mg_item_id[]": {required: true},
+        "unit_price[]": {required: true}
+      }
+    });
+
+
+$(document).ready(function()
+{
+    $("#selectedVendorItem option").prop('selected',true)
+    focusCurrentTab("viewInventoryVendorIndex","viewInventoryVendorLiID");
+    // Auto-population of Item Code
+      // $.ajax({ 
+      //   url: "/inventory/auto_item_code",
+      //   cache: false,
+      //   success: function(data){
+      //     $(".code-auto-generated-class").val(data.str);
+      //   }
+      // });
+});
+
+
+
+$(document).on("click", "#inventory_details", function(e){
+    var lastRepeatingGroup = $('.demo-div').last();
+    //alert(lastRepeatingGroup);
+    var cloned = lastRepeatingGroup.clone();
+    //console.log(cloned);
+    cloned.find('input').val('');
+    cloned.find('.delete-vendor-cls').html('<option value="">Select</option>');
+    cloned.find('.delete-item-cls').html('<option value="">Select</option>');
+    cloned.find('label').remove();
+    cloned.find(".call-purpose-class ").attr("class","call-purpose-class consumption-category-class category-laboratory-class");
+    cloned.insertAfter( lastRepeatingGroup );
+
+
+  $(".required-incremented-field:visible").each(function(index,element){
+          $(this).text(index+1);
+    });
+    $(".checking_validation").click();
+    //add_validation_for_forms();
+    return false;
+
+}); 
+
+
+  $(document).on("click", ".remove-inventory-details", function(e){
+   var total = $('.remove-inventory-details').length
+   var last_count = $('.remove-inventory-details').text();
+   //console.log(last_count);
+ //alert(last_count); 
+   if(total!=1)
+   {
+    $(this).parent('td').parent().remove();   
+    }
+  $(".required-incremented-field:visible").each(function(index,element){
+          $(this).text(index+1);
+    });
+});
+
+
+
+  $(document).on('change','.mg-inventory-item-category-cls',function(){
+    var category_id = $(this).val();
+    
+    var select_option = '<option value="">Select</option>';
+    var temp =$(this).parents('.mg-inventory-td-class').siblings(".mg-proposal-item-cls").find("select");
+    temp.empty().append(select_option);
+   
+    if(category_id > 0) {
+         
+      var urlLink = "/inventory/select_inventory_category/"+category_id;
+      $.ajax({ 
+        url: urlLink,
+        cache: false,
+        success: function(data){
+          console.log(data);
+          if(data.length > 0){
+            var select_option = '<option value="">Select</option>';
+            //console.log(data);
+            for(key in data){
+              select_option += '<option value="'+data[key].id+'">'+data[key].name+'</option>'
+            }
+            temp.empty().append(select_option);
+          }
+        }
+      });
+    }else{
+      var select_option = '<option value="">Select</option>';
+      temp.empty().append(select_option);
+    }
+  });
+
+
+
+</script>
+
+<style>
+.mg-capitalize-lbl{
+  text-transform: capitalize;
+}
+#languagePlusId{
+  padding: 5px;
+  background-color: #2094F6;
+  width: 120px;
+
+}
+
+#ui-datepicker-div {
+  z-index: 10 !important;
+}
+
+
+.mg-add-rem-btn {
+  position: relative;
+  top: -7em;
+  margin-right: 5px;
+}
+</style>

@@ -1,0 +1,52 @@
+
+
+  <%if flash[:error].present?%>
+  <div class="alert alert-info mg-success-msg">
+
+        <%=flash[:error]%>
+        </div>
+   <%end%>
+
+
+
+<%=form_for :books_category, :url=>{:controller=>'libraries',:action=>'books_category_update',:id=>@books_category.id},:html=>{:id=>"edit_books_category_form"} do |f|%>
+
+      
+
+
+
+        <%= f.hidden_field :is_deleted ,:value=>0%>
+        <%= f.hidden_field :mg_school_id ,:value=>@school_id%>
+       
+        
+<table class="mg-tbl-margin mg-show-tbl-width">
+    <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="categoryName"><%= t ('category_name') %><span class="required-field">&nbsp;*</span></label><br/>
+        <%= f.text_field :category_name,:class=>"mg-text-field"%>
+      </td>
+    </tr>
+
+
+     </table>
+    <br/>
+    <br/>
+ <%#= f.submit t('save'), class: "submit mg-small-form-btn mg-custom-labels" %>
+ <a onclick="$(this).closest('form').submit()" class="submit mg-small-form-btn"><%=t("Submit")%></a>
+
+ <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+<%end%>
+
+<script>
+$(document).ready(function () {
+$("#edit_books_category_form").validate({
+        //debug: true,
+        rules: {
+  "books_category[category_name]":{required:true}
+  
+  }
+    
+  });
+
+    });
+</script>

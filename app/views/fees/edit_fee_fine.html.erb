@@ -1,0 +1,50 @@
+<!-- Sec --> 
+<div id="page-yield">
+ 	<div class="box">
+ 		<%= form_for :generate_fine_form, :url=>{:controller=>'fees',:id=>@generate_fine_form.id,    :action=>'update_fee_fine'}, method: :patch  do |f| %>
+ 			
+ 			<%= f.hidden_field :is_deleted, :value=> 0%>
+ 			<%= f.hidden_field :mg_school_id, :value=> session[:current_user_school_id]%>
+
+ 			<div class="generate_fine_form-content">
+          		<div class="generate_fine_form-inner">
+            		<table cellspacing="0" cellpadding="0" border="0" class="generate_fine_table-cls mg-table-spacing">
+              			<tbody>
+
+              				<tr class="fine-generate-tr-cls">
+			                  	<td style="width:220px;" class="fee-fine-td" >
+			                  		<label for="fine_name" class="mg-label"><%= t('FineName') %></label>
+			                  	</td>
+			                  	<td class="fee-fine-td">
+			                    	<%= f.text_field :fine_name ,:class=>"mg-text-field"%>
+			                  	</td>
+		                  	</tr>
+
+		                  	<tr>
+			                  	<td valign="top">
+			                  		<label for="fine_description" class="mg-label"><%= t('Description') %></label>
+			                  	</td>
+			                  	<td>
+			                    	<%= f.text_area :fine_description ,:class=>"mg-text-field"%>
+			                  	</td>
+		                  	</tr>
+		                  	<tr>
+		                  		<td></td>
+			                  	<td>
+			                  		<%#= submit_tag 'Submit' ,:class=>"mg-small-form-btn"%>
+			                  		<a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("save")%></a>
+	
+			                  		 <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+
+			                  	</td>
+		                  	</tr>
+              			</tbody>
+              		</table>
+              		
+              		
+
+              	</div>
+              </div>
+ 		<% end %>
+	</div>
+</div>

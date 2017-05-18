@@ -1,0 +1,136 @@
+<% navigation_add 'Section List', :controller => 'subjects', :action => 'batch_subject_asso' %>
+<% navigation_add 'Section Subject Association', :controller => 'subjects', :action => 'select_subject' %>
+
+
+<!-- Sec --> 
+<!-- Render subject left -->
+<%= render  partial: 'subject_left' %>
+
+<% batch_id=@batches.id%>
+<%
+  $count=0
+  $sub_count=0
+  @selected_subjects.each {
+  $count +=1
+  }
+  @subjects.each{
+  $sub_count +=1
+  }
+%>
+<%$sub_count=$sub_count%>
+<!-- <%#= @selected_subjects.inspect%> -->
+<h4 class="mg-h4 mg-label-text-transform-none"><%=@batches.course_batch_name%> <%=t("subjects")%></h4>
+
+<div class="mg-scroll-subject-bar mg-btn-bottom-margin">
+<table class="batch-tbl">   <!-- border="2" --> 
+ <tr >
+  	<th><%=t("subjectname")%></th>
+  
+    <th><%=t("subjectcode")%></th>
+    
+
+     <th><%=t("select")%></th>
+  </tr>
+  <!-- -->
+  <%if ($count !=0) %>
+
+            <% @subjects.each do |sub| %>
+                      <%$man=0%>
+                              <%@selected_subjects.each do|a| %>
+                                    <tr>
+                                              <%if (sub.id==a.mg_subject_id) %>
+                                                      <td><%= sub.subject_name %></td>
+                                                      <td><%= sub.subject_code %></td>
+                                                      <td class="mg-align-center"><%= check_box_tag(sub.id, "sub_check", true, :onclick=>"toggleAll(#{sub.id});")%></td>
+                                                <%else%>
+
+                                                 <% $man +=1%>
+
+                                              <%end%>
+
+                                              <%if($count==$man )%>
+                                                    <td><%= sub.subject_name %></td>
+                                                    <td><%= sub.subject_code %></td>
+                                                    <td class="mg-align-center"><%= check_box_tag(sub.id, "sub_check", false, :onclick=>"toggleAll(#{sub.id});")%></td>
+
+                                              <%end%>
+                             <%end%>
+                <!-- <td><input type="checkbox" value="1" name="45" id="45"></td> -->
+                                </tr>
+              <% end %>
+<%else%>
+
+ <% @subjects.each do |subs| %>
+          <tr>
+              <td><%= subs.subject_name %></td>
+              <td><%= subs.subject_code %></td>
+              <td class="mg-align-center"><%= check_box_tag(subs.id, "sub_check", false, :onclick=>"toggleAll(#{subs.id});") %></td>
+          </tr>
+  <%end%>
+         
+<% end %>
+</table>
+</div><br>
+<p>
+<!-- <input type="submit" id='<%#=raw batch_id %>' class="submit-subject-association-btn mg-small-form-btn" value=<%#= t("save")%>> -->
+<a onclick="$(this).closest('form').submit()" id='<%=raw batch_id %>' class="submit-subject-association-btn mg-small-form-btn"><%=t("save")%></a>
+<%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+</p>
+
+<!-- Render subject left close-->
+<%= render  partial: 'subject_left_close' %>
+
+<script type="text/javascript">
+
+      $(document).ready(function () {
+       
+        $("li").removeClass( "active" );
+        $("a").removeClass( "activeMenu" );
+
+        $("#batchSubjectAssoLiID").addClass( "active" );
+        $("#batchSubjectAssoID").addClass( "activeMenu" );
+
+        focusSubject();
+      });
+
+
+var sub_id_list = new Array();
+function toggleAll(sub_id)
+{
+    // alert("i'm in toggleAll function");
+  var subId =sub_id
+    // alert(subId);
+
+
+    if("input:checkbox"){
+      // alert("aaa");
+      sub_id_list.push(subId);
+    }else{
+      // alert("bbb");
+      sub_id_list.pop(subId);
+    };
+}
+
+
+$(document).on("click", ".submit-subject-association-btn", function(e){
+        var studentCategoryID =$(this).attr('id');
+        var urlLink = "/subjects/batch_subject/";
+        $.ajax({
+            url: urlLink ,
+            data: { 'batch_id':studentCategoryID, 'sub_id_list': sub_id_list },
+
+            // contentType: 'json',
+            cache: true,
+
+            success: function(html){
+              alert("Updated Successfully");
+         //    window.reload();
+              window.location = "/subjects/batch_subject_asso"
+          //    alert(location);
+              // location.reload();
+            }
+        });
+});
+
+
+</script>

@@ -1,0 +1,132 @@
+<%=render partial: 'alumni_left' #has_attached_file :file
+%>
+<% navigation_add t('change_password'), :action=>'alumni_login' %>
+
+<h4 class="mg-h4"><%=t('change_password')%></h4>
+
+
+<%= form_for :alumni_login_data, :url=>{:action=>"change_alumni_login_password"}, :html => {
+                            :id => 'change_alumni_login_passwordFormID' } do |f| %>
+   <%= f.hidden_field :user_id, :value => session[:user_id] %>
+   <%= hidden_field_tag "change_store_password", params[:change_store_password] %>
+   <%#= f.label :Current_Password ,:class=> "mg-label"%><!-- <span class="required-field">&nbsp;*</span> --><!-- <div id="feedbackcurrentdivId"></div> -->
+   <%#= f.password_field :name ,:class=>"mg-text-field" %>
+ 
+<p>
+    <%= f.label :old_password ,:class=> "mg-label"%><span class="required-field">&nbsp;*</span><br>
+   <%= password_field_tag :old_password,nil,:class=>"mg-text-field",:id=>"oldalumniPassword" %>
+ <div id="old_passworddivId" style="color:#ff0000"></div>
+ </p>
+ 
+
+ <p>
+    <%= f.label :New_Password ,:class=> "mg-label"%><span class="required-field">&nbsp;*</span><br>
+   <%= password_field_tag :password,nil,:class=>"mg-text-field",:id=>"newalumniPassword" %>
+ </p>
+ <div id="newpassworddivId" style="color:#ff0000"></div>
+
+ <p>
+    <%= f.label :Retype_Password ,:class=> "mg-label"%><span class="required-field">&nbsp;*</span><br>
+   <%= password_field_tag :alumni_hashed_password ,nil,:class=>"mg-text-field",:id=>"realumniPassword" %>
+ </p>
+ <div id="employeefeedbackdivId" style="color:#ff0000"></div>
+ 
+<p class="mg-p-mgtop">
+     <!--   <a onclick="$(this).closest('form').submit()" id="submitbutton" class="submit mg-change-password-form-btn mg-small-form-btn"><%#=t("save")%></a>
+      -->
+          <a id="accept-class-alumni-password" class="mg-custom-labels mg-small-form-btn"><%=t("save")%></a>
+        <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+       <%=f.submit t("save") ,:id=>"submitalumnipasswordFormBtnId" , :style=>"display:none"%>
+    
+</p>
+<% end %>
+
+
+
+
+<script>
+$(document).ready(function(){
+
+$("#change_alumni_login_passwordFormID").validate({
+  rules: {
+  "old_password": {required: true},
+  "password": {required: true},
+  "alumni_hashed_password": {required: true},
+
+  }
+  });
+
+	    focusCurrentTab("change_password_alumni_registration_formIndexAID","change_password_formIndexId");
+  
+
+  
+});
+
+$(document).on("change","#newalumniPassword",function(e){
+ var oldalumniPassword=$("#oldalumniPassword").val();
+
+ if(oldalumniPassword==""){
+ 	$(this).val("");
+ $("#newpassworddivId").text("Enter old password..");
+
+ }
+ else{
+$("#newpassworddivId").text("");
+
+ }
+
+});
+$(document).on("change","#oldalumniPassword",function(e){
+ var urlLink = "/alumni/password_search_data";
+        $("#newpassworddivId") .text("");
+var password=$(this).val();
+  
+    
+  $.ajax({
+            url: urlLink,
+            cache: false,
+            data: {"password":password},
+            success: function(html){  
+                       if (parseInt(html.name)>0){
+
+                        $("#old_passworddivId").text("");
+                          //alert(html.data);
+                       }
+                       else{
+                        // alert(html.data);
+                         //alert("Wrong password")
+                          $("#old_passworddivId").text("Wrong password..");
+                          $("#oldalumniPassword").val("");
+                       }
+                    }
+                }); 
+               
+   
+
+});
+
+
+$(document).on("click","#accept-class-alumni-password",function(e){
+   
+   
+    var temp=$("#newalumniPassword").val();
+    var tempo=$("#realumniPassword").val();
+    if(temp==tempo)
+    {
+    	$("#employeefeedbackdivId").text("");
+       $("#submitalumnipasswordFormBtnId").click();
+    }
+    else
+    {
+    	$("#realumniPassword").val("");
+      $("#employeefeedbackdivId").text("Password doesn't matches..");
+    }
+  
+    
+  });
+</script>
+
+
+
+
+<%= render  partial: 'application/common_left_close' %>

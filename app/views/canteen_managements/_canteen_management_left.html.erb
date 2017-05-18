@@ -1,0 +1,103 @@
+<section id="userBodyContentBox" >
+  <table width=100% border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td valign="top" class="userBodyContentBox1">
+        <aside class="userMenuBoxLeft" style="width: 210px;">
+          <ul class="menuListHome">
+            <li class="myAccountMenu"><%=t('canteen_management')%></li>
+            <%=hidden_field_tag "user_type",session[:user_type]%>
+            <%if session[:user_type]=="canteen_manager"%>       
+              <li id="mealCategoryLID">
+                <a class="menuItemsActivities" href="/canteen_managements/meal_category" id="mealCategoryAID">
+                  <div class="setMenu"><i class="fa fa-list">&nbsp;&nbsp;</i><%=t('meal_category')%>
+                  </div>
+                </a>
+              </li>
+              <li id="foodItemDetailsLID">
+                <a class="menuItemsActivities" href="/canteen_managements" id="foodItemDetailsAID">
+                  <div class="setMenu"><i class="fa fa-cutlery">&nbsp;&nbsp;</i><%=t('food_item')%>
+                  </div>
+                </a>
+              </li>
+              <%end%>
+              <li id="canteenMenuDetailsLID">
+                <a class="menuItemsActivities" href="/canteen_managements/menu" id="canteenMenuDetailsAID">
+                  <div class="setMenu"><i class="fa fa-folder-open">&nbsp;&nbsp;</i><%=t('menu')%>
+                  </div>
+                </a>
+              </li>
+              <li id="regularCanteenMenuLID">
+                <a class="menuItemsActivities" href="/canteen_managements/regular_menu" id="regularCanteenMenuAID">
+                  <div class="setMenu"><i class="fa fa-folder-open-o">&nbsp;&nbsp;</i><%=t('regular_menu')%>
+                  </div>
+                </a>
+              </li>
+              <%if session[:user_type]=="canteen_manager"%>
+
+              <li id="canteenBillGenerateLID">
+                <a class="menuItemsActivities" href="/canteen_managements/bill_detail" id="canteenBillGenerateAID">
+                  <div class="setMenu"><i class="fa fa-credit-card">&nbsp;&nbsp;</i><%=t('bills')%>
+                  </div>
+                </a>
+              </li>
+
+              <li id="canteenBalanceAmountLID">
+                <a class="menuItemsActivities" href="/canteen_managements/balance_amount" id="canteenBalanceAmountAID">
+                  <div class="setMenu"><i class="fa fa-balance-scale">&nbsp;&nbsp;</i><%=t('balance_amount')%>
+                  </div>
+                </a>
+              </li>
+
+              <li id="canteenAccountDetailsLID">
+                <a class="canteenAccountActivities" href="/canteen_managements/account" id="canteenAccountDetailsAID">
+                  <div class="setMenu"><i class="fa fa-user">&nbsp;&nbsp;</i><%=t('account')%>
+                  </div>
+                </a>
+              </li>
+            <!-- ============================================================================================ -->
+           <!--  <li id="canteenBalanceAmountLID">
+              <a class="menuItemsActivities" href="/canteen_managements/balance_amount" id="canteenBalanceAmountAID">
+                <div class="setMenu"><i class="fa fa-user">&nbsp;&nbsp;</i><%#=t('fees')%>
+                </div>
+              </a>
+            </li> -->
+            <!-- ============================================================================================ -->
+
+
+
+
+            <!-- ============================================================================================== -->
+            <li id="canteenFeeLiID">
+                <a class="Principle-Profile" href="/canteen_managements/canteen_fee_category" id="canteenFeeAID">
+                    <div class="setMenu"><i class="fa fa-credit-card-alt">&nbsp;&nbsp;</i><%=t('canteen_fees')%>
+                                </div>
+                </a>
+            </li>
+
+            <li id="canteenfee_scheduleLiID">
+                <a class="menuItemsActivities" href="/canteen_managements/canteen_fee_schedule/" id="canteenfee_scheduleAID">
+                    <div class="setMenu"><i class="fa fa-calendar-check-o">&nbsp;&nbsp;</i><label class="mg-label-text-transform-none" for="hostelcontroller"><%=t('canteen_fee_schedule')%>
+                    </label></div>
+                </a>
+              </li>
+            <%end%>
+            <!-- ================================================================================================= -->
+
+          </ul>  
+        </aside>
+      </td>
+    
+    <td  valign="top" id="manageAdminCategoryID" class="mg-table-td-main-2">
+    <%=render partial: 'layouts/messages'%>
+
+
+<script>
+$( document ).ready(function() {
+    var user_type=$("#user_type").val();
+    if ((user_type=="admin")||(user_type=="principal"))
+    {
+        collapseLeftMenu();
+    }
+    focusheaderBox("CANTEEN");
+});
+</script>

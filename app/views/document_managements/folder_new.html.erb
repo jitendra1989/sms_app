@@ -1,0 +1,47 @@
+    <% if !params[:notice].blank? %>
+  <div class="alert alert-info mg-success-msg">
+  <%= params[:notice] %>
+  </div>
+<% end %>
+ <%= form_for :document_managements, url: folder_new_create_path, :html => {
+                            :id => 'folderFormID' } do |f| %>
+
+  <p>
+    <%= f.label :folder_name ,:class=>"mg-label"%><span class="required-field"> *</span><br>
+    <%= f.text_field :folder_name  ,:class=>"mg-text-margin" %>
+  </p>
+  <p>
+    <%= f.hidden_field :mg_employee_id, :value=>@employee[0]   %>
+   <% if @mg_employee_folder_id.present?%>
+    <%= f.hidden_field :mg_employee_chaild_folder_id, :value=>@mg_employee_folder_id   %>
+    <%else%>
+    <%= f.hidden_field :mg_employee_chaild_folder_id, :value=>0   %>
+
+   <% end%>
+  </p>
+
+<p>
+    <%=f.hidden_field :is_deleted, :value=>0%>
+</p>
+
+<%= f.hidden_field :mg_school_id, :value => session[:current_user_school_id]%>
+  <%#=session[:current_user_school_id]%>
+
+  <%#= f.hidden_field :mg_school_id, :value => 5%> 
+  <%= f.hidden_field :created_by, :value => session[:user_id]%>
+  <p class="mg-p-mgtop">
+    <%#= f.submit t('submit') ,:class=>"mg-small-form-btn"%>
+    <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("save")%></a>
+    <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+  </p>
+<% end %>
+<script>
+$(document).ready(function () {
+$("#folderFormID").validate({
+
+rules: {
+"document_managements[folder_name]": {required: true}
+}
+});
+});
+</script>

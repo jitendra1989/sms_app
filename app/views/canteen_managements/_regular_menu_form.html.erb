@@ -1,0 +1,146 @@
+<%= form_for :regular_menu, :url=> @action=='new' ? '/canteen_managements/create_regular_menu' : 
+'/canteen_managements/update_regular_menu', :method=> @action=='new' ? "post" : "patch" ,:html => {:id => 'regularMenuFormID'} do |f| %>
+<%
+  if session[:user_type]=='principal'
+    @user_permission=false
+  else
+    @user_permission=true
+  end
+%>
+  <%= f.hidden_field :is_deleted, :value => 0 %>
+  <%= f.hidden_field :mg_school_id, :value => session[:current_user_school_id] %>
+  <%= f.hidden_field :created_by, :value => session[:user_id] %>
+  <%= f.hidden_field :updated_by, :value => session[:user_id] %>
+  <%= f.hidden_field :updated_by, :value => session[:user_id] %>
+  <%= f.hidden_field :id, :value => @regular_menu.try(:id) %>
+
+  <div id="cantenManagemetnDivScroll">
+  <table class="batch-tbl mg-tbl-margin">
+    <tr>
+      <th><%=t('sr_no')%></th>
+      <th><%=t('name')%></th>
+      <th><%=t('status')%></th>
+      <th><%=t('action')%></th>
+    </tr>
+    
+    <%if @regular_menu.present?%>
+      <%count=0%>
+      <% @regular_menu.each do |f| %>
+        <%= hidden_field_tag 'regular_food_id[]', f.mg_food_item_id %>
+
+        <%count=count+1%>
+        <tr class="canteent-regular-menu-row">
+          <td><span class="canteen-menu-index-field"><%=count%></span></td>
+          <td>
+            <%#= f.select "mg_food_item_id[]",options_from_collection_for_select(@food_item,"id","item_name",:selected=>""),{include_blank: "Select"}%>
+            <%= select_tag "mg_food_item_id[]",options_for_select(@food_item,:selected=>f.mg_food_item_id),:prompt=>"Select",:onchange=>"selectFoodItemFunction(this.value,this)",:class=>"mg-food-item-selec-cls"%>
+          </td>
+          <td>
+            <%= select_tag "status[#{count}]", options_for_select([[t("pending"), "pending"], [t("accepted"), "accepted"], [t("rejected"), "rejected"]],:selected=>f.status),:class=>"canteen-status-cls", :disabled=>@user_permission %>
+          </td>
+          <!-- </td> -->
+          <td class="canteent-regular-menu-td-cls">
+            <%if count>1%>
+              <%if session[:user_type] !="principal"%>
+                <a title="Delete" id="<%#=raw v.id %>" class="delete-regular-menu-again mg-icon-btn">
+                  <i class="fa fa-minus-circle"></i>
+                </a>
+              <%else%>
+                <a title="Delete" id="<%#=raw v.id %>" class="mg-icon-btn">
+                  <i class="fa fa-minus-circle"></i>
+                </a>
+              <%end%>
+            <%else%>
+              <%if session[:user_type] !="principal"%>
+                <a title="Add" id="<%#=raw v.id %>" class="add-regular-menu-again mg-icon-btn">
+                  <i class="fa fa-plus-circle"></i>
+                </a>
+              <%else%>
+                <a title="Add" id="<%#=raw v.id %>" class="mg-icon-btn">
+                  <i class="fa fa-plus-circle"></i>
+                </a>
+              <%end%>
+            <%end%>
+          </td>
+        </tr>
+      <%end%>
+    <%else%>
+        <tr class="canteent-regular-menu-row">
+          <td><span class="canteen-menu-index-field">1</span></td>
+          <td>
+            <%#= f.select "mg_food_item_id[]",options_from_collection_for_select(@food_item,"id","item_name",:selected=>""),{include_blank: "Select"}%>
+            <%= select_tag "mg_food_item_id[]",options_for_select(@food_item),:prompt=>"Select",:onchange=>"selectFoodItemFunction(this.value,this)",:class=>"mg-food-item-selec-cls"%>
+          </td>
+          <td>
+          
+            <%= select_tag "status[]", options_for_select([[t("pending"), "pending"], [t("accepted"), "accepted"], [t("rejected"), "rejected"]],:selected=>"pending"), :disabled=>@user_permission,:class=>"canteen-status-cls" %>
+          </td>
+          <td class="canteent-regular-menu-td-cls">
+            <a title="Add" id="<%#=raw v.id %>" class="add-regular-menu-again mg-icon-btn">
+              <i class="fa fa-plus-circle"></i>
+            </a>
+          </td>
+        </tr>
+    <%end%>
+  </table>
+</div>
+
+  <p class="mg-p-mgtop">
+    <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn regular-menu-form-submit-class" style="display:none"><%=t("save")%></a>
+    <a class="mg-small-form-btn regular-menu-form-for-submit-class"><%=t("save")%></a>
+    <a class="mg-small-form-btn cancel-form-dialog"><%=t("cancel")%></a>
+  </p>
+<% end %>
+
+
+
+<script>
+
+// $(document).on("click","#regular-menu-form-for-submit-class",function() {
+$(".regular-menu-form-for-submit-class").click(function(){
+  $(".canteen-status-cls").each(function(){
+    $(this).removeAttr("disabled");
+  })
+  $(".regular-menu-form-submit-class").click();
+    $(".canteen-status-cls").each(function(){
+    $(this).attr("disabled", "disabled");
+  })
+});
+
+
+  $("#regularMenuFormID").validate({
+    rules: {        
+     "mg_food_item_id[]": {required: true}
+    }
+  });
+
+
+  function selectFoodItemFunction(food_item_item,that){
+    array=[];
+    var text_val= parseInt($(that).parent("td").siblings("td").text());
+
+    $(".canteent-regular-menu-row").each( function( index, element ){
+      var select_val = $(this).children("td").find("select").val();
+      if ((index+1)!=text_val){
+        array.push(select_val);
+      }
+    });
+    if(array.indexOf(food_item_item) > -1){
+      alert("Already selected please select other!");
+      $(that).parent("td").children("select").val('');
+    }
+  }//function end
+
+
+</script>
+
+
+<style type="text/css">
+  #cantenManagemetnDivScroll {
+    border: 1px solid #b2b2b2;
+    display: inline-block;
+    height: 315px;
+    overflow-y: scroll;
+    /*width: 737px;*/
+}
+</style>

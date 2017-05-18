@@ -1,0 +1,91 @@
+
+
+
+<%= fields_for :account_details do |account| %>
+
+<div class="form-content">
+        <div class="form-content-inner">
+          <h4 class="mg-h4"><%= t('account_details') %></h4>
+            <table width="100%" cellspacing="0" cellpadding="0" border="0" class="employee-form-cls mg-table-spacing">
+                <tbody>
+                    <tr>
+                      <td width="33%" valign="bottom">
+                        <label class="mg-label" for="marital_status" ><%= t("bank_name") %>
+                          <span class="required-field">*</span> 
+
+                        </label>
+                      </td>
+
+                      <td> </td>
+                      <td width="33%" valign="bottom">
+                        
+                        <label class="mg-label" for="father_name"><%= t("account_number") %>
+
+                          <span class="required-field">*</span> 
+                        </label>
+                      </td>
+                     
+                      <td> </td>
+                      <td width="33%" valign="bottom">
+                        <label class="mg-label" for="marital_status" ><%= t("branch_name") %>
+
+                        <span class="required-field">*</span>
+                        </label>
+                      </td>
+                    </tr>
+                    <tr>
+                  <td valign="top">
+                     <%= account.text_field :bank_name ,:class=>"mg-text-field"%>
+                  </td>
+                  <td> </td>
+                  <td valign="top">
+                     <%= account.text_field :account_number ,:class=>"mg-text-field"%>
+           </td>
+                  <td> </td>
+                  <td valign="top">
+                    <%= account.text_field :branch_address ,:class=>"mg-text-field"%>
+              </td>
+                </tr>
+
+                <tr>
+                      <td width="33%" valign="bottom">
+                        <label class="mg-label" for="mother_name" ><%= t("ifs_code") %>
+                          <span class="required-field">*</span> 
+
+                        </label>
+                        <%= tooltip '<i class="fa fa-question"></i>'.html_safe, { :tooltip => "Please refer your check book for IFS Code or check with your bank" }, :class => 'mytooltip mg-icon-btn' ,:style=>"font-size: 0.85em;"%>
+                      </td>
+
+                      <td> </td>
+                      <td width="33%" valign="bottom">
+                        <!-- <label class="mg-label" for="mother_name" ><%#= t("account_holder_name") %>
+                          <span class="required-field">*</span> 
+
+                        </label> -->
+                      </td>
+                     
+                      <td> </td>
+                      <td width="33%" valign="bottom">
+                      
+                      </td>
+                    </tr>
+                    <tr>
+                  <td valign="top">
+                    <%= account.text_field :ifs_code  ,:class=>"mg-text-field"%>
+                    
+                    </td>
+                  <td valign="top">
+                     <%#= account.text_field :ac_holder_name ,:class=>"mg-text-field"%>
+                  </td>
+                  <td> </td>
+                  <td valign="top">
+                    <%#= account.text_field :city ,:class=>"mg-text-field"%>
+                  </td>
+                </tr>
+             	</tbody>
+            </table>
+        </div>
+</div>
+<%end%>
+
+

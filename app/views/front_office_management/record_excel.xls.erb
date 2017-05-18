@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<ss:Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
+  xmlns:o="urn:schemas-microsoft-com:office:office"
+  xmlns:x="urn:schemas-microsoft-com:office:excel"
+  xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"
+  xmlns:html="http://www.w3.org/TR/REC-html40">
+  <ss:Worksheet ss:Name="Sheet1">
+    <ss:Table>
+    <%for i in 0...20%>
+      <ss:Column ss:Width="150"/>  
+    <%end%>
+      <ss:Row >
+        <ss:Cell ss:MergeAcross="25" ><ss:Data ss:Type="String" xml:space="preserve">               <b><%=t('postal_record')%></b></ss:Data></ss:Cell>
+      </ss:Row>
+
+      <ss:Row>
+        <ss:Cell ><ss:Data ss:Type="String"><%=t('recipient_name')%></ss:Data></ss:Cell>
+        <ss:Cell ><ss:Data ss:Type="String"><%=t('address')%></ss:Data></ss:Cell>
+        <ss:Cell ><ss:Data ss:Type="String"> <%=t('dispatch_number')%></ss:Data></ss:Cell>
+        <ss:Cell ><ss:Data ss:Type="String"> <%=t('transaction_flow')%></ss:Data></ss:Cell>
+        <ss:Cell ><ss:Data ss:Type="String"> <%=t('received_date')%></ss:Data></ss:Cell>
+        <ss:Cell ><ss:Data ss:Type="String"> <%=t('mode_of_dispatch')%></ss:Data></ss:Cell>
+        <ss:Cell ><ss:Data ss:Type="String"> <%=t('category')%></ss:Data></ss:Cell>
+        <ss:Cell ><ss:Data ss:Type="String"> <%=t('dispatcher')%></ss:Data></ss:Cell>
+      </ss:Row>
+
+       <%@dateFormat = MgSchool.find_by(:id=>session[:current_user_school_id]).date_format %>
+       <%@postal_record.each do |record|%>
+          <ss:Row>
+            <ss:Cell ><ss:Data ss:Type="String"><%=record.try(:recipient_name)%></ss:Data></ss:Cell>
+            <ss:Cell ><ss:Data ss:Type="String"><%=record.try(:address)%></ss:Data></ss:Cell>
+            <ss:Cell ><ss:Data ss:Type="String"><%=record.try(:dispatch_number)%></ss:Data></ss:Cell>
+            <ss:Cell ><ss:Data ss:Type="String"><%=record.try(:transaction_flow)%></ss:Data></ss:Cell>
+            <ss:Cell ><ss:Data ss:Type="String"><%=record.try(:received_date).try(:strftime, @dateFormat)%></ss:Data></ss:Cell>
+            <ss:Cell ><ss:Data ss:Type="String"><%=record.try(:mode_of_dispatch)%></ss:Data></ss:Cell>
+            <ss:Cell ><ss:Data ss:Type="String"><%=record.try(:category)%></ss:Data></ss:Cell>
+            <ss:Cell ><ss:Data ss:Type="String"><%=record.try(:dispatcher)%></ss:Data></ss:Cell>
+          </ss:Row>
+        <%end%>
+    </ss:Table>
+  </ss:Worksheet>
+</ss:Workbook>
+

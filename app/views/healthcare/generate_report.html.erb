@@ -1,0 +1,189 @@
+<% navigation_add t('generate_report'), :controller=>'healthcare' ,:action=> 'generate_report' %>
+<%=render partial: 'healthcare_left'%>
+<%= form_for :generate_report, url: '',:html=>{:id=>"generateReportFormID", :multipart=>true} do |f| %>
+  <h4 class="mg-h4"><%= t('generate_report') %></h4>
+  
+  <p>
+    <%= f.label :checkup_for , t('user_type'), :class=> "mg-label"%> <span class="required-field"> *</span><br/>
+    <%= f.radio_button :checkup_for, 'student',:checked=>true,:class=>'checked-for-student-cls'%> 
+    <%= f.label :checkup_for , t('student'), :class=> "mg-label"%> 
+    <%= f.radio_button :checkup_for, 'employee',:class=>'checked-for-employee-cls'%>
+    <%= f.label :checkup_for , t('employee'), :class=> "mg-label"%> 
+  </p>
+
+  <div id="mgBatchListDivId" style=";">
+    <% 
+      @batchList = MgBatch.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id])
+       @batchList.each do |batchObj|
+          @courseObj = MgCourse.find_by_id(batchObj.mg_course_id)
+          batchObj.name =  (@courseObj.course_name) +"-"+ batchObj.name
+       end 
+    %>
+    <p>
+      <label class="mg-label"><%=t('select_semester')%><span class="required-field"> *</span></label><br>
+      <%=select_tag 'mg_batch_id', options_from_collection_for_select(@batchList, 'id', 'name',:selected=>''),:prompt=>"Select",:onchange=>"studentRecord(this.value)"%>
+    </p>
+    <p>
+      <label class="mg-label"><%=t('select_student')%><span class="required-field"> *</span></label><br>
+      <%=select_tag 'mg_student_id',options_for_select([]),:prompt=>"Select",:onchange=>"studentHealthRecord(this.value)"%>
+    </p>
+    <div id="generateReportDivID">
+      <h4 class="mg-h4"><%= t('student_detail') %></h4>
+      <div id="healthReportDivID"></div>
+    </div>
+  </div>
+  <div id="mgDepartmentListDivId" style="display:none;">
+    <p>
+      <label class="mg-label"><%=t('select_department')%><span class="required-field"> *</span></label><br>
+      <% employee_department = MgEmployeeDepartment.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:department_name,:id)%>
+
+      <%=select_tag :mg_employee_department_id,options_for_select(employee_department),:prompt=>"Select",:onchange=>"employeeRecord(this.value)"%>
+    </p>
+    <p>
+      <label class="mg-label"><%=t('select_employee')%><span class="required-field"> *</span></label><br>
+      <%=select_tag 'mg_employee_id',options_for_select([]),:prompt=>"Select",:onchange=>"employeeHealthRecord(this.value)"%>
+    </p>
+    <div id="generateReportDivID">
+      <h4 class="mg-h4"><%= t('employee_detail') %></h4>
+      <div id="employeeHealthReportID"></div>
+    </div>
+  </div>
+<% end %>
+<p class="mg-p-mgtop">
+  <a onclick="generateHealthCard()" class="mg-small-form-btn"> <%= t('generate_health_card') %></a>
+  <%= link_to t('cancel'), {:controller=>'healthcare',:action=>'generate_report'}, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+</p>
+<%= render  partial: 'application/common_left_close' %>
+
+
+
+<script>
+  $(document).ready(function () {
+    // dateFormatStr =  getJsDateFormat();
+    focusCurrentTab("generateHealthCareReportAID","generateHealthCareReportLID");
+
+   $("#generateReportFormID").validate({
+      rules: {     
+        "mg_batch_id": {required: true},
+        "mg_student_id": {required: true},
+        "mg_employee_id": {required: true},
+        "mg_employee_department_id": {required: true}
+      }
+    });
+  });
+
+  function studentRecord(batch_id){
+    var urlLink = "/healthcare/student_employe_list";
+    var empty_otion = '<option value="select">Select</option>';
+
+    if(batch_id!=''){
+      $.ajax({
+        url: urlLink ,
+        cache: false,
+        data:{batch_id:batch_id},
+        success: function(data){
+          $('#healthReportDivID').empty();
+          $('#mg_student_id').html(data)
+        }
+      });
+    }else{
+      $('#healthReportDivID').empty();
+      $('#mg_student_id').empty().append(empty_otion);
+    }
+  }
+
+  function employeeRecord(emp_department_id){
+    var urlLink = "/healthcare/student_employe_list";
+    var empty_otion = '<option value="select">Select</option>';
+    if(emp_department_id!=''){
+      $.ajax({
+        url: urlLink ,
+        cache: false,
+        data:{"emp_department_id":emp_department_id},
+        success: function(data){
+          $('#healthReportDivID').empty();
+          $('#mg_employee_id').html(data)
+        }
+      });
+    }else{
+      $('#healthReportDivID').empty();
+      $('#mg_employee_id').empty().append(empty_otion);
+    }
+  }  
+
+  function studentHealthRecord(student_id){
+    var batch_id = $("#mg_batch_id").val();
+    var urlLink = "/healthcare/health_card_record";
+    if(student_id!=''){
+      $.ajax({
+        url: urlLink,
+        cache: false,
+        data: {mg_batch_id:batch_id,mg_student_id:student_id,student_record:"student_record"},
+        success: function(data){
+          $('#healthReportDivID').html(data)
+        }
+      })
+    }else{
+      $('#healthReportDivID').empty();
+    }
+  }
+
+  function employeeHealthRecord(employee_id){
+    var emp_deptartment_id = $("#mg_employee_department_id").val();
+    var urlLink = "/healthcare/health_card_record";
+    if(employee_id!=''){
+      $.ajax({
+        url: urlLink,
+        cache: false,
+        data: {mg_employee_department_id:emp_deptartment_id,mg_employee_id:employee_id},
+        success: function(data){
+          //console.log(data);
+          $('#employeeHealthReportID').html(data)
+        }
+      })
+    }else{
+      $('#employeeHealthReportID').empty();
+    }
+  }
+
+  $(document).on("click",".checked-for-student-cls",function(){
+    // $(".employee-checkbox-cls").each(function(){
+    //   $(this).prop('checked', false);
+    // });
+    if($(this).is(':checked')){
+      $("#mg_employee_id").val('');
+      $('#employeeHealthReportID').empty();
+      $("#mgDepartmentListDivId").hide();
+      $("#mgBatchListDivId").show();
+    }
+  });
+
+  $(document).on("click",".checked-for-employee-cls",function(){
+    // $(".student-checkbox-cls").each(function(){
+    //   $(this).prop('checked', false);
+    // });
+
+    if($(this).is(':checked')){
+      $("#mg_student_id").val('');
+      $('#healthReportDivID').empty();
+      $("#mgBatchListDivId").hide();
+      $("#mgDepartmentListDivId").show();
+    }
+  });
+
+    function generateHealthCard(){
+      var res = $("#generateReportFormID").valid();
+      if(res){
+        var student_id = $("#mg_student_id").val();
+        var batch_id = $("#mg_batch_id").val();
+        var employee_id = $("#mg_employee_id").val();
+        var emp_department_id = $("#mg_employee_department_id").val();
+        var url="/healthcare/healh_card_pdf?mg_student_id="+student_id+"&mg_batch_id="+batch_id+"&mg_employee_id="+employee_id+"&mg_employee_department_id="+emp_department_id+"&format=pdf&target=_blank";
+        window.open(url, '_blank');
+      }
+    }
+</script>
+
+<style type="text/css">
+   
+</style>

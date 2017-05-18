@@ -1,0 +1,1003 @@
+<% navigation_add t('results'), :controller=>'sports_management', :action=>'results' %>
+<%= render  partial: 'sports_left' %>
+<%@@temp_increment=0%>
+<%= form_for :library_purchase_details ,  :url=>{:controller=>'sports_management',:action=>'result_update',:id=>@results.id}, :html=>{:id=>'sports_results_datas'} do |f| %>
+<%=hidden_field_tag "mg_event_committee_id_data",@results.mg_event_committee_id%>
+<%=hidden_field_tag "mg_event_coee_id",@results.mg_event_id%>
+
+<%=hidden_field_tag "mg_event_id_Data",@results.date_of_event%>
+<div>
+  <label class="mg-label mg-tt-width "><%=t('select_committee') %><span class="required-field"> *</span></label>
+   <%=select_tag :mg_committee_id ,options_for_select(@event_committees,:selected=>@results.mg_event_committee_id),:onchange=>"optionForEventInvetaionSS(this.value)",:prompt=>t('select') , :id=>"selectCommitteeSelectTagID" ,:class=>"mg-select-btn"%>
+   </div>
+
+<div>
+    <label class="mg-label mg-tt-width "><%=t('select_event') %><span class="required-field"> *</span></label>
+   <%=select_tag :mg_event_id ,options_for_select(@events,params[:mg_event_id]),:prompt=>t('select'),:onchange=>"optionForDateInventation(this.value)",:id=>"selectEventForCommitteeSelectTagIDDataId" ,:class=>"mg-select-btn"%>
+</div>
+<%#(2001..Time.now.year).to_a.reverse%>
+
+<div id="Date_data">
+    <label class="mg-label mg-tt-width "><%=t('date_of_event') %><span class="required-field"> *</span></label>
+   <%#=text_field_tag :date_of_event,nil,:class=>"mg-text-field"%>
+   <%= select_tag 'date_of_event', options_for_select([]), :prompt=>"Select",:id=>"selectEventForCommitteeSelectTagIDDataValue",:class=>"mg-text-field" %>
+</div>
+
+<div>
+  <%game=MgSportGame.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:name,:id)%>
+   <label class="mg-label mg-tt-width "><%=t('select_game') %><span class="required-field"> *</span></label>
+  <%=select_tag "game",options_for_select(game,:selected=>@results.mg_sport_game_id),:prompt=>"Select"%>
+          
+</div>
+
+
+<!-- <div>
+  <%#team=MgSportTeam.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:team_name,:id)%>
+   <label class="mg-label mg-tt-width "><%#=t('select_team') %><span class="required-field"> *</span></label>
+  <%#=select_tag "mg_sport_team_id",options_for_select(team,:selected=>@results.mg_sport_team_id),:prompt=>"Select", :class=>"sports_team_class"%>
+          
+</div> -->
+
+
+<h4 class="mg-h4"><%= t('result')%></h4> 
+<!-- <a id="result_details_for_data" class="mg-label-inner-form mg-custom-form-btn" style="color: #297ACC; font-size:0.8em; position: relative;" >Add </a> <br/>
+ <div class="mg-scroll-employee-bar mg-tbl-margin">  -->  
+ <div class="mg-scroll-employee-bar mg-tbl-margin">   
+
+<table class="mg-show-tbl-width mg-table-nowrap batch-tbl mg-adjust-padding">  
+
+        <th><%=t("s_no.")%></th>
+        <th><%=t("winning_place")%><span class="required-field">&nbsp;*</span></th>
+        <th><%=t("participant_team")%><span class="required-field">&nbsp;*</span></th>
+
+        <th>Select player type<span class="required-field">&nbsp;*</span></th>
+        <!-- <th>select Programme/Select Department<span class="required-field">&nbsp;*</span></th>
+        <th>select Semester<span class="required-field">&nbsp;*</span></th> -->
+
+        <th><%=t("select_winner")%><span class="required-field">&nbsp;*</span></th>
+       
+    <!--     <th><%#=t('actions')%></th> -->
+<%
+                  student_array=Array.new
+
+          employee_array=Array.new
+%>
+<%student_data=MgSportStudentDataResult.where(:mg_sports_result_id=>@results.id)%>
+         <%employee_data=MgSportEmployeeDataResult.where(:mg_sports_result_id=>@results.id)%>
+        <%[1,2,3].each do |i|%>
+        <tr class="demo-div">
+
+            <div id="finalDueFineDivId">
+            <div class="due-fine-div" id="dueFineDivId">
+            <td><span class="required-incremented-field"><%=i%></span></td>
+          
+          <td id="<%=i%>" class="mg-align-center resource-category-td-class rank">
+         
+          <%if i==1%>
+          <%= "#{i}st Place"%>
+
+         <%
+
+         student_data.each do |data|
+
+          if data.rank=="1st rank"
+            @team_id=MgSportStudentDataResult.find_by(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id],:mg_sports_result_id=>@results.id,:rank=>"1st rank")
+
+      @prgm_list=MgWing.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:wing_name, :id)
+      @data_student=data.mg_students_id
+      @id1=data.mg_students_id
+      @student_data=MgStudent.find_by(:id=>data.mg_students_id)
+      @batch_data=MgBatch.find_by(:id=>@student_data.mg_batch_id)
+      @course_data=MgCourse.find_by(:id=>@batch_data.mg_course_id)
+      course_list=MgCourse.where(:mg_wing_id=>@course_data.mg_wing_id,:is_deleted=>0,:mg_school_id=>session[:current_user_school_id])
+        
+        course_list_id=MgCourse.where(:mg_wing_id=>@course_data.mg_wing_id,:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:id)
+
+        sect_list=MgBatch.where("is_deleted=? and mg_school_id=? and mg_course_id IN (?)",0,session[:current_user_school_id],course_list_id).order("mg_course_id")
+        
+          @object=Array.new
+        
+            sect_list.each do |s|
+          @object1=Array.new
+
+               course=MgCourse.find_by(:id=>s.mg_course_id)
+              # str +="<option value='#{s.try(:id)}'>#{course.try(:course_name)} - #{s.try(:name)}</option>"
+             @object1.push("#{course.try(:course_name)} - #{s.try(:name)}","#{s.try(:id)}")
+            @object.push(@object1)
+
+
+            end        
+                  student_id=MgSportTeamStudent.where(:mg_sport_team_id=>@team_id.mg_sports_team_id,:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:mg_student_id)
+
+             @studentsList=MgStudent.where(:id=>student_id,:is_deleted=>0,:mg_school_id=>session[:current_user_school_id])
+      @object1=Array.new
+      @studentsList.each do |s|
+         @object2=Array.new
+           # str +="<option value='#{s.try(:id)}'>(#{s.try(:admission_number)}) #{s.try(:first_name)} #{s.try(:last_name)}  </option>"
+                  @object2.push("(#{s.try(:admission_number)}) #{s.try(:first_name)} #{s.try(:last_name)} ","#{s.try(:id)}")
+
+                 @object1.push(@object2)
+
+       end
+
+         @data_value="student"  
+         end
+       end
+  employee_data.each do |data|
+
+          if data.rank=="1st rank"
+           @team_id=MgSportEmployeeDataResult.find_by(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id],:mg_sports_result_id=>@results.id,:rank=>"1st rank")
+
+         @data_value="employee"
+        @employee_id=data.mg_employee_id
+              @id1=data.mg_employee_id
+
+        @employee=MgEmployee.find_by(:id=>data.mg_employee_id)
+        # @department_data=MgEmployeeDepartment.find_by(:id=>@employee.mg_employee_department_id)
+        # @departments=MgEmployeeDepartment.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:department_name, :id)
+      employee_id=MgSportTeamEmployee.where(:mg_sport_team_id=>@team_id.mg_sports_team_id,:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:mg_employee_id)
+
+       employee_list=MgEmployee.where("is_deleted=? and mg_school_id=? and id IN (?)",0,session[:current_user_school_id],employee_id)
+
+     @object3=Array.new
+
+            employee_list.each do |s|
+             # str +="<option value='#{s.try(:id)}'> (#{s.try(:employee_number)}) #{s.try(:first_name)}  #{s.try(:last_name)}</option>"
+        @object1=Array.new
+              
+                  @object1.push("(#{s.try(:employee_number)}) #{s.try(:first_name)}  #{s.try(:last_name)}","#{s.try(:id)}")
+
+                 @object3.push(@object1)
+
+            end
+
+         end
+end
+
+
+         %>
+        
+                  <%=hidden_field_tag "fst_place","#{@id1},#{@data_value}"%>
+
+         <%elsif i==2%>
+
+         <%="2nd Place"%>
+         <%
+
+         student_data.each do |data|
+
+          if data.rank=="2nd rank"
+            @prgm_list=MgWing.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:wing_name, :id)
+            @data_student=data.mg_students_id
+                          @id2=data.mg_students_id
+
+      @student_data=MgStudent.find_by(:id=>data.mg_students_id)
+      @batch_data=MgBatch.find_by(:id=>@student_data.mg_batch_id)
+            @course_data=MgCourse.find_by(:id=>@batch_data.mg_course_id)
+
+course_list=MgCourse.where(:mg_wing_id=>@course_data.mg_wing_id,:is_deleted=>0,:mg_school_id=>session[:current_user_school_id])
+         course_list_id=MgCourse.where(:mg_wing_id=>@course_data.mg_wing_id,:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:id)
+
+        sect_list=MgBatch.where("is_deleted=? and mg_school_id=? and mg_course_id IN (?)",0,session[:current_user_school_id],course_list_id).order("mg_course_id")
+
+        @team_id=MgSportStudentDataResult.find_by(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id],:mg_sports_result_id=>@results.id,:rank=>"2nd rank")
+
+          @object=Array.new
+        
+            sect_list.each do |s|
+          @object1=Array.new
+
+               course=MgCourse.find_by(:id=>s.mg_course_id)
+              # str +="<option value='#{s.try(:id)}'>#{course.try(:course_name)} - #{s.try(:name)}</option>"
+             @object1.push("#{course.try(:course_name)} - #{s.try(:name)}","#{s.try(:id)}")
+            @object.push(@object1)
+
+
+            end        
+ student_id=MgSportTeamStudent.where(:mg_sport_team_id=>@team_id.mg_sports_team_id,:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:mg_student_id)
+
+      @studentsList=MgStudent.where(:id=>student_id,:is_deleted=>0,:mg_school_id=>session[:current_user_school_id])
+                   @object1=Array.new
+      @studentsList.each do |s|
+         @object2=Array.new
+           # str +="<option value='#{s.try(:id)}'>(#{s.try(:admission_number)}) #{s.try(:first_name)} #{s.try(:last_name)}  </option>"
+                  @object2.push("(#{s.try(:admission_number)}) #{s.try(:first_name)} #{s.try(:last_name)} ","#{s.try(:id)}")
+
+                 @object1.push(@object2)
+
+       end
+             @data_value="student"
+         
+         end
+       end
+  employee_data.each do |data|
+
+          if data.rank=="2nd rank"
+ 
+
+
+ @team_id=MgSportEmployeeDataResult.find_by(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id],:mg_sports_result_id=>@results.id,:rank=>"2nd rank")
+
+@employee_id=data.mg_employee_id
+              @id2=data.mg_employee_id
+
+        @employee=MgEmployee.find_by(:id=>data.mg_employee_id)
+        # @department_data=MgEmployeeDepartment.find_by(:id=>@employee.mg_employee_department_id)
+        # @departments=MgEmployeeDepartment.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:department_name, :id)
+        employee_id=MgSportTeamEmployee.where(:mg_sport_team_id=>@team_id.mg_sports_team_id,:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:mg_employee_id)
+
+       employee_list=MgEmployee.where("is_deleted=? and mg_school_id=? and id IN (?)",0,session[:current_user_school_id],employee_id)
+
+     @object3=Array.new
+
+            employee_list.each do |s|
+             # str +="<option value='#{s.try(:id)}'> (#{s.try(:employee_number)}) #{s.try(:first_name)}  #{s.try(:last_name)}</option>"
+        @object1=Array.new
+              
+                  @object1.push("(#{s.try(:employee_number)}) #{s.try(:first_name)}  #{s.try(:last_name)}","#{s.try(:id)}")
+
+                 @object3.push(@object1)
+
+            end
+         @data_value="employee"
+         #puts askdas
+          
+         end
+end
+
+
+         %>
+
+                  <%=hidden_field_tag "snd_place","#{@id2},#{@data_value}"%>
+
+         <%elsif i==3%>
+         <%="3rd Place"%>
+        
+
+         <%
+
+         student_data.each do |data|
+
+          if data.rank=="3rd rank"   
+
+          @team_id=MgSportStudentDataResult.find_by(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id],:mg_sports_result_id=>@results.id,:rank=>"3rd rank")
+
+            @prgm_list=MgWing.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:wing_name, :id)
+            @data_student=data.mg_students_id
+                          @id3=data.mg_students_id
+
+      @student_data=MgStudent.find_by(:id=>data.mg_students_id)
+      @batch_data=MgBatch.find_by(:id=>@student_data.mg_batch_id)
+            @course_data=MgCourse.find_by(:id=>@batch_data.mg_course_id)
+            course_list=MgCourse.where(:mg_wing_id=>@course_data.mg_wing_id,:is_deleted=>0,:mg_school_id=>session[:current_user_school_id])
+         course_list_id=MgCourse.where(:mg_wing_id=>@course_data.mg_wing_id,:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:id)
+
+        sect_list=MgBatch.where("is_deleted=? and mg_school_id=? and mg_course_id IN (?)",0,session[:current_user_school_id],course_list_id).order("mg_course_id")
+
+          @object=Array.new
+        
+            sect_list.each do |s|
+          @object1=Array.new
+
+               course=MgCourse.find_by(:id=>s.mg_course_id)
+              # str +="<option value='#{s.try(:id)}'>#{course.try(:course_name)} - #{s.try(:name)}</option>"
+             @object1.push("#{course.try(:course_name)} - #{s.try(:name)}","#{s.try(:id)}")
+            @object.push(@object1)
+
+
+            end     
+            student_id=MgSportTeamStudent.where(:mg_sport_team_id=>@team_id.mg_sports_team_id,:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:mg_student_id)
+
+             @studentsList=MgStudent.where(:id=>student_id,:is_deleted=>0,:mg_school_id=>session[:current_user_school_id])
+
+      @object1=Array.new
+      @studentsList.each do |s|
+         @object2=Array.new
+           # str +="<option value='#{s.try(:id)}'>(#{s.try(:admission_number)}) #{s.try(:first_name)} #{s.try(:last_name)}  </option>"
+                  @object2.push("(#{s.try(:admission_number)}) #{s.try(:first_name)} #{s.try(:last_name)} ","#{s.try(:id)}")
+
+                 @object1.push(@object2)
+
+       end   
+         @data_value="student"
+         
+         end
+       end
+  employee_data.each do |data|
+
+          if data.rank=="3rd rank"
+
+@team_id=MgSportEmployeeDataResult.find_by(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id],:mg_sports_result_id=>@results.id,:rank=>"3rd rank")
+
+
+            @employee_id=data.mg_employee_id
+                          @id3=data.mg_employee_id
+
+        @employee=MgEmployee.find_by(:id=>data.mg_employee_id)
+        # @department_data=MgEmployeeDepartment.find_by(:id=>@employee.mg_employee_department_id)
+       # @departments=MgEmployeeDepartment.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:department_name, :id)
+        employee_id=MgSportTeamEmployee.where(:mg_sport_team_id=>@team_id.mg_sports_team_id,:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:mg_employee_id)
+
+        employee_list=MgEmployee.where("is_deleted=? and mg_school_id=? and id IN (?)",0,session[:current_user_school_id],employee_id)
+
+     @object3=Array.new
+
+            employee_list.each do |s|
+             # str +="<option value='#{s.try(:id)}'> (#{s.try(:employee_number)}) #{s.try(:first_name)}  #{s.try(:last_name)}</option>"
+        @object1=Array.new
+              
+                  @object1.push("(#{s.try(:employee_number)}) #{s.try(:first_name)}  #{s.try(:last_name)}","#{s.try(:id)}")
+
+                 @object3.push(@object1)
+
+            end
+         @data_value="employee"
+          
+         end
+end
+
+
+         %>
+                           <%=hidden_field_tag "trd_place","#{@id3},#{@data_value}"%>
+
+         <%end%>
+          </td>
+
+          <td id="<%=i%>" class="mg-align-center resource-sport-team-td-class type">
+            <%team=MgSportTeam.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:team_name,:id)%>
+            
+            <%#=team_id.inspect%>
+                <%=select_tag "mg_sport_team_id[]",options_for_select(team,:selected=>@team_id.mg_sports_team_id),:prompt=>"Select" ,:onchange => 'onDatachange(this);', :class=>"sports_team_class results_sports_team_class"%>
+                <%#@@temp_increment=@@temp_increment+1%>
+            
+          </td>
+        
+            
+         
+          <td id="<%=i%>" class="mg-align-center resource-type-td-class type">
+          <%#= text_field_tag 'item_name[]' ,nil,:class=>"mg-text-field-particular required-field"%>
+         <%=select_tag "team_of[]",options_for_select([["Student", "student"],["Employee", "employee"]],:selected=>@data_value),:prompt=>"Select",:onchange => 'stud_emp_stud(this);',:class=>"mg-text-field" %>
+          </td>
+          
+         <!--  <td id="<%=i%>" class="formStudentDIVID">
+          <%#if @data_value=="student"%>
+          
+          
+          <%#=select_tag "notSelectedstudentresult[]", options_for_select(@prgm_list,:selected=>@course_data.mg_wing_id),:prompt=>"Select",:onchange => 'stud_stud_result(this);',:class=>"mg-add-library-particular mg-select-btn data123"%>
+          <%#elsif @data_value=="employee"%>
+            
+  <%#=select_tag "notSelectedemployee[]", options_for_select(@departments,:selected=>@department_data.id),:prompt=>"Select",:onchange => 'select_emp_result(this);',:class=>"mg-select-btn data1"%>
+          <%#end%>
+          </td> -->
+          
+         <!--  <td  id="<%=i%>" class="selectedStudentdata">
+            
+<%#if @data_value=="student"%>
+          <%#=select_tag "selectedStudentdata[]",options_for_select(@object,:selected=>@batch_data.id),:prompt=>"Select",:onchange => 'select_stud_result(this);',:class=>"mg-add-library-particular"%>
+          <%#else%>
+  
+          <%#end%>
+
+          </td> -->
+
+          <td id="<%=i%>" class="selectedStudents">
+            
+<%if @data_value=="student"%>
+          <%=select_tag "selectedStudents[]",options_for_select(@object1,:selected=>@student_data.id),:prompt=>"Select",:onchange=>'modify_result(this);',:class=>"mg-add-library-particular valid1"%>
+
+          <%elsif @data_value=="employee"%>
+   <%=select_tag "selectedemployees[]",options_for_select(@object3,:selected=>@employee.id),:prompt=>"Select",:onchange=>'modify_result(this);',:class=>"mg-add-library-particular valid2"%>
+          <%end%>
+          </td>
+        <!--   <td class="mg-align-center">
+                      <a title="Remove" class="remove-result-details mg-icon-btn" style="color: #297ACC; font-size:0.8em;"> <i class="fa fa-trash"></i></a>
+                      
+            </td>    -->
+             </div>
+             </div>
+          </tr>
+          <%@data_value=""%>
+          <%end%>
+
+<%@team_id=0%>
+
+</table >
+
+  </div>    
+  <p>
+  <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("Submit")%></a>
+
+<%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>   </p>
+  <%end%>       
+
+<%= render  partial: 'application/common_left_close' %>
+
+   <script>
+      $(document).ready(function(){
+                 focusCurrentTab("resultsAID","resultsLiID");
+
+                 $("#sports_results_datas").validate({
+
+        rules: {   
+        "mg_committee_id": {required: true}, 
+        "mg_event_id": {required: true},    
+        "date_of_event": {required: true,dateFormat:true},
+     
+        "game": {required: true},
+        "team_of[]": {required: true},
+        "notSelectedstudentresult[]": {required: true},
+        
+          "notSelectedemployee[]": {required: true},
+        
+         "selectedStudentdata[]": {required: true},
+        "selectedStudents[]": {required: true},
+        "selectedemployees[]":{required: true},
+        "date_of_event_Data":{required: true},
+        "notSelectedstudentresult[]":{required: true},
+        "selectedStudentdata[]":{required: true},
+        "selectedStudents[]":{required: true},
+        "notSelectedemployee[]":{required: true},
+        "selectedemployees[]":{required: true},
+
+        
+      }
+    });
+
+
+
+
+
+      $("#invitationNewFormDivID").html("");
+                 var value=$("#mg_event_committee_id_data").val();
+                 var event_value=$("#mg_event_coee_id").val();
+
+                 
+        var urlLink='/sports_management/event_list/'+value;
+         $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(data){
+               var str='<option value="">'+"Select"+'</option>';
+               for (var key in data) {
+                
+
+                 if(parseInt(event_value)==parseInt(data[key].id)){
+
+                str +='<option value="'+data[key].id+'" selected>'+data[key].title+'</option>';
+              }else{
+                str +='<option value="'+data[key].id+'">'+data[key].title+'</option>';
+              }
+               }
+               $("#selectEventForCommitteeSelectTagIDDataId").html(str);
+            }
+        });
+            var value_data=$("#mg_event_id_Data").val();
+           // var value=$("#mg_event_id").val();
+              var event_value=$("#mg_event_coee_id").val();
+
+
+          var urlLink='/sports_management/event_list_dates/'+event_value;
+         $.ajax({
+            url: urlLink ,
+            cache: false,
+            data:{"value_data":"data",value_data1:value_data},
+            success: function(data){
+               
+               $("#Date_data").empty().html(data);
+            }
+        });
+
+
+
+     //      var stu_emp_val = $(data).val();
+     //   if(stu_emp_val=="student") {
+     //       var urlLink = "/sports_management/add_student_to_result";
+     //    $.ajax({
+     //        url: urlLink ,
+     //        cache: false,
+     //        success: function(html){
+     //            $(data).parent().siblings(".formStudentDIVID").empty();
+     //            $(data).parent().siblings(".selectedStudents").empty();
+     //            $(data).parent().siblings(".formStudentDIVID").append(html) 
+     //        }
+     //    });
+     // }
+     // else if(stu_emp_val=="employee"){
+     //  var urlLink = "/sports_management/add_employee_to_result";
+     //    $.ajax({
+     //        url: urlLink ,
+     //        cache: false,
+     //        success: function(html){
+     //           $(data).parent().siblings(".formStudentDIVID").empty();
+     //           $(data).parent().siblings(".selectedStudentdata").empty();
+     //            $(data).parent().siblings(".selectedStudents").empty();
+               
+               
+     //             $(data).parent().siblings(".formStudentDIVID").append(html)//css({"color": "yellow", "border": "2px solid red"})//.append(html) 
+     //        }
+     //    });
+     // }
+    
+     // else{
+     // $(data).parent().siblings(".formStudentDIVID").empty();
+     //                $(data).parent().siblings(".selectedStudentdata").empty();
+
+     //            $(data).parent().siblings(".selectedStudents").empty();
+     // }
+
+
+       });
+   var dateFormatStr =  getJsDateFormat();
+
+  
+       
+
+// $("#sports_result_data").validate({
+
+//         rules: {   
+//         "mg_committee_id": {required: true}, 
+//         "mg_event_id": {required: true},    
+//         "date_of_event": {required: true,dateFormat:true},
+     
+//         "game": {required: true},
+//         "team_of[]": {required: true},
+//         "notSelectedstudentresult[]": {required: true},
+        
+//           "notSelectedemployee[]": {required: true},
+        
+//          "selectedStudentdata[]": {required: true},
+//         "selectedStudents[]": {required: true},
+//         "selectedemployees[]":{required: true}
+//       }
+//     });
+
+
+
+//  $(function () {
+//     $.validator.addMethod('dateFormat',
+//     function (value, element) {
+//       dateFormatStr =  getJsDateFormat();
+//         if (this.optional(element)) {
+//             return true;
+//         }
+//         var ok = true;
+//         try {
+//             $.datepicker.parseDate(dateFormatStr, value);
+//         }
+//         catch (err) {
+//             ok = false;
+//         }
+//         return ok;
+//     },
+
+
+//       "Please enter a date in the format "+ getDateFormat(dateFormatStr) +".");
+//       dateFormatStr =  getJsDateFormat();
+
+//     $(".datefield").datepicker({ dateFormat: dateFormatStr, changeYear: true });
+// });
+
+
+
+function onDatachange(data){
+    $(data).parent().siblings(".type").find("#team_of_").prop("selectedIndex", 0);
+        //$(data1).prop("selectedIndex", 0);
+
+    $(data).parent().siblings(".selectedStudents").find("#selectedemployees_").prop("selectedIndex", 0);
+    $(data).parent().siblings(".selectedStudents").find("#selectedStudents_").prop("selectedIndex", 0);
+
+
+}
+  function optionForEventInvetaionSS(value){
+        $("#selectEventForCommitteeSelectTagIDDataId").html("");
+        $("#invitationNewFormDivID").html("");
+
+        var urlLink='/sports_management/event_list/'+value;
+         $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(data){
+               var str='<option value="">'+"Select"+'</option>';
+               console.log(data);
+               for (var key in data) {
+                str +='<option value="'+data[key].id+'">'+data[key].title+'</option>';
+               }
+               $("#selectEventForCommitteeSelectTagIDDataId").html(str);
+            }
+        });
+    }
+    function optionForDateInventation(value){
+       // $("#selectEventForCommitteeSelectTagIDDataValue").html("");
+       // $("#invitationNewFormDivID").html("");
+
+        var urlLink='/sports_management/event_list_dates/'+value;
+         $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(data){
+               // var str='<option value="">'+"Select"+'</option>';
+               // for (var key in data) {
+               //  str +='<option value="'+data[key].id+'">'+data[key].title+'</option>';
+               // }
+               $("#Date_data").empty().html(data);
+            }
+        });
+       }
+
+
+// function stud_emp_stud(data){
+
+//       var data_rank=$(data).parent().siblings(".rank").text().trim();
+//        if (data_rank=="1st Place"){
+//                   $("#fst_place").val("");
+
+// }
+// if (data_rank=="2nd Place"){
+//     $("#snd_place").val("");
+
+// }
+
+// if (data_rank=="3rd Place"){
+//     $("#trd_place").val("");
+
+// }
+
+//         var stu_emp_val = $(data).val();
+//        if(stu_emp_val=="student") {
+//            var urlLink = "/sports_management/add_student_to_result";
+//         $.ajax({
+//             url: urlLink ,
+//             cache: false,
+//             success: function(html){
+//                 $(data).parent().siblings(".formStudentDIVID").empty();
+//                 $(data).parent().siblings(".selectedStudents").empty();
+//                 $(data).parent().siblings(".formStudentDIVID").append(html) 
+//             }
+//         });
+//      }
+//      else if(stu_emp_val=="employee"){
+//       var urlLink = "/sports_management/add_employee_to_result";
+//         $.ajax({
+//             url: urlLink ,
+//             cache: false,
+//             success: function(html){
+//                $(data).parent().siblings(".formStudentDIVID").empty();
+//                $(data).parent().siblings(".selectedStudentdata").empty();
+//                 $(data).parent().siblings(".selectedStudents").empty();
+               
+               
+//                  $(data).parent().siblings(".formStudentDIVID").append(html)//css({"color": "yellow", "border": "2px solid red"})//.append(html) 
+//             }
+//         });
+//      }
+    
+//      else{
+//      $(data).parent().siblings(".formStudentDIVID").empty();
+//                     $(data).parent().siblings(".selectedStudentdata").empty();
+
+//                 $(data).parent().siblings(".selectedStudents").empty();
+//      }
+//    }
+
+
+function stud_emp_stud(data){
+
+            var data_rank=$(data).parent().siblings(".rank").text().trim();
+       if (data_rank=="1st Place"){
+                  $("#fst_place").val("");
+
+}
+if (data_rank=="2nd Place"){
+    $("#snd_place").val("");
+
+}
+
+if (data_rank=="3rd Place"){
+    $("#trd_place").val("");
+
+}
+
+var team_id=$(data).parent().siblings(".type").find("#mg_sport_team_id_").val();
+//var team_id=$(".sports_team_class").val();
+if(team_id>0)
+{
+
+}
+
+        var stu_emp_val = $(data).val();
+       if(stu_emp_val=="student") {
+        var team_id=$(data).parent().siblings(".type").find("#mg_sport_team_id_").val();
+           var urlLink = "/sports_management/add_student_to_result";
+           if(team_id>0){
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            type: "GET",
+            data: {"data":"wing","team_id":team_id},
+            success: function(html){
+                  $(data).parent().siblings(".selectedStudents").empty();
+                  $(data).parent().siblings(".selectedStudents").append(html);
+            }
+        });
+      }else{
+        alert("Please select the team");
+      }
+     }
+     else if(stu_emp_val=="employee"){
+      var team_id=$(data).parent().siblings(".type").find("#mg_sport_team_id_").val();
+      var urlLink = "/sports_management/add_employee_to_result";
+      if(team_id>0)
+      {
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            type: "GET",
+            data: {"data":"wing","team_id":team_id},
+            success: function(html){
+                  $(data).parent().siblings(".selectedStudents").empty();
+                  $(data).parent().siblings(".selectedStudents").append(html);
+            }
+        });
+      }else{
+        alert("Please select the team");
+      }
+     }
+    
+     else{
+                $(data).parent().siblings(".selectedStudents").empty();
+     }
+   }
+
+
+
+  function stud_stud_result(data1){
+      var wing_id=$(data1).val();
+        $.ajax({
+                url: "/sports_management/result_sem_data",
+                type: "GET",
+                data: {"data":"wing","wing_id":wing_id},
+                success: function(data) {
+                 $(data1).parent().siblings(".selectedStudentdata").empty();
+                 $(data1).parent().siblings(".selectedStudentdata").append(data);
+                
+                },
+                error:function(){
+                  alert("Something went wrong!");
+                }
+            });
+      
+    };
+
+
+    function select_stud_result(data1){
+
+    var sec_id=$(data1).val();
+
+    jQuery.ajax({
+            url: "/sports_management/result_section_students",
+            type: "GET",
+            data: {"data":"suc","stu_id":sec_id,"data":"edit"},
+            success: function(html) {
+
+    $(data1).parent().siblings(".selectedStudents").empty();
+    $(data1).parent().siblings(".selectedStudents").append(html);
+
+
+              
+            },
+            error:function(){
+              alert("Something went wrong!");
+            } 
+      });
+    
+};
+    function select_emp_result(data1){
+
+      var wing_id=$(data1).val();
+        $.ajax({
+                url: "/sports_management/result_emp_data/",
+                type: "GET",
+                data: {"wing_id":wing_id},
+                success: function(data) {
+                  
+                  $(data1).parent().siblings(".selectedStudents").empty();
+                  $(data1).parent().siblings(".selectedStudentdata").empty();
+                 $(data1).parent().siblings(".selectedStudents").append(data);
+
+                },
+                error:function(){
+                  alert("Something went wrong!");
+                }
+            });
+    };
+
+
+
+// $(document).on("change",".valid2",function(){
+
+//     var data=$(".valid2").size();
+//     var demo=$(this);
+   
+//    for(var i=1;i<=data;i++){
+
+//    if(demo.attr('id')=="mg_sport_team_id"+i){
+//   }
+//   else{
+//     if($(this).val()==$("#mg_sport_team_id"+i).val()){
+//        alert("This option is already selected please select different Option")
+//        $(this).prop("selectedIndex", 0);
+//     }
+//     else{
+
+//     }
+// }
+// }
+// });
+
+    function modify_result(data1){
+var count=0;
+var arra1=[];
+var count1=0;
+var arra11=[];
+
+      var data_rank=$(data1).parent().siblings(".rank").text().trim();
+      var data_type=$(data1).parent().siblings(".type").find("#team_of_").val();
+      
+      
+       if (data_rank=="1st Place"){
+       
+    
+          $("#fst_place").val("");
+
+        $("#fst_place").val($(data1).val()+","+data_type);
+
+        $(".valid2").each(function(){
+
+arra1.push($(this).val());
+
+});
+
+for(var i=0;i<arra1.length;i++){
+
+
+
+if($(data1).val()==arra1[i]){
+count=count+1;
+}
+}
+
+
+ if(count>1){
+alert("This option is already selected please select different Option")
+        $(data1).prop("selectedIndex", 0);
+          $("#fst_place").val("");
+
+    }
+    $(".valid1").each(function(){
+
+arra11.push($(this).val());
+
+});
+
+for(var i=0;i<arra11.length;i++){
+
+
+
+if($(data1).val()==arra11[i]){
+count1=count1+1;
+}
+}
+
+
+ if(count1>1){
+alert("This option is already selected please select different Option")
+        $(data1).prop("selectedIndex", 0);
+          $("#fst_place").val("");
+
+    }
+
+}
+else if(data_rank=="2nd Place"){
+  $("#snd_place").val("");
+        $("#snd_place").val($(data1).val()+","+data_type);
+
+        $(".valid2").each(function(){
+
+arra1.push($(this).val());
+
+});
+
+for(var i=0;i<arra1.length;i++){
+
+
+if($(data1).val()==arra1[i]){
+count=count+1;
+}
+}
+
+
+ if(count>1){
+alert("This option is already selected please select different Option")
+        $(data1).prop("selectedIndex", 0);
+  $("#snd_place").val("");
+
+    }
+
+ $(".valid1").each(function(){
+
+arra11.push($(this).val());
+
+});
+
+for(var i=0;i<arra11.length;i++){
+
+
+if($(data1).val()==arra11[i]){
+count1=count1+1;
+}
+}
+
+
+ if(count1>1){
+alert("This option is already selected please select different Option")
+        $(data1).prop("selectedIndex", 0);
+  $("#snd_place").val("");
+
+    }
+}
+else if(data_rank=="3rd Place"){
+  $("#trd_place").val("");
+        $("#trd_place").val($(data1).val()+","+data_type);
+
+        $(".valid2").each(function(){
+
+arra1.push($(this).val());
+
+});
+
+for(var i=0;i<arra1.length;i++){
+
+
+if($(data1).val()==arra1[i]){
+count=count+1;
+}
+}
+
+
+ if(count>1){
+alert("This option is already selected please select different Option")
+        $(data1).prop("selectedIndex", 0);
+  $("#trd_place").val("");
+
+    }
+    $(".valid1").each(function(){
+
+arra11.push($(this).val());
+
+});
+
+for(var i=0;i<arra11.length;i++){
+
+
+if($(data1).val()==arra11[i]){
+count1=count1+1;
+}
+}
+
+
+ if(count1>1){
+alert("This option is already selected please select different Option")
+        $(data1).prop("selectedIndex", 0);
+  $("#trd_place").val("");
+
+    }
+
+
+}
+
+
+    };
+
+   
+    
+   </script>

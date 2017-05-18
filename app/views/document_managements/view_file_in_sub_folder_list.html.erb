@@ -1,0 +1,24 @@
+  <%count=@count%>
+
+  <%folderID=@subfolderID%>
+
+  <div id="<%=count%>hideAndShowSubFolderDIVID"   style="display:none" class="mg-align-left">
+                        <%  @document = MgEmployeeFolder.where(:is_deleted=>0, :mg_employee_chaild_folder_id=>folderID )%>
+                        <%@document.inspect%>
+                         <% @document.each do |sub_folder|%>
+                          
+                           <ol>
+                           <a id="<%=sub_folder.id%>-<%=count%>-subFolderOLID" class="hide-and-show-sub_folder-Ol"><i class="fa fa-plus-square-o mg-file-mgmt-icon"></i></a>
+                           <a id="<%=sub_folder.id%>-<%=count%>-subFolderOLID" class="hide-and-show-sub_folder-Ol mg-rm-a-link">&nbsp;<i class="fa fa-folder-open mg-file-mgmt-folder-icon"></i><span class="mg-file-mgmt-folder-text-clr">&nbsp;<%=sub_folder.folder_name%></span></a>
+                           <!-- <a id="<%=sub_folder.id%>-<%=count%>-FileForSubFolderOLID" class="add-file-to-folder-BTN">&nbsp;&nbsp;<i class="fa fa-upload">&nbsp;&nbsp;upload</i></a> -->
+                           <!-- <a id="<%=sub_folder.id%>-deleteFileFromFolderBTNID" class="delete-file-from-folder-BTN"><i class="fa fa-times"></i></a> -->
+                           </ol><ol class="mg-folder-list"><div id="<%=sub_folder.id%>-<%=count%>-hideAndShowSubFolderDIVIDID" style="display:none"><div></ol>
+                    		
+                          
+                          <%end%>
+
+
+                          
+  </div>
+
+

@@ -1,0 +1,169 @@
+<% navigation_add t('faq_category'), front_office_management_category_path %>
+<%=render partial: 'front_office_management_left'%>
+
+<h4 class="mg-h4"><%= t('manage_category') %></h4>
+
+<button class="new-add-category mg-btn-bottom-margin mg-custom-form-btn"><%= t('add_category')%></button>
+
+<!-- <%#= button_to 'Add Laboratory', {:controller => "laboratory", :action => "new" } ,:class=>"mg-custom-form-btn"%> -->
+<div class="mg_pagination">
+<%if @category.length>0%>
+<table  class="batch-tbl mg-tbl-margin">   <!-- border="2" --> 
+  <tr class="subject-table-header">
+    <!-- <th>Subject Id</th> -->
+    <th><%= t('category') %></th>
+
+    <th style="width: 92px;"><%= t('actions') %></th>
+  </tr>
+ 
+  <% @category.each do |lab| %>
+    <tr>
+      <td><%= lab.try(:category_name) %></td>
+      <td>
+
+      <!-- <button title="Show" id="<%=raw lab.id %>-showlabBTNID" class="show-lab-btn mg-icon-btn"><i class="fa fa-eye"></i></button> -->
+
+        <button title="Edit" id="<%=raw lab.id %>-editlabBTNID" class="edit-category-btn mg-icon-btn"><i class="fa fa-pencil-square-o"></i></button>
+
+        <button title="Delete" id="<%=raw lab.id %>-deletelabBTNID" class="delete-category-btn mg-icon-btn"><i class="fa fa-trash"></i></button>
+
+      </td>
+
+    </tr>
+  <% end %>
+</table>
+<br/>
+ <div class="pagination-align" style="position: relative; bottom: 10px;">
+              <%= will_paginate @category, :container => false %>
+           </div>
+<%else%>
+<h5>No Category is created </h5>
+<%end%>
+</div>
+<div id="newAddCategoryDIVID"></div>
+<div id="editCategoryDIVID"></div>
+<div id="showCategoryDIVID"></div>
+
+
+<%= render  partial: 'application/common_left_close' %>
+
+<script>
+$( document ).ready(function() {
+            focusCurrentTab("frontOfficeManagerCatagoryAID","frontOfficeManagerCategoryliId");
+          //focusStudentHeaderBox();
+});
+
+
+
+$(document).on("click", ".delete-category-btn", function(e){
+     e.preventDefault();
+      var myID =$(this).attr('id');
+      var Id=myID.split("-");
+                var retVal = confirm("Are you sure to delete?");
+                if(retVal){
+                  //  alert(retVal);
+                     var urlLink = "/front_office_management/category_delete/"+Id[0];
+                      $.ajax({
+                        url: urlLink ,
+                        cache: false,
+                        success: function(html){
+                            window.location.reload();
+                        }
+                    });
+
+                }else{
+                   // alert(retVal);     
+                   return false;
+                }
+        }); 
+
+
+
+
+
+
+// $(document).on("click", ".show-lab-btn", function(e){
+//         var myID =$(this).attr('id');
+//         var Id=myID.split("-");
+//         var urlLink = "/laboratory/show/"+Id[0];
+//         $.ajax({
+//             url: urlLink ,
+//             cache: false,
+//             success: function(html){
+//                   $('#showCategoryDIVID').dialog({
+//                     modal: true,
+//                      minHeight: '200px',
+//                     width: 'auto',
+//                     title: "Show Laboratory",
+//                     open: function () {
+                        
+//                         $(this).html(html);
+//                     }
+//                 }); 
+               
+//             }
+//         });
+// });
+
+
+$(document).on("click", ".edit-category-btn", function(e){
+        var myID =$(this).attr('id');
+        var Id=myID.split("-");
+        var urlLink = "/front_office_management/category_edit/"+Id[0];
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(html){
+                  $('#editCategoryDIVID').dialog({
+                    modal: true,
+                     minHeight: 'auto',
+                    minWidth: '250px',
+                    title: "Edit Category",
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+});
+
+$(document).on("click", ".new-add-category", function(e){
+        var urlLink = "/front_office_management/category_new";
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(html){
+                  $('#newAddCategoryDIVID').dialog({
+                    modal: true,
+                     minHeight: 'auto',
+                    minWidth: '250px',
+                    title: "Add Category",
+                    open: function () {
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+});
+</script>
+<style>
+
+
+.table-batchs-tbl {
+   /* font-family: verdana,arial,sans-serif;*/
+    font-size:13px;
+    color:#363131;
+    border-width: 1px;
+    border-color:  #363131;
+    border-collapse: collapse;
+    padding: 12px ;
+    font-size: 0.8em;
+    width: 261px !important;
+    /* margin-left: 2px; */
+}
+</style>
+
+

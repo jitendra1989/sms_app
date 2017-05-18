@@ -1,0 +1,219 @@
+<!-- Sec --><section id="userBodyContentBox" >
+  <table width=100% border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td valign="top" class="userBodyContentBox1">
+        <div class="userMenuBoxLeft" style="width: 210px;">
+            <ul class="menuListHome">
+              <%=hidden_field_tag "user_type",session[:user_type]%>
+                  <%if session[:user_type]=="admin"%>
+                    <li class="myAccountMenu"><%=t('front_office_management')%></li>
+                    <li id="frontOfficeManagerliId">
+                        <a class="menuItemsActivities" href="/front_office_management/index" id="frontOfficeManagerAID">
+                            <div class="setMenu"><i class="fa fa-plus">&nbsp;&nbsp;</i><%=t('front_office_manager')%>
+                            </div>
+                        </a>
+                    </li>
+                    <li id="frontOfficeManagerCategoryliId">
+                        <a class="menuItemsActivities" href="/front_office_management/category" id="frontOfficeManagerCatagoryAID">
+                            <div class="setMenu"><i class="fa fa-sitemap">&nbsp;&nbsp;</i><%=t('faq_category')%>
+                            </div>
+                        </a>
+                    </li>
+
+                    <li id="frontOfficeManagerSubCategoryliId">
+                        <a class="menuItemsActivities" href="/front_office_management/sub_category" id="frontOfficeManagerSubCatagoryAID">
+                            <div class="setMenu"><i class="fa fa-question">&nbsp;&nbsp;</i><%=t('faq_sub_category')%>
+                            </div>
+                        </a>
+                    </li>
+
+                    <li id="frontOfficeManagerFaqAdminliId">
+                        <a class="menuItemsActivities" href="/front_office_management/faq" id="frontOfficeManagerFaqAdminAID">
+                            <div class="setMenu"><i class="fa fa-question-circle">&nbsp;&nbsp;</i><%=t('faq')%>
+                            </div>
+                        </a>
+                    </li>
+                  <%end%>
+
+                  <%if session[:user_type]=="front_office_manager"%>
+                  <li class="myAccountMenu"><%=t('front_office_management')%></li>
+                    <!-- <li class="myAccountMenu mg-toggle-plus"><%#=t('front_office_management')%></li>
+                    <div class="mg-left-sub-menu-title"> -->
+                     <li id="changeFOMPasswordLID">
+                        <a class="menuItemsActivities" href="/front_office_management/user_detail" id="changeFOMPasswordAID">
+                            <div class="setMenu"><i class="fa fa-cogs">&nbsp;&nbsp;</i><%=t('change_password')%>
+                            </div>
+                        </a>
+                      </li>
+
+                      <li id="frontOfficeManagerPAFaqViewAdminliId">
+                          <a class="menuItemsActivities" href="/front_office_management/faq_view" id="frontOfficeManagerFaqViewPAFAID">
+                              <div class="setMenu"><i class="fa fa-question-circle">&nbsp;&nbsp;</i><%=t('faq')%>
+                              </div>
+                          </a>
+                      </li>
+
+                      
+                     <li id="address_bookLiID">
+                        <a class="menuItemsActivities" href="/front_office_management/address_book" id="address_bookAID">
+                            <div class="setMenu"><i class="fa fa-book">&nbsp;&nbsp;</i><%=t('address_book')%>
+                            </div>
+                        </a>
+                     </li>
+                      <li id="directory_searchLiID">
+                        <a class="menuItemsActivities" href="/front_office_management/directory_search" id="directory_searchAID">
+                            <div class="setMenu"><i class="fa fa-search">&nbsp;&nbsp;</i><%=t('directory_search')%>
+                            </div>
+                        </a>
+                      </li>
+                      <li id="meetings_plannerLiID">
+                          <a class="menuItemsActivities" href="/front_office_management/meeting" id="meetings_plannerAID">
+                              <div class="setMenu"><i class="fa fa-paper-plane-o">&nbsp;&nbsp;</i><%=t('meeting_planner')%>
+                              </div>
+                          </a>
+                      </li>
+                      <li id="meeting_plannerLiID">
+                          <a class="menuItemsActivities" href="/front_office_management/meeting_planner" id="meeting_plannerAID">
+                              <div class="setMenu"><i class="fa fa-calendar">&nbsp;&nbsp;</i><%=t('meeting_calendar')%>
+                              </div>
+                          </a>
+                      </li>
+                           <!--  <li id="meeting_planLiID">
+                                <a class="menuItemsActivities" href="/front_office_management/meeting_plan" id="meeting_planAID">
+                                    <div class="setMenu"><i class="fa fa-paper-plane-o">&nbsp;&nbsp;</i><%#=t('principal_meeting_plan')%>
+                                    </div>
+                                </a>
+                            </li> -->
+                      <li id="postalRecordLID">
+                          <a class="menuItemsActivities" href="/front_office_management/postal_records" id="postalRecordAID">
+                              <div class="setMenu"><i class="fa fa-book">&nbsp;&nbsp;</i><%=t('postal_register')%>
+                              </div>
+                          </a>
+                      </li>
+
+                      <li id="query_recordLiID">
+                          <a class="menuItemsActivities" href="/front_office_management/query_record_index" id="query_recordAID">
+                              <div class="setMenu"><i class="fa fa-book">&nbsp;&nbsp;</i><%=t('query_record')%>
+                              </div>
+                          </a>
+                      </li>
+
+                      <li id="guestRoomBookingLiID">
+                          <a class="menuItemsActivities" href="/front_office_management/guest_room_booking_index" id="guestRoomBookingAID">
+                              <div class="setMenu"><i class="fa fa-male">&nbsp;&nbsp;</i><%=t('guest_room_booking')%>
+                              </div>
+                          </a>
+                      </li>
+
+                      <li id="transport_bookingLiID">
+                          <a class="menuItemsActivities" href="/front_office_management/transport_booking_index" id="transport_bookingAID">
+                              <div class="setMenu"><i class="fa fa-bus">&nbsp;&nbsp;</i><%=t('transport_booking')%>
+                              </div>
+                          </a>
+                      </li>
+                            
+                      <li id="roomBookingLID">
+                          <a class="menuItemsActivities" href="/front_office_management/meeting_detail" id="roomBookingAID">
+                              <div class="setMenu"><i class="fa fa-check-square-o">&nbsp;&nbsp;</i><%=t('meeting_room_booking')%>
+                              </div>
+                          </a>
+                      </li>
+                      
+                    <!-- </div> -->
+<!-- ====================FOM Attendance records=starts=========================== -->
+
+<!-- =======================Left Menu for Attendance======================== -->
+                  <!-- <li class="myAccountMenu mg-toggle-plus">Attendance</li> -->
+                    <!-- <div class="mg-left-sub-menu-title"> -->
+                      <li id="attendanceFaqLID">
+                        <a class="menuItemsActivities" href="/front_office_management/attendance" id="attendanceFaqAID">
+                            <div class="setMenu"><i class="fa fa-users">&nbsp;&nbsp;</i><%=t('attendance')%>
+                            </div>
+                        </a>
+                      </li>
+
+                      <!-- <li id="resetLeaveImportAttendanceLiID">
+                          <a class="menuItemsActivities2" href="/employees_attendances/import_attendance/" id="employeeLeaveImportAttendance">
+                              <div class="setMenu"><i class="fa fa-upload">&nbsp;&nbsp;</i><%#=t('import attendance')%>
+                              </div>
+                          </a>
+                      </li>
+                      <li id="employeeBiometricAttendanceLiID">
+                          <a class="menuItemsActivities2" href="/employee_biometric_attendances/" id="employeeBiometricAttendance">
+                              <div class="setMenu"><i class="fa fa-upload">&nbsp;&nbsp;</i><%#=t('biometric_attendances')%>
+
+                              </div>
+                          </a>
+                      </li>
+                      <li id="importEmployeeBiometricAttendanceLiID">
+                          <a class="menuItemsActivities2" href="/employee_biometric_attendances/import" id="importEmployeeBiometricAttendance">
+                              <div class="setMenu"><i class="fa fa-upload">&nbsp;&nbsp;</i><%#=t('import_biometric_attendances')%>
+                              </div>
+                          </a>
+                      </li>
+                    </div> -->
+                  <%end%>
+
+                            <%if session[:user_type]=="principal"%>
+                            <!-- ==========================FOR PRINCIPAL================= -->
+                            <li class="myAccountMenu"><%=t('front_office_management')%></li>
+                            <li id="meeting_plannerLiID">
+                                <a class="menuItemsActivities" href="/front_office_management/meeting_planner" id="meeting_plannerAID">
+                                    <div class="setMenu"><i class="fa fa-paper-plane-o">&nbsp;&nbsp;</i><%=t('my_calendar')%>
+                                    </div>
+                                </a>
+                            </li>
+                            <!-- <li id="meeting_planLiID">
+                                <a class="menuItemsActivities" href="/front_office_management/meeting_plan" id="meeting_planAID">
+                                    <div class="setMenu"><i class="fa fa-paper-plane-o">&nbsp;&nbsp;</i><%#=t('meeting_planner')%>
+                                    </div>
+                                </a>
+                            </li> -->
+
+                            <li id="transport_bookingLiID">
+                                <a class="menuItemsActivities" href="/front_office_management/transport_booking_index" id="transport_bookingAID">
+                                    <div class="setMenu"><i class="fa fa-taxi">&nbsp;&nbsp;</i><%=t('transport_booking_review')%>
+                                    </div>
+                                </a>
+                            </li>
+
+                            <!-- <li id="query_recordLiID">
+                                <a class="menuItemsActivities" href="/front_office_management/query_record_index" id="query_recordAID">
+                                    <div class="setMenu"><i class="fa fa-sitemap">&nbsp;&nbsp;</i><%#=t('query_record')%>
+                                    </div>
+                                </a>
+                            </li> -->
+                            <li id="guestRoomBookingLiID">
+                                <a class="menuItemsActivities" href="/front_office_management/guest_room_booking_index" id="guestRoomBookingAID">
+                                    <div class="setMenu"><i class="fa fa-male">&nbsp;&nbsp;</i><%=t('guest_room_review')%>
+                                    </div>
+                                </a>
+                            </li>
+                            
+                            
+
+                            <li id="frontOfficeManagerPAFaqViewAdminliId">
+                                <a class="menuItemsActivities" href="/front_office_management/faq_view" id="frontOfficeManagerFaqViewPAFAID">
+                                    <div class="setMenu"><i class="fa fa-question-circle">&nbsp;&nbsp;</i><%=t('faq')%>
+                                    </div>
+                                </a>
+                            </li>
+                            
+                            <!-- ========================================================= -->
+                            <%end%>
+                    </ul>
+                </div>
+            </td>
+            <td  valign="top" id="manageAdminCategoryID" class="mg-table-td-main-2">
+              
+<%=render partial: 'layouts/messages'%>
+<script>
+$( document ).ready(function() {
+    var user_type=$("#user_type").val();
+    if (user_type=="front_office_manager"){
+        //collapseLeftMenu();
+    }
+    focusheaderBox("FRONT OFFICE");
+});
+</script>
+

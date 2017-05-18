@@ -1,0 +1,51 @@
+<table border="1" class="mg-showdata-bg mg-tbl-layout" cellspacing="1" cellpadding="1">
+<%
+store_data=MgInventoryStoreManagement.find_by(:id=>@show_stack_data.mg_inventory_store_management_id)
+room_data=MgInventoryRoomManagement.find_by(:id=>@show_stack_data.mg_inventory_room_management_id)
+
+    %>
+   <tr>
+     <td class="mg-td-width-half" valign="top">
+        <label class="mg-label"> <%= t('store_name')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+        
+    
+    <%=store_data.try(:store_name)%>
+   
+     </td>
+ </tr>
+  <tr>
+     <td class="mg-td-width-half" valign="top">
+        <label class="mg-label"> <%= t('room_no')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+        
+    
+    <%=room_data.try(:room_no)%>
+   
+     </td>
+ </tr>
+ 
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('rack_no')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+    <%=@show_stack_data.rack_no%>
+     
+     </td>
+ </tr>
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label mg-label-text-transform-none" style="width:140px"><%= t('prefix') %></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+    <%=@show_stack_data.prefix%>
+     
+     </td>
+ </tr>
+
+</table>
+<br/>
+ <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>

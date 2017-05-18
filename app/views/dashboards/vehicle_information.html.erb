@@ -1,0 +1,173 @@
+
+<h4 class="mg-h4"><%= t('vehicle_details')%></h4>
+
+<table border="1" class="mg-showdata-bg mg-tbl-layout" cellspacing="1" cellpadding="1">
+   <tr>
+     <td class="mg-td-width-half" valign="top">
+        <label class="mg-label"> <%= t('vehicle_number')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+        <%if @inventory.vehicle_number.present?%>
+    
+     <%=@inventory.try(:vehicle_number)%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+     </td>
+ </tr>
+ 
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('make')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+      <%if @inventory.make.present?%>
+   
+     <%= @inventory.try(:make) %>
+      <%else%>
+      <%="No Data"%>
+      <%end%>
+     </td>
+ </tr>
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('model')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+      <%if @inventory.model.present?%>
+     <%=@inventory.try(:model)%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+     </td>
+ </tr>
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label mg-label-text-transform-none"> <%= t('date_of_purchase')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+      <%if @inventory.date_of_purchase.present?%>
+
+     <%=@inventory.try(:date_of_purchase).strftime(@school.date_format)%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+     </td>
+ </tr>
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label mg-label-text-transform-none"> <%= t('no_of_seats')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+      <%if @inventory.no_of_seats.present?%>
+     <%=@inventory.try(:no_of_seats)%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+     </td>
+ </tr>
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('current_insurance_due_date')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+      <%if @inventory.Current_insurance_due_date.present?%>
+
+
+     <%=@inventory.try(:Current_insurance_due_date).strftime(@school.date_format)%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+     </td>
+ </tr>
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('last_insurance_amount')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+      <%if @inventory.last_insurance_amount.present?%>
+     <%=@inventory.try(:last_insurance_amount)%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+     </td>
+ </tr>
+  <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('last_service_date')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+      <%if @inventory.last_service_date.present?%>
+     <%=@inventory.try(:last_service_date).strftime(@school.date_format)%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+     </td>
+ </tr>
+
+
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('next_service_date')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+      <%if @inventory.next_service_date.present?%>
+     <%=@inventory.try(:next_service_date).strftime(@school.date_format)%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+     </td>
+ </tr>
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('is_under_repair')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+      <%if @inventory.is_under_repair.present?%>
+     <%@data=@inventory.is_under_repair%>
+     
+     <%if @data==true%>
+     <%="Yes"%>
+     <%else%>
+     <%="No"%>
+
+     <%end%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+     </td>
+ </tr>
+ <%if @data==true%>
+  <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('repair_completion_date')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+      <%if @inventory.repair_completion_date.present?%>
+     
+     <%=@inventory.try(:repair_completion_date).strftime(@school.date_format)%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+     </td>
+ </tr>
+  <%end%>
+ <tr>
+ 
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('in_service')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+      <%if @inventory.vehicle_status=="In service"%>
+     <%="Yes"%>
+     <%else%>
+     <%="Out of Service"%>
+     <%end%>
+     </td>
+ </tr>
+ 
+
+</table>
+<br/>
+<%#= link_to 'Cancel', :back ,:style=>"font-size: 0.8em; color: #297ACC; text-decoration: none;" ,:class=>"mg-custom-form-btn"%>

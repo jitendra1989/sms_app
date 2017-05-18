@@ -1,0 +1,31 @@
+<%=render partial:"entrance_exam_details/entrance_exam_left" %>
+<% navigation_add t('hall_ticket'), :controller=>'student_hall_tickets', :action=>'index' %>
+<h4 class="mg-h4"><%=t('hall_ticket')%></h4>
+<label class="mg-label mg-label-width "><%=t('select_semester')%><span class="required-field"> *</label>
+<%=select_tag :student,options_for_select(@classes),:prompt=>t('select'),:onchange=>"studentList(this.value)"%>
+<div id="studentListDivID"></div>
+<%=render partial:"common_left_close" %>
+
+<script>
+	$(document).ready(function(){
+		focusCurrentTab("viewStudentHallTCKTID","viewStudentHallTCKT");		  	
+	});
+
+
+	function studentList(course_id)
+	{
+    if(course_id!=''){
+			urlLink = "/student_hall_tickets/student_list";
+			$.ajax({
+				url: urlLink,
+				data: {"mg_course_id":course_id},
+				cache: false,
+				success: function(html){
+					$("#studentListDivID").html(html);
+				}
+			});
+		}
+	}
+	
+
+</script>

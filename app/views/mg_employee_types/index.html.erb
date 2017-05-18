@@ -1,0 +1,67 @@
+
+<%= render  partial: 'mg_employee_leave_types/mg_employee_leave_types_left' %>
+
+<%= button_to 'Create Employee Type', {:controller=>'mg_employee_types',:action=>'new'}, {method: :get, :class=>"mg-exam-btn-width"} %>
+<h4 class="mg-h4">Employee Types</h4>
+<table  class="batch-tbl">  
+  <tr class="subject-table-header">
+              <th><%="Employee_Type"%></th>
+
+               <th colspan="2"><%= t('actions')%></th>
+            </tr>
+            <%if @employeeType.nil? %>
+            <%else%>
+            <% @employeeType.each do |sub|%>
+            
+              <tr>
+                <td><%= sub.employee_type %></td>
+               
+             <td>
+                
+                <button title="Edit" class="editTypeClass mg-icon-btn" id="<%= sub.id%>"><i class="fa fa-pencil-square-o"></i></button>
+                <%= link_to "<i class=\"fa fa-trash\"></i>".html_safe, {:controller=>'mg_employee_types',:action=>'destroy',:id=>sub.id} ,:title=>"Delete" ,:class=>"mg-icon-btn"%>
+              </td>
+              </tr>
+
+            <% end %>
+            <%     end %>
+          </table>
+
+      <!--     "Monthly" ,"1"],["Quarterly" ,"6"],["Yearly","12"] -->
+<div id="editEmployeeTypeDialogDivID"></div>
+
+<%= render  partial: 'application/common_left_close' %>
+
+<script type="text/javascript">
+
+$(document).on("click", ".editTypeClass", function(e){
+        
+        var Id=$(this).attr('id');
+       
+       
+        var urlLink = "/mg_employee_types/edit/";
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            data:{"id":Id},
+            success: function(html){  
+                    $('#editEmployeeTypeDialogDivID').dialog({
+                    modal: true,
+                    title: "Edit Employee Type",
+                    minWidth: 350,
+                    minHeight: 350,
+                    maxHeight: 500,
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+});
+
+    focusCurrentTab("viewEmployeetType","viewEmployeetTypeLiID");
+    focusAttendance();
+
+</script>

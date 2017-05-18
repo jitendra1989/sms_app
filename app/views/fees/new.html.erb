@@ -1,0 +1,145 @@
+<!-- Sec --> 
+
+ <%= form_for :fesses, url: fees_path, :html => {
+                            :id => 'feeCategoryCreateFormId', :class => 'elm_class',
+                            :style => 'elm_style' } do |f| %>
+
+ <% if @subjects.errors.any? %>
+  <div id="error_explanation">
+    <h2><%= pluralize(@subjects.errors.count, "error") %>
+      </h2>
+    <ul>
+    <% @subjects.errors.full_messages.each do |msg| %>
+      <li><%= msg %></li>
+    <% end %>
+    </ul>
+  </div>
+  <% end %>
+
+  <div> 
+<%= f.hidden_field :mg_school_id, :value=> session[:current_user_school_id]%>
+      <p>
+        <%= f.label :name ,:class=>"mg-label"%><span class="required-field"> *</span><br>
+        <%= f.text_field :name ,:class=>"mg-text-field"%>
+      </p>
+     
+      <p>
+        <%= f.label :description ,:class=>"mg-label"%><br>
+        <%= f.text_area :description ,:class=>"mg-text-field"%>
+      </p>
+
+
+
+
+
+<p>
+
+<div id="finalDueFineDivId" >
+                  
+                    <div class="due-fine-div" id="dueFineDivId">
+                      <%= render :partial => "fee_particular",:locals => {:dueFine => "dueFine"} %>
+                      <a href="#" title="Remove" class="remove-fine-due-cls mg-icon-btn" style="color: #297ACC; font-size:0.8em;"> <i class="fa fa-trash"></i></a>
+                      
+                    </div>
+                  </div>
+                  <a href="#" id="addDueFineId" class="mg-label-inner-form mg-custom-form-btn" style="color: #297ACC; font-size:0.8em; position: relative; top: 3px;" >Add Particular</a> <br/>
+                  
+
+</p>
+  
+
+
+        <div id="delete" style="display:none;">
+      <p>
+
+      <%= f.label :is_deleted, "Is Active" ,:class=>"mg-label"%><br />
+        <label for="is_deleted" class="mg-label-inner-form "><%=t('active')%></label>
+
+        <%= f.radio_button :is_deleted, false , :checked => true%>
+         <label for="is_deleted" class="mg-label-inner-form "><%=t('inactive')%></label>
+
+        <%#= f.label :is_deleted, "In Active", :value => "false" ,:class=>"mg-label-inner-form"%>
+
+        <%= f.radio_button :is_deleted, true %>
+      </p>
+      </div>
+
+      <p class="mg-p-mgtop">
+      <%#= f.submit t('save') ,:class=>"mg-small-form-btn"%>
+      <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("save")%></a>
+       <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+       </p>
+
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div style="display:none;"> 
+<div style="float:left;width:50%"> 
+
+
+    <label class="mg-label"><%=t('select')%> <%=t('coursebatchname')%></label><br/>
+
+    <label class="mg-label"><%=t('select')%></label> <a href="#" id="checkAllCheckBoxInFeeCategoryId" class="mg-pop-link"><%=t('all')%></a>
+    <a href="#" id="unCheckAllCheckBoxInFeeCategoryId" class="mg-pop-link"><%=t('none')%></a>
+    <div class="mg-scroll-bar">
+      <%@feesquery.each do |d|%>
+        <input id="item_selected_batches" class="auto-ckeckbox-fee-category-batch-cls" name="selected_batches[]"
+              type="checkbox" value="<%=raw d[1]%>" />
+        
+        <%@course=MgCourse.select(:course_name).find_by_id(d[2])%>
+        <%if@course!=nil%>
+          <%= @course.course_name %> - <%=d[0]%><br/> 
+        <%else%>
+          <%=d[0]%><br/> 
+        <%end%>
+        <%#=d[0]%>
+      <% end %>
+    </div>
+
+</div> 
+</div>
+
+<% end %>
+
+
+<style type="text/css">
+  .mg-scroll-bar{
+      width: 200px;
+      height: 157px;
+      overflow: scroll;
+  }
+</style>
+
+<script>
+  $(document).ready(function(){
+
+    $("#feeCategoryCreateFormId").validate({
+      rules: 
+      {
+          "fesses[name]": {required: true},
+          "selected_batches[]": {required: true},
+          "particulars[]": {required: true}
+      }
+    });
+
+
+  });
+</script>
+

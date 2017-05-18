@@ -1,0 +1,124 @@
+<!-- Sec --> 
+
+<!-- breadcrumbs Work 
+<#% navigation_add 'Students List', students_path %>
+breadcrumbs Work -->
+
+
+<%= render  partial: 'student_left' %>
+
+<% navigation_add t('students_list'),students_path %>
+
+<%if flash[:error].present?%>
+
+<%= flash[:error]%>
+
+  <%end%>
+
+<!-- Student Search-->
+<!-- <%#= form_for :student, url: search_student_data_path  do |f| %>
+  <div class="search-container">
+   Search Student:
+
+      <%#= f.text_field :searchData  %>
+
+     <%#= submit_tag t("save"), class: "submit mg-small-form-btn"  %>
+  </div>
+  <div class="searched-student-data-container" id="searchStudentDataID">
+    
+  </div>
+<br/>
+<%# end %> -->
+
+
+<!-- Student Search end-->
+<!-- List of students -->
+
+<% if @student_list.length > 0 %>
+  <div class="mg_pagination">
+    <h4 class="mg-h4"><%= t("studentslist") %></h4>
+
+    <div class="student-table-div-cls">
+
+        <table class="batch-tbl mg-tbl-margin">
+            <tr class="student-table-header">
+              <th><%= t("studentname") %></th>
+              <th><%= t("admissionnumber") %></th>
+              <th><%= t("coursebatch") %></th>
+              <th><%= t("gender") %></th>
+              <th><%= t("actions") %></th>
+            </tr>
+            <% @student_list.each do |student| %>
+            <tr class="even">
+              <td><%= student.first_name  %> <%= student.middle_name  %> <%= student.last_name  %></td>
+              <td><%= student.admission_number %></td>
+              <% @batch_name = MgBatch.find_by_id(student.mg_batch_id)
+                if( !@batch_name.nil?)
+                 @course_name = MgCourse.find_by_id(@batch_name.mg_course_id)
+                 @batch_name = (@course_name.course_name) + "-"+@batch_name.name 
+               end
+              %>
+              <%#= @batch_name %>
+               
+              <% if !@batch_name.nil? %>
+                <td>
+                   <%= @batch_name %>
+                </td>
+             <%else%>
+                <td>--</td>
+            <%end%>   
+              
+              
+              <td class="mg-capitalize-text"><%= student.gender %></td>
+              <td>
+                <span class="mg-padding-nil">
+               <!--   <button class="show-student" id="showStudentID-<%#= student.id%>">Show</button> -->
+                 <%#= button_to raw("<i class=\"fa fa-pencil-square-o\"></i>"), {controller: "students", action: "show" ,id:student.id } , method: :get %>
+                 <%= link_to "<i class=\"fa fa-eye\"></i>".html_safe, {controller: "students", action: "show" ,id:student.id } ,:title=>"Show" ,:class=>"mg-icon-btn" %>
+
+
+                 <%#= button_to "<i class=\"fa fa-pencil-square-o\"></i>".html_safe %>
+                  </span>
+                 <%#= link_to t('show'), student_path(student), :class=>"link-pagination" %>
+
+                 <%#= button_to "Show", student_path(student) , :class => "show-student", :action => 'show' %>
+                  <button title="Edit" class="edit-student mg-icon-btn" id="editStudentID-<%= student.id%>"><i class="fa fa-pencil-square-o"></i></button>
+                 <button title="Delete" class="delete-student mg-icon-btn" id="deleteStudentID-<%= student.id%>"><i class="fa fa-trash"></i></button>
+                 <!-- <button title="Manage Guardian" class="manage-student-parent mg-icon-btn" id="addStudentParentID-<%= student.id%>"><i class="fa fa-user"></i></button> -->  
+                 <%=link_to "<i class=\"fa fa-user\"></i>".html_safe, {controller: "guardians", action: "student_guardian_show", id: student.id },:title=>"Manage Guardian" ,:class=>"mg-icon-btn" ,:style=>"margin-right: 3px;"%>
+
+             </td>
+            </tr>
+
+            <% end %>
+           </table>
+           
+           <div class="pagination-align">
+              <%= will_paginate @student_list, :container => false %>
+           </div>
+      </div>
+
+      
+  </div>
+
+<% else %>
+  <h5>No Admission... </h5>
+
+<% end %>
+<%= render  partial: 'student_left_close' %>
+
+
+<div class="fancybox-outer mg-pop-up-padding" id="editStudentDialogID" style=" width: auto; height: auto; overflow-x: inherit;"></div>
+
+<div class="fancybox-outer" id="student_guardian_list"  style="padding: 2px; width: auto; height: auto; overflow: hidden;"></div>
+
+<script>
+
+      $(document).ready(function () {
+          focusCurrentTab("viewStudentListAId","viewStudentListLiId");
+      });
+
+
+</script>  
+            	
+

@@ -1,0 +1,92 @@
+<h4 class="mg-h4"><%=t('select_students')%></h4>
+  
+  <div id="parent" class="mg-scrl-width-bar ">
+
+
+  <table border="1" id="fixTablePOConfirmationHistoriesTABLEID" class="mg-showdata-bg batch-tbl mg-tbl-margin" cellspacing="1" cellpadding="1">
+<thead>
+  <tr>
+    <th colspan="2"></th>
+   
+    <% (1..10).each do |i| %>
+        <% if @placement_data.public_send("round#{i}").present? %>
+         
+                 <% round_data=MgInterviewRound.find_by(:id=>@placement_data.public_send("round#{i}"))%>
+                  <th colspan="2">  <%= "Round "+ i.to_s%>(<%= round_data.name %>)</th>
+                  
+   
+        <% end %>
+    <% end %>
+    
+  </tr>
+  </thead>
+   <tr>
+    <th>Student Name</th>
+    <th>Admission Number</th>
+    <% (1..10).each do |i| %>
+        <% if @placement_data.public_send("round#{i}").present? %>
+         
+                 <% round_data=MgInterviewRound.find_by(:id=>@placement_data.public_send("round#{i}"))%>
+                  <th>  <%= "Select"%></th>
+                  <th><%="date"%></th>
+   
+        <% end %>
+    <% end %>
+    <th>Selected(For Job?)</th>
+  
+  </tr>
+  <%@sorted_records.each_with_index do |data,index|%>
+<tr>
+  
+  <td><%="#{data.first_name} #{data.last_name}"%></td>
+  <td><%=data.admission_number%></td>
+   <%job_app=MgPlacementJobApplication.find_by(:mg_batch_id=>params[:id],:mg_student_id=>data.id,:is_deleted=>0,:mg_job_upload_id=>params[:job_id],:mg_school_id=>session[:current_user_school_id],:pass_out_year=>params[:pass_out_year])%>
+<% (1..10).each do |i| %>
+        <% if @placement_data.public_send("round#{i}").present? %>
+           <% round_data=MgInterviewRound.find_by(:id=>@placement_data.public_send("round#{i}"))%>
+
+          
+          <%if (i==1 &&  job_app.mg_wing_id==nil) || (round_data.id.to_i==job_app.public_send("round#{i}").to_i)%>
+            <%#=@placement_data_array[index].is_round_selected%>
+
+            <%if i==1 &&  job_app.mg_wing_id==nil%>
+
+             <td>  <%=check_box_tag "student_id_data[#{data.id}]","#{round_data.id}-#{data.id}",false,:disabled=>true,:class=>"class#{round_data.id} student_id_data"%></td>
+                  <td><%="-"%></td><%# @placement_data.interview_date.strftime(MgSchool.find_by_id(session[:current_user_school_id]).date_format)%>
+            <%elsif round_data.id.to_i==job_app.public_send("round#{i}").to_i%>
+           <td>  <%=check_box_tag "student_id_data[#{data.id}]","#{round_data.id}-#{data.id}",job_app.public_send("round#{i}_date").present? ? true: job_app.mg_wing_id==nil ? true : false ,:disabled=>true, :class=>"class#{round_data.id} student_id_data"%>
+                  <%#=job_app.public_send("round#{i}_date").present?%>
+                  <td><%= job_app.public_send("round#{i}_date").present? ? job_app.public_send("round#{i}_date").strftime(MgSchool.find_by_id(session[:current_user_school_id]).date_format) : job_app.mg_wing_id==nil ? @placement_data.interview_date.strftime(MgSchool.find_by_id(session[:current_user_school_id]).date_format) : ""%></td>
+
+                   <%else%>
+
+                  <td>  <%=check_box_tag "student_id_data[#{data.id}]","#{round_data.id}-#{data.id}",false,:disabled=>true,:class=>"class#{round_data.id} student_id_data"%></td>
+                  <td><%= "-"%></td>
+                  <%end%>
+                  <%else%>
+                  <td>  <%=check_box_tag "student_id_data[#{data.id}]","#{round_data.id}-#{data.id}",false,:disabled=>true,:class=>"class#{round_data.id} student_id_data"%></td>
+                  <td><%= "-"%></td>
+                  <%end%>
+
+
+
+        
+
+                 
+   
+        <% end %>
+
+    <% end %>
+      <td> <%=check_box_tag "student_id_data[]",nil,job_app.job_selected==true ? true :false,:disabled=>true,:class=>"class student_id_data"%></td>
+</tr>
+<%end%>
+
+  </table> 
+  </div>
+  <script>
+
+  $(document).ready(function(){
+  $("#fixTablePOConfirmationHistoriesTABLEID").tableHeadFixer({'left' : 2, 'head' : true});
+});
+
+</script>

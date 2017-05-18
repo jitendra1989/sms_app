@@ -1,0 +1,10 @@
+<!-- <h4 class="mg-h4">Contents</h4> -->
+ <h4 class="mg-h4"><%= @my_questions.title.html_safe %></h4>
+ <div>
+ 	<p><%= @my_questions.content.html_safe %></p>
+
+
+  <%#= link_to 'download this page', download_html_path(@my_questions.content, :download => true) %>
+ <%= button_to "Back",files_for_student_path, method: :get ,:class=>"mg-small-form-btn"%>
+  </div>
+

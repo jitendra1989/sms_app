@@ -1,0 +1,76 @@
+
+<h4 class="mg-h4"><%= t('guests')%></h4>
+
+<%if @guests.present?%>
+<%= form_for :guests, url: save_attended_guests_path, method: :post, :html => {
+                            :id => 'eventCommitteesFormID' } do |f| %>
+<%=hidden_field_tag :mg_event_id, @mg_event_id%>
+<div class="mg-scroll-employee-bar">
+<table class="batch-tbl">   
+ <tr >
+  	<th><%=t('guest_name')%></th>
+    <th> <%=t('guest_details')%></th>
+    <th> <%=t('status')%></th>
+    <th><%=t('actions')%>
+    <div class="mg-text-margin">
+        <a class="select-all-guest-for-event mg-pop-link"><%=t('all')%></a>&nbsp;<a class="select-none-guest-for-event mg-pop-link"><%=t('none')%></a>
+      </div></th>
+  </tr>
+  <% @guests.each do |e| %>
+    <tr>
+      <td><%= e.guest_name %></td>
+      <td><%=truncate(e.guest_details.to_s, :length => 25, :separator => ' ')%></td>
+        <td>
+        <%if e.status.present?%>
+          <%if e.status=='invited'%>
+            Invited
+          <%elsif e.status=='will_attend'%>
+            Will Attend
+          <%else%>
+            Not Attend
+          <%end%>
+        <%end%>
+      </td>
+     
+      <!-- <td><%#= e.status %></td> -->
+      <td class="mg-align-center">
+        <%if e.status=='will_attend'%>
+          <%= check_box_tag 'mg_guest_id[]', e.id, true ,{:class=>"class-event-guest-class"}%>
+        <%else%>
+          <%= check_box_tag 'mg_guest_id[]', e.id, false ,{:class=>"class-event-guest-class"}%>
+        <%end%>
+      </td>
+    </tr>
+  <% end %>
+</table>
+</div>
+
+<!-- <p> -->
+    <%#= f.submit t('save') ,:class=>"mg-small-form-btn"%>
+      <%#= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+
+  <p class="mg-p-mgtop">
+    <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"  id="addStudentCommitteeSubmitFormID"><%=t("save")%></a>
+       <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+      <!-- <a  class="mg-small-form-btn cancel-form-dialog"><%#=t("cancel")%></a> -->
+  </p>
+
+
+  <!-- </p> -->
+
+<%end%>
+<%else%>
+<h5>Guests are not invited for this event</h5>
+<%end%>
+
+<script>
+   $(document).on("click", ".select-all-guest-for-event", function(e){
+
+    $(".class-event-guest-class").prop('checked', true);
+        e.preventDefault();
+  });
+   $(document).on("click", ".select-none-guest-for-event", function(e){
+    $(".class-event-guest-class").prop('checked', false);
+        e.preventDefault();
+  });
+</script>

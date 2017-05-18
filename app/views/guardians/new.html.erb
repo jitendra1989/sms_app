@@ -1,0 +1,346 @@
+<!-- Sec --> 
+<%= render  partial: 'students/student_left' %>
+
+
+<%if flash[:error].present?%>
+<%=flash[:error]%>
+<%end%>
+
+
+<h4 class="mg-detail-heading">Guardian Details</h4>
+
+<div id="guardianNewFormID">
+
+  <div class="box">
+    
+    <%= form_for @guardian, url: guardians_path , :html => { :id => "guardianFormID" } do |f| %>
+
+
+        <%= f.hidden_field :user_type, :value => "guardian"%>
+        <%= f.hidden_field :password, :value => "guardian123"%>
+        <%= f.hidden_field :is_deleted, :value => 0%>
+        <%= f.hidden_field :user_name,:value => ""%> 
+        <%= f.hidden_field :mg_student_id,:value => @last_studentId %>
+        <%current_school=MgSchool.find(session[:current_user_school_id])%>
+        <%= f.hidden_field :mg_student_dob,:value => @last_student.date_of_birth.strftime(current_school.date_format) %>
+        <%= f.hidden_field :mg_school_id,:value => session[:current_user_school_id] %>
+
+
+      <div class="form-content">
+          <div class="form-content-inner">
+            <h4 class="mg-h4">Personal Details</h4>
+            <table width="100%" cellspacing="0" cellpadding="0" border="0" class="student-form-cls">
+              <tbody>
+                <tr>
+                  <td width="33%" valign="bottom">
+                    <label for="first_name"class="mg-label"><%= t('first_name') %>
+                      <span class="required-field">*</span> 
+                    </label>
+                  </td>
+                  <td> </td>
+                  <td width="33%" valign="bottom">
+                     <label for="middle_name"class="mg-label"><%= t('middle_name') %></label>
+                  </td>
+                  <td> </td>
+                  <td width="33%" valign="bottom">
+                    <label for="last_name"class="mg-label"><%= t('last_name') %>
+                      <span class="required-field">*</span> 
+                    </label>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top">
+                    <%= f.text_field :first_name ,:class=>"mg-text-field"%>
+                  </td>
+                  <td> </td>
+                  <td valign="top">
+                    <%= f.text_field :middle_name ,:class=>"mg-text-field"%>
+                  </td>
+                  <td> </td>
+                  <td valign="top">
+                    <%= f.text_field :last_name ,:class=>"mg-text-field"%>
+                  </td>
+                </tr>
+
+                <tr>
+
+                  <td width="33%" valign="bottom">
+                    <label for="relation"class="mg-label"><%= t('relation') %></label>
+                  </td>
+                  <td> </td>
+                  <td width="33%" valign="bottom">
+
+                    <label for="date_of_birth"class="mg-label mg-label-text-transform-none"><%= t('dateofbirth') %>
+
+                      <span class="required-field"></span> 
+                    </label>
+                  </td>
+                  <td> </td>
+                  <td width="33%" valign="bottom">
+                       <label for="occupation"class="mg-label"><%= t('occupation') %></label>
+                  </td>
+                </tr>
+                <tr>
+
+                  <td valign="top">
+                    <%= f.text_field :relation ,:class=>"mg-text-field"%>
+                  </td>
+                  <td> </td>
+                  <td valign="top">
+                   <%= f.text_field :dob  ,:class => 'dob mg-text-field'%>
+                  </td>
+                  <td> </td>
+                  <td valign="top">
+                     <%= f.text_field :occupation  ,:class => 'occupation mg-text-field'%>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td width="33%" valign="bottom">
+                    <label for="income"class="mg-label"><%= t('Annual Income') %></label>
+                    
+                  </td>
+                  <td> </td>
+                  <td width="33%" valign="bottom">
+                     <label for="education"class="mg-label"><%= t('education') %></label>
+                  </td>
+                   <td> </td>
+                  <td><!-- <label for="upload_file" class="mg-label"><%#= t('PhotoUpload') %></label> --> </td>
+                  <td width="33%" valign="bottom">
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top">
+                    <%= f.text_field :income  ,:class => 'income mg-text-field'%>
+                  </td>
+                  <td> </td>
+                  <td valign="top">
+                     <%= f.text_field :education  ,:class => 'education mg-text-field'%>
+                  </td>
+                   <td> </td>
+                  <td> <%#= f.file_field :photo %></td>
+                  <td valign="top">
+                  
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+      </div>
+
+
+      <!-- Address Will Come here -->
+      <h4 class="mg-h4" >Address </h4>
+      <%=render :partial => 'students/address_with_street' , :locals => {:addresstype => "Permanent"}%>
+
+      <!-- Contacts will come here -->
+
+
+      <h4 class="mg-h4"><b>Photo</b></h4>
+      <table class="mg-tbl-margin">
+        <tr>
+            <td width="30%">
+              <label class="mg-custom-labels mg-label"  for="schoollogo "><%= t 'PhotoUpload' %><span class="required-field">&nbsp;</span></label><br/>
+              <%#= image_tag  @employee.photo.url(:medium, timestamp: false),:class => 'mg-img-size mg-btn-bottom-margin mg-custom-labels',:id=>"employeeImageTagID"  %>
+              <img id="guardianImageTagID" class="mg-img-size mg-btn-bottom-margin mg-custom-labels" src="#" style="display:none">
+              </td>
+              <td>
+              <%= f.file_field :photo,:onchange =>"validateGuardianImage(this.value,this);"%>
+              <%#= file_field 'user_pic', accept: 'image/png,image/gif,image/jpeg'%>
+              <%#= @school.logo_file_name %>
+            </td>
+          </tr>
+      </table>
+
+
+
+
+     <h4 class="mg-h4" >Contacts</h4>
+   <!--    <label class="span-sub-heading">Address Details</label> -->
+            
+            <%#= render "address"  %>
+            <%#= render "workAddress" %>
+            
+      <%= render :partial => "students/contact_inline" ,:locals => {:phone_types => "phone"} %>
+      <%= render :partial => "students/contact_inline" ,:locals => {:phone_types => "mobile"} %>
+      <%= render :partial => "students/email_inline" %>     
+          
+<%if  @dbdatas.size>0 %>
+     
+     <h4 class="mg-h4" >Custom Fields</h4>
+
+        <div class="mg-custom-labels">
+           <%= f.hidden_field :mg_school_id, :value =>session[:current_user_school_id] %>
+
+               <% @dbdatas.each do |dbdata| %>
+
+              <%custom_data=Array.new%>
+            <%= hidden_field_tag 'custom_data[]', dbdata.id%>
+
+
+              <label class="mg-capitalize-lbl mg-label"><%= dbdata.name%></label><br>
+              
+
+              <%@data=dbdata.text_data.split(",")%>
+
+               <%for i in 0..@data.length-1%>
+
+                  <%if dbdata.data_type=="check_box"%>
+
+                      <%custom_field=Array.new%>
+
+                      <%= check_box_tag 'custom_field_'+dbdata.id.to_s+'[]', @data[i] %>
+                      <%=@data[i] %>
+                  <br/>
+
+               <%elsif dbdata.data_type=="radio_button" %>
+                      <%custom_field=Array.new%>
+                      <%= radio_button_tag 'custom_field_'+dbdata.id.to_s+'[]', @data[i]%>
+                       <%=@data[i] %>
+                 <br/>
+
+
+               <%elsif dbdata.data_type=="drop_down" %>
+                      <%custom_field=Array.new%>
+                      <%=select_tag 'custom_field_'+dbdata.id.to_s+'[]', options_for_select(@data)%>
+                 <%break%>
+
+
+                <%elsif dbdata.data_type=="input_type" %>
+
+                     <%custom_field=Array.new%>
+
+                     <%= text_field_tag 'custom_field_'+dbdata.id.to_s+'[]',@data[i] %>
+
+                <%end%><br>
+
+                 <%end%><br>
+
+                  <%end%>
+
+<%end%>
+
+<br>
+</div>
+      <%= submit_tag t('save'), class: "submit mg-small-form-btn mg-custom-labels" %>
+      <%= link_to t('cancel'), students_path, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+
+    <% end %>
+
+    
+
+  </div>
+</div>
+<%= render  partial: 'application/common_left_close' %>
+
+<script >
+
+  $(document).ready(function () {
+
+      
+      focusCurrentTab("createNewStudentAID","createNewStudentLiID");
+      focusStudentHeaderBox();
+      
+          dateFormatStr =  getJsDateFormat();
+
+    $( ".dob" ).datepicker({ changeMonth: true,
+                changeYear: true,yearRange: "-100:+0",maxDate: "0",dateFormat: dateFormatStr });
+
+    
+
+    $(function () {
+    $.validator.addMethod('dateFormat',
+    function (value, element) {
+      dateFormatStr =  getJsDateFormat();
+        if (this.optional(element)) {
+            return true;
+        }
+        var ok = true;
+        try {
+            $.datepicker.parseDate(dateFormatStr, value);
+        }
+        catch (err) {
+            ok = false;
+        }
+        return ok;
+    },
+      "Please enter a date in the format "+ getDateFormat(dateFormatStr) +".");
+      dateFormatStr =  getJsDateFormat();
+
+    $(".datefield").datepicker({ dateFormat: dateFormatStr, changeYear: true });
+});
+
+      $("#guardianFormID").validate({
+        //debug: true,
+        rules: {
+                  "mg_guardian[first_name]": {required: true, name_validate: true, maxlength: 25},
+                  "mg_guardian[middle_name]": {name_validate: true, maxlength: 25},
+                  "mg_guardian[last_name]": {required: true, name_validate: true, maxlength: 25},
+                  "mg_guardian[relation]": {character_validate: true, maxlength: 25},
+                  "mg_guardian[occupation]": {character_validate: true, maxlength: 25},
+                  "mg_guardian[income]": {number: true, maxlength: 25},
+                  "mg_guardian[dob]": {dateFormat: true},
+
+
+                  "Permanent[address_line1]": {required: true},
+                  "Permanent[state]": {required: true}, 
+                  "Permanent[country]": {required: true},
+                  "Permanent[city]": {required: true}, 
+                  "Permanent[pin_code]": {required: true, number: true, minlength: 6,maxlength: 6},
+
+                  "phone[phone_number]": {number: true,maxlength: 10},
+                  "mobile[phone_number]": {required: true, number: true, minlength: 10,maxlength: 10},
+                  "email[mg_email_id]": {required: true,  email: "Your email must be in the format of name@domain.com"}
+        },
+        messages: {
+        "Permanent[pin_code]": {minlength: "Please enter 6 digits.",maxlength: "Please enter only 6 digits"},
+        "mobile[phone_number]": {minlength: "Please enter 10 digits.",maxlength: "Please enter only 10 digits"},
+        "phone[phone_number]": {maxlength: "Please enter only 10 digits"}
+          }
+      });
+
+
+
+      //==================Dob & Admission date validation starts==========================
+     $(document).on("change","#mg_guardian_dob",function(e){
+      var current_date_year = new Date().getFullYear();
+       var checking_year = current_date_year-18
+      
+      var guardian_dob=$(this).val();
+      var student_dob=$("#mg_guardian_mg_student_dob").val();
+      var guardian_dob_year=getDateObj(guardian_dob,dateFormatStr).getFullYear();
+
+      console.log("Guardian Date of Birth="+guardian_dob);
+      console.log("Student Date of Birth="+student_dob);
+      console.log("Current Year="+current_date_year);
+      console.log("Entered Year="+guardian_dob_year);
+      console.log("Checking Year="+checking_year);
+
+      console.log(compareDate(student_dob,guardian_dob,dateFormatStr));
+      console.log(guardian_dob_year > checking_year);
+
+      if(guardian_dob_year>checking_year){
+          alert("Please check the age");
+          document.getElementById('mg_guardian_dob').value ="";
+      }
+      else{
+        if(compareDate(student_dob,guardian_dob,dateFormatStr) ){
+        alert("Please check the age");
+        document.getElementById('mg_guardian_dob').value ="";
+      }
+      }
+   });
+});
+
+
+
+   $("#guardian_dob").on('change', function(){
+
+    var dob=$("#guardian_dob").val();
+    //alert("dob:"+dob);
+    $("#guardian_password").val(dob);
+   });
+
+   
+</script>
+

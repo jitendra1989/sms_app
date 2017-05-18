@@ -1,0 +1,104 @@
+<%= render  partial: 'master_settings/master_settings_left.html' %>
+
+<div id="laboratory_setting_div_Id" class="mg-pop-up-padding" style="overflow-x: inherit;">
+<%if flash[:error].present?%>
+<%=flash[:error]%>
+<%end%>
+<h4 class="mg-h4"><%=t('laboratory_settings')%></h4>
+
+<button class="add-laboratory-settings_incharge mg-btn-bottom-margin mg-custom-form-btn"><%= t('add_incharge')%></button>
+
+<button class="add-laboratory-settings_assistant_incharge mg-btn-bottom-margin mg-custom-form-btn"><%= t('add_assistant_incharge')%></button>
+
+
+<!-- <button id="add_laboratory_assistant_Id" title="Add Incharge" class="add-laboratory-settings mg-icon-btn mg-btn-bottom-margin"><i class="fa fa-pencil-square-o"></i></button> -->
+
+<br/>
+<h4 class="mg-h4"><%=t('employees_incharge')%></h4>
+
+<div class="mg-scroll-employee-bar">
+
+<table border="1" class="batch-tbl mg-show-tbl-width" cellspacing="1" cellpadding="1">
+<!-- ================================================================================================================ -->
+ <th class="mg-padding-10">Subject Name</th>
+<th class="mg-padding-10">Edit</th>
+<th class="mg-padding-10 mg-align-center">Show</th>
+          <%#@laboratory_settings.each do |settings|%>
+          
+         <% for k in 0...@laboratory_settings.length%>
+
+          <tr>
+          <%@subject=MgLaboratorySubject.find_by(:id=>@laboratory_settings[k]) %>
+          <td><%=@subject.try(:name)%></td>
+          <td>
+
+          <%incharge=MgLaboratoryIncharge.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id],:mg_subject_id=>@subject.id,:incharge_type=>"Incharge").count %>
+            <%if incharge>0%>
+                  <button id="<%=raw @subject.id%>" class="edit-laboratory-settings_incharge mg-btn-bottom-margin mg-custom-form-btn"><%= t('edit_incharge')%></button>
+            <%end%>
+
+          <%assIncharge=MgLaboratoryIncharge.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id],:mg_subject_id=>@subject.id,:incharge_type=>"Assistant Incharge").count %>
+
+            <%if assIncharge>0%>
+                  <button id="<%=raw @subject.id%>" class="edit-laboratory-settings_assistent_incharge mg-btn-bottom-margin mg-custom-form-btn"><%= t('edit_assistant_incharge')%></button>
+            <%end%>
+          </td>
+          <td class="mg-align-center">
+            <button title="Show" id="<%=raw @subject.id %>" class="show-laboratory-incharges-btn-class mg-icon-btn"><i class="fa fa-eye"></i></button>
+          </td>
+          
+          </tr>
+          <%end%>
+
+          <!-- ================================================================================================================= -->
+
+</table>
+</div>
+
+</div>
+<%= render partial: 'emp_section_close' %>
+
+<script>
+$(document).ready(function () {
+        focusCurrentTab("laboratorycategorytypeAID","laboratorycategorytypeLiID");
+        focusMasterSettings();
+    });
+$(document).on("click", ".add-laboratory-settings_incharge", function(e){
+       e.preventDefault();
+        var urlLink = "/laboratory/add_laboratory_incharge";
+        window.location=urlLink;
+});
+
+
+
+
+
+$(document).on("click", ".add-laboratory-settings_assistant_incharge", function(e){
+       e.preventDefault();
+        var urlLink = "/laboratory/add_laboratory_assistant_incharge";
+        window.location=urlLink;
+});
+
+$(document).on("click", ".edit-laboratory-settings_incharge", function(e){
+       e.preventDefault();
+       var ID =$(this).attr('id');
+        var urlLink = "/laboratory/edit_laboratory_incharge/"+ID;
+        window.location=urlLink;
+});
+
+
+
+$(document).on("click", ".edit-laboratory-settings_assistent_incharge", function(e){
+       e.preventDefault();
+       var ID =$(this).attr('id');
+        var urlLink = "/laboratory/edit_laboratory_assistant_incharge/"+ID;
+        window.location=urlLink;
+});
+
+$(document).on("click", ".show-laboratory-incharges-btn-class", function(e){
+       e.preventDefault();
+       var ID =$(this).attr('id');
+        var urlLink = "/laboratory/show_laboratory_incharge/"+ID;
+        window.location=urlLink;
+});
+</script>

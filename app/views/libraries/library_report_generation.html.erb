@@ -1,0 +1,400 @@
+
+<div class="mg-custom-labels">
+<%data=Hash.new%>
+<%data2=''%>
+
+  <%defaulter_hash=Hash.new%>
+  
+
+  <%@book_purchase_details.each do |fee_defaulter|%>
+  <%data[fee_defaulter.book_name]=fee_defaulter.no_of_copies%>
+
+    <%end%>
+
+  <%#=column_chart defaulter_hash, library:  {width:600,hAxis: {title: "Class & Section"}, vAxis: {title: "No. of Student"}}%>
+
+
+
+</div><br>
+
+<div>
+<%fee_defaulter_width=650%>
+<%if data.length>4%>
+<%fee_defaulter_width=data.length*150%>
+<%end%>
+
+  
+</div>
+<div id="wrapperFeeDefaulter"  class="mg-scroll-page-inner" style="padding: 30px;">
+    <canvas id="graph" width="<%=fee_defaulter_width%>" height="500"></canvas>
+    <canvas id="tipFeeDefaulter" width="100" height="50"></canvas>
+</div>
+
+
+
+<style>
+
+body {
+/*    background-color: ivory;*/
+    margin-top:35px;
+}
+#wrapperFeeDefaulter {
+    position:relative;
+    /*   width:300px;
+    height:150px; */
+}
+  
+
+  
+  
+#tipFeeDefaulter {
+    background-color:white;
+    border:1px solid blue;
+    position:absolute;
+      left:-200000px;
+    top:100px;
+    padding: 0px;
+}
+ #fee_defaulter_graph{background: #ffffff;
+        box-shadow:5px 5px 5px #ccc;
+    border:5px solid #eee;
+    margin-bottom:10px;}
+</style>
+
+
+<script>
+ $(document).ready(function () {
+       
+        fee_defaulter_graph();
+  });
+
+
+ //var fee_defaulter_hash2={"LKG":40, "UKG":6, "1st STD":4, "2nd":80, "LKG1":4, "UKG1":6, "1st STD1":4, "2nd1":8};
+
+
+function fee_defaulter_graph(){   var data;   var
+chages_fee_defaulter="<%=data.to_json%>";   console.log(chages_fee_defaulter);
+var chages_fee_defaulter91=chages_fee_defaulter.replace(/&quot;=&gt;/g,'"');
+var chages_fee_defaulter91=chages_fee_defaulter91.replace(/&quot;/g,'"');
+var chages_fee_defaulter91=JSON.parse(chages_fee_defaulter91);   var
+fee_defaulter_hash2= chages_fee_defaulter91;
+ 
+ 
+
+  var colour=["#deacba","#6ab0b1","#e95c60","#29708b","#897d92","#479b9c","#b16a8d","#a295f0","#308c5d","#e9e2a6","#b94e83","#5ca060","#4b4890","#c0b2cc","#a83c41","#cb6088","#c5a68a","#1a684d","#e76947","#906cab","#ebbd7c","#672a41","#c7a4e2","#739a87","#a1c3e1","#ae2753","#c6d1a3","#e9d1bc","#2f986f","#6a4587","#ce999b"];
+  var greater=[];
+  var colour_array=[];
+  colour_array.push("No of Books");
+  for (var prop in fee_defaulter_hash2) {
+    //colour_array.push(prop);
+  greater.push(fee_defaulter_hash2[prop]);
+ }
+  
+
+  function uniqueArray( ar ) {
+    var j = {};
+    ar.forEach( function(v) {
+      j[v+ '::' + typeof v] = v;
+    });
+    return Object.keys(j).map(function(v){
+      return j[v];
+    });
+} 
+  
+  
+  
+  
+  var array=uniqueArray(colour_array);
+  var colour_with_data = {};
+
+  for(var dd=0;dd<array.length;dd++){
+   colour_with_data[array[dd]]=colour[dd];
+  } 
+
+   
+  var bar_width=0.32;
+  var bar_width_tip=bar_width*100;
+  var Val_amount = Math.max.apply(Math, greater);
+  var canvas ;
+  var context ;
+  var Val_Max=3;
+  var Val_Min;
+  var sections;
+  var xScale;
+  var yScale;
+  var y;
+    
+    // intialize values for each variables
+  //sections = fee_defaulter_hash2.length;
+    Val_amount=Val_amount+Val_amount*30/100;
+  if(Val_amount>5){
+    Val_Max =Math.round(Val_amount); //Math.max.apply(Math, itemValue)+2;;
+  }
+    
+      
+    var stepSize =Val_Max*30/100 ;
+    var columnSize = 50;
+    var rowSize = 60;
+    var margin = 30;
+    var header = "Books Count"; 
+  var graph = document.getElementById("graph");
+  var c = graph.getContext("2d");
+  var tipCanvas = document.getElementById("tipFeeDefaulter");
+  var tipCtx = tipCanvas.getContext("2d");
+
+  //var canvasOffset = $("#graph").offset();
+    //var offsetX = canvasOffset.left;
+  //var offsetY = canvasOffset.top;
+
+  //var graph;
+  
+  graph.fillStyle = "#8B8B8B"
+  var graph_hight=graph.height*80/100;
+  var graph_width=graph.width*80/100;
+    // alert(graph_hight+'---'+graph_width);
+  yScale = (graph_hight - columnSize - margin) / (Val_Max);
+  xScale=100;
+  
+  
+      
+  c.strokeStyle="#8B8B8B"; // background black lines
+  c.beginPath();
+    // column names 
+  c.font = "19 pt Arial;"
+  c.fillText(header, 0,columnSize - margin);
+  // var xPadding = 30;
+  //var yPadding = 30;
+
+
+ function getMousePos(canvas, evt) {
+        var rect = canvas.getBoundingClientRect();
+        return {
+          x: evt.clientX - rect.left,
+          y: evt.clientY - rect.top
+        };
+      }
+      var canvas = document.getElementById('graph');
+      var context = canvas.getContext('2d');
+
+      canvas.addEventListener('mousemove', function(evt) {
+        var mousePos = getMousePos(canvas, evt);
+        var message = 'Mouse position: ' + mousePos.x + ',' + mousePos.y;
+         handleMouseMove(mousePos);
+        //alert(message);
+        // writeMessage(canvas, message);
+      }, false); 
+  
+
+function wrapText(context, text, x, y, maxWidth, lineHeight) {
+    
+     // var words = text.split('');
+      var letter = text.length;
+     
+    
+        var line = '';
+     // alert(text.length);
+      
+
+        for(var n = 0; n < letter; n++) {
+          //alert(n+"          ");
+          //alert(text.charAt(n));
+          // var res = str.charAt(0);
+          var testLine = line + text.charAt(n) + '';
+          // alert(testline);
+          
+          var metrics = context.measureText(testLine);
+          var testWidth = metrics.width;
+          //  alert(n);
+          if ( n%21==0) {
+            // alert(x +"             "+y)
+            context.fillText(line, x, y);
+            line = text.charAt(n) + '';
+            y += lineHeight;
+          }
+          else {
+            line = testLine;
+          }
+        }
+        context.fillText(line, x, y);
+      }
+
+ function handleMouseMove(e) {
+   
+   
+   //alert('-------e.clientX'+e.clientX+'-------e.clientY'+e.clientY);
+    mouseX = parseInt(e.x);
+    mouseY = parseInt(e.y)-90;
+   // alert('margin-->'+margin+'   y-->  stepSize-->'+stepSize);
+    var hit = false;
+   var count_tip=0;
+   //for (var i = 0; i < dots.length; i++) {
+      if(e.x>(canvas.width*80/100)-20 ){
+        var colour_with_data={"No of Books":"#deacba"}//,"#e95c60","#29708b","#897d92","#479b9c","#b16a8d","#a295f0","#308c5d","#e9e2a6","#b94e83","#5ca060","#4b4890","#c0b2cc","#a83c41","#cb6088","#c5a68a","#1a684d","#e76947","#906cab","#ebbd7c","#672a41","#c7a4e2","#739a87","#a1c3e1","#ae2753","#c6d1a3","#e9d1bc","#2f986f","#6a4587","#ce999b"];
+      var temp_colour_pos=1;
+      var temp_colour=0;
+      for (var prop in colour_with_data) {
+          var x_pos1=(canvas.width*80/100)-20;
+          var x_pos2=(canvas.width*80/100)-5;
+          var y_pos1=(canvas.height*3/100)-5+temp_colour;
+          
+          var y_pos2= (canvas.height*3/100)-5+temp_colour+15;
+          //e.y>y_pos1
+          if(e.x>x_pos1 && e.x<x_pos2 &&  e.y>y_pos1 && e.y<y_pos2){
+          var tip_tool=canvas.width*80/100;
+           tipCanvas.style.left = (mouseX) -100+ "px";
+          tipCanvas.style.top = (mouseY) +150+ "px";
+          tipCtx.clearRect(0, 0, tipCanvas.width, tipCanvas.height);
+          tipCtx.fillStyle = 'Green';
+          tipCtx.fill();
+          tipCtx.fillText(prop, 5, 15);
+         hit = true;
+          }
+      temp_colour+=30;
+      }
+
+      }else{
+          for(var i in fee_defaulter_hash2){
+            y =computeHeight_canvassyllabus(fee_defaulter_hash2[i],graph_hight,yScale);
+             var x_pos1=count_tip+rowSize+xScale-margin*2;
+             var x_pos2=x_pos1+bar_width_tip;
+             var y_pos1=graph_hight-margin;
+             var y_pos2=y - margin;
+             if(e.x>x_pos1 && e.x<x_pos2 && e.y<y_pos1 && e.y>y_pos2){
+              var maxWidth = 50;
+                  var lineHeight = 15;
+               tipCanvas.style.left = (mouseX) +50+ "px";
+               tipCanvas.style.top = (mouseY) +50+ "px";
+               tipCtx.clearRect(0, 0, tipCanvas.width, tipCanvas.height);
+               tipCtx.fillStyle = 'Green';
+               tipCtx.fill();
+               tipCtx.fillText(i, 5, 15);
+               wrapText(tipCtx,"No of Books :"+fee_defaulter_hash2[i], 5, 30, maxWidth, lineHeight);
+              // tipCtx.fillText("Not Paid :"+fee_defaulter_hash[i], 5, 30);
+               //tipCtx.fillText("x-Pos :"+e.x, 5, 45);
+              // tipCtx.fillText("y-Pos :"+e.y, 5, 60);
+                //tipCtx.fillText("graph_hight :"+graph_hight, 5, 75);
+               hit = true;
+              }
+          
+           count_tip+=bar_width_tip*2;
+          }
+    
+      }
+   
+    if (!hit) {
+        
+        tipCanvas.style.top = "-1000000px";
+    }
+}
+
+  // draw lines in the background
+  c.font = "18 pt Helvetica"
+  var count =  0;
+  for (scale=Val_Max;scale>=0;scale = scale - stepSize) {
+    y = columnSize + (yScale * count * stepSize); 
+        c.fillText(Math.round(scale), margin,y + margin-30);
+    count++;
+  }
+  
+  
+  
+  
+  
+  
+   var count_zero =  0;
+  for (scale=Val_Max;scale>=0;scale = scale - 1) {
+    y = columnSize + (yScale * count_zero * 1); 
+      if(scale==0){
+        c.beginPath();
+        c.moveTo(xScale-20,20);
+        c.lineTo(xScale-20,graph_hight);
+        c.stroke();
+        c.beginPath();
+        var x_position,y_positon;
+        x_position=graph_hight*20/100;
+        //y_positon=graph.height*100/100;
+          c.moveTo(rowSize,y)
+         c.lineTo(graph_width,y)
+        c.fillText(Math.round(scale), margin,y + margin-30);
+        c.stroke();
+      }
+    count_zero++;
+  }
+  c.stroke();
+  
+  
+  // print names of each data entry
+  c.font = "20 pt Verdana";
+  c.textBaseline="bottom";
+  
+  var temp=1;
+      for (var prop in fee_defaulter_hash2) {
+        temp++;
+  }
+  
+var position=0;
+var text_position=0;
+           
+ var text_width=canvas.height*23/100;
+  var text_hoght=canvas.height*8/100;
+ for (var prop in fee_defaulter_hash2) {
+          c.beginPath();
+          c.fillStyle = 'blue';
+      y =computeHeight_canvassyllabus(fee_defaulter_hash2[prop],graph_hight,yScale);
+          c.fillText(fee_defaulter_hash2[prop], xScale * (position+1),y - margin);
+          c.stroke();
+          position=position+bar_width*2;
+          c.rotate(0.20);
+          context.font='9pt Calibri';
+          c.fillText(prop, xScale*position+text_width,graph_hight-text_hoght);
+          c.rotate(-0.20);
+          text_hoght=text_hoght+13;
+                
+   // position=position+.5;
+   }
+  
+  
+    var temp_colour=0;
+      for (var prop in colour_with_data) {
+        c.beginPath();
+        c.fillStyle=colour_with_data[prop];
+        c.font = '10pt Calibri';
+        var tip_tool=graph.width*80/100;
+        context.fillStyle = '#000000';
+        c.fillText(prop, tip_tool,(graph.height*temp_colour*3/100)+25);
+        c.rect(tip_tool-20, (graph.height*temp_colour*3/100)+10, 15, 15);
+        c.fillStyle = colour_with_data[prop];
+        c.fill();
+      c.stroke();
+        temp_colour+=2;
+  }
+    // translate to bottom of graph  inorder to match the data 
+  c.translate(0,graph_hight - margin);
+  c.scale(xScale,-1 * yScale);
+ 
+    // draw each graph bars 
+  
+  var position=0;
+   for (var prop in fee_defaulter_hash2) {
+       
+       //alert('yScale-->'+yScale+'   y'+y);
+           c.fillRect(position+1, 0, bar_width, fee_defaulter_hash2[prop]);
+            position=position+bar_width*2;
+    }
+  
+  
+
+
+    
+
+
+   }
+  function computeHeight_canvassyllabus(value,height,yScale) {
+      y = height - value * yScale ; 
+        return y;
+    }
+
+
+
+</script>
+

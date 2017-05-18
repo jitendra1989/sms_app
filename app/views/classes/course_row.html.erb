@@ -1,0 +1,55 @@
+<!-- Sec --> <%  @courses = Course.all      %>
+                <%  @courses.each do |c|       %>
+                    
+                 <div class="input-container-data">
+                    
+                    <div class="md-left"><a><%= c.course_name %></a></div>
+                    <div class="md-right">
+                        <div class="row"><a><%=t('edit')%></a></div>
+                        <div class="row"><a><%=t('delete')%></a></div>
+                        <div class="row"><a><%=t('add_section')%></a></div>
+                        <div class="row"><a>+</a></div>
+                    </div>
+
+                   
+                     
+                 </div>
+
+                <% end %>
+
+                
+<style>
+    .input-container-data{
+        background: linear-gradient(to bottom, #d9dfeb, white) repeat scroll 0 0 rgba(0, 0, 0, 0);
+        border: 0.1em solid #6592b2;
+        color: #104564;
+      /*  font-family: "Arial",sans-serif;*/
+        font-size: 1em;
+        font-weight: bold;
+        padding: 1px;
+
+    }
+    .input-container-data{
+        width:95%;
+        height:42px;
+        float:left;
+        margin: 5px;
+    }
+
+    .md-left{
+        float: left;
+    }
+    .md-right{
+        float:right;
+    }
+    .md-right .row
+    {
+        padding:12px;
+        float:left;
+        margin-left:auto;
+        margin-right:auto;
+        border-left: 0.1em solid #6592b2;
+      -data
+    }
+    
+</style>

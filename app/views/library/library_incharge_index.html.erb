@@ -1,0 +1,120 @@
+<%= render  partial: 'master_settings/master_settings_left' %>
+<% navigation_add 'Library Incharge',library_library_incharge_index_path %>
+
+<div id="editlibraryDialogID" class="mg-pop-up-padding" style="overflow-x: inherit;">
+<%if flash[:error].present?%>
+<%=flash[:error]%>
+<%end%>
+<%school_id=session[:current_user_school_id]%>
+<!-- 
+<h4 class="mg-h4"><%#=t('library_incharge_show')%></h4> -->
+
+
+
+
+<table border="1" class="mg-showdata-bg mg-show-tbl-width" cellspacing="1" cellpadding="1">
+<h4 class="mg-h4"><%=t('Librarian')%><button id="<%=raw school_id%>" title="Edit Library Incharge" class="library-edit-library mg-icon-btn mg-btn-bottom-margin mg-edit-right-btn"><i class="fa fa-pencil-square-o"></i></button></h4>
+
+ <th class="mg-padding-10">Employee Name</th>
+<th class="mg-padding-10">Department</th>
+
+<%
+library_settings=MgLibraryEmployee.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id],:designation=>"Library Incharge").all
+
+%>
+          <%library_settings.each do |settings|%>
+          <tr>
+         <%
+            employee_data=MgEmployee.find(settings.mg_employee_id)
+            employee_department=MgEmployeeDepartment.find(employee_data.mg_employee_department_id)
+          %>
+          <td><%="#{employee_data.first_name} #{employee_data.last_name}"%></td>
+          <td><%=employee_department.department_name%></td>
+
+          </tr>
+          <%end%>
+
+
+
+</table>
+<table border="1" class="mg-showdata-bg mg-show-tbl-width" cellspacing="1" cellpadding="1">
+<h4 class="mg-h4"><%=t('assistant_librarian')%>
+<button id="<%=raw school_id%>" title="Edit Assistant Library Incharge" class="Asst-library-edit-library mg-icon-btn mg-btn-bottom-margin mg-edit-right-btn"><i class="fa fa-pencil-square-o"></i></button>
+</h4>
+
+ <th class="mg-padding-10">Employee Name</th>
+<th class="mg-padding-10">Department</th>
+
+<%
+library_settings=MgLibraryEmployee.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id],:designation=>"Asst Library Incharge").all
+
+%>
+          <%library_settings.each do |settings|%>
+          <tr>
+         <%
+            employee_data=MgEmployee.find(settings.mg_employee_id)
+            employee_department=MgEmployeeDepartment.find(employee_data.mg_employee_department_id)
+          %>
+          <td><%="#{employee_data.first_name} #{employee_data.last_name}"%></td>
+          <td><%=employee_department.department_name%></td>
+
+          </tr>
+          <%end%>
+
+
+
+</table>
+
+</div>
+
+
+<%= render  partial: 'schools/school_left_close' %>
+<script>
+$(document).ready(function () {
+
+        focusCurrentTab("libraryinchargegeneratekioskAID","libraryinchargegeneratekioskLiID");
+        focusMasterSettings();
+        
+    });
+
+$(document).on("click", ".library-edit-library", function(e){
+       e.preventDefault();
+       
+
+       
+       
+        var urlLink = "/library/library_incharge_edit";
+       
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+           
+           success: function(html){
+        $('#editlibraryDialogID').empty();
+        $('#editlibraryDialogID').html(html);
+
+            }
+        });
+});
+
+$(document).on("click", ".Asst-library-edit-library", function(e){
+       e.preventDefault();
+       
+
+       
+       
+        var urlLink = "/library/asst_library_incharge_edit";
+       
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+           
+           success: function(html){
+        $('#editlibraryDialogID').empty();
+        $('#editlibraryDialogID').html(html);
+
+            }
+        });
+});
+
+</script>

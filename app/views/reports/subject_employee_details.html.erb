@@ -1,0 +1,32 @@
+<h4 class="mg-h4">Subject Details</h4>
+<table class="batch-tbl">
+	<tr>
+		<th>Subject Name</th>
+		<th>Subject code</th>
+		<th>Batch Name</th>
+		<th>Teacher Name</th>
+	</tr>
+	<%@subjects.each do |subject|%>
+	<tr>
+		<td><%=subject.subject_name%></td>
+		<td><%=subject.subject_code%></td>
+		<%
+			@batch=MgBatchSubject.where(:mg_subject_id=>subject.id,:is_deleted=>0)
+			@batch_name=MgBatch.where(:id=>@batch[0].mg_batch_id,:is_deleted=>0)
+		%>
+		<td><%=@batch_name[0].name%></td>
+		<%@teachers=MgEmployeeSubject.where(:is_deleted=>0,:mg_subject_id=>subject.id)%>
+		<%
+			@teachers_name=Array.new
+		%>
+		
+		<td>
+			<%@teachers.each do|teacher|%>
+				<%@teacher_name=MgEmployee.where(:id=>teacher.mg_employee_id,:is_deleted=>0).pluck(:first_name)%>
+				<%@teachers_name.push(@teacher_name)%>
+			<%end%>
+			<%=@teachers_name.join("\n")%>
+		</td>
+	</tr>
+	<%end%>
+</table>

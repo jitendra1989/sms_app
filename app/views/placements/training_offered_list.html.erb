@@ -1,0 +1,266 @@
+<% navigation_add t('training'), :controller=>'placements', :action=>'training_offered' %>
+<% navigation_add t('training_offered_list'), :controller=>'placements', :action=>'training_offered_list', :id=>@placements_training.id %>
+<%=render partial: 'placements_left' #has_attached_file :file
+%>
+<h4 class="mg-h4"><%= t("training_show") %></h4>
+
+
+<table border="1" class="mg-showdata-bg" cellspacing="1" cellpadding="1">
+   <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label mg-rm-text-trans"> <%= t('name_of_the_company')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+   
+      <%= @placement.try(:name_of_the_company) %>
+     </td>
+ </tr>
+
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label mg-rm-text-trans"><%=t('area_of_training')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+     <div class="text-scroll-for-log-text-cls comments-space">
+      <%= @placements_training.try(:area_of_training) %>
+      </div>
+     </td>
+ </tr>
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"><%=t('start_date')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+      <%= @placements_training.try(:start_date).strftime(@dateFormat) %>
+     </td>
+ </tr>
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"><%=t('end_date')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+      <%= @placements_training.try(:end_date).strftime(@dateFormat) %>
+     </td>
+ </tr>
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label mg-rm-text-trans"> <%= t('status')%></label>
+     </td>
+     <td class="mg-td-width-half mg-capitalize-text" valign="top">
+   
+      <%= @placements_training.try(:is_active) %>
+     </td>
+ </tr>
+</table>
+ 
+
+
+
+
+
+<h4 class="mg-h4"><%= t("training_offered_list") %></h4>
+
+
+<%if @placement_training_offered.length>0%>
+<%#=label_tag 'Select Company:'%>
+<%#=select_tag :Company_drop_down_data,options_for_select(@company_registration,:selected=>@data),:prompt=>"Select"%>
+
+
+
+<%= form_for :placement_data,:url=>{:action=>"placement_training_offered_accept"},:html=>{:id=>"alumni_registration"} do |f|%>
+  
+<%#= form_for :polling_option, url: {:action=>"polling_options_create"}, :html => {
+                            :id => 'alumnipollingCreateFormId', :class => 'elm_class',
+                            :style => 'elm_style' } do |f| %>
+<div class="mg_pagination drop_down_company_list">
+ 
+
+<%=hidden_field_tag 'alumni_demo_data',nil%>
+
+        <table class="batch-tbl mg-tbl-margin">
+            <tr class="student-table-header">
+              <th><%= t("student_name") %></th>
+              <th><%= t("admission_number") %></th>
+
+              <th><%= t("semester") %></th>
+              <th><%= t("company") %></th>
+              <!-- <th><%#= t("training_start_date") %></th>
+              <th><%#= t("training_start_date") %></th> -->
+
+              <th><%= t("status") %></th>
+             <%if session[:user_type]=="Company"%>
+
+
+              <%else%>
+             <th class="mg-align-center"><label class="mg-label"><%=t('select')%></label><br/>
+             <span>
+             <a  id="seescheckAllCheckBoxalumniParticularId" class="mg-pop-link">All</a>
+             </span>
+             <span>
+    <a  id="seesunCheckAllCheckBoxalumniParticularId" class="mg-pop-link">None</a></span></th>
+    <%end%>
+            </tr>
+            <% @placement_training_offered.each do |student| %>
+            <%student_info=MgStudent.find_by(:id=>student.mg_student_id)
+            batch_info=MgBatch.find_by(:id=>student.mg_batch_id)
+            course_info=MgCourse.find_by(:id=>batch_info.mg_course_id)
+           placement_training_offered=MgPlacementTrainingOffered.find_by(:id=>student.mg_placement_training_offered_id)
+           placement_registration=MgPlacementRegistration.find_by(:id=>placement_training_offered.mg_placement_registration_id)
+            %>
+            <tr class="even">
+            
+               <td><%= "#{student_info.first_name} #{student_info.last_name}" %></td>
+              <td><%=student_info.admission_number  %></td>
+
+                <td><%= "#{batch_info.name}-#{course_info.course_name}" %></td>
+           
+              <td class="mg-capitalize-text"><%= placement_registration.name_of_the_company %></td>
+               <!-- <td><%#= placement_training_offered.try(:start_date).strftime(@dateFormat)%></td> -->
+                <!-- <td><%#= placement_training_offered.try(:end_date).strftime(@dateFormat)%></td> -->
+                <td class="mg-capitalize-text mg-align-center"><%= student.status%></td>
+             
+                 <%#= link_to t('show'), {controller: "placements", action: "alumni_registration_form_show" ,id:student.id },:class=>"new-add-polling mg-btn-bottom-margin mg-custom-form-btn"  %>
+              <%if session[:user_type]=="Company"%>
+
+
+              <%else%>
+               <!-- <td><%#=check_box_tag 'select_data[]',student.id,false,:class=>"demo1213334"%></td> -->
+
+              <%if student.try(:status)=="Rejected" || student.try(:status)=="Approved"%>
+                <td class="mg-align-center"><%=check_box_tag 'select_data[]',student.id,false,:class=>"",:disabled=>true%></td>
+               <%else%>
+                <td class="mg-align-center"><%=check_box_tag 'select_data[]',student.id,false,:class=>"demo1213334"%></td>
+              <%end%>
+
+               <%end%>
+               </tr>
+               <%end%>
+           </table>
+         
+           <div class="pagination-align" style="position: relative; bottom: 10px;">
+              <%= will_paginate @placement_training_offered, :container => false %>
+           </div>
+
+</div>
+  
+      </div>
+
+      
+  </div>
+   
+  
+
+<p class="mg-p-mgtop">
+    <!-- <a onclick="$(this).closest('form').submit()" class="accept-class-alumni mg-small-form-btn"><%#=t("accept")%></a> -->
+   <%if session[:user_type]=="Company"%>
+   <%= link_to t('cancel'), :back, {:class=>" mg-custom-labels mg-small-form-btn cancel-form-dialog"} %>
+   <%else%>
+    <a id="accept-class-alumni" class="mg-custom-labels mg-small-form-btn"><%=t("approve")%></a>
+     <a id="reject-class-alumni" class="mg-custom-labels mg-small-form-btn"><%=t("reject")%></a>
+
+        <%= link_to t('cancel'), :back, {:class=>" mg-custom-labels mg-small-form-btn cancel-form-dialog"} %>
+
+       <%=f.submit t("save") ,:id=>"submitalumniFormBtnId" , :style=>"display:none"%>
+      <%end%>
+      </p>
+   <%end%>
+<%else%>
+<%="No Records"%>
+<%end%>
+<%= render  partial: 'application/common_left_close' %>
+
+<script>
+
+      $(document).ready(function () {
+         //  $("#viewStudentListLiId").addClass( "active" );
+
+         //   // Removing class from A
+         // $("#viewStudentListAId").addClass( "activeMenu" );
+    focusCurrentTab("training_offeredAID","training_offeredLiID");
+    focusCurrentTab("placementsTrainingofferedCorpAID","placementsTrainingofferedCorpLiID");
+
+         
+          // focusCurrentTab("training_offeredListAID","training_offeredListLiID");
+          // focusStudentHeaderBox();
+
+          //focusCurrentHeaderBox("STUDENTS");
+      });
+$(document).on("click", "#seescheckAllCheckBoxalumniParticularId", function(e){
+
+        $(".demo1213334").prop('checked', true);
+        e.preventDefault();
+        
+  });
+
+$(document).on("click", "#seesunCheckAllCheckBoxalumniParticularId", function(e){
+
+        $(".demo1213334").prop('checked', false);
+        e.preventDefault();
+        
+  });
+
+  $(document).on("click", "#accept-class-alumni", function(e){
+   
+ var inputElems=document.getElementsByClassName("demo1213334"),
+   count = 0;
+for (var i=0; i<inputElems.length; i++) {
+if (inputElems[i].type === "checkbox" && inputElems[i].checked === true) 
+{
+    count++;
+     
+}
+
+}
+
+ 
+
+if (count>0){
+    $("#alumni_demo_data").val("Accept");
+
+    $("#submitalumniFormBtnId").click();
+  }
+  else{
+    alert("Select any one record")
+  }
+  });
+
+   $(document).on("click", "#reject-class-alumni", function(e){
+
+var inputElems=document.getElementsByClassName("demo1213334"),
+   count = 0;
+for (var i=0; i<inputElems.length; i++) {
+if (inputElems[i].type === "checkbox" && inputElems[i].checked === true) 
+{
+    count++;
+     
+}
+
+}
+
+ if (count>0){
+
+       $("#alumni_demo_data").val("Reject");
+    //console.log( $("#alumni_demo_data").val())
+       $("#submitalumniFormBtnId").click();
+        }
+  else{
+       alert("Select any one record")
+  }
+  });
+$(document).on("change","#Company_drop_down_data",function(){
+    var id=$(this).val();
+  window.location="/placements/training_offered_list/"+id;
+          // var urlLink = "/placements/filter_company_data_training";
+          // var data=$(this).val();
+          //     $.ajax({
+          //         url: urlLink ,
+          //         cache: false,
+          //         data:{id:data},
+          //         success: function(html){
+          //              $(".drop_down_company_list").empty().append(html);
+          //         }
+          //     });
+    });
+</script>  
+            	
+

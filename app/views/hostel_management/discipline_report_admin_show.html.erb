@@ -1,0 +1,159 @@
+
+
+<table border="1" class="mg-showdata-bg " cellspacing="1" cellpadding="1" style="width: 391px;">
+   <tr>
+     <td class="mg-td-width-half" valign="top">
+        <label class="mg-label"> <%= t('hostel_name')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+     <%hostel_details=MgHostelDetails.find_by(:id=>@discipline_report.mg_hostel_details_id)
+@date_format=MgSchool.find_by(:id=>session[:current_user_school_id]).date_format
+
+     %>
+
+        <%= hostel_details.try(:name) %>
+     </td>
+ </tr>
+  <tr>
+     <td class="mg-td-width-half" valign="top">
+        <label class="mg-label mg-label-text-transform-none"> <%= t('date_of_report')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+    
+
+<%=@discipline_report.try(:date_of_report).strftime(@date_format)%>
+     </td>
+ </tr>
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+        <label class="mg-label"><%=t('reason')%></label>
+     </td>
+     <td class="mg-td-width-half " valign="top">
+            <%= @discipline_report.try(:reason) %>
+     </td>
+ </tr>
+
+  
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+        <label class="mg-label"> <%= t('action_to_be_taken')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+        <%= @discipline_report.try(:action_to_be_taken) %>
+     </td>
+ </tr>
+
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+        <label class="mg-label"> <%= t('status')%></label>
+     </td>
+     <td class="mg-td-width-half mg-capitalize-text" valign="top">
+     
+       <%= @discipline_report.try(:status) %>
+     </td>
+ </tr>
+
+</table>
+<!-- <br/> -->
+<h4 class="mg-h4"><%= t('student_list_data')%></h4>
+
+<% list= MgHostelDisciplineReportList.where(:is_deleted=>0,:mg_hostel_discipline_report=>@discipline_report.id,:mg_school_id=>session[:current_user_school_id])
+%>
+
+<table border="1" class="mg-showdata-bg " cellspacing="1" cellpadding="1">
+ <tr>
+    <th>
+  <%= t('student_name')%>
+    </th>
+
+    <th>  <%= t('student_id')%></th>
+
+    <th>  <%= t('Floor')%></th>
+
+
+    <th>  <%= t('Room No')%></th>  
+     
+ </tr>
+ <% puts list.inspect %>
+ <% list.each do |prgm| %>
+           <%@list_data=MgAllocateRoomList.find_by(:mg_student_id=>prgm.mg_student_id,:is_deleted=>0,:mg_school_id=>session[:current_user_school_id])
+
+           student_data=MgStudent.find_by(:id=>@list_data.mg_student_id)
+           floor_Data=MgHostelFloor.find_by(:id=>@list_data.mg_hostel_floor_id)
+        room_data=MgHostelRoom.find_by(:id=>@list_data.mg_hostel_room_id)
+
+ %>  
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+       
+           <%= "#{student_data.first_name} #{student_data.last_name}" %>
+     </td>
+
+     <td class="mg-td-width-half" valign="top">
+     
+ <%= "#{student_data.admission_number}" %>            
+      
+     </td>
+      <td class="mg-td-width-half" valign="top">
+     
+ <%= "#{floor_Data.name}" %>            
+      
+     </td>
+      <td class="mg-td-width-half" valign="top">
+     
+ <%= "#{room_data.name}" %>            
+      
+     </td>
+     
+     </td>
+</tr>
+<%end%>
+ 
+
+ <br/>
+
+ 
+</table>
+
+<%= form_for :discipline_report_data ,  :url=>{:controller=>'hostel_management',:action=>'discipline_report_admin_update',:id=>@discipline_report.id}, :html=>{:id=>'hostel_rooms_data'} do |f| %>
+
+<table class="mg-tbl-margin mg-show-tbl-width">
+  <tr>
+    <%if @discipline_report.status!="Closed" %>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="date"><%= t ('action_to_be_taken') %><span class="required-field">&nbsp;*</span></label><br/>
+          <%= text_area_tag "action_to_be_taken",nil,:class=>"mg-text-field"%>
+      </td>
+    <%end%>
+  </tr>
+    <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="status"><%= t ('status') %><span class="required-field">&nbsp;*</span></label><br/>
+        <%if @discipline_report.status!="Closed" %>
+          <%=select_tag :status_data_admin,options_for_select([["Open","Open"],["Closed","Closed"]],:selected=>@discipline_report.status),:class=>"mg-text-field"%>
+        <%else%>
+          <%=select_tag :status_data_admin,options_for_select([["Open","Open"],["Closed","Closed"]],:selected=>@discipline_report.status),:class=>"mg-text-field",:disabled=>true%>
+        <%end%>
+      </td>
+    </tr>
+    </table>
+    <p class="mg-p-mgtop">
+ <%#= f.submit t('save'), class: "submit mg-small-form-btn mg-custom-labels",:id=>"inputs_fields"%>
+    <%if @discipline_report.status!="Closed" %>
+      <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("save")%></a>
+    <%end%>
+    <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+</p>
+<%end%>
+
+
+
+<script>
+  $(document).ready(function(){
+    $("#hostel_rooms_data").validate({
+      rules: {
+        "action_to_be_taken": {required: true}
+      }
+    });
+  });
+</script>

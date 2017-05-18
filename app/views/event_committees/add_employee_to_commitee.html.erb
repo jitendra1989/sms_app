@@ -1,0 +1,32 @@
+ <%= form_for :event_committees, url: save_employee_to_commitee_path, method: :post, :html => {
+                            :id => 'eventCommitteesFormID' } do |f| %>
+
+  <div id="selectDepartmentDIVID" class="select-department-div-cls" >
+    <br><label class="mg-label "><%=t('select_department') %></lable><span class="required-field"> *</span>
+     <%=select_tag :mg_committee_id ,options_for_select(@departmets),:onchange=>"optionForDepartment(this.value)",:prompt=>t('select') , :id=>"selectEmployeeDepartmentTagID" ,:class=>"mg-select-btn"%>
+  </div>
+  <div id="employeeListDIVID"></div>
+    
+  
+  <%= f.hidden_field :is_deleted, :value => 0%> 
+  <%= f.hidden_field :created_by, :value => session[:user_id]%> 
+  <%= f.hidden_field :updated_by, :value => session[:user_id]%> 
+  <%= f.hidden_field :mg_school_id, :value => session[:current_user_school_id]%> 
+
+  <p>
+    <%#= f.submit t('save') ,:class=>"mg-small-form-btn"%>
+      <%#= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+  </p>
+<% end %>
+
+<script type="text/javascript">
+$(document).ready(function () {
+   $("#eventCommitteesFormID").validate({
+
+rules: {
+"mg_employee_id[]": {required: true}
+
+}
+});
+});
+</script>

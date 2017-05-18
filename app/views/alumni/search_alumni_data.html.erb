@@ -1,0 +1,374 @@
+<%=render partial: 'dashboards/student_dashboard_left'%>
+<% navigation_add 'Search Alumni',alumni_search_alumni_data_path %>
+
+<h4 class="mg-h4"><label class="mg-label-text-transform-none" for="date_of_birth"><%=t('search_alumni')%></label></h4>
+<table class="mg-btn-bottom-margin">
+    <tr>
+        <td>
+         <label for="date_of_birth"class="mg-label"><%= t('search_by') %>
+            
+        </td>
+        </tr>
+        <tr>
+        <td>
+            <%= select_tag 'search_by', options_for_select([[ "Programme","programme"],[" Passing Out Year","passing out year"]]),:prompt=>"Select",:onchange=>"selectsalumnifunctionsforalumni(this.value)" ,:class=>"mg-select-btn"%><br/>
+        </td>
+    </tr>
+
+
+<tr>
+<td>
+<div id="library_tes" class="library_test" style="display:none;">
+
+
+ <label for="date_of_birth"class="mg-label"><%= t('select_programme') %>
+
+ </div>
+<div id="liry_te" class="library_test2" style="display:none;">
+
+
+ <label for="date_of_birth"class="mg-label"><%= t('select_pass_out_year') %>
+
+ </div>
+
+</td>
+</tr>
+<tr>
+<td>
+
+<div id="library_te" class="library_test" style="display:none;">
+<%wing_data=MgWing.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:wing_name,:id)%>
+
+<%=select_tag 'alummi_search_programme' ,options_for_select(wing_data),:prompt=>"Select",:class=>"mg-text-field"%><br/><br/>
+
+
+<button id="search_alumni_fordata" class="btn btn-default">Search</button>
+
+</div>
+<div id="liry_te" class="library_test2" style="display:none;">
+
+ <%= select_tag 'time_table_year[1]', options_for_select((1994..Time.now.year).to_a), :prompt=>"Select",:class=>"demooo demo2 mg-text-field" %><br/><br/>
+
+
+<button id="search_alumni_fordata" class="btn btn-default">Search</button>
+
+</div>
+</td>
+</tr>
+</table>
+
+<div id="alumni_library_particular_book_search">
+</div>
+
+<div id="student_employee_data_info">
+</div>
+<%= render  partial: 'schools/school_left_close' %>
+<script>
+$(document).ready(function () {
+        focusCurrentTab("search_alumniAid","search_alumniLiID");
+        focusLibrary();
+       
+});
+
+ $(document).on("change","#alummi_search_programme",function(){
+              $("#alumni_library_particular_book_search").empty();
+
+    });
+
+ $(document).on("change","#time_table_year_1",function(){
+              $("#alumni_library_particular_book_search").empty();
+
+    });
+
+function selectsalumnifunctionsforalumni(data){
+  
+ $("#alumni_library_particular_book_search").empty();
+ $("#student_employee_data_info").empty();
+var data=$("#search_by").val();
+if (data=="programme"){
+ //$(".library_test").hide();
+  $(".library_test2").hide();
+  $(".library_test").show();
+}
+else if(data=="passing out year"){
+ $(".library_test").hide();
+ $(".library_test2").show();
+
+
+}
+else{
+ $(".library_test").hide();
+ $(".library_test2").hide();
+
+}
+
+}
+$(document).on("click","#search_alumni_fordata",function(){
+          $("#student_employee_data_info").empty();
+
+        var value=$("#search_by").val();
+        var data=$("#alummi_search_programme").val();
+        var data1=$("#time_table_year_1").val();
+
+        
+        //alert(value)
+         if (value=="programme"&&data!=""){
+                $.ajax({
+            url:'/alumni/search_alumni_data_forshow',
+            cache:false,
+            data:{"Value":value,"wing_id":data,"demo":""},
+            success: function(data){
+              $("#alumni_library_particular_book_search").empty();
+              $("#alumni_library_particular_book_search").append(data);
+
+
+            }
+         
+
+
+        });
+        //   alert("Please Enter the data to search...........")
+
+         }
+         else if(value=="passing out year"&&data1!=""){
+          $.ajax({
+            url:'/alumni/search_alumni_data_forshow',
+            cache:false,
+            data:{"Value":value,"passout":data1,"demo":"passing out year"},
+            success: function(data){
+              $("#alumni_library_particular_book_search").empty();
+              $("#alumni_library_particular_book_search").append(data);
+
+
+            }
+         
+
+
+        });
+
+ }
+    else{
+
+        alert("Select the data")
+         $("#alumni_library_particular_book_search").empty();
+
+    }
+});
+
+
+
+
+// $(document).on("click","#submitlibraryFormBtnId",function(){
+//  $("#student_employee_data_info").empty();
+//  var data_id=$("#library_id_hidden").val();
+//  var dta_id=$("#library_category_id_hidden").val();
+// var id_data=$("#employee_student_id").val();
+
+// if (id_data==""){
+//   alert("Please Enter Id");
+// }
+// else{
+
+// $.ajax({
+//             url:'/library/employee_student_information',
+//             cache:false,
+//             data:{"Data":id_data,"value":dta_id,"resource_type":data_id},
+//             success: function(data){
+//               $("#student_employee_data_info").empty();
+//               $("#student_employee_data_info").append(data);
+
+
+//             },
+//             error: function(data){
+
+//               alert("Not a valid User ID");
+//             }
+//           });
+
+
+// }
+
+// });
+
+// $(document).on("click",".issueemployee_button_for_library",function(){
+
+//             var myIDs =$(this).attr('id');
+//             var splStrings = myIDs.split("-");
+//       $.ajax({
+//             url:'/library/save_issue_data_status_for_library',
+//             cache:false,
+//             data:{"category_id":splStrings[0],"resource_type_id":splStrings[1],"status_data":"Employee","working_id":splStrings[2]},
+//             success: function(data){
+//               // $("#student_employee_data_info").empty();
+//               // $("#student_employee_data_info").append(data);
+//               $("#student_employee_data_info").empty();
+
+//               $("#library_particular_book_search").empty();
+
+//             },
+//             error: function(data){
+
+//               alert("Not a valid User ID");
+//             }
+//           });
+
+// });
+
+// $(document).on("click",".issuestudent_button_for_library",function(){
+
+// var myIDs =$(this).attr('id');
+//             var splStrings = myIDs.split("-");
+//       $.ajax({
+//             url:'/library/save_issue_data_status_for_library',
+//             cache:false,
+//             data:{"category_id":splStrings[0],"resource_type_id":splStrings[1],"status_data":"Student","working_id":splStrings[2]},
+//             success: function(data){
+//               // $("#student_employee_data_info").empty();
+//               // $("#student_employee_data_info").append(data);
+//               $("#student_employee_data_info").empty();
+
+//               $("#library_particular_book_search").empty();
+
+//             },
+//             error: function(data){
+
+//               alert("Not a valid User ID");
+//             }
+//           });
+
+// });
+// $(document).on("click",".returnsubmitlibraryFormBtnId",function(){
+
+// var myIDs =$(this).attr('id');
+// var value=$("#is_there_a_delay").val();
+// var return_data=$("#is_it_returned_in_the_as_was_taken").val();
+// var id_data=$("#no_of_days_delayed").val();
+//  var damage_amount=$("#extent_of_damage_amount").val();
+
+ 
+
+// if ((value==0&&id_data=="")||(return_data==0 && damage_amount=="") ||(!(Number(id_data)%1===0))||(!(Number(damage_amount)%1===0)))
+// {
+//   if(return_data==0 && damage_amount==""){
+//      $("#damaged_amount_error").empty();
+//      var amountss_values=$("#extent_of_damage_amount").val();
+
+//  var fine=$("#fine_amount").val();
+//  $("#fine_amount").val(Number(fine)-Number(amountss_values));
+// $("#extent_of_damage_amount").val("");
+    
+//     $("#damaged_amount_error").append("Please Enter The Amount")
+// //alert("Please Enter The Amount")
+// }
+//  if(value==0&&id_data==""){
+//  $("#no_of_days_delayed_error").empty();
+//  var amount_value=$("#fine_amount_data").val();
+
+//  var fine=$("#fine_amount").val();
+//  $("#fine_amount").val(Number(fine)-Number(amount_value));
+// $("#fine_amount_data").val("");
+// $("#no_of_days_delayed").val("");
+
+//     $("#no_of_days_delayed_error").append("Please Enter The Amount")
+
+// //alert("Please Enter the Fine Amount");
+// }
+//  if(!(Number(id_data)%1===0)){
+// //alert("Please Enter Integer");
+//  $("#no_of_days_delayed_error").empty();
+// var amount_value=$("#fine_amount_data").val();
+
+//  var fine=$("#fine_amount").val();
+//  $("#fine_amount").val(Number(fine)-Number(amount_value));
+
+// $("#fine_amount_data").val("");
+// $("#no_of_days_delayed").val("");
+//     $("#no_of_days_delayed_error").append("Please Enter The Integer")
+
+// }
+// if(!(Number(damage_amount)%1===0)){
+// //alert("Please Enter damaged Integer");
+//      $("#damaged_amount_error").empty();
+//      var amountss_values=$("#extent_of_damage_amount").val();
+
+//  var fine=$("#fine_amount").val();
+//  $("#fine_amount").val(Number(fine)-Number(amountss_values));
+// $("#extent_of_damage_amount").val("");
+
+//     $("#damaged_amount_error").append("Please Enter The Integer")
+
+// }
+// }
+// else
+// {
+//  var boolean_data=$("#is_fine_applicable").val();
+
+//  var data_id=$("#fine_amount").val();
+//  var dta_id=$("#extent_of_damage").val();
+
+
+
+// $.ajax({
+//             url:'/library/save_return_data',
+//             cache:false,
+//             data:{"no_of_days_delayed":id_data,"extent_of_damage":dta_id,"fine_amount":data_id,"inventory_id":myIDs,"boolean_data":boolean_data},
+//             success: function(data){
+//               $("#student_employee_data_info").empty();
+
+//               $("#library_particular_book_search").empty();
+
+
+//             },
+//             error: function(data){
+
+//               alert("Not a valid User ID");
+//             }
+//           });
+
+
+// }
+
+// });
+
+
+// $(document).on("click",".renewsubmitslibrarysFormBtnId",function(){
+
+// var myIDs =$(this).attr('id');
+ 
+ 
+
+
+// $.ajax({
+//             url:'/library/update_renew_data',
+//             cache:false,
+//             data:{"resource_type_id":myIDs},
+//             success: function(data){
+//               $("#student_employee_data_info").empty();
+
+//               $("#library_particular_book_search").empty();
+
+
+//             },
+//             error: function(data){
+
+//               alert("Not a valid User ID");
+//             }
+//           });
+
+
+
+
+// });
+
+// $(document).on("click",".maxRenewalsallowed",function(){
+
+// alert("Can not be renewed");
+// });
+// $(document).on("click","#maxCountsubmitlibraryFormBtnId",function(){
+// alert("Book Can not be issued He has Taken Max Books");
+
+// })
+
+
+
+</script>

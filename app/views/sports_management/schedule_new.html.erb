@@ -1,0 +1,500 @@
+<%#= render  partial: 'schedule_form' %>
+<% #navigation_add t('schedule'), :controller=>'sports_management', :action=>'schedule' %>
+
+  <%# navigation_add t('new_schedule'),:controller=>'sports_management',:action=>'schedule_new' %>
+
+  <h4 class="mg-h4"><%=t('group_sports')%></h4>
+
+
+<%#= form_for :schedule , url: @action=="new" ? 'schedule_create' :
+ '/sports_management/'+@schedule.try(:id).to_s+'/schedule_update',:html => {:id => 'schedulesID' } do |f| %>
+
+
+
+  <%#= f.hidden_field :mg_school_id, :value => session[:current_user_school_id]%>
+  <%#= f.hidden_field :created_by, :value => session[:user_id]%> 
+  <%#= f.hidden_field :updated_by, :value => session[:user_id]%> 
+  <%#= f.hidden_field :is_deleted, :value => 0%>
+<p>
+  <!-- <label class="mg-label mg-tt-width "><%#=t('select_committee') %><span class="required-field"> *</span></label><br/>
+   <%#=select_tag :mg_committee_id ,options_for_select(@event_committees,params[:mg_event_committee_id]),:onchange=>"optionForEventInvetaionSS(this.value)",:prompt=>t('select') , :id=>"selectCommitteeSelectTagID" ,:class=>"mg-select-btn"%> -->
+
+   <!--  <label class="mg-label mg-tt-width "><%#=t('select_event') %><span class="required-field"> *</span></label><br/>
+   <%#=select_tag :mg_event_id ,options_for_select(@events,params[:mg_event_id]),:prompt=>t('select'),:onchange=>"optionForDateInventation(this.value)",:id=>"selectEventForCommitteeSelectTagIDDataId" ,:class=>"mg-select-btn"%> -->
+   <!-- <label class="mg-label mg-tt-width mg-rm-text-trans"><%#=t('event_date') %><span class="required-field"> *</span></label><br/>
+   <%#=text_field_tag :date_of_event,nil,:class=>"mg-text-field"%>
+   <%#= select_tag 'date_of_event', options_for_select([]), :prompt=>"Select",:id=>"selectEventForCommitteeSelectTagIDDataValue",:class=>"mg-text-field" %> -->
+
+<p>
+  <%= label :game_type, t("game_type") ,:class=>"mg-label"%>
+  <span class="required-field"> *</span><br>
+
+  <% if @action=='new'%>
+    <%=select_tag :game_type,options_for_select([["Indoor", "indoor"],["Outdoor", "outdoor"]]),:prompt=>"Select",:onchange => 'game();',:class=>"mg-text-field" %>
+    
+  <% else %>
+      <%=select_tag :game_type,options_for_select([["Indoor", "indoor"],["Outdoor", "outdoor"]],:selected=>@schedule.game_type),:onchange => 'game();',:prompt=>"Select",:class=>"mg-text-field" %>
+    <%end%>
+</p>
+
+
+<div id="game-id">
+
+<p>
+    <%= label :select_game, t('select_game') ,:class=>"mg-label mg-rm-text-trans"%><span class="required-field"> *</span><br>
+      <%=select_tag :mg_sport_game_id,options_for_select([]),:prompt=>"Select"%>
+     
+</p>
+
+</div>
+
+<div id="team-id" style="display:none">
+ <p >
+
+    <%= label :select_team, t('select_team_1') ,:class=>"mg-rm-text-trans mg-label"%><span class="required-field"> *</span><br>
+    
+      <%=select_tag :mg_sport_team_id,options_for_select([]) ,:prompt=>"Select",:class=> 'mg-text-field room-no'%>
+
+   
+
+  </p>
+</div>
+
+  <p id="guest_id" style="display:none">
+
+    <%= label :guest_team, t('guest_team') ,:class=>"mg-rm-text-trans mg-label"%><span class="required-field"> *</span><br>
+      <%= text_field_tag :guest_team_tag ,nil,:class=> 'mg-text-field'%>
+   
+
+  </p>
+
+
+  <!-- <p>
+      <%#= f.label :start_date, t('start_date') ,:class=>"mg-label"%><span class="required-field"> *</span><br>
+
+    <%# if @action=='new'%>
+        <%#= f.text_field :start_date, :class=>"mg-text-field" %>
+
+    <%# else %>
+        <%#= f.text_field :start_date, :class=>"mg-text-field",:value=>@provision.start_date.strftime(@timeformat.date_format) %>
+    <%#end%>
+  </p> -->
+
+  <!-- <p>
+      <%#= f.label :start_time, t('start_time') ,:class=>"mg-label"%><span class="required-field"> *</span><br>
+
+    <% #if @action=='new'%>
+        <%#= f.text_field :start_time, :class=>"mg-text-field " %><span id="start_time_errorID" class="error" style="font-weight: bold;">
+
+    <% #else %>
+        <%#= f.text_field :start_time, :class=>"mg-text-field ",:value=>@provision.start_time.try(:strftime,"%l:%M%P") %><span id="start_time_errorID" class="error" style="font-weight: bold;">
+
+    <%#end%>
+  </p>
+ -->
+  <!-- <p>
+      <%#= f.label :end_date, t('end_date') ,:class=>"mg-label"%><span class="required-field"> *</span><br>
+
+    <% #if @action=='new'%>
+        <%#= f.text_field :end_date, :class=>"mg-text-field" %>
+
+    <%# else %>
+        <%#= f.text_field :end_date, :class=>"mg-text-field",:value=>@provision.end_date.strftime(@timeformat.date_format) %>
+    <%#end%>
+  </p>
+    -->
+
+   <!-- <p>
+      <%#= f.label :end_time, t('end_time') ,:class=>"mg-label"%><span class="required-field"> *</span><br>
+
+    <%# if @action=='new'%>
+        <%#= f.text_field :end_time, :class=>"mg-text-field " %><span id="end_time_errorID" class="error" style="font-weight: bold;">
+
+    <%# else %>
+        <%#= f.text_field :end_time, :class=>"mg-text-field ",:value=>@provision.end_time.try(:strftime,"%l:%M%P") %><span id="end_time_errorID" class="error" style="font-weight: bold;">
+
+    <%#end%>
+  </p> -->
+
+
+
+  <p>
+
+      <%= label :venue, t('venue') ,:class=>"mg-rm-text-trans mg-label"%><span class="required-field"> *</span><br>
+      <% if @action=='new'%>
+        <%= text_field_tag :venue ,nil,:class=> 'mg-text-field'%>
+      <% else %>
+        <%= text_field_tag :venue ,nil,:class=> 'mg-text-field',:value=>@hostel_rooms.venue%>
+
+      <%end%>
+
+    </p>
+
+    <p>
+
+      <%= label :winner, t('winner') ,:class=>"mg-rm-text-trans mg-label"%><span class="required-field"> *</span><br>
+        <%=select_tag :winner,options_for_select([]),:prompt=>"Select",:class=> 'mg-text-field room-no'%>
+     
+
+
+    </p>
+
+
+  <p class="mg-p-mgtop">
+    <!-- <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%#=t("save")%></a> -->
+    <%#= link_to t('cancel'), {:controller=>'sports_management',:action=>'schedule'}, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+</p>
+
+<% #end %>
+
+<div id="formEmployeeOrStudentDIVID"></div>
+
+
+<script type="text/javascript">
+  $(document).ready(function () {
+   // focusCurrentTab("scheduleAID","scheduleLiID");
+    $("#schedulesID").validate({
+      rules: {     
+        "venue": {required: true},
+        "guest_team": {required: true},
+        "winner": {required: true},
+        "game_type": {required: true},
+        "mg_sport_game_id": {required: true},
+        "schedule_mg_sport_team_id": {required: true},
+        "mg_committee_id": {required: true},
+        "mg_event_id": {required: true},
+        "date_of_event": {required: true},
+        "date_of_event_Data": {required: true},
+        "mg_sport_team_id1": {required: true},
+        "guest_team": {required: true},
+        "mg_sport_team_id2": {required: true},
+        
+        
+
+      }
+    });
+
+
+    dateFormatStr =  getJsDateFormat();
+    $( "#start_date" ).datepicker({changeMonth: true,changeYear: true,yearRange: "-0:+50",minDate: "0",dateFormat: dateFormatStr});
+
+    $( "#end_date" ).datepicker({changeMonth: true,changeYear: true,yearRange: "-50:+0",minDate: "0",dateFormat: dateFormatStr});
+    $('#start_time').timepicker({ 'scrollDefault': 'now' });
+    $('#end_time').timepicker({ 'scrollDefault': 'now'}); 
+
+    $(function () {
+      $.validator.addMethod('dateFormat',
+      function (value, element) {
+        dateFormatStr =  getJsDateFormat();
+        if (this.optional(element)) {
+            return true;
+        }
+        var ok = true;
+        try {
+            $.datepicker.parseDate(dateFormatStr, value);
+        }
+        catch (err) {
+            ok = false;
+        }
+        return ok;
+      },
+        "Please enter a date in the format "+ getDateFormat(dateFormatStr) +".");
+      dateFormatStr =  getJsDateFormat();
+
+      $(".datefield").datepicker({ dateFormat: dateFormatStr, changeYear: true });
+    });
+  });
+
+  function game(){
+        var gameValue = $( "#game_type").val();
+        $("#team-id").empty()
+       if(gameValue) {
+           var urlLink = "/sports_management/game_data";
+          $.ajax({
+             url: urlLink,
+             cache: false,
+             data: {"game_type":gameValue,"schedule":"data"},
+             success: function(data){
+                    $("#game-id").empty().append(data);
+                }
+         });
+     }
+
+
+   }
+
+   function team(){
+    var gameValue = $( "#game_type").val();
+    var gamenameId = $( "#mg_sport_game_id").val();
+
+       if(gameValue=="indoor") {
+           var urlLink = "/sports_management/team_data";
+          $.ajax({
+             url: urlLink,
+             cache: false,
+             data: {"game_type":gameValue,"game_name":gamenameId},
+             success: function(data){
+                    $("#team-id").show();
+                    $("#team-id").empty().append(data);
+                }
+         });
+     }
+
+     else if(gameValue=="outdoor"){
+      var urlLink = "/sports_management/outdoor_data";
+          $.ajax({
+             url: urlLink,
+             cache: false,
+             data: {"game_type":gameValue,"game_name":gamenameId,"outdoor_data":"data"},
+             success: function(data){
+                    $("#team-id").show();
+                    $("#team-id").empty().append(data);
+                }
+         });
+     }
+   }
+
+
+
+$(document).on("change",".onetwo",function(){
+
+        $('#winner').empty();
+
+          var guest=$(".guest-value").val();
+          var team1=$("#mg_sport_team_id1").val();
+
+          var text=document.getElementById('mg_sport_team_id1').options[document.getElementById('mg_sport_team_id1').selectedIndex].text
+
+  if(guest!=""&&team1!=""){
+        $('#winner').append(new Option("Select", ""));
+        $('#winner').append(new Option(text, team1));
+        $('#winner').append(new Option(guest,guest));
+      }
+      else{
+$('#winner').append(new Option("Select", ""));
+  
+}
+      });
+
+
+      function winner_select(){
+        $('#winner').empty();
+          var team1=$("#mg_sport_team_id1").val();
+          var text1=document.getElementById('mg_sport_team_id1').options[document.getElementById('mg_sport_team_id1').selectedIndex].text
+
+          var team2=$("#mg_sport_team_id2").val();
+          var text2=document.getElementById('mg_sport_team_id2').options[document.getElementById('mg_sport_team_id2').selectedIndex].text
+
+          // $('#schedule_winner').append(new Option("Select", ""));
+          if(team1!=""&&team2!=""&&team1!=team2){
+
+        $('#winner').append(new Option("Select", ""));
+        $('#winner').append(new Option(text1, team1));
+        $('#winner').append(new Option(text2, team2));
+      }
+else{
+$('#winner').append(new Option("Select", ""));
+
+}
+
+      }
+
+
+
+
+
+$(document).on("change","#end_date",function(){
+    var dateFormatStr =  getJsDateFormat();
+    var start_date=$("#start_date").val();
+    var end_date=$(this).val();
+    if(start_date && end_date){
+      if(!(compareDate(start_date,end_date,dateFormatStr))){
+        alert("End date should be greater than start date");
+        $(this).val('');
+      }else{
+        var start_date=$("#start_date").val();
+        var end_date=$("#end_date").val();
+        if (start_date==end_date){
+          var from = $('#start_time').val();
+          var to = $('#end_time').val();
+          var from_time=minFromMidnight(from);
+          var to_time=minFromMidnight(to);
+          if(from_time && to_time){
+            if(from_time > to_time){
+             alert("Start Time must be less than End Time");
+             $('#start_time').val('');
+            } 
+          }
+        }
+      }
+    }
+  });
+
+
+$(document).on("change","#start_date",function(){
+    var dateFormatStr =  getJsDateFormat();
+    var start_date=$(this).val();
+    var end_date=$("#end_date").val();
+
+    if(start_date && end_date){
+      if(!(compareDate(start_date,end_date,dateFormatStr))){
+        alert("End date should be greater than start date");
+        $(this).val('');
+      }else{
+        var start_date=$("#start_date").val();
+        var end_date=$("#end_date").val();
+        if (start_date==end_date){
+          var from = $('#start_time').val();
+          var to = $('#end_time').val();
+          var from_time=minFromMidnight(from);
+          var to_time=minFromMidnight(to);
+          if(from_time && to_time){
+            if(from_time > to_time){
+             alert("Start Time must be less than End Time");
+             $('#start_time').val('');
+            } 
+          }
+        }
+      }
+    }
+  });
+
+
+$(document).on("change","#start_time",function(){
+    var dateFormatStr =  getJsDateFormat();
+    var start_date=$("#start_date").val();
+    var end_date=$("#end_date").val();
+    var start_time = $('#start_time').val();
+    var regexprsn = /^([1-9]|1[0-2]):([0-5]\d)\s?(AM|PM)?$/i;
+
+    if(start_time.match(regexprsn)){
+      $("#start_time_errorID").text("");
+
+      if(start_date && end_date){
+        if (start_date==end_date){
+          var from = $('#start_time').val();
+          var to = $('#end_time').val();
+          var from_time=minFromMidnight(from);
+          var to_time=minFromMidnight(to);
+          if(from_time && to_time){
+            if(from_time > to_time){
+             alert("Start Time must be less than End Time");
+             $('#start_time').val('');
+            } 
+          }
+        }
+      }
+    }else{      
+      $("#start_time_errorID").text("Please enter a time in the format am/pm.");
+      $('#start_time').val('');
+    }
+  });
+
+  $(document).on("change","#end_time",function(){
+    var dateFormatStr =  getJsDateFormat();
+    var start_date=$("#start_date").val();
+    var end_date=$("#end_date").val();
+    var end_time = $('#end_time').val();
+    var regexprsn = /^([1-9]|1[0-2]):([0-5]\d)\s?(AM|PM)?$/i;
+    
+    if(end_time.match(regexprsn)){
+      $("#end_time_errorID").text("");
+    
+      if(start_date && end_date){
+        if (start_date==end_date){
+          var from = $('#start_time').val();
+          var to = $('#end_time').val();
+          var from_time=minFromMidnight(from);
+          var to_time=minFromMidnight(to);
+          if(from_time && to_time){
+            if(from_time > to_time){
+             alert("End Time must be greater than Start Time");
+             $('#end_time').val('');
+            } 
+          }
+        }
+      }
+    }else{      
+      $("#end_time_errorID").text("Please enter a time in the format am/pm.");
+      $('#end_time').val('');
+    }
+  });
+
+
+function minFromMidnight(tm){
+    if(tm==''){
+      return
+    }
+   var ampm= tm.substr(-2)
+   var clk = tm.substr(0, 4);
+   var m  = parseInt(clk.match(/\d+$/)[0], 10);
+   var h  = parseInt(clk.match(/^\d+/)[0], 10);
+   h += (ampm.match(/pm/i))? 12: 0;
+   return h*60+m;
+  }
+
+
+  function optionForEventInvetaion(value){
+        $("#selectEventForCommitteeSelectTagIDDataId").html("");
+        $("#invitationNewFormDivID").html("");
+
+        var urlLink='/sports_management/event_list/'+value;
+         $.ajax({
+            url: urlLink ,
+            cache: false,
+            data:{"data1":"12"},
+            success: function(data){
+               var str='<option value="">'+"Select"+'</option>';
+               console.log(data);
+               for (var key in data) {
+                str +='<option value="'+data[key].id+'">'+data[key].title+'</option>';
+               }
+               $("#selectEventForCommitteeSelectTagIDDataId").html(str);
+            }
+        });
+    }
+
+    function optionForDateInventation(value){
+       // $("#selectEventForCommitteeSelectTagIDDataValue").html("");
+       // $("#invitationNewFormDivID").html("");
+
+        var urlLink='/sports_management/event_list_dates/'+value;
+         $.ajax({
+            url: urlLink ,
+            cache: false,
+            data:{"data1":"12"},
+            success: function(data){
+               // var str='<option value="">'+"Select"+'</option>';
+               // for (var key in data) {
+               //  str +='<option value="'+data[key].id+'">'+data[key].title+'</option>';
+               // }
+               $("#Date_data").empty().html(data);
+            }
+        });
+       }
+
+
+
+
+  $(document).on("change",".data1",function(){
+
+    var data=$(".data1").size();
+    var demo=$(this);
+   
+   for(var i=1;i<=data;i++){
+
+   if(demo.attr('id')=="mg_sport_team_id"+i){
+  }
+  else{
+    if($(this).val()==$("#mg_sport_team_id"+i).val()){
+       alert("This option is already selected please select different Option")
+       $(this).prop("selectedIndex", 0);
+    }
+    else{
+
+    }
+}
+
+    }
+  });
+</script>

@@ -1,0 +1,142 @@
+<%= render partial: 'front_office_management_left' %>
+<% navigation_add 'Postal Register', :controller=>'front_office_management', :action=>'postal_records' %>
+<h4 class="mg-h4"><%= t('postal_register') %></h4>
+<button class="add_postal_record mg-btn-bottom-margin mg-custom-form-btn"><%= t('add_record')%></button><br/>
+<%if @postal_recordz.present? %>
+  <div class="mg-scroll-employee-bar">
+    <table class="batch-tbl mg-tbl-margin table-batchs-tbl">
+      <tr class="subject-table-header">
+        <th><%= t('name') %></th>
+        <th><%= t('transaction_flow') %></th>
+        <th><%= t('received_date') %></th>
+        <th><%= t('category') %></th>
+        <th><%= t('dispatcher') %></th>
+        <th>
+          <label class="mg-label"><%=t('select')%></label>
+          <div class="mg-text-margin">
+            <a href="#" id="checkAllCheckBoxForExcel" class="mg-pop-link">All</a>
+            <a href="#" id="unCheckAllCheckBoxForExcel" class="mg-pop-link">None</a>
+          </div>
+        </th> 
+        <th style="width: 120px;"><%= t('actions') %></th>  
+      </tr>
+       <%=puts"hhhhhhhhhhhhhhhhhhhhhhhhhhhh"%> 
+        <%=puts @postal_recordz.ids%> 
+        <%=puts"hhhhhhhhhhhhhhhhhhhhhhhhhhhh"%>
+      <% @postal_recordz.each do |f| %>
+        <%=puts"00000000000000000000"%> 
+        <%=puts f.inspect%> 
+        <%=puts"00000000000000000000"%> 
+        <%@dateFormat = MgSchool.find_by(:id=>session[:current_user_school_id]).date_format %>
+        <tr class="export-excel-class">
+          <td class="mg-align-center mg-capitalize-text"><%= f.recipient_name %></td>
+          <td class="mg-align-center"><%= f.transaction_flow %></td>
+          <td class="mg-align-center"><%= f.try(:received_date).try(:strftime, @dateFormat) %> </td>
+          <td class="mg-align-center mg-capitalize-text"><%= f.try(:category) %></td>   
+          <td class="mg-align-center mg-capitalize-text"><%= f.try(:dispatcher) %></td>   
+          <td class="mg-align-center">
+              <%= check_box_tag("export_excel[]", name=f.id, false, :onclick=>"",:class=>"checked-checkbox-for-excel excel-checkbox-checkstatus")%>          
+          </td>    
+           
+          <td class="mg-align-center">
+            <span>
+              <button title="show" id="<%= raw f.id %>-showexmBTNID" class="show-postal_record mg-icon-btn"><i class="fa fa-eye"></i></button>
+            </span>
+            <span>
+              <button title="Edit" id="<%= raw f.id %>-editexmBTNID" class="edit-postal_record mg-icon-btn"><i class="fa fa-pencil-square-o"></i></button>
+            </span>
+            <span>
+              <button title="<%= t('delete') %>" id="<%= raw f.id %>-deleteexmBTNID" class="delete-postal_record mg-icon-btn"><i class="fa fa-trash"></i></button>
+            </span>
+          </td>
+        </tr> 
+      <% end %>
+    </table>
+    <div class="pagination-align" style="position: relative; bottom: 00px;">
+      <%#= will_paginate @postal_record, :container => false %>
+    </div>
+  </div>
+  <p class="mg-p-mgtop">
+    <a onclick="exportExcelForSelected()" class="mg-small-form-btn"><%= t("export_excel") %></a>
+  </p>
+<%else%>
+  <%="No Postal Record Created"%>
+<%end%>
+<div id="exam_detail_show"></div>
+
+<%= render  partial: 'application/common_left_close' %>
+
+
+<script>
+  $(document).ready(function(){   
+    focusCurrentTab("postalRecordAID","postalRecordLID");
+  });
+
+  $(document).on("click",".add_postal_record",function(e){   
+    e.preventDefault();   
+    var urlLink = "/front_office_management/new_postal_record";
+    window.location = urlLink;
+  });
+
+  $(document).on("click",".show-postal_record",function(e){   
+    e.preventDefault();   
+
+    var showID = $(this).attr('id');
+    var id = showID.split("-");
+    var urlLink = "/front_office_management/show_postal_record/"+id[0];
+    window.location = urlLink;
+  });
+
+  $(document).on("click",".edit-postal_record",function(e){   
+    e.preventDefault();   
+
+    var showID = $(this).attr('id');
+    var id = showID.split("-");
+    console.log(id);
+    var urlLink = "/front_office_management/edit_postal_record/"+id[0];
+    window.location = urlLink;
+  });
+
+  $(document).on("click",".delete-postal_record",function(e){   
+    e.preventDefault();   
+
+    var showID = $(this).attr('id');
+    var id = showID.split("-");
+    var result = confirm("Are you sure to delete?");
+    if (result) {
+      var urlLink = "/front_office_management/delete_postal_record/"+id[0];
+      window.location = urlLink;
+    }
+  });
+
+  $("#checkAllCheckBoxForExcel").on("click", function(e){
+    $(".checked-checkbox-for-excel").prop('checked', true);
+    e.preventDefault();        
+  });
+
+  $("#unCheckAllCheckBoxForExcel").on("click", function(e){
+    $(".checked-checkbox-for-excel").prop('checked', false);
+    e.preventDefault();
+  });  
+
+  function exportExcelForSelected(){
+    var array=[];
+    //var course_id = $("#student_cut_off_index").val();
+    $(".export-excel-class").each(function(){
+      if($(this).find(".excel-checkbox-checkstatus").is(':checked')){
+        array.push($(this).find(".excel-checkbox-checkstatus").val());
+      }
+    });
+    
+    if (array.length > 0){
+      //var url="/entrance_exam_details/print_list?mg_course_id="+course_id+"&students_id="+array+"&format=pdf&target=_blank";
+      //window.open(url, '_blank');
+      window.location="/front_office_management/record_excel.xls?"+"array="+array;
+      $(".checked-checkbox-for-excel").prop('checked', false);
+    }else{
+      alert("Please check atleast one");
+    }
+  }
+
+  
+</script>

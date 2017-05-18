@@ -1,0 +1,88 @@
+<% navigation_add 'Accounts Review', :controller => 'accounts', :action => 'review' %>
+<%= render  partial: 'accounts/accounts_left' %>
+<h4 class="mg-h4"><%= t('accounts_review') %></h4>
+<div class="mg_pagination">
+<%if @account.length>0%>
+<table  class="batch-tbl mg-tbl-margin">   <!-- border="2" --> 
+  <tr class="subject-table-header">
+    <th><%= t('employee_name') %></th>
+    <th><%= t('transferred_to') %></th>
+    <th><%= t('amount') %></th>
+    <th><%= t('status') %></th>
+    <th><%= t('actions') %></th>
+  </tr>
+  <% @account.each do |account| %>
+    <tr>
+      <td>
+      <%ass_incharge=MgEmployee.find_by(:mg_user_id=>account.created_by)%>
+      <%= ass_incharge.try(:first_name) %><%=" "%><%= ass_incharge.try(:last_name) %></td>
+      <td>
+      <%par_account=MgAccount.find_by(:id=>account.mg_to_account_id)%>
+      <%= par_account.try(:mg_account_name) %></td>
+      <td><%= account.try(:amount) %></td>
+      <td class="mg-capitalize-text"><%= account.try(:status) %></td>
+      </td>
+      <td>
+        <span class="mg-paginatin-a-link">
+      <%= link_to "<i class=\"fa fa-eye\"></i>".html_safe, {:controller => "accounts", :action => "review_show",:id =>account.id} , :method=>'post' ,:title=>"Show" ,:class=>"mg-icon-btn"%>
+
+      <%= link_to "<i class=\"fa fa-pencil-square-o\"></i>".html_safe, {:controller => "accounts", :action => "review_edit",:id =>account.id} , :method=>'post' ,:title=>"Edit" ,:class=>"mg-icon-btn"%>
+      <%if account.status=="accepted"%>
+      <%= link_to "<i class=\"fa fa-unlock\"></i>".html_safe, {:controller => "accounts", :action => "revert",:id =>account.id} , :method=>'post' ,:title=>"Revert" ,:class=>"mg-icon-btn"%>
+      <%else%>
+      <%= link_to "<i class=\"fa fa-unlock\"></i>".html_safe, {} ,:title=>"Revert" ,:class=>"mg-icon-btn revert-not-done-class"%>
+      <%end%>
+        </span>
+      </td>
+    </tr>
+  <% end %>
+</table>
+<br/>
+ <div class="pagination-align" style="position: relative; bottom: 10px;">
+              <%= will_paginate @account  %>
+ </div>
+<%else%>
+<h5 >No Account is created </h5>
+<%end%>
+</div>
+<div id="showInventoryProposalDIVID"></div>
+
+
+<%= render  partial: 'application/common_left_close' %>
+
+<script>
+$( document ).ready(function() {
+            focusCurrentTab("viewAccountsCentralInchargeIndex","viewAccountsCentralInchargeLiID");
+          //focusStudentHeaderBox();
+});
+
+$(document).on("click", ".revert-not-done-class", function(e){
+  alert("Accepted accounts can only be reverted.");
+});
+
+
+$(document).on("click", ".show-inventory-proposal-btn", function(e){
+        var myID =$(this).attr('id');
+        var Id=myID.split("-");
+        var urlLink = "/inventory/proposal_show/"+Id[0];
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(html){
+                  $('#showInventoryProposalDIVID').dialog({
+                    modal: true,
+                    minHeight: 'auto',
+                    width: 'auto',
+                    title: "Item Proposal",
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+});
+
+</script>
+

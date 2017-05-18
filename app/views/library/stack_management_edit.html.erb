@@ -1,0 +1,43 @@
+<div class="mg-custom-labels">
+<%= form_for :stack_management, :url=>{:controller=>"library",:action=>"stack_management_update",:id=>@stack_management.id}, :html => {
+                            :id => 'libraryeditstackCreateID' } do |f| %>
+
+<p>
+    <label class="mg-label" style="width:140px"><%= t('room_no') %><span class="required-field">&nbsp;*</span></label>
+    <br/>
+   <%= f.text_field :room_no,:class=>"mg-text-field" %>
+</p>
+<p>
+    <label class="mg-label" style="width:140px"><%= t('rack_no') %><span class="required-field">&nbsp;*</span></label>
+    <br/>
+   <%= f.text_field :rack_no,:class=>"mg-text-field" %>
+</p>
+<p>
+    <label class="mg-label mg-label-text-transform-none" style="width:140px"><%= t('first_letter_of_title') %><span class="required-field">&nbsp;*</span></label>
+    <br/>
+   <%= f.text_field :first_letter_of_title,:class=>"mg-text-field" %>
+</p>
+
+<p class="mg-p-mgtop">
+    <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("save")%></a>
+    <!-- <%#= f.submit t('save') ,:class=>"mg-small-form-btn"%> -->
+    <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+</p>
+<% end %>
+</div>
+<!-- <%#= render  partial: 'application/common_left_close' %> -->
+<script>
+$( document ).ready(function() {
+            focusCurrentTab("stackManagementAID","stackManagementLiID");
+          //focusStudentHeaderBox();
+$("#libraryeditstackCreateID").validate({
+        rules: {        
+        "stack_management[room_no]": {required: true},
+        "stack_management[rack_no]": {required: true},
+        "stack_management[first_letter_of_title]": {required: true,minlength:1,maxlength:1},
+  
+      }
+    });
+});
+
+</script>

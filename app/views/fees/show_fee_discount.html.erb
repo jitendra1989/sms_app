@@ -1,0 +1,78 @@
+
+<table border="1" class="mg-showdata-bg mg-tbl-layout mg-btn-bottom-margin" cellspacing="1" cellpadding="1">
+    <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label">Discount Type :</label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+      <%= @fee_discount.discount_type %>
+     </td>
+	</tr>
+
+	<tr>
+	  <td class="mg-td-width-half" valign="top">
+	 	  <label class="mg-label"> Name:</label>
+	  </td>
+	  <td class="mg-td-width-half" valign="top">
+		<%= @fee_discount.name %>
+	  </td>
+	</tr>
+
+ <tr>
+  <td class="mg-td-width-half" valign="top">
+    <label class="mg-label">Fee Category :</label>
+  </td>
+  <td class="mg-td-width-half" valign="top">
+    <%= @feeCategoryObj.name %>
+  </td>
+</tr>
+
+ <% if @fee_discount.discount_type=="Student"%>
+   <tr>
+      <td class="mg-td-width-half" valign="top">
+        <label class="mg-label">Student Admission Number :</label>
+      </td>
+      <td class="mg-td-width-half" valign="top">
+        <%= @studentObj.admission_number%>
+      </td>
+  </tr>
+<%end%>
+
+<% if @fee_discount.discount_type=="Section"%>
+ <tr>
+  <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"><%=t('course')%>-<%=t('batch')%>:</label>
+  </td>
+  <%#= @batchObj.name%>
+   <%if@batchObj!=nil%>
+
+    <%@course=MgCourse.select(:course_name).find_by_id(@batchObj.mg_course_id)%>
+    <%if@course!=nil%>
+      <td><%= @course.course_name %> - <%= @batchObj.name %></td>
+    <%end%>
+  <%end%>
+</tr>
+<%end%>
+
+<% if @fee_discount.discount_type=="Student Category"%>
+ <tr>
+  <td class="mg-td-width-half" valign="top">
+    <label class="mg-label">Student Category :</label>
+  </td>
+  <td class="mg-td-width-half" valign="top">
+    <%= @studentCategoryObj.name%>
+  </td>
+</tr>
+<%end%>   
+
+<tr>
+  <td class="mg-td-width-half" valign="top">
+    <label class="mg-label">Discount :</label>
+  </td>
+  <td class="mg-td-width-half" valign="top">
+    <%= @fee_discount.discount %>
+  </td>
+</tr>
+</table>
+<a class="mg-small-form-btn cancel-form-dialog"><%=t("cancel")%></a>
+ 

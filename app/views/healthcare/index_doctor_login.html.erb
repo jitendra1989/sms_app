@@ -1,0 +1,138 @@
+<% navigation_add t('doctor'), :controller => 'healthcare', :action => 'index_doctor_login' %>
+<%=render partial: '/master_settings/master_settings_left'%>
+<h4 class="mg-h4"><%= t('about_doctor') %></h4>
+ <button class="add_doctor mg-btn-bottom-margin mg-custom-form-btn"><%= t('add_doctor')%></button>
+
+<%if @doctors.length>0%>
+  <table  class="batch-tbl mg-tbl-margin">   <!-- border="2" --> 
+    <tr class="subject-table-header">
+      <th><%= t('user_name') %></th>
+      <th><%= t('specialization') %></th>
+      <th><%= t('actions') %></th>
+    </tr>
+   
+    <% @doctors.each do |doctor| %>
+      <tr>
+        <td><%= doctor.try(:user_name) %></td>
+        <td>
+          <%specialization_name=specialization(doctor.try(:mg_specialization_id))%>
+          <%#specialization_name=MgSpecialization.find_by(:id=>doctor.try(:mg_specialization_id),:is_deleted=>0,:mg_school_id=>session[:current_user_school_id])%>
+          <%if specialization_name.present?%>
+            <%= specialization_name.try(:name) %>
+          <%end%>
+        </td>
+        <td>
+          <button title="Change Password" id="<%=raw doctor.id %>-showlabBTNID" class="change-doctor-password-btn mg-icon-btn"><i class="fa fa-exchange"></i></button>
+
+          <button title="Edit" id="<%=raw doctor.id %>-editaccountBTNID" class="edit-doctor-detail-btn mg-icon-btn"><i class="fa fa-pencil-square-o"></i></button>
+
+          <button title="Delete" id="<%=raw doctor.id %>-deletelabBTNID" class="delete-doctor-detail-btn mg-icon-btn"><i class="fa fa-trash"></i></button>
+        </td>
+      </tr>
+    <% end %>
+  </table>
+  <br/>
+<%else%>
+  <h5>No Doctor is created</h5>
+<%end%>
+<div id="newDoctorDivId"></div>
+<div id="editDoctorDivId"></div>
+<div id="changePasswordDoctorDIVID"></div>
+
+<%= render  partial: 'application/common_left_close' %>
+
+<script>
+$( document ).ready(function() {
+  focusCurrentTab("doctorLoginAID","doctorLoginLID");
+});
+
+
+
+$(document).on("click", ".delete-doctor-detail-btn", function(e)
+{
+  e.preventDefault();
+  var myID =$(this).attr('id');
+  var Id=myID.split("-");
+  var retVal = confirm("Are you sure to delete?");
+  if(retVal)
+  {
+    var urlLink = "/healthcare/delete_doctor/"+Id[0];
+    $.ajax({
+      url: urlLink ,
+      cache: false,
+      success: function(html)
+      {
+          window.location.reload();
+      }
+    });
+  }else
+  {
+    return false;
+  }
+}); 
+
+
+$(document).on("click", ".edit-doctor-detail-btn", function(e){
+  var myID =$(this).attr('id');
+  var Id=myID.split("-");
+  var urlLink = "/healthcare/edit_doctor/"+Id[0];
+  $.ajax({
+      url: urlLink ,
+      cache: false,
+      success: function(html){
+            $('#editDoctorDivId').dialog({
+              modal: true,
+               minHeight: 'auto',
+              minWidth: '250px',
+              title: "Edit Doctor",
+              open: function () {
+                  
+                  $(this).html(html);
+              }
+          }); 
+      }
+  });
+});
+
+$(document).on("click", ".add_doctor", function(e){
+  var urlLink = "/healthcare/new_doctor";
+  $.ajax({
+      url: urlLink ,
+      cache: false,
+      success: function(html){
+            $('#newDoctorDivId').dialog({
+              modal: true,
+               minHeight: 'auto',
+              minWidth: '250px',
+              title: "Add Doctor",
+              open: function () {
+                $(this).html(html);
+              }
+          }); 
+      }
+  });
+});
+
+$(document).on("click", ".change-doctor-password-btn", function(e){
+  var myID =$(this).attr('id');
+  var Id=myID.split("-");
+  var urlLink = "/healthcare/change_doctor_password/"+Id[0];
+  $.ajax({
+      url: urlLink ,
+      cache: false,
+      success: function(html){
+            $('#changePasswordDoctorDIVID').dialog({
+              modal: true,
+              minHeight: 'auto',
+              minWidth: '250px',
+              title: "Change Password",
+              open: function () {
+                  $(this).html(html);
+              }
+          }); 
+      }
+  });
+});
+
+
+</script>

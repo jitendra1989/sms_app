@@ -1,0 +1,108 @@
+
+<%members=MgCommitteeMember.where(:is_deleted=>0, :mg_school_id=>@event_committees.mg_school_id, :mg_event_committee_id=>@event_committees.id, :mg_student_id=>nil)%>
+<%members_students=MgCommitteeMember.where(:is_deleted=>0, :mg_school_id=>@event_committees.mg_school_id, :mg_event_committee_id=>@event_committees.id, :mg_employee_id=>nil)%>
+
+
+<table class="mg-tbl-size-width">
+	<tr>
+		<td class="mg-td-width-half" valign="top">
+			<h4 class="mg-h4"><%= t('employees')%></h4>
+		</td>
+		<td class="mg-td-width-half" valign="top">
+			<h4 class="mg-h4"><%=t('students')%></h4>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="mg-td-width-half" valign="top">
+			<%if members.present?%>
+			<div class="mg-scroll-event-bar" style="float: left; margin-right: 10px;"> 
+			<table border="1" class="batch-tbl mg-tbl-layout" cellspacing="1" cellpadding="1">
+				<tr>
+					<th><%=t('name')%></th>
+					<th><%=t('employee_number')%></th>
+					<th><%=t('department')%></th>
+				</tr>
+				<%members.each do |emp|%>
+				
+				<%employee=MgEmployee.where(:is_deleted=>0, :id=>emp.mg_employee_id, :mg_school_id=>@event_committees.mg_school_id)%>
+					<%if employee[0].present?%>
+						<tr>
+							<td class="mg-td-width-half" valign="top">
+								<label class="mg-label"><%=employee[0].employee_name%></label>
+							</td>
+							<td class="mg-td-width-half" valign="top">
+								<label class="mg-label"><%=employee[0].employee_number%></label>
+							</td>
+							<td class="mg-td-width-half" valign="top">
+								<label class="mg-label"><%=employee[0].dept_name%></label>
+							</td>
+						</tr>
+					<%end%>
+				<%end%>
+			</table>
+			</div>
+			<%else%>
+			<h5>No Employees in this committee</h5>
+			<%end%>
+
+		</td>
+
+		<td>
+			<%if members_students.present?%>
+
+			<div class="mg-scroll-event-bar" style="float: left;"> 
+
+			<table border="1" class="batch-tbl mg-tbl-layout" cellspacing="1" cellpadding="1">
+				<tr>
+					<th><%=t('name')%></th>
+					<th><%=t('admission_number')%></th>
+					<th><%=t('class_&_section')%></th>
+				</tr>
+				<%members_students.each do |std|%>
+				
+				<%student=MgStudent.where(:is_deleted=>0, :id=>std.mg_student_id, :mg_school_id=>@event_committees.mg_school_id)%>
+					<%if student[0].present?%>
+						<tr>
+							<td class="mg-td-width-half" valign="top">
+								<label class="mg-label"><%=student[0].student_name%></label>
+							</td >
+							<td class="mg-td-width-half" valign="top">
+								<label class="mg-label"><%=student[0].admission_number%></label>
+							</td>
+							<td class="mg-td-width-half" valign="top">
+								<label class="mg-label"><%=student[0].course_batch_name_student%></label>
+							</td>
+						</tr>
+					<%end%>
+				<%end%>
+			</table>
+			</div>
+			<%else%>
+			<h5>No Student in this committee</h5>
+			<%end%>
+		</td>
+	</tr>
+	<tr><td>&nbsp;</td><td>&nbsp;</td></tr>
+	<tr>
+		<td class="mg-td-width-half" valign="top">
+			<button  class="add-employee-to-committee-div-cls mg-small-form-btn"><%=t('manage_employee')%></button>
+
+		</td>
+		<td class="mg-td-width-half" valign="top">
+			<button  class="add-student-to-committee-div-cls mg-small-form-btn"><%=t('manage_student')%></button>
+
+		</td>
+	</tr>
+</table>
+
+
+<style type="text/css">
+.mg-scroll-event-bar {
+    border: 1px solid #b2b2b2;
+    display: inline-block;
+    max-height: 254px;
+    overflow: scroll;
+    width: 361px;
+}
+</style>

@@ -1,0 +1,58 @@
+<%= render partial: 'curriculum/curr_left' %>
+
+
+<!-- Sec --> 
+<%@syllabus=MgBatchSyllabus.where(:is_deleted => '0', :mg_school_id=>session[:current_user_school_id])%>
+
+<div class="mg-scroll-bar-curriculum">
+<h4 class="mg-h4"><%= t('batch_syllabus') %></h4>
+<table  class="batch-tbl">   <!-- border="2" --> 
+  <tr class="subject-table-header">
+  	<!-- <th>Subject Id</th> -->
+    <th><%= t('batch_name') %></th>
+    <th><%= t('syllabus') %></th>
+    <th colspan="2"><%= t('actions') %></th>
+  </tr>
+ 
+
+
+  <% @syllabus.each do |curr| %>
+    <tr>
+
+	<%@temp=MgBatch.find_by_id( curr.mg_batch_id)%>
+    <%if @temp!=nil%>
+    <%@tem=MgCourse.find_by_id(@temp.mg_course_id)%>
+    <td><%= @tem.course_name %>-<%=@temp.name%></td>
+    <%else%>
+    <td></td>
+    <%end%>
+
+
+
+    <%@temp=MgSyllabus.find_by_id( curr.mg_syllabus_id)%>
+    <%if @temp!=nil%>
+    <td><%= @temp.name %></td>
+    <%else%>
+    <td></td>
+    <%end%>
+	<td> 
+      <%= link_to "<i class=\"fa fa-pencil-square-o\"></i>".html_safe, {:controller => "curriculum", :action => "batch_syllabus_edit",:id =>curr.id } ,:title=>"Edit" ,:class=>"mg-icon-btn"%>
+      <%= link_to "<i class=\"fa fa-trash\"></i>".html_safe, {:controller => "curriculum", :action => "batch_syllabus_delete",:id =>curr.id } ,:title=>"Delete" ,:class=>"mg-icon-btn"%>
+
+      </td>
+
+    </tr>
+  <% end %>
+</table>
+</div>
+
+<%= render partial: 'application/emp_section_close' %>
+
+
+  <style type="text/css">
+  .mg-scroll-bar-curriculum{
+      width: 310px;
+      height: 400px;
+      overflow: scroll;
+  }
+</style>

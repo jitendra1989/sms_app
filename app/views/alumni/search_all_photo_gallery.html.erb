@@ -1,0 +1,45 @@
+</br>
+
+<!-- ========================================================================================== -->
+<%if @gallery_list.present?%>
+<div class="mg-scroll-employee-bar">
+<!-- <div class="mg_pagination"> -->
+<br/><table class="batch-tbl mg-tbl-margin">   
+ <tr >
+    <th><%=t('name')%></th>
+    <th><%=t('description')%></th>
+    <th><%=t('actions')%></th>
+  </tr>
+  <% @gallery_list.each do |f| %>
+    <tr>
+      <td><%= f.name %></td>
+      <td><%=truncate(f.description.to_s, :length => 25, :separator => ' ') %></td>
+      <td>
+        <button title="Photos" id="<%=raw f.id %>-uploadPhotoAlbumsBTNID" class="upload-photo-gallery-list-btn mg-icon-btn"><i class="fa fa-upload"></i></button>
+        <button title="Videos" id="<%=raw f.id %>-uploadVideoAlbumsBTNID" class="upload-video-gallery-list-btn mg-icon-btn"><i class="fa fa-file-video-o"></i></button>
+      </td>
+    </tr>
+  <% end %>
+</table>
+</div>
+ <%#= will_paginate @gallery_list, :container => false %>
+  <!-- </div> -->
+<div id="ShowPhotoGalleryDivID"></div>
+<%else%>
+<h5><%="Photo gallery not available..."%> </h5>
+<%end%>
+<!-- ========================================================================================== -->
+
+<script type="text/javascript">
+  $(document).ready(function () {
+    focusCurrentTab("videoGalleryListAID","videoGalleryListLID");
+  });
+</script>
+
+
+
+
+
+
+
+

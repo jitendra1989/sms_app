@@ -1,0 +1,41 @@
+<!-- Sec --> 
+
+<table border="1" class="mg-showdata-bg mg-tbl-layout mg-btn-bottom-margin" cellspacing="1" cellpadding="1">
+    <tr>
+     <td class="mg-td-width-half" valign="top">
+  		<label class="mg-label"> Fine Name</label>
+  	 </td>
+  	 <td class="mg-td-width-half" valign="top">
+  		<%= @fine_particular.fine_name %>
+  	 </td>
+ 	</tr>
+
+	<tr>
+		<td class="mg-td-width-half" valign="top">
+  			<label class="mg-label">Description </label>
+  		</td>
+  		<td class="mg-td-width-half" valign="top">
+  			<%= @fine_particular.description %>
+  		</td>
+	</tr>
+ 
+	<tr>
+		<td class="mg-td-width-half" valign="top">
+  			<label class="mg-label">Fine From </label>
+  		</td>
+  		<td class="mg-td-width-half" valign="top">
+  			<%= @fine_particular.fine_from %>
+  		</td>
+	</tr>
+ 	<tr>
+ 		<td class="mg-td-width-half" valign="top">
+  			<label class="mg-label">Amount </label>
+  		</td>
+  		<td class="mg-td-width-half" valign="top">
+  			<%= @fine_particular.amount %>
+  		</td>
+	</tr>
+</table>
+
+
+<a class="mg-small-form-btn cancel-form-dialog"><%=t("cancel")%></a>

@@ -1,0 +1,461 @@
+<% navigation_add t('item_purchase'), "/laboratory/purchase/" %>
+<%# navigation_add t('new'), "/laboratory/purchase_edit/" %>
+<%= render  partial: 'laboratory/laboratry_left' %>
+
+<%
+@isUserIncharge=0
+if session[:user_type]=="employee"
+    employee=MgEmployee.find_by(:mg_user_id=>session[:user_id])
+    inchargeCount=MgLaboratoryIncharge.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id],:mg_employee_id=>employee.id,:incharge_type=>"Incharge").count
+    if inchargeCount>0
+      @isUserIncharge=1
+      @inchargeSubject=MgLaboratoryIncharge.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id],:mg_employee_id=>employee.id,:incharge_type=>"Incharge").pluck(:mg_subject_id)
+    end
+  end
+    %>
+
+
+<h4 class="mg-h4"><%= t('edit_purchase') %></h4>
+
+<div class="box">
+<%= form_for :laboratory_purchase_details ,  :url=>{:controller=>'laboratory',:action=>'purchase_update',:id=>@laboratory_purchase_details.id}, :html=>{:id=>'edit_laboratory_details_data'} do |f| %>
+
+        <%= f.hidden_field :is_deleted ,:value=>0%>
+        <%= f.hidden_field :mg_school_id ,:value=>@school_id%>
+        
+<table class="mg-tbl-margin mg-show-tbl-width">
+    <!-- <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" style="width:140px"><%#= t('lab_name') %><span class="required-field">&nbsp;*</span></label><br/>
+        <%#= f.collection_select(:mg_lab_id,MgLab.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]), :id, :lab_name,{:include_blank => t("select")},:class => "consumption-lab-purchase-class",:selected=>@laboratory_purchase_details.mg_lab_id)%>
+      </td>
+    </tr> -->
+
+     <!-- ======================================Added Columns===================================== -->
+    
+    <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" style="width:140px"><%= t('subject_name') %><span class="required-field">&nbsp;*</span></label><br/>
+
+        <%if session[:user_type]=="employee"%>
+        <%= f.collection_select(:mg_laboratory_subject_id,MgLaboratorySubject.where(:id=>@inchargeSubject[0],:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]), :id, :name,{:include_blank => t("select")},:class => "laboratory-purchase-subject-edit-class")%>
+        <%else%>
+          <%= f.collection_select(:mg_laboratory_subject_id,MgLaboratorySubject.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]), :id, :name,{:include_blank => t("select")},:class => "laboratory-purchase-subject-edit-class")%>
+        <%end%>
+
+
+
+
+
+
+
+        <%#= f.collection_select(:mg_laboratory_subject_id,MgLaboratorySubject.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]), :id, :name,{:include_blank => t("select")},:class => "laboratory-purchase-subject-edit-class")%>
+      </td>
+    </tr>
+
+
+    <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" style="width:140px"><%= t('room_number') %><span class="required-field">&nbsp;*</span></label><br/>
+        <%= f.collection_select(:mg_room_id,MgLab.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]), :id, :room_no,{:include_blank => t("select")},:class => "laboratory-purchase-room-new-class")%>
+      </td>
+    </tr>
+
+    <!-- ===================================Added Columns================================== -->
+
+
+
+
+
+
+
+    <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="vendorName"><%= t ('vendor_name') %><span class="required-field">&nbsp;*</span></label><br/>
+        <%= f.text_field :vendor_name ,:class=>"mg-text-field"%>
+      </td>
+    </tr>
+    <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label mg-label-text-transform-none" for="dateofPurchase"><%= t ('date_of_purchase') %><span class="required-field">&nbsp;*</span></label><br/>
+        <%= f.text_field :date ,:class=>"mg-text-field"%>
+      </td>
+    </tr>
+    <tr>
+    <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="dateofPurchase"><%= t ('amount_paid') %><span class="required-field">&nbsp;*</span></label><br/>
+        <%= f.text_field :amount_paid ,:class=>"mg-text-field"%>
+      </td>
+    </tr>
+    <tr>
+    </tr>
+</table>  
+<h4 class="mg-h4"><%= t('Item Information')%></h4> 
+ <div class="mg-tbl-margin">
+ <p>   
+ <a href="#" id="laboratory_details_for_data" class="mg-label-inner-form mg-custom-form-btn" style="color: #297ACC; font-size:0.8em; position: relative;" >Add </a> 
+ </p>
+ <br/>
+ <div class="mg-scroll-employee-bar">
+
+<table class=" mg-table-nowrap batch-tbl mg-adjust-padding">  
+        <th><%=t("sl_no")%></th>
+        <th><%=t("category_name")%><span class="required-field">&nbsp;*</span></th>
+        <th><%=t("item_name")%><span class="required-field ">&nbsp;*</span></th>
+        <th><%=t("valid_upto")%><span class="required-field ">&nbsp;*</span></th>
+        <th><%=t("cost_per_unit")%><span class="required-field">&nbsp;*</span></th>
+        <th class="mg-rm-text-trans"><%=t("no_of_units")%><span class="required-field">&nbsp;*</span></th>
+        <th><%=t("total")%></th>
+        <th><%=""%></th>
+            <%@item_information_details.each_with_index do |details,i|%>
+
+        <tr class="demo-div">
+
+            <div id="finalDueFineDivId">
+            <div class="due-fine-div" id="dueFineDivId">
+            <td><span class="required-incremented-fields"><%=i+1%></span></td>
+          
+          <td class="mg-align-center">
+
+          <%#= f.collection_select("mg_category_id[]",MgCourse.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]), :id, :course_name,{:include_blank => t("select")},:class => "call-purpose-class consumption-category-class category-laboratory-class",:name=>"mg_category_id[]")%>
+          <%= hidden_field_tag 'ids[]' ,details.id,:class=>"mg-text-field-particular required-field"%>
+          <%category=MgLabInventory.where(:mg_lab_id=>@laboratory_purchase_details.mg_room_id,:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:category_name,:id)%>
+
+          <%=select_tag 'mg_category_id[]' , options_for_select(category,:selected=>details.mg_category_id),:prompt=>t('select'),:class => "call-purpose-class consumption-category-class category-laboratory-class" %>
+
+
+
+          <%#= collection_select_tag("mg_category_id[]",, :id, :category_name,{:include_blank => t("select")},:class => "call-purpose-class consumption-category-class category-laboratory-class",:name=>"mg_category_id[]")%>
+
+          </td>
+          <td class="mg-align-center">
+          <%#= text_field_tag 'item_name[]' ,nil,:class=>"mg-text-field-particular required-field"%>
+          <%= text_field_tag 'item_name[]' ,details.try(:item_name),:class=>"mg-text-field-particular required-field item-name-class-purchase mg-inside-tbl-width"%>
+          </td>
+
+          <td class="mg-align-center">
+          <%= text_field_tag 'valid_upto[]' ,details.try(:valid_upto),:class=>"mg-text-field-particular valid_upto_purchase_edit required-field mg-inside-tbl-width",:id=>"valid_edit_upto_1"%>
+          </td>
+
+          <td class="mg-align-center cost-td-class">
+          <%#= text_field_tag 'cost[]' ,nil,:class=>"mg-text-field-particular cost-auto-class required-field",:id=>"cost_"%>
+          <%= text_field_tag 'cost[]' ,details.try(:cost),:class=>"mg-text-field-particular cost-auto-class required-field mg-inside-tbl-width",:id=>"cost_"%>
+          </td>
+          <td class="mg-align-center libraries-td-class unit-td-class">
+          <%#= text_field_tag 'unit[]' ,nil,:class=>"mg-text-field-particular required-field unit-auto-class",:id=>"unit_"%>
+          <%= text_field_tag 'unit[]' ,details.try(:unit),:class=>"mg-text-field-particular required-field unit-auto-class mg-inside-tbl-width",:id=>"unit_"%>
+          </td>
+          <td class="mg-align-center total-td-class">
+
+          <%= text_field_tag 'total[]' ,details.try(:total),:class=>"mg-text-field-particular required-field total-auto-class mg-inside-tbl-width",:id=>"total_amount", readonly: true%>
+          <%#= text_field_tag 'total[]' ,nil,:class=>"mg-text-field-particular required-field total-auto-class",:id=>"total_amount", readonly: true%>
+          </td>
+          <td class="mg-align-center">
+                      <a href="#" title="Remove" class="remove-laboratory-details mg-icon-btn" style="color: #297ACC;"> <i class="fa fa-trash"></i></a>
+                      
+            </td>  
+
+            <%end%>
+             </div>
+             </div>
+          </tr>
+
+
+
+</table >
+</div>
+
+  </div>         
+  <div class="checking_validation_for_edit"></div>            
+  <div class="checking_validation1"></div>    
+  <p class="mg-p-mgtop">
+      <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("save")%></a>  
+      <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %> 
+  </p>
+
+<%#=f.submit "Submit" ,:class=>"mg-small-form-btn"%>
+<%end%>
+</div>
+ 
+<%= render  partial: 'application/common_left_close' %>
+<script>
+
+function attachDatepickerOnReady()
+{
+    dateFormatStr =  getJsDateFormat();
+//alert("called");
+$(".valid_upto_purchase_edit:visible").each(function(index,element){
+          $("#valid_edit_upto_"+(index+1)).removeClass('hasDatepicker');
+          $("#valid_edit_upto_"+(index+1)).datepicker({ changeMonth: true,
+                changeYear: true,yearRange: "0:+50",minDate: "0",dateFormat: dateFormatStr});
+          var valid =  $.datepicker.formatDate(dateFormatStr,new Date($("#valid_edit_upto_"+(index+1)).val()));
+          $("#valid_edit_upto_"+(index+1)).val(valid);
+        });
+
+}
+
+
+
+$(document).ready(function(){
+  focusCurrentTab("viewLabPurchaseIndex","viewLabItemPurchaseLiID");
+    dateFormatStr =  getJsDateFormat();
+
+    $('#laboratory_purchase_details_date').datepicker({ changeMonth: true,
+                changeYear: true,yearRange: "-50:+0",maxDate: "0",dateFormat: dateFormatStr});
+
+     $('#valid_edit_upto_1').datepicker({ changeMonth: true,
+                changeYear: true,yearRange: "0:+50",minDate: "0",dateFormat: dateFormatStr});
+
+    var date_0f_purchase =  $.datepicker.formatDate(dateFormatStr,new Date($('#laboratory_purchase_details_date').val()));
+    $('#laboratory_purchase_details_date').val(date_0f_purchase);
+
+
+$(function () {
+$(".valid_upto_purchase_edit:visible").each(function(index,element){
+ //   $(this).text(index+1);
+    $(this).attr("id","valid_edit_upto_"+(index+1));
+    });
+attachDatepickerOnReady();
+});
+
+
+
+
+//===========================================================================
+// var labID = $( ".consumption-lab-purchase-class" ).val();
+//       var apdStr = '<option value="">Select</option>';
+//       $(".category-laboratory-class").empty().append(apdStr);
+//       if(labID > 0) {
+//            var urlLink = "/laboratory/category_list/"+labID;
+//            $.ajax({ 
+//                url: urlLink,
+//                cache: false,
+//                success: function(data){
+//                  // console.log();
+//                   if(data.length > 0){
+//                       var apdStr = '<option value="select">Select</option>';
+//                      for(key in data){
+//                         apdStr += '<option value="'+data[key].id+'">'+data[key].category_name+'</option>'
+//                       }
+//                     // console.log(apdStr);
+//                       $(".category-laboratory-class").empty().append(apdStr);
+//                   }
+//                }
+//            });
+//     }else{
+//       var apdStr = '<option value="">Select</option>';
+//       $(".category-laboratory-class").empty().append(apdStr);
+//       // alert("Please select category");
+//     }
+//===========================================================================
+
+    });
+
+$(function () {
+    $.validator.addMethod('dateFormat',
+    function (value, element) {
+      dateFormatStr =  getJsDateFormat();
+        if (this.optional(element)) {
+            return true;
+        }
+        var ok = true;
+        try {
+            $.datepicker.parseDate(dateFormatStr, value);
+        }
+        catch (err) {
+            ok = false;
+        }
+        return ok;
+    },
+      "Please enter a date in the format "+ getDateFormat(dateFormatStr) +".");
+      dateFormatStr =  getJsDateFormat();
+
+    $(".datefield").datepicker({ dateFormat: dateFormatStr, changeYear: true });
+});
+
+$("#edit_laboratory_details_data").validate({
+//   $(".category-validation-class").rules("add", { 
+//   required:true
+// });
+        rules: {   
+          "laboratry[mg_laboratory_subject_id]": {required: true}, 
+        "laboratry[mg_room_id]": {required: true}, 
+       // "laboratory_purchase_details[mg_lab_id]": {required: true}, 
+        "laboratory_purchase_details[vendor_name]": {required: true},    
+        "laboratory_purchase_details[date]": {required: true,dateFormat:true},
+        "laboratory_purchase_details[amount_paid]": {required: true, number: true},
+        "mg_category_id[]": {required: true},
+        "item_name[]": {required: true, maxlength: 35},
+        "valid_upto[]": {required: true,dateFormat:true},
+        "cost[]": {required: true, number: true},
+        "unit[]": {required: true, number: true},
+        "total[]": {required: true, number: true}
+      }
+    });
+
+
+//=======================================================================
+$( document ).on( "change", ".unit-auto-class ", function(){ 
+var unit=$(this).val();
+ // console.log($(this).parent('td').siblings(".cost-td-class").children(".cost-auto-class").val());
+  var cost=$(this).parent('td').siblings(".cost-td-class").children(".cost-auto-class").val();
+  if (cost=="")
+  {
+    alert("First provide cost for the perticular category");
+    $(this).val("");
+  }
+  else
+  {
+    var total=cost*unit;
+  $(this).parent('td').siblings(".total-td-class").children(".total-auto-class").val(total);
+  }
+});
+
+$( document ).on( "change", ".cost-auto-class", function(){
+  $(this).parent('td').siblings(".unit-td-class").children(".unit-auto-class").val("");
+  $(this).parent('td').siblings(".total-td-class").children(".total-auto-class").val("");
+});
+//======================total amount=====================================================
+// $(".unit-auto-class").change(function(){
+  
+// });
+//======================category=========================================================
+$(".laboratory-purchase-room-new-class").change(function(){
+      var labID = $( ".laboratory-purchase-room-new-class" ).val();
+      var apdStr = '<option value="">Choose Room</option>';
+      $(".category-laboratory-class").empty().append(apdStr);
+      if(labID > 0) {
+           var urlLink = "/laboratory/category_list_for_purchase/"+labID;
+           $.ajax({ 
+               url: urlLink,
+               cache: false,
+               success: function(data){
+                 // console.log();
+                  if(data.length > 0){
+                      var apdStr = '<option value="select">Select</option>';
+                     for(key in data){
+                        apdStr += '<option value="'+data[key].id+'">'+data[key].category_name+'</option>'
+                      }
+                    // console.log(apdStr);
+                      $(".category-laboratory-class").empty().append(apdStr);
+                  }
+               }
+           });
+    }else{
+      var apdStr = '<option value="">Choose Room</option>';
+      $(".category-laboratory-class").empty().append(apdStr);
+      // alert("Please select category");
+    }
+  });
+
+//======================subject room relation=========================================================
+$(".laboratory-purchase-subject-edit-class").change(function(){
+      var subjectId = $( ".laboratory-purchase-subject-edit-class" ).val();
+      
+      var apdStr = '<option value="">Choose Subject</option>';
+      $(".laboratory-purchase-room-new-class").empty().append(apdStr);
+
+      if(subjectId > 0) {
+           var urlLink = "/laboratory/room_list/"+subjectId;
+           $.ajax({ 
+               url: urlLink,
+               cache: false,
+               success: function(data){
+                 // console.log();
+                  if(data.length > 0){
+                      var apdStr = '<option value="select">Select</option>';
+                     for(key in data){
+                        apdStr += '<option value="'+data[key].id+'">'+data[key].room_no+'</option>'
+                      }
+                    // console.log(apdStr);
+                      $(".laboratory-purchase-room-new-class").empty().append(apdStr);
+                  }
+               }
+           });
+    }else{
+      var apdStr = '<option value="">Choose Subject</option>';
+      $(".laboratory-purchase-room-new-class").empty().append(apdStr);
+      // alert("Please select category");
+    }
+  });
+//======================subject room relation============================
+//========================================================================
+$(document).on("click", ".remove-laboratory-details", function(e){
+   var total = $('.remove-laboratory-details').length
+   var last_count = $('.remove-laboratory-details').text();
+   //console.log(last_count);
+ //alert(last_count); 
+   if(total!=1)
+   {
+    $(this).parent('td').parent().remove();   
+    }
+   
+    //temp==$('.remove-laboratory-details').length;
+    //temp=temp-1;
+  $(".required-incremented-fields:visible").each(function(index,element){
+          $(this).text(index+1);
+    });
+});
+
+$(document).on("click", "#laboratory_details_for_data", function(e){
+    var lastRepeatingGroup = $('.demo-div').last();
+    //alert(lastRepeatingGroup);
+    var cloned = lastRepeatingGroup.clone();
+    //console.log(cloned);
+    
+    cloned.find('select').val('');
+    cloned.find('input').val('');
+    cloned.find('label').remove();
+
+    //cloned.find(".call-purpose-class ").attr("class","call-purpose-class consumption-category-class category-laboratory-class");
+    //console.log(cloned.find('input').val(''));
+    
+
+
+
+    cloned.insertAfter( lastRepeatingGroup );
+    //alert(temp);
+    // $('.required-incremented-field').last().text(temp);
+    // temp++;
+    $(".valid_upto_purchase_edit:visible").each(function(index,element){
+    $(this).text(index+1);
+    cloned.find(".valid_upto_purchase_edit").attr("id","valid_edit_upto_"+(index+1));
+    });
+
+      $(".required-incremented-fields:visible").each(function(index,element){
+          $(this).text(index+1);
+    });
+ 
+    $(".checking_validation_for_edit").click();
+    return false;
+}); 
+    
+  $(function() {
+   dateFormatStr =  getJsDateFormat();
+     $("#edit_laboratory_details_data").delegate('.checking_validation_for_edit', 'click', function(){
+        $(".valid_upto_purchase_edit:visible").each(function(index,element){
+          $("#valid_edit_upto_"+(index+1)).removeClass('hasDatepicker');
+          $("#valid_edit_upto_"+(index+1)).datepicker({ changeMonth: true,
+                changeYear: true,yearRange: "0:+50",minDate: "0",dateFormat: dateFormatStr});
+        });
+
+     });
+});
+
+
+
+
+
+
+
+</script>
+<style>
+
+.error {
+  float: left;
+  font-size: 10px;
+}
+
+
+</style>

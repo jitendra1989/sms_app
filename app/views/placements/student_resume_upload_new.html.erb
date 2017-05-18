@@ -1,0 +1,47 @@
+<%= form_for :student_resume, :url=>{:controller=>"placements",:action=>"student_resume_upload_create"},:html=>{:id=>"studentUploadResumeFormID"} do |f|%> 
+	<%= f.hidden_field :mg_school_id, :value=> session[:current_user_school_id]%>
+	<%= f.hidden_field :is_deleted, :value=> 0%>
+	<%= f.hidden_field :created_by, :value=> session[:user_id]%>
+	<%= f.hidden_field :updated_by, :value=> session[:user_id]%>
+	<%= f.hidden_field :mg_user_id, :value=> session[:user_id]%>
+	<%= f.hidden_field :document_type, :value=> "studentCv"%>
+
+	<p>
+		<%= f.label :name, t('name') ,:class=>"mg-label"%><span class="required-field"> *</span><br>
+		<%= f.text_field :name, :class=> 'mg-text-field' %>
+	</p>
+	<p>
+	    <%= f.label :upload_CV,:class=>"mg-label"%><span class="required-field"> *</span><br>
+	    <%= f.file_field :file,:onchange =>"validateStudentResume(this.value,this);"   %>
+	</p>
+	<p>
+		<%= f.label :is_default,:class=>"mg-label"%><br>
+	    <%= f.check_box :is_default   %>
+	</p>
+
+	<p class="mg-p-mgtop">
+	    <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("save")%></a>
+	    <a class="mg-small-form-btn cancel-form-dialog"><%=t('cancel')%></a>
+	</p>
+<%end%>
+<script>
+	$(document).ready(function () {
+		$("#studentUploadResumeFormID").validate({
+	        rules: {    
+	        "student_resume[file]": {required: true},
+	        "student_resume[name]": {required: true}
+	      }
+	    });
+	});
+
+	function validateStudentResume(inputFile, that) {
+	  var allowedExtension = ["doc", "docx","pdf"];
+	  var extName = inputFile.split('.');
+	  if ($.inArray(extName[1], allowedExtension) == -1){
+	     window.alert("Only document file with extension: .doc, .docx,.pdf is allowed");
+	     $("#student_resume_file").val('');
+	  }
+	  else{
+	  }	 
+	}
+</script>

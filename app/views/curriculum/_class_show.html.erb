@@ -1,0 +1,45 @@
+
+<!-- Sec --> 
+<%@curriculum=MgSyllabus.where(:is_deleted => '0',:mg_school_id=>session[:current_user_school_id])%>
+
+
+<h4 class="mg-h4"><%= t('curriculum_management') %></h4>
+<div>
+<%= button_to 'Add Syllabus', {:controller => "curriculum", :action => "syllabus_index" },:class=>"mg-custom-form-btn" %>
+
+
+
+<table  class="batch-tbl mg-tbl-margin">   <!-- border="2" --> 
+  <tr class="subject-table-header">
+  	<!-- <th>Subject Id</th> -->
+    <th><%= t('subject') %></th>
+    <th><%= t('syllabus') %></th>
+    <th><%= t('description') %></th>
+    <th><%= t('actions') %></th>
+  </tr>
+ 
+  <% @curriculum.each do |curr| %>
+    <tr>
+
+      <!-- <td><#%= curr.mg_subject_id %></td> -->
+      <td><%subject=MgSubject.where(:id=>curr.mg_subject_id)%>
+          <%=subject[0].subject_code%></td>
+      <td><%= curr.name %></td>
+      <td><%= curr.description %></td>
+      <td>
+         <%= link_to "<i class=\"fa fa-pencil-square-o\"></i>".html_safe, {:controller => "curriculum", :action => "subject_edit",:id =>curr.id} , :method=>'post' ,:title=>"Edit" ,:class=>"mg-icon-btn"%>
+      <%= link_to "<i class=\"fa fa-trash\"></i>".html_safe, {:controller => "curriculum", :action => "subject_delete",:id =>curr.id }, :method=>'post' ,:title=>"Delete" ,:class=>"mg-icon-btn" ,data: { confirm: 'Are you sure to delete?' } %>
+
+      </td>
+
+    </tr>
+  <% end %>
+</table>
+</div>
+<script>
+$(document).ready(function () {
+ 
+ focusCurrentTab("view_curriculum_syllabusAID","syllabusLiID");
+        //focusCurriculum();
+});
+ </script>

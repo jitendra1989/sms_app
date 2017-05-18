@@ -1,0 +1,242 @@
+<!-- Sec --> 
+<h1>Editing article</h1>
+
+
+ 
+<%= form_for :article, url: employee_path, method: :patch do |f| %>
+  
+ <table border = "1">
+            <tr><h2>General Details</h2></tr>
+          
+            <tr></tr>
+            <tr>
+                <td>
+                    <%= f.label :First_Name %><br>
+                      <%= f.text_field :first_name %>
+                </td>
+                <td>
+                    <%= f.label :Middle_Name %><br>
+                      <%= f.text_field :middle_name %>
+                </td>
+                <td>
+                    <%= f.label :Last_Name %><br>
+                      <%= f.text_field :last_name %>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                     <%= f.label :Gender %><br>
+                </td>
+                <td>
+                    <%= f.select :gender, options_for_select([["Select Gender"], ["Male"], ["Female"]]) %>
+                    
+                </td>
+                <td>
+                    <%= f.label :Date_Of_Birth %><br>
+                </td>
+                <td>
+                      <%= f.text_field :date_of_birth %>
+                </td>
+                
+            </tr>
+            <tr>
+                <td>
+                     <%= f.label :Employee_Department %><br>
+                </td>
+                <td>
+                    <%= collection_select(:lang_id, 0, MgDepartment.all, :id, :departmentname) %>
+                    <!--<#%= f.select :employee_department_id, options_for_select([["Select Employee Department"], ["Male"], ["Female"]]) %>-->
+                    
+                </td>
+                <td>
+                    <%= f.label :Employee_Position %><br>
+                </td>
+                <td>
+                     
+                  <%= collection_select(:lang_id, 0, MgPosition.all, :id, :position_name) %>
+
+
+
+
+                     <!--<#%= f.select :employee_position_id, options_for_select([["Select Position"], ["Male"], ["Female"]]) %>-->
+                </td>
+                
+            </tr>
+            <tr>
+                <td>
+                     <%= f.label :Employee_Category %><br>
+                </td>
+                <td>
+                  <!--<#%= collection_select(:lang_id, 0, MgEmpCategory.all, :id, :prefix) :onchange => "$.post('#{model_singular_path(id)}', {'_method':'put', 'model_name[model_field]':this.value} );"%>-->
+
+
+
+
+
+
+
+
+              <!--  <#%= select_tag :assignee_id, options_for_select([["A",1],["B",2]]), 
+                                :onchange => "$.post('#{model_singular_path(id)}', {'_method':'put', 'model_name[model_field]':this.value} );" %>-->
+                    
+                  <%= collection_select(:lang_id, 0, MgEmpCategory.all, :id, :prefix) %>
+                    <!--<#%= f.select :employee_category_id, options_for_select([["Select Category"], ["Male"], ["Female"]]) %>-->
+
+                  <!--  #@cot = MgEmpCategory.where(prefix: @article.prefix).count 
+                    <#% @articles = MgEmpCategory.all %>
+                  <#% @art = MgEmpCategory.count(:condition => { :prefix => "driver" }) %>-->
+                  <!--<#% @art = MgEmpCategory.where(prefix: 'driver').count %>-->
+                    
+                </td>
+                <td>
+                    <%= f.label :Employee_Grade %><br>
+                </td>
+                <td>
+
+                      <%= f.select :employee_grade_id, options_for_select([["Select Grade"], ["Male"], ["Female"]]) %>
+                </td>
+                
+            </tr>
+            <tr>
+                <td>
+                    <%= f.label :Job_Title %><br>
+
+                </td>
+                <td>
+                      <%= f.text_field :job_title %>
+                </td>
+                <td>
+                    <%= f.label :Qualification %><br>
+                </td>
+                <td>
+                      <%= f.text_field :qualification %>
+                </td>
+                
+            </tr>
+            <tr>
+                
+                <td>
+                    <%= f.label :Status %><br>
+                </td>
+                <td>   
+                       <%= f.check_box :status %> <br />
+                </td>
+                <td>
+                    <%= f.label :Total_Experience %><br>
+              </td>
+              <td>
+                      <%= f.select :experience_year, options_for_select([["Years"], ["0"], ["1"], ["2"], ["3"], ["4"], ["5"], ["6"], ["7"], ["8"], ["9"], ["10"], ["11"], ["12"], ["13"], ["14"], ["15"], ["16"], ["17"], ["18"], ["19"], ["20"], ["21"]]) %>
+                </td>
+
+                
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>
+                    <%= f.select :experience_month, options_for_select([["Months"], ["0"], ["1"], ["2"], ["3"], ["4"], ["5"], ["6"], ["7"], ["8"], ["9"], ["10"], ["11"]]) %>
+                </td>
+            </tr>
+            <tr>
+
+                <td>
+                    <%= f.label :Department %><br>
+                </td>
+                <td>
+                     <%= f.select :employee_department_id, options_for_select([["Select_Department"], ["Teacher", "1"], ["Student", "2"], ["Driver", "3"], ["Clerk", "4"], ["Peon", "5"]]) %>
+                </td>
+                <td>
+                  
+                </td>
+            </tr>
+          
+            
+
+               </table>
+               <table border ="1">
+                    <tr><h2>Personal Details</h2></tr>
+                    <tr>
+                      <td>
+                          <%= f.label :Marital_Status %><br>
+                      </td>
+                      <td>
+                          <%= f.select :marital_status, options_for_select([["Single"], ["Married"], ["Divorced"]]) %>
+                      </td>
+                      <td>
+                          <%= f.label :Children_Count %><br>
+                      </td>
+                      <td>
+                          <%= f.text_field :children_count %>
+                      </td>
+
+                    </tr>
+                    <tr>
+                      <td>
+                          <%= f.label :Father_Name %><br>
+                      </td>
+                      <td>
+                          <%= f.text_field :father_name %>
+                      </td>
+                      <td>
+                          <%= f.label :Mother_Name %><br>
+                      </td>
+                      <td>
+                          <%= f.text_field :mother_name %>
+                      </td>
+
+                    </tr>
+                    <tr>
+                      <td>
+                          <%= f.label :Husband_Name %><br>
+                      </td>
+                      <td>
+                          <%= f.text_field :husband_name %>
+                      </td>
+                      <td>
+                          <%= f.label :Blood_Group %><br>
+                      </td>
+                      <td>
+                          
+                          <%= f.select :blood_group, options_for_select([["UnKnown"], ["A+"], ["A-"], ["B+"], ["B-"], ["O+"], ["O-"], ["AB+"], ["AB-"]]) %>
+                      </td>
+
+                    </tr>
+                    <tr>
+
+                      <td>
+                          <%= f.label :Nationality %><br>
+                      </td>
+                      <td>
+                          <%= f.select :nationality_id, options_for_select([["Select_Nationality"], ["India", "2"], ["Sri Lanka", "3"]]) %>
+                      </td>
+                      <td>
+                          
+                      </td>
+                      <td>
+                          
+                      </td>
+
+                    </tr>
+               </table>
+               <table border = "1">
+                    <tr>
+                      <td>
+                          <%= f.label :Upload_Photo %><br>
+                      </td>
+                      <td>
+                          
+                      </td>
+                      <td>
+                          
+                      </td>
+                      <td>
+                          
+                      </td> 
+                    </tr>
+               </table>
+               
+  <%= f.submit %>
+<% end %>
+ 
+<%= link_to 'Back', employees_path %>

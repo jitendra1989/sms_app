@@ -1,0 +1,16 @@
+<!-- Sec --> 
+
+
+<!-- Partial left content -->
+<%= render  partial: 'master_settings/master_settings_left.html' %>
+<!-- Partial Index -->
+<%= render partial: 'custom_fields' %>
+<!-- Partial Section close-->
+<%= render partial: 'application/common_left_close' %>
+
+<script type="text/javascript">
+     $(document).ready(function(){
+
+         focusCurrentTab("manageCustomFields","schoolCustomFieldLiID");
+   });
+</script>

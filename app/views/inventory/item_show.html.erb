@@ -1,0 +1,193 @@
+<table border="1" class="mg-showdata-bg" cellspacing="1" cellpadding="1">
+   <tr>
+     <td valign="top">
+      <label class="mg-label"> <%= t('item_name')%></label>
+     </td>
+     <td valign="top">
+      <%if @item.name.present?%>
+     <%=@item.try(:name)%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+     </td>
+ </tr>
+
+ <tr>
+     <td valign="top">
+      <label class="mg-label"> <%= t('item_unit')%></label>
+     </td>
+     <td valign="top">
+      <%if @item.mg_item_unit_id.present?%>
+      <%tempVar=MgLabUnit.find_by(:id=>@item.mg_item_unit_id)%>
+     <%=tempVar.try(:unit_name)%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+     </td>
+ </tr>
+
+
+ <tr>
+     <td valign="top">
+      <label class="mg-label"> <%= t('item_code')%></label>
+     </td>
+     <td valign="top">
+      <%if @item.name.present?%>
+     <%=@item.try(:code)%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+     </td>
+ </tr>
+
+ <tr>
+     <td valign="top">
+      <label class="mg-label"> <%= t('category')%></label>
+     </td>
+     <td valign="top">
+      <%if @item.mg_category_id.present?%>
+      <%tempVar=MgInventoryItemCategory.find_by(:id=>@item.mg_category_id)%>
+     <%=tempVar.try(:name)%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+     </td>
+ </tr>
+
+ <tr>
+     <td valign="top">
+      <label class="mg-label"> <%= t('item_type')%></label>
+     </td>
+     <td valign="top">
+      <%if @item.item_type.present?%>
+     <%=@item.try(:item_type)%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+     </td>
+ </tr>
+
+
+ <tr>
+     <td valign="top">
+      <label class="mg-label"> <%= t('prefix')%></label>
+     </td>
+     <td valign="top">
+      <%if @item.prefix.present?%>
+     <%=@item.try(:prefix)%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+     </td>
+ </tr>
+ 
+ <tr>
+     <td valign="top">
+      <label class="mg-label"> <%= t('minimum_quantity')%></label>
+     </td>
+     <td valign="top" style="width: 100%;">
+    <%if @item.minimum_quantity_required.present?%>
+        <%=@item.try(:minimum_quantity_required)%>
+     
+     <%else%>
+     <h5><%="No Data"%></h5>
+     <%end%>
+     </td>
+ </tr>
+
+ <tr>
+     <td valign="top">
+      <label class="mg-label"> <%= t('description')%></label>
+     </td>
+     <td valign="top" style="width: 100%;">
+    <%if @item.description.present?%>
+        <div class="text-scroll-for-log-text-cls comments-space" style="padding: 5px 40 0 10px">
+          <%=@item.try(:description)%>
+        </div>
+     <%else%>
+     <h5><%="No Data"%></h5>
+     <%end%>
+     </td>
+ </tr>
+
+ <tr>
+    <td valign="top">
+      <label class="mg-label"> <%= t('available_online')%></label>
+    </td>
+    <td valign="top" style="width: 100%;">
+      <%if @item.available_online.present?%>
+        <%=@item.available_online==true ? "Yes" : "No"%>
+      <%else%>
+      <h5><%="No Data"%></h5>
+      <%end%>
+    </td>
+ </tr>
+
+<%if @item.available_online.present?
+    if @item.available_online==true%>
+
+     <tr>
+         <td valign="top">
+          <label class="mg-label"> <%= t('reserved_for_offline')%></label>
+         </td>
+         <td valign="top" style="width: 100%;">
+            <%if @item.reserved_for_offline.present?%>
+            <%=@item.try(:reserved_for_offline)%>
+         <%else%>
+            <h5><%="No Data"%></h5>
+         <%end%>
+        </td>
+     </tr>
+
+
+
+     <tr>
+        <td valign="top">
+          <label class="mg-label"> <%= t('uploaded_attachment')%></label>
+        </td>
+        <td valign="top" style="width: 100%;">
+          <p>
+              <%if @document.length>0%>
+                  <%html_icon='<span title="Download" class="mg-icon-btn"><i class="fa fa-download"></i></span>'
+                      @document.each do |doc|%>
+                        <p>
+                            <%= link_to_if doc.file.url, html_icon.html_safe, doc.file.url , :target=>"_blank"%>
+                            <%=doc.file_file_name%>
+                        </p>
+                      <%end
+              end%>
+          </p>
+        </td>
+     </tr>
+
+
+
+
+     <tr>
+         <td valign="top">
+            <label class="mg-label"> <%= t('online_price')%></label>
+         </td>
+         <td valign="top" style="width: 100%;">
+            <%if @item.online_price.present?%>
+                <%=@item.try(:online_price)%>
+            <%else%>
+                <h5><%="No Data"%></h5>
+            <%end%>
+         </td>
+     </tr>
+
+<%end
+    end%>
+
+</table>
+<br/>
+
+<a class="mg-small-form-btn cancel-form-dialog"><%=t("cancel")%></a>
+
+
+<script type="text/javascript">
+$(document).ready(function () {
+  textSeeMoreLess();
+});
+
+</script>

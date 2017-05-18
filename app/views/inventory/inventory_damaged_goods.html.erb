@@ -1,0 +1,67 @@
+
+<%= render  partial: 'inventory_left' %>
+<% navigation_add 'Damaged Goods', inventory_inventory_damaged_goods_path %>
+
+<h4 class="mg-h4"><%= t('damaged_goods_list')%></h4>
+
+<%if @inventory_item_consumption.length>0%>
+<div class="mg-scrl-width-bar ">
+
+ <table class="batch-tbl mg-tbl-layout" cellspacing="0" style="padding:0; border-collapse:collapse;"> 
+<tr>
+<th><%=t('item_category')%></th>
+<th><%=t('item_name')%></th>
+
+<th><%=t('room_no')%></th>
+<th><%=t('rack_no')%></th>
+<th><%=t('quantity_damaged')%></th>
+<th><%=t('date')%></th>
+ 
+
+
+</tr>
+<% @inventory_item_consumption.each do |data| %>
+<tr>
+<%
+            item_category_data=MgInventoryItemCategory.find_by(:id=>data.mg_inventory_item_category_id)
+            inventory_item=MgInventoryItem.find_by(:id=>data.mg_inventory_item_id)
+            %>
+<td class="mg-align-center"><%=item_category_data.name%></td>
+   
+        <td class="mg-align-center"><%=inventory_item.name%></td>
+
+            <%inventory_room=MgInventoryRoomManagement.find_by(:id=>data.mg_inventory_room_id)%>
+            <td class="mg-align-center"><%=inventory_room.room_no%></td>
+            <%stack_data=InventoryStackManagement.find_by(:id=>data.mg_inventory_rack_id)%>
+            <td class="mg-align-center"><%=stack_data.rack_no%></td>
+            
+            <td class="mg-align-center"><%=data.quantity_consumed%></td>
+               <td class="mg-td-width-half" valign="top">
+             <%if data.consumption_date.present?%>
+             <%@dateFormat = MgSchool.find_by(:id=>session[:current_user_school_id]).date_format %>
+             <%=data.consumption_date.present? ? data.consumption_date.strftime(@dateFormat) : ""%>
+             <%else%>
+             <h5><%="No Data"%></h5>
+             <%end%>
+             </td>
+           
+</tr>
+<%end%>
+
+</table>
+<%#= will_paginate @data, :container => false %>
+<%else%>
+<%="No Records Are Present"%>
+<%end%>
+</div>
+<%= render  partial: 'schools/school_left_close' %>
+
+
+<script>
+$(document).ready(function () {
+        focusCurrentTab("damaged_goodsAid","damaged_goodsLiID");
+       
+       
+      });
+
+</script>

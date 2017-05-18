@@ -1,0 +1,198 @@
+<%= render  partial: 'laboratory/laboratry_left' %>
+
+<% navigation_add t('manage_labs'), laboratory_index_path %>
+<h4 class="mg-h4"><%= t('manage_laboratory') %></h4>
+
+<button class="new-add-laboratory mg-btn-bottom-margin mg-custom-form-btn"><%= t('add_laboratory')%></button>
+
+<!-- <%#= button_to 'Add Laboratory', {:controller => "laboratory", :action => "new" } ,:class=>"mg-custom-form-btn"%> -->
+<div class="mg_pagination">
+<%if @lab.length>0%>
+<table  class="batch-tbl mg-tbl-margin">   <!-- border="2" --> 
+  <tr class="subject-table-header">
+    <!-- <th>Subject Id</th> -->
+    <th><%= t('lab_name') %></th>
+    <th><%= t('subject_name') %></th>
+    <th><%= t('room_no') %></th>
+
+    <th style="width: 92px;"><%= t('actions') %></th>
+  </tr>
+ 
+  <% @lab.each do |lab| %>
+    <tr>
+      <td><%= lab.try(:lab_name) %></td>
+      <%if lab.mg_laboratory_subject_id.present?%>
+                <%subject=MgLaboratorySubject.find(lab.mg_laboratory_subject_id)%>
+                <td><%= subject.name %></td>
+     <%else%>
+                <td><%= "" %></td>
+     <%end%>
+     <td><%= lab.try(:room_no) %></td>
+
+      
+
+      <td>
+      	
+
+    <!--   <%#= link_to "<i class=\"fa fa-pencil-square-o\"></i>".html_safe, {:controller => "laboratory", :action => "edit",:id =>lab.id} , :method=>'get' ,:title=>"Edit" ,:class=>"mg-icon-btn"%> -->
+
+      
+
+      <button title="Show" id="<%=raw lab.id %>-showlabBTNID" class="show-lab-btn mg-icon-btn"><i class="fa fa-eye"></i></button>
+
+        <button title="Edit" id="<%=raw lab.id %>-editlabBTNID" class="edit-lab-btn mg-icon-btn"><i class="fa fa-pencil-square-o"></i></button>
+
+        <button title="Delete" id="<%=raw lab.id %>-deletelabBTNID" class="delete-lab-btn mg-icon-btn"><i class="fa fa-trash"></i></button>
+
+        <%#= link_to "<i class=\"fa fa-trash\"></i>".html_safe, {:controller => "laboratory", :action => "delete",:id =>lab.id }, :method=>'post' ,:title=>"Delete" ,:class=>"mg-icon-btn",data: { confirm: 'Are you sure to delete?' } %>
+
+      </td>
+
+    </tr>
+  <% end %>
+</table>
+<br/>
+ <div class="pagination-align" style="position: relative; bottom: 10px;">
+              <%= will_paginate @lab, :container => false %>
+           </div>
+<%else%>
+<h5>No Laboratory is created </h5>
+<%end%>
+</div>
+<div id="newAddLaboratoryDIVID"></div>
+<div id="editLabDIVID"></div>
+
+
+<div id="showLabDIVID"></div>
+
+
+<%= render  partial: 'application/common_left_close' %>
+
+<script>
+$( document ).ready(function() {
+            focusCurrentTab("viewlaboratory","viewlaboratoryLiID");
+          //focusStudentHeaderBox();
+});
+
+
+
+// $(document).on("click", ".delete-lab-btn", function(e){
+//      e.preventDefault();
+//                 var myID =$(this).attr('id');
+//             var Id=myID.split("-");
+
+
+                
+//                 var retVal = confirm("Are you sure to delete?");
+//                 if(retVal){
+//                   //  alert(retVal);
+//                      var urlLink = "/laboratory/delete/"+Id[0];
+
+//                       $.ajax({
+//                         url: urlLink ,
+//                         cache: false,
+//                         success: function(html){
+//                             window.location.reload();
+                                       
+//                         }
+//                     });
+
+//                 }else{
+//                    // alert(retVal);     
+//                    return false;
+//                 }
+
+//         }); 
+
+
+
+
+
+
+$(document).on("click", ".show-lab-btn", function(e){
+        var myID =$(this).attr('id');
+        var Id=myID.split("-");
+        var urlLink = "/laboratory/show/"+Id[0];
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(html){
+                  $('#showLabDIVID').dialog({
+                    modal: true,
+                     minHeight: '200px',
+                    width: 'auto',
+                    title: "Show Laboratory",
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+});
+
+
+$(document).on("click", ".edit-lab-btn", function(e){
+        var myID =$(this).attr('id');
+        var Id=myID.split("-");
+        var urlLink = "/laboratory/edit/"+Id[0];
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(html){
+                  $('#editLabDIVID').dialog({
+                    modal: true,
+                     minHeight: 'auto',
+                    minWidth: '250px',
+                    title: "Edit Laboratory",
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+});
+
+$(document).on("click", ".new-add-laboratory", function(e){
+        var urlLink = "/laboratory/new";
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(html){
+                  $('#newAddLaboratoryDIVID').dialog({
+                    modal: true,
+                     minHeight: 'auto',
+                    minWidth: '250px',
+                    
+                    title: "Add Laboratory",
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+});
+</script>
+<style>
+
+
+.table-batchs-tbl {
+   /* font-family: verdana,arial,sans-serif;*/
+    font-size:13px;
+    color:#363131;
+    border-width: 1px;
+    border-color:  #363131;
+    border-collapse: collapse;
+    padding: 12px ;
+    font-size: 0.8em;
+    width: 261px !important;
+    /* margin-left: 2px; */
+}
+</style>
+
+

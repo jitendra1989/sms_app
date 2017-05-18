@@ -1,0 +1,140 @@
+<%= form_for :job_apply , url: @request=="new" ? job_apply_create_path :
+
+   job_apply_update_path,:html => {:id => 'placement_TrainingID' } do |f| %>
+
+   <p>
+
+    <%= f.label :select_company, t('select_company') ,:class=>"mg-label mg-rm-text-trans"%><span class="required-field"> *</span><br>
+    
+<%= f.collection_select(:mg_placement_registration_id, MgPlacementRegistration.where(:is_deleted=>0, :mg_school_id=>session[:current_user_school_id], :status=>'Active'), :id, :name_of_the_company,{:include_blank => 'Select',:selected=>@placement_application.mg_placement_registration_id} ,:class=>"mg-select-btn" , :onchange=>"selectJobIdBasedOnCompany(this.value);") %>
+  </p>
+<p>
+    
+    <%= f.label :select_company, t('select_passout_year') ,:class=>"mg-label mg-rm-text-trans"%><span class="required-field"> *</span><br>
+    <%= select_tag 'time_table_year', options_for_select((1994..Time.now.year).to_a,:selected=>@placement_application.pass_out_year), :prompt=>"Select",:class=>"mg-text-field" %>
+  </p>
+  <p>
+
+    <%= f.label :select_company, t('select_job_id') ,:class=>"mg-label mg-rm-text-trans"%><span class="required-field"> *</span><br>
+    <%= f.collection_select(:mg_job_upload_id,[], :id, :job_id,{:include_blank => 'Select'} ,:class=>"mg-select-btn" , :onchange=>"job_details_readonly(this.value);")  %>
+
+  </p>
+
+<p id="readonly_data_job">
+	
+
+</p>
+<p>
+	    <%= f.label :select_cv,:class=>"mg-label"%><span class="required-field"> *</span><br>
+	   
+	     <%=f.select :mg_document_management_id,options_for_select(@document_array,:selected=>@placement_application.mg_document_management_id),:class=>"mg-select-btn"%>
+	</p>
+  
+  <%= f.hidden_field :updated_by, :value => session[:user_id]%> 
+    <%= f.hidden_field :job_id_data, :value =>@placement_application.mg_job_upload_id %> 
+    <%= f.hidden_field :id, :value =>@placement_application.id %> 
+	<p class="mg-p-mgtop">
+	    <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("apply")%></a>
+	    <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+	</p>
+<%end%>
+<script>
+	
+$(document).ready(function () {
+    focusCurrentTab("job_applyAID","job_applyLiID");
+
+    var data=$("#job_apply_mg_placement_registration_id").val();
+      var data1=$("#job_apply_job_id_data").val();
+    var urlLink = "/placements/onchange_data_edit";
+
+  
+          $.ajax({
+              url: urlLink ,
+              cache: false,
+              data:{ 
+                selecter: "company_job_id",
+                id: data,
+                data1:data1
+              },
+              success: function(data){
+
+                  console.log("data   ~>  "+data.main);
+                $("#job_apply_mg_job_upload_id").html(data.main);              }
+          });
+
+          var urlLink = "/placements/readonly_data";
+          var data=$("#job_apply_job_id_data").val();
+       
+          $.ajax({
+              url: urlLink ,
+              cache: false,
+              data:{ 
+                id: data
+              },
+              success: function(data){
+
+                $("#readonly_data_job").empty().html(data);     
+                },
+                error: function(data){
+                    $("#readonly_data_job").empty();
+
+                }         
+          });
+
+});
+$(document).on("change","#job_apply_mg_placement_registration_id",function(){
+	$("#readonly_data_job").empty();
+
+});
+
+	function selectJobIdBasedOnCompany(data){
+  var urlLink = "/placements/onchange_data";
+
+  
+          $.ajax({
+              url: urlLink ,
+              cache: false,
+              data:{ 
+                selecter: "company_job_id",
+                id: data
+              },
+              success: function(data){
+
+                  console.log("data   ~>  "+data.main);
+                $("#job_apply_mg_job_upload_id").html(data.main);              }
+          });
+}
+          function job_details_readonly(data){
+          var urlLink = "/placements/readonly_data";
+
+  
+          $.ajax({
+              url: urlLink ,
+              cache: false,
+              data:{ 
+                id: data
+              },
+              success: function(data){
+
+                $("#readonly_data_job").empty().html(data);     
+                },
+                error: function(data){
+                		$("#readonly_data_job").empty();
+
+                }         
+          });
+   
+
+  
+}
+function validateStudentResume(inputFile, that) {
+	  var allowedExtension = ["doc", "docx","pdf"];
+	  var extName = inputFile.split('.');
+	  if ($.inArray(extName[1], allowedExtension) == -1){
+	     window.alert("Only document file with extension: .doc, .docx, .pdf is allowed");
+	     $("#job_apply_file").val('');
+	  }
+	  else{
+	  }	 
+	}
+</script>

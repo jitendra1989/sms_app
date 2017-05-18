@@ -1,0 +1,88 @@
+<%= render  partial: 'hostel_management_left' %>
+<% navigation_add t('reallocate_rooms'), :controller=>'hostel_management', :action=>'warden_re_allocate_rooms' %>
+<h4 class="mg-h4"><%= t('reallocate_rooms')%></h4>
+<%if @reallotment_request.size>0%>
+ <table border="1" class="mg-showdata-bg" cellspacing="1" cellpadding="1"><tr>
+<th>Hostel</th>
+<th>Student Name</th>
+<th>Student Id</th>
+<th>Programme</th>
+<th>Floor</th>
+<th>Room Type</th>
+<th>Present Room No</th>
+    <th><%= t('action') %></th>
+
+
+</tr>
+<%@reallotment_request.each do |data|%>
+<tr>
+<%hostel=MgHostelDetails.find_by(:id=>data.mg_hostel_details_id)%>
+	<td><%=hostel.try(:name)%></td>
+
+<%student_data=MgStudent.find_by(:id=>data.mg_student_id)%>
+	<td><%="#{student_data.try(:first_name)} #{student_data.try(:last_name)}"%></td>
+	<td><%=student_data.try(:admission_number)%></td>
+
+	<%wing_data=MgWing.find_by(:id=>data.mg_wing_id)%>
+
+	<td><%=wing_data.try(:wing_name)%></td>
+	<%floor_data=MgHostelFloor.find_by(:id=>data.mg_hostel_floor_id)%>
+
+	<td><%=floor_data.try(:name)%></td>
+<%room_type=MgHostelRoomType.find_by(:id=>data.mg_hostel_room_type_id)%>
+
+	<td><%=room_type.try(:name)%></td>
+
+	<%room=MgHostelRoom.find_by(:id=>data.mg_hostel_room_id)%>
+
+	<td><%=room.try(:name)%></td>
+<td>
+          
+            <button title="Show" id="<%=raw data.try(:id) %>-<%=raw room.try(:id)%>" class="show-reallocation-offered mg-icon-btn"><i class="fa fa-eye"></i></button>
+        </td>
+
+
+</tr>
+<%end%>
+</table>
+<div id="data_reallocation"></div>
+<%else%>
+<%="No Request"%>
+<%end%>
+<%= render  partial: 'application/common_left_close' %>
+
+
+<script>
+	
+$( document ).ready(function() {
+	focusCurrentTab("re_allocate_rooms_listAID","re_allocate_rooms_listLiID");
+
+		
+		
+	});
+
+ $(document).on("click", ".show-reallocation-offered", function(e){
+    var myID =$(this).attr('id');
+        var Id=myID.split("-"); 
+
+        var urlLink= '/hostel_management/reallocation_show';
+         
+        
+        $.ajax({
+          url: urlLink,
+          cache: false,
+          data: {"id":Id[0],"room_id":Id[1]},
+          success: function(html){
+            $("#data_reallocation").dialog({
+              modal:true,
+              minHeight: 'auto',
+              width: 'auto',
+              title: 'Show Reallocation Request Details',
+              open: function(){
+                $(this).html(html);
+              }
+            })
+          }
+        })
+  });
+</script>

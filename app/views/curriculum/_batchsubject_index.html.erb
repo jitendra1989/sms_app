@@ -1,0 +1,81 @@
+<% navigation_add 'Section Syllabus List', :controller => 'curriculum', :action => 'batch_syllabus_show' %>
+<% navigation_add 'Section Syllabus Association', :controller => 'curriculum', :action => 'batchsubject_index' %>
+
+<!--  -->
+<h4 class="mg-h4"><%= t('section_syllabus_association') %></h4>
+<div>
+<%= form_for :curriculum, url: curriculum_save_batch_path, :html => {
+                            :id => 'batchSyllabusCurriculamManagementsID' } do |f| %>
+
+<%= f.hidden_field :is_deleted, :value => 0 %>
+<%= f.hidden_field :mg_school_id, :value => session[:current_user_school_id] %>
+<label class="mg-label">Select Syllabus<span class="required-field">&nbsp;*</span></label><br/>
+<%= f.collection_select(:mg_syllabus_id,MgSyllabus.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]), :id, :name,{:include_blank => t("select")},:class => "unit-syllabus-id-class")%><br/>
+
+
+<div style="float:left;width:50%">
+
+    <label class="mg-label">Select Class-Section<span class="required-field">&nbsp;*</span></label><br/>
+    <label class="mg-label">Select</label> <a href="#" id="checkAllCheckBoxInCurriculumId" class="mg-pop-link">All</a>
+    <a href="#" id="unCheckAllCheckBoxInCurriculumId" class="mg-pop-link">None</a>
+    <div class="mg-scroll-bar-curriculum">
+      <!--   <#%id=session[:feedetails_id]%> -->
+
+        <%@feesquery2=MgBatch.where(:is_deleted =>0,:mg_school_id=>session[:current_user_school_id]).order("mg_course_id").pluck(:id)%>
+        <% for i in 0...@feesquery2.size%>
+            <%@feesquery3=MgBatch.where(:id =>@feesquery2[i]).pluck(:name,:id,:mg_course_id)%>
+
+            <%@feesquery3.each do |d|%>
+                <input id="items_selected_batches1"  class="auto-ckeckbox-fee-particular-batch-cls" name="selected_batches1[]"
+                        type="checkbox" value="<%=raw d[1]%>" />
+                      <!--  <#%@course=MgCourse.find_by_id(d[2]).sort![|t1,t2|t1.course_name<=>t2.course_name]%> -->
+                <%@course=MgCourse.find_by_id(d[2])%>
+                <%if@course!=nil%>
+                  <%= @course.course_name %> - <%=d[0]%><br/> 
+                <%else%>
+                  <%=d[0]%><br/> 
+                <%end%>
+                <%#=d[0]%>
+            <%end%>
+        <%end%>
+    </div>
+<p class="mg-p-mgtop">
+<%#= f.submit t('save') ,:class=>"mg-small-form-btn"%>
+<a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("save")%></a>
+<%= link_to t('cancel'), '/curriculum/batch_syllabus_show', {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+
+</p>
+<% end %>
+</div>
+
+
+
+
+
+<script>
+$(document).ready(function () {
+
+  focusCurrentTab("batchSyllabusCurriculamManagementsId","BatchSyllabusLiID");
+        //focusCurriculum();
+
+$("#batchSyllabusCurriculamManagementsID").validate({
+
+rules: {
+"curriculum[mg_syllabus_id]": {required: true}
+
+}
+});
+});
+</script>
+
+
+
+<style type="text/css">
+  .mg-scroll-bar-curriculum{
+      width: 220px;
+      height: 150px;
+      overflow: scroll;
+  }
+</style>
+
+

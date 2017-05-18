@@ -1,0 +1,105 @@
+<!-- Sec --> 
+_<div class="box">
+<%= form_for @school , url:schools_path do |f| %>
+
+<% if @school.errors.any? %>
+  <div id="error_explanation">
+    <h2><%= pluralize(@school.errors.count, "error") %> prohibited
+      this schools from being saved:</h2>
+    <ul>
+    <% @school.errors.full_messages.each do |msg| %>
+      <li><%= msg %></li>
+    <% end %>
+    </ul>
+  </div>
+  <% end %>
+	<label for="SchoolName"><%= t('school_name') %></label>
+          <div class="input-container">
+              <%= f.text_field :school_name %>
+            </div>
+
+    <label for="SchoolCode"><%= t('school_code') %></label>
+          <div class="input-container">
+              <%= f.text_field :school_code %>
+            </div>
+
+	<label for="AddressLine1 "><%= t('AddressLine1 ') %></label>
+          <div class="input-container">
+              <%= f.text_field :address_line1  %>
+            </div>
+
+  <label for="AddressLine2 "><%= t('AddressLine2 ') %></label>
+          <div class="input-container">
+              <%= f.text_field :address_line2  %>
+            </div>
+
+    <label for="Street "><%= t('Street ') %></label>
+          <div class="input-container">
+              <%= f.text_field :street  %>
+            </div>  
+
+    <label for="City "><%= t('City ') %></label>
+          <div class="input-container">
+              <%= f.text_field :city  %>
+            </div>
+
+    <label for="State "><%= t('State ') %></label>
+          <div class="input-container">
+              <%= f.text_field :state  %>
+            </div>  
+
+    <label for="Pincode "><%= t('Pincode ') %></label>
+          <div class="input-container">
+              <%= f.text_field :pin_code  %>
+            </div> 
+
+    <label for="Landmark "><%= t('Landmark ') %></label>
+          <div class="input-container">
+              <%= f.text_field :landmark  %>
+            </div> 
+	<label for="MobileNumber "><%= t('MobileNumber ') %></label>
+          <div class="input-container">
+              <%= f.text_field :mobile_number  %>
+            </div> 
+
+    <label for="EmailId "><%= t('EmailId ') %></label>
+          <div class="input-container">
+              <%= f.text_field :email_id  %>
+            </div> 
+
+    <label for="FaxNumber "><%= t('FaxNumber ') %></label>
+          <div class="input-container">
+              <%= f.text_field :fax_number %>
+            </div>
+
+    <label for="DateFormat "><%= t('DateFormat ') %></label>
+          <div class="input-container">
+              <%= f.text_field :date_format  %>
+            </div> 
+
+    <label for="TimeZone "><%= t('TimeZone ') %></label>
+          <div class="input-container">
+              <%= f.time_zone_select :timezone %>
+            </div> 
+
+    <label for="CurrencyType "><%= t('CurrencyType ') %></label>
+          <div class="input-container">
+             <%= f.select :currency_type, options_for_select([["$"], ["Rs"]])%>
+            </div>                         
+
+    <label for="AffilicatedTo "><%= t('AffilicatedTo ') %></label>
+          <div class="input-container">
+              <%= f.text_field :affilicated_to  %>
+            </div> 
+
+    <label for="GradingSystem "><%= t('GradingSystem ') %></label>
+          <div class="input-container">
+             <%= f.select :grading_system, options_for_select([["CCE"], ["CWE"],["GPA"]])%>
+            </div> 
+
+    <%= submit_tag t('save'), class: "submit" %>
+
+    <%= link_to "#{t('all_schools')}", controller: 'schools' %>
+
+
+<%end%>

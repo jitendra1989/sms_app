@@ -1,0 +1,29 @@
+ <%= form_for :document_managements, url: file_upload_create_path, method: :post, :html => {
+                            :id => 'documentManagementsFormID' } do |f| %>
+
+  <p>
+    <%= f.label :name, t('name')%><br>
+    <%= f.text_field :name   %>
+  </p>
+  <p>
+    <%= f.label :file%><br>
+    <%= f.file_field :file   %>
+  </p>
+
+   <p>
+    <%#= f.label :mg_employee_id%><br>
+    <%= f.hidden_field :mg_employee_id, :value=>@employee[0]%>
+  </p>
+
+
+<p>
+  <%= f.label :is_deleted, t('isactive') %><br />
+    <%= f.label :is_deleted,t('yes')%>
+    <%= f.radio_button :is_deleted, false  , :checked => true %>
+    <%= f.label :is_deleted,t('no') %>
+    <%= f.radio_button :is_deleted, true%>
+</p>
+  <p>
+    <%= f.submit 'upload' %>
+  </p>
+<% end %>

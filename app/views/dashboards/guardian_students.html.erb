@@ -1,0 +1,50 @@
+<!-- Sec --> 
+ <!-- <h4 class="mg-h4">Students List</h4> -->
+
+<table class="batch-tbl" id='guardianStudentsTableID'>
+        <tr>
+          <th>First Name</th>
+          <th>Last Name</th>
+          <th>Admission Number</th>
+          <th><%=t("actions")%></th>
+        </tr>
+        
+
+        <% @StudentListQuery.each do |student| %>
+          <%= render partial: 'table_row_guardian_student', locals: {student: student} %>
+        <% end %>
+</table>
+
+
+<script>
+
+     $(document).on("click",".guardian-student",function(e){
+     	e.preventDefault();
+     	
+        var Id=$(this).attr("id");
+       
+        $.ajax({
+             url: "/dashboards/guardian_show/"+Id,
+             data:{"id":Id},
+            
+            success: function(html){
+                   /* $("#dialogID").empty();
+                    $("#dialogID").append(html);*/
+
+                      $('<div></div>').dialog({
+                        modal: true,
+                        title: "Show Student",
+                        //top: 50px,
+                        minWidth: 625,
+                        open: function () {
+                            
+                            $(this).html(html);
+                        }
+                    }); //end confirm dialog
+                   
+                }
+            });  
+
+        });
+
+     </script>

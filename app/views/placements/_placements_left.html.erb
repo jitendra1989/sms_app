@@ -1,0 +1,199 @@
+<section id="userBodyContentBox" style="margin: 0 auto;">
+    <table  border="0" cellspacing="0" cellpadding="0"  style="margin-bottom: 0px;">
+        <tr>
+            <td valign="top" class="userBodyContentBox1">
+                <aside class="userMenuBoxLeft" style="width: 210px;">
+                    <ul class="menuListHome">
+
+                     <li class="myAccountMenu">Placements</li>
+                       <%if session[:user_type]=="admin"%>
+                        <li id="placementsRegistrationLiID">
+                            <a class="Principle-Profile" href="/placements/placements_registration" id="placementsRegistrationAID">
+                                <div class="setMenu"><i class="fa fa-comment">&nbsp;&nbsp;</i><%=t('registration')%>
+                                </div>
+                            </a>
+                        </li>
+                        <li id="placementsJobUploadLiID">
+                            <a class="Principle-Profile" href="/placements/job_upload" id="placementsJobUploadAID">
+                                <div class="setMenu"><i class="fa fa-comment">&nbsp;&nbsp;</i><%=t('placement')%>
+                                </div>
+                            </a>
+                        </li>
+                         <li id="placementsInterviewRoundsLiID">
+                            <a class="Principle-Profile" href="/placements/interview_rounds" id="placementsInterviewRoundsAID">
+                                <div class="setMenu"><i class="fa fa-comment">&nbsp;&nbsp;</i><%=t('interview_rounds')%>
+                                </div>
+                            </a>
+                        </li>
+
+                        <%end%>
+
+
+                        <%if session[:user_type]=="placement_cell_head" %>
+
+                            <li id="placementsInterviewRoundsLiID">
+                                <a class="Principle-Profile" href="/placements/interview_rounds" id="placementsInterviewRoundsAID">
+                                    <div class="setMenu"><i class="fa fa-list-ol">&nbsp;&nbsp;</i><%=t('interview_rounds')%>
+                                    </div>
+                                </a>
+                            </li>
+
+                            <li id="placementsRegistrationLiID">
+                                <a class="Principle-Profile" href="/placements/placements_registration" id="placementsRegistrationAID">
+                                    <div class="setMenu"><i class="fa fa-sign-out">&nbsp;&nbsp;</i><%=t('registration')%>
+                                    </div>
+                                </a>
+                            </li>
+                             <li id="placementsJobUploadLiID">
+                                <a class="Principle-Profile" href="/placements/job_upload" id="placementsJobUploadAID">
+                                    <div class="setMenu"><i class="fa fa-upload">&nbsp;&nbsp;</i><%=t('placement')%>
+                                    </div>
+                                </a>
+                            </li>
+
+                            <li id="student_selectionLiID">
+                                <a class="Principle-Profile" href="/placements/placement_student_selection" id="student_selectionAID">
+                                    <div class="setMenu"><i class="fa fa-list">&nbsp;&nbsp;</i><%="Interview Process"%>
+                                    </div>
+                                </a>
+                            </li>
+
+                            <li id="training_offeredLiID">
+                            <a class="Principle-Profile" href="/placements/training_offered" id="training_offeredAID">
+                                <div class="setMenu"><i class="fa fa-graduation-cap">&nbsp;&nbsp;</i><%=t('training')%>
+                                </div>
+                            </a>
+                            </li>
+
+                             
+
+                            <li id="trainingRequestedLiID">
+                            <a class="Principle-Profile" href="/placements/placement_training_requested" id="trainingRequestedAID">
+                                <div class="setMenu"><i class="fa fa-arrow-circle-o-up">&nbsp;&nbsp;</i><%=t('training_request')%>
+                                </div>
+                            </a>
+                            </li>
+
+                            <li id="resetPasswordLiID">
+                                <a class="Principle-Profile" href="/placements/placement_head_resetpassword" id="resetPasswordAID">
+                                    <div class="setMenu"><i class="fa fa-exchange">&nbsp;&nbsp;</i><%=t('Reset_Password')%>
+                                    </div>
+                                </a>
+                            </li>
+
+                        <% end %> 
+                        
+                        <%if session[:user_type]=="recruitment_assistant" %>
+
+                            <li id="placementsRegistrationLiID">
+                                <a class="Principle-Profile" href="/placements/placements_registration" id="placementsRegistrationAID">
+                                    <div class="setMenu"><i class="fa fa-sign-out">&nbsp;&nbsp;</i><%=t('registration')%>
+                                    </div>
+                                </a>
+                            </li>
+                             <li id="placementsJobUploadLiID">
+                                <a class="Principle-Profile" href="/placements/job_upload" id="placementsJobUploadAID">
+                                    <div class="setMenu"><i class="fa fa-upload">&nbsp;&nbsp;</i><%=t('placement')%>
+                                    </div>
+                                </a>
+                            </li>
+
+                            <li id="student_selectionLiID">
+                                <a class="Principle-Profile" href="/placements/placement_student_selection" id="student_selectionAID">
+                                    <div class="setMenu"><i class="fa fa-list">&nbsp;&nbsp;</i><%="Interview Process"%>
+                                    </div>
+                                </a>
+                            </li>
+
+                            <li id="training_offeredLiID">
+                            <a class="Principle-Profile" href="/training_offered" id="training_offeredAID">
+                                <div class="setMenu"><i class="fa fa-graduation-cap">&nbsp;&nbsp;</i><%=t('training')%>
+                                </div>
+                            </a>
+                            </li>
+
+                            <li id="trainingRequestedLiID">
+                            <a class="Principle-Profile" href="/placements/placement_training_requested" id="trainingRequestedAID">
+                                <div class="setMenu"><i class="fa fa-arrow-circle-o-up">&nbsp;&nbsp;</i><%=t('training_request')%>
+                                </div>
+                            </a>
+                            </li>
+
+                            <li id="resetPasswordLiID">
+                                <a class="Principle-Profile" href="/placements/recruit_resetpassword" id="resetPasswordAID">
+                                    <div class="setMenu"><i class="fa fa-exchange">&nbsp;&nbsp;</i><%=t('reset_Password')%>
+                                    </div>
+                                </a>
+                            </li>
+
+                        <%end%>
+
+                        <%if session[:user_type]=="Company"%>
+
+                        <li id="corporate_profileLiID">
+                                <a class="Principle-Profile" href="/placements/corporate_profile" id="corporate_profileAID">
+                                    <div class="setMenu"><i class="fa fa-graduation-cap">&nbsp;&nbsp;</i><%=t('profile')%>
+                                    </div>
+                                </a>
+                            </li>
+
+                            
+                            <li id="placementsJobUploadLiID">
+                                <a class="Principle-Profile" href="/placements/job_upload" id="placementsJobUploadAID">
+                                    <div class="setMenu"><i class="fa fa-upload">&nbsp;&nbsp;</i><%=t('placement')%>
+                                    </div>
+                                </a>
+                            </li>
+                            
+
+
+                            <li id="placementsTrainingofferedCorpLiID">
+                                <a class="Principle-Profile" href="/placements/training_offered" id="placementsTrainingofferedCorpAID">
+                                    <div class="setMenu"><i class="fa fa-graduation-cap">&nbsp;&nbsp;</i><%=t('training')%>
+                                    </div>
+                                </a>
+                            </li>
+                            
+
+                              <!-- <li id="training_offeredListLiID">
+                            <a class="Principle-Profile" href="/placements/placement_training_offered_list" id="training_offeredListAID">
+                                <div class="setMenu"><i class="fa fa-graduation-cap">&nbsp;&nbsp;</i><%#=t('training_offered_list')%>
+                                </div>
+                            </a>
+                            </li> -->
+
+                            <li id="resetPasswordLiID">
+                                <a class="Principle-Profile" href="/placements/corporate_resetpassword" id="resetPasswordAID">
+                                    <div class="setMenu"><i class="fa fa-exchange">&nbsp;&nbsp;</i><%=t('reset_Password')%>
+                                    </div>
+                                </a>
+                            </li>
+
+
+                            
+                        <% end %>
+
+
+                        <% if session[:user_type]=="recruitment_assistant" %>
+                        
+
+                        <% end %>
+
+                        
+
+
+
+                        
+                    </ul>    
+
+                </aside>
+            </td>
+            <td  valign="top" id="manageEmployeeCategoryID" class="mg-table-td-main-2" style="width: 745px;">
+            
+<script>
+$( document ).ready(function() {
+    
+    // focusPlacements();
+});
+</script>
+

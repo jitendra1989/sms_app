@@ -1,0 +1,57 @@
+<table border="1" class="mg-showdata-bg" cellspacing="1" cellpadding="1">
+   <tr>
+     <td valign="top">
+   		<label class="mg-label"> <%= t('name')%></label>
+   	 </td>
+   	 <td valign="top">
+  		<%if @itemCategory.name.present?%>
+     <%=@itemCategory.name%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+  	 </td>
+ </tr>
+ <tr>
+     <td valign="top">
+   		<label class="mg-label"> <%= t('description')%></label>
+   	 </td>
+
+<!-- 
+
+   	 <td valign="top" style="width: 100%;">
+  	<%#if @itemCategory.description.present?%>
+  <%=@itemCategory.description%>
+     
+     <%#else%>
+     <h5><%#="No Data"%></h5>
+     <%#end%>
+  	 </td> -->
+
+
+     <td class="mg-td-width-half" valign="top">
+        <div class="text-scroll-for-log-text-cls comments-space">
+          <%if @itemCategory.try(:description).present?%>
+            <%= @itemCategory.try(:description) %>
+          <%else%>
+            <%="No Data"%>
+          <%end%>
+        </div>
+      </td>
+
+
+ </tr>
+
+</table>
+<br/>
+
+<a class="mg-small-form-btn cancel-form-dialog"><%=t("cancel")%></a>
+
+
+
+
+<script type="text/javascript">
+$(document).ready(function () {
+  textSeeMoreLess();
+});
+
+</script>

@@ -1,0 +1,69 @@
+<%= render  partial: 'transport_left' %>
+<% navigation_add 'Student Status', transports_student_status_data_path %>
+
+<h4 class="mg-h4"><%=('Student Status')%></h4>
+<!-- ============================================================================ -->
+<%= form_for :short_number_wise, :url=>{:action=>"student_status_data"}, :html => {
+                            :id => 'labconsumptionshortCreateID' } do |f| %>
+<%lab_short=MgVehicle.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:vehicle_number,:id)%>
+<%="Select Date:"%>
+     <%=text_field_tag :date_validation,@data,:class=>"mg-text-field",:onchange => 'this.form.submit();'%>
+
+<%= f.submit t('save') ,:class=>"mg-small-form-btn hidden-button-onchange-submit-class" , :style=>"display:none"%>
+
+<%end%>
+	
+ <table class="batch-tbl mg-tbl-margin" cellspacing="0" style="padding:0; border-collapse:collapse;">   <!-- border="2" --> 
+      <tr >
+        <th><%=t('vehicle_number')%></th>
+        <th><%=t('route')%></th>
+        <th class="mg-rm-text-trans"><%=t('no_of_absent_students_Total_no_of_student_for_respective_vehicle')%></th>
+        <th><%=t('view_students')%></th>
+       </tr>
+
+    <%@add_report_index.each_with_index do |transport| %>
+        <tr>
+          <td><%=transport.vehicle_number%></td>
+          <%if transport.mg_transport_id.present?%>
+       <%
+           vehicle_data=MgTransport.find(transport.mg_transport_id)
+          %>
+          <td><%=vehicle_data.route_name%></td>
+          <%else%>
+          <td><%="No Data"%></td>
+          <%end%>
+          <%
+           student_data=MgGuardianTransportRequisition.where(:mg_vehicle_id=>transport.id,:confirmation_status=>"confirmed").pluck(:mg_student_id).uniq
+           absent_student_data=MgStudentAttendance.where(:is_deleted=>0, :mg_school_id=>session[:current_user_school_id], :absent_date=>@data, :mg_student_id=>student_data).pluck(:mg_student_id).uniq
+
+          %>
+
+          <td><%="#{absent_student_data.length}/#{student_data.length}"%></td>
+          <td>
+          
+      <%= button_to 'View Students', {:controller => "transports", :action => "transport_student_information",:id=>"#{transport.id}/#{@data}"},:class=>"mg-small-form-btn"%>
+
+          </td>
+
+      
+        </tr>
+
+     <% end %>
+  </table>
+
+<%=render partial: 'transport_left_close'%>
+
+<script>
+ $(document).ready(function(){
+
+  focusCurrentTab("studentstatustransportAID","studentstatustransportLiID");
+
+  
+ 	dateFormatStr =  getJsDateFormat();
+
+    $('#date_validation').datepicker({ changeMonth: true,
+                changeYear: true,yearRange: "-50:+0",maxDate: "0",dateFormat: dateFormatStr});
+     var valid_from =  $.datepicker.formatDate(dateFormatStr,new Date($('#date_validation').val()))
+     	 $('#date_validation').val(valid_from);
+});
+</script>

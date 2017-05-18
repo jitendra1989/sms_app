@@ -1,0 +1,81 @@
+<%#=@studentsList.inspect%>
+<%= fields_for :demo do |f|%>
+<div class="mg-financeFee-pop-up">
+
+<table>
+	<tr>
+		<td>
+		<span>
+		<div class="data1">
+		<%=select_tag :notSelected, options_for_select(@studentsList),:multiple => true,:size =>@studentsList.size>10 ? @studentsList.size : 10%>
+		</div>
+		</span>
+		</td>
+		<td>
+			<a href="#" id="addingdatas" class="mg-custom-form-btn">Add</a>
+		</td>
+		<td>
+			<span>
+
+		<div id="selected_students" class="data1">
+		<%=select_tag :selectedStudents,options_for_select([]),:multiple => true,:size =>@studentsList.size>10 ? @studentsList.size : 10%>
+		</div>
+		</span>
+		</td>
+		<td>
+			<a href="#" id="removingdata" class="mg-custom-form-btn mg-fee-btn-exam">Remove</a>
+		</td>
+	</tr>
+
+</table>
+
+
+ 
+
+
+
+
+
+<%end%>
+
+<!-- <div style="overflow-y:auto; width:150px;">
+<%#=select_tag :notSelected, options_for_select(@studentsList),:multiple => true,:size =>10 %>
+</div>
+<div style="overflow-y:auto; width:150px;">
+<%#=select_tag :selectedStudents,options_for_select([]),:multiple => true,:size =>10%>
+</div>
+ -->
+<script>
+$(document).on("click","#addingdatas",function(e){
+
+
+
+var selectedOption=$("#notSelected option:selected").remove();
+
+$("#selectedStudents").append(selectedOption);
+
+
+  });
+
+
+$(document).on("click","#removingdata",function(e){
+
+var selectedOption=$("#selectedStudents option:selected").remove();
+
+$("#notSelected").append(selectedOption);
+
+  });
+</script>
+
+
+
+<style>
+.data1{
+overflow-y:auto; 
+overflow-x:auto; 
+width:145px;
+height:160px;
+}
+</style>
+
+

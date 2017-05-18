@@ -1,0 +1,46 @@
+
+<%#= render  partial: 'laboratory/laboratry_left' %>
+
+ <div class="mg-custom-labels">
+
+<%= form_for :placement_data,:url=>{:action=>"select_student_rejected_list_data_create"},:html=>{:id=>"alumni_registrationdd"} do |f|%>
+<%= f.hidden_field :student_ids, :value => @student_id %>
+<%= f.hidden_field :id_data, :value => @id_data %>
+
+<p>
+    <label class="mg-label" style="width:140px"><%= t('rejected_by') %><span class="required-field">&nbsp;*</span></label>
+    <br/>
+
+   <%= f.select :rejected_by, options_for_select([[t("Select"), ""], [t("Hostel Admin"), "Hostel Admin"], [t("Hostel Warden"), "Hostel Warden"], [t("Disciplinary Committee"), "Disciplinary Committee"], [t("Principal"), "Principal"]]) %>
+</p>
+
+<p>
+    <label class="mg-label" style="width:140px"><%= t('reason') %><span class="required-field">&nbsp;*</span></label>
+    <br/>
+   <%= f.text_area :reason,:class=>"mg-text-field" %>
+</p>
+
+
+<p class="mg-p-mgtop">
+    <!-- <%#= f.submit t('save') ,:class=>"mg-small-form-btn"%> -->
+    <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("save")%></a>
+    <%#= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+<a class="mg-small-form-btn cancel-form-dialog"><%=t("cancel")%></a>
+
+</p>
+<% end %>
+</div>
+<%#= render  partial: 'application/common_left_close' %>
+
+<script>
+
+
+$("#alumni_registrationdd").validate({
+
+        rules: {        
+        "placement_data[rejected_by]": {required: true},
+        "placement_data[reason]": {required: true},
+        // "laboratry[room_no]": {required: true},
+      }
+    });
+</script>

@@ -1,0 +1,140 @@
+<br/>
+<br/>
+<h4 class="mg-h4"><%= t("current_report")%></h4>
+<%if @inventory_proposal.present?%>
+
+<table border="1" class="mg-table-nowrap mg-showdata-bg mg-show-tbl-width" cellspacing="1" cellpadding="1">
+<tr>
+<th> <label class="mg-label"> <%= t('store_name')%></label>
+</th>
+<th> <label class="mg-label"> <%= t('requisition_name')%></label>
+</th>
+<th> <label class="mg-label"> <%= t('date')%></label>
+</th>
+<th> <label class="mg-label"> <%= t('action')%></label>
+</th>
+<%@inventory_proposal.each do |info|%>
+
+<tr>
+     <td class="mg-td-width-half" valign="top">
+     <%store_data=MgInventoryStoreManagement.find_by(:id=>info.mg_store_id)%>
+     <%=store_data.try(:store_name)%>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+     <%=info.try(:requisition_name)%>
+     </td>
+            <td class="mg-td-width-half" valign="top">
+             <%if info.date.present?%>
+             <%@dateFormat = MgSchool.find_by(:id=>session[:current_user_school_id]).date_format %>
+             <%=info.date.present? ? info.date.strftime(@dateFormat) : ""%>
+             <%else%>
+             <h5><%="No Data"%></h5>
+             <%end%>
+             </td>
+     <td>
+        <button title="Show" id="<%=raw info.id %>-showproposalBTNID" class="show-inventory-proposal-btn mg-icon-btn"><i class="fa fa-eye"></i></button>
+     </td>
+     <%end%>
+ </tr>
+</table>
+<%else%>
+<h5>No current data to show</h5>
+<%end%>
+
+
+<br/>
+<br/>
+<h4 class="mg-h4"><%= t("projection_report")%></h4>
+<%if @inventory_proposal.present?%>
+
+
+<table border="1" class="mg-table-nowrap mg-showdata-bg mg-show-tbl-width" cellspacing="1" cellpadding="1">
+<tr>
+<th> <label class="mg-label"> <%= t('store_name')%></label>
+</th>
+<th> <label class="mg-label"> <%= t('requisition_name')%></label>
+</th>
+<th> <label class="mg-label"> <%= t('date')%></label>
+</th>
+<th> <label class="mg-label"> <%= t('action')%></label>
+</th>
+<%@inventory_projection.each do |info|%>
+<tr>
+     <td class="mg-td-width-half" valign="top">
+     <%store_data=MgInventoryStoreManagement.find_by(:id=>info.mg_store_id)%>
+     <%=store_data.try(:store_name)%>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+     <%=info.try(:requisition_name)%>
+     </td>
+                 <td class="mg-td-width-half" valign="top">
+             <%if info.date.present?%>
+             <%@dateFormat = MgSchool.find_by(:id=>session[:current_user_school_id]).date_format %>
+             <%=info.date.present? ? info.date.strftime(@dateFormat) : ""%>
+             <%else%>
+             <h5><%="No Data"%></h5>
+             <%end%>
+             </td>
+     <td>
+        <button title="Show" id="<%=raw info.id %>-showproposalBTNID" class="show-inventory-proposal-btns mg-icon-btn"><i class="fa fa-eye"></i></button>
+     </td>
+     <%end%>
+ </tr>
+</table>
+<%else%>
+<h5>No projection data to show</h5>
+<%end%>
+
+
+
+<script>
+
+
+$(document).on("click", ".show-inventory-proposal-btn", function(e){
+        var myID =$(this).attr('id');
+        var Id=myID.split("-");
+        var urlLink = "/inventory/proposal_report_show/"+Id[0];
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(html){
+                  $('#showInventoryProposalDIVID').dialog({
+                    modal: true,
+                    minHeight: 'auto',
+                    width: 'auto',
+                    title: "Item Proposal",
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+});
+
+
+$(document).on("click", ".show-inventory-proposal-btns", function(e){
+        var myID =$(this).attr('id');
+        var Id=myID.split("-");
+        var urlLink = "/inventory/projection_report_show/"+Id[0];
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(html){
+                  $('#showInventoryProjectionDIVID').dialog({
+                    modal: true,
+                    minHeight: 'auto',
+                    width: 'auto',
+                    title: "Item Projection",
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+});
+    
+</script>

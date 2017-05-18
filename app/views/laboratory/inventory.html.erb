@@ -1,0 +1,158 @@
+<%= render  partial: 'laboratory/laboratry_left' %>
+
+<% navigation_add t('laboratory_inventory'), "/laboratory/inventory/" %>
+<h4 class="mg-h4"><%= t('lab_inventory_category_list') %></h4>
+
+<button class="new-add-inventory mg-btn-bottom-margin mg-custom-form-btn"><%= t('add_inventory')%></button>
+<!-- <%#= button_to 'Add Lab Inventory', {:controller => "laboratory", :action => "inventory_new" } ,:class=>"mg-custom-form-btn"%> -->
+<div class="mg_pagination">
+<%if @lab_inv.length>0%>
+<table  class="batch-tbl mg-tbl-margin">   <!-- border="2" --> 
+  <tr class="subject-table-header">
+    <!-- <th>Subject Id</th> -->
+    <th><%= t('lab_name') %></th>
+    <th><%= t('category_name') %></th>
+    <th style="width: 92px;"><%= t('actions') %></th>
+  </tr>
+ 
+  <% @lab_inv.each do |lab| %>
+    <tr>
+    <%if lab.mg_lab_id.present?%>
+    <%laboratry=MgLab.find(lab.mg_lab_id)%>
+      <td><%= laboratry.lab_name %></td>
+      <%else%>
+      <td><%= "" %></td>
+      <%end%>
+      <td><%= lab.category_name %></td>
+      <td>
+      	<button title="Show" id="<%=raw lab.id %>-showlabinventoryBTNID" class="show-lab-inv-btn mg-icon-btn"><i class="fa fa-eye"></i></button>
+
+        <button title="Edit" id="<%=raw lab.id %>-editlabinventoryBTNID" class="edit-lab-inv-btn mg-icon-btn"><i class="fa fa-pencil-square-o"></i></button>
+
+     <!--  <%#= link_to "<i class=\"fa fa-pencil-square-o\"></i>".html_safe, {:controller => "laboratory", :action => "inventory_edit",:id =>lab.id} , :method=>'post' ,:title=>"Edit" ,:class=>"mg-icon-btn"%> -->
+      <button title="Delete" id="<%=raw lab.id %>-editlabinventoryBTNID" class="delete-lab-inv-btn mg-icon-btn"><i class="fa fa-trash"></i></button>
+
+      <!-- <%#= link_to "<i class=\"fa fa-trash\"></i>".html_safe, {:controller => "laboratory", :action => "inventory_delete",:id =>lab.id }, :method=>'post' ,:title=>"Delete" ,:class=>"mg-icon-btn",data: { confirm: 'Are you sure to delete?' } %> -->
+
+      </td>
+
+    </tr>
+  <% end %>
+</table>
+<br/>
+ <div class="pagination-align" style="position: relative; bottom: 10px;">
+              <%= will_paginate @lab_inv, :container => false %>
+           </div>
+<%else%>
+<h5>No Category is created </h5>
+<%end%>
+</div>
+<div id="showLabInventoryDIVID"></div>
+<div id="newAddInventoryDIVID"></div>
+<div id="editInventoryDIVID"></div>
+
+
+<%= render  partial: 'application/common_left_close' %>
+
+<script>
+$( document ).ready(function() {
+            focusCurrentTab("viewLabInventoryIndex","viewLabInventoryLiID");
+          //focusStudentHeaderBox();
+});
+
+// $(document).on("click", ".delete-lab-inv-btn", function(e){
+//      e.preventDefault();
+     
+//                 var myID =$(this).attr('id');
+//             var Id=myID.split("-");
+
+
+                
+//                 var retVal = confirm("Are you sure to delete?");
+//                 if(retVal){
+//                   //  alert(retVal);
+//                      var urlLink = "/laboratory/inventory_delete/"+Id[0];
+
+//                       $.ajax({
+//                         url: urlLink ,
+//                         cache: false,
+//                         success: function(html){
+//                             window.location.reload();
+                                       
+//                         }
+//                     });
+
+//                 }else{
+//                    // alert(retVal);     
+//                    return false;
+//                 }
+
+//         }); 
+$(document).on("click", ".edit-lab-inv-btn", function(e){
+        var myID =$(this).attr('id');
+        var Id=myID.split("-");
+        var urlLink = "/laboratory/inventory_edit/"+Id[0];
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(html){
+                  $('#editInventoryDIVID').dialog({
+                    modal: true,
+                     minHeight: 'auto',
+                    width: '290px',
+                    title: "Edit Inventory",
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+});
+
+$(document).on("click", ".show-lab-inv-btn", function(e){
+        var myID =$(this).attr('id');
+        var Id=myID.split("-");
+        var urlLink = "/laboratory/inventory_show/"+Id[0];
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(html){
+                  $('#showLabInventoryDIVID').dialog({
+                    modal: true,
+                    minHeight: 'auto',
+                    width: 'auto',
+                    title: "Show Inventory",
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+});
+
+$(document).on("click", ".new-add-inventory", function(e){
+        var urlLink = "/laboratory/inventory_new";
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(html){
+                  $('#newAddInventoryDIVID').dialog({
+                    modal: true,
+                     minHeight: 'auto',
+                    width: '290px',
+                    title: "Add Inventory",
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+});
+</script>
+

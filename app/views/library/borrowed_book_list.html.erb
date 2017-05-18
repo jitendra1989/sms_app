@@ -1,0 +1,84 @@
+
+<%= render  partial: 'library_left' %>
+<% navigation_add 'Borrowed Books List', library_borrowed_book_list_path %>
+
+<h4 class="mg-h4"><%= t('borrowed_books_list')%></h4>
+
+<%if @data.length>0%>
+<div class="mg-scrl-width-bar ">
+
+ <table class="batch-tbl mg-tbl-layout" cellspacing="0" style="padding:0; border-collapse:collapse;"> 
+<tr>
+<th><%=t('resource_category')%></th>
+<th><%=t('resource_type')%></th>
+<th><%=t('resource_number')%></th>
+<th><%=t('name/title')%></th>
+<th><%=t('author')%></th>
+<th><%=t('volume/edition')%></th>
+<th><%=t('year')%></th>
+ <th><%=t('publication/company')%></th>
+ <th><%=t('isbn')%></th>
+ <th><%=t('class')%></th>
+ <th><%=t('subjectes')%></th>
+
+
+</tr>
+<% @data.each do |books_data| %>
+<tr>
+<%
+            category_data=MgResourceCategory.find(books_data.mg_resource_category_id)
+            %>
+<td class="mg-align-center"><%=category_data.name%></td>
+    <%
+            type_data=MgResourceType.find(books_data.mg_resource_category_id)
+            %>
+        <td class="mg-align-center"><%=type_data.name%></td>
+
+    
+        
+            <td class="mg-align-center"><%=books_data.resource_number%></td>
+            
+            <td class="mg-align-center"><%=books_data.name%></td>
+            <td class="mg-align-center"><%=books_data.author%></td>
+            <td class="mg-align-center"><%=books_data.volume%></td>
+            <td class="mg-align-center"><%=books_data.year%></td>
+            <td class="mg-align-center"><%=books_data.publication%></td>
+            <td class="mg-align-center"><%=books_data.isbn%></td>
+            <%
+            course_data=MgCourse.find_by(:id=>books_data.mg_course_id)
+            %>
+            <%if course_data.nil? %>
+            <td class="mg-align-center"><%="No Data"%></td>
+            <%else%>
+            <td class="mg-align-center"><%=course_data.course_name%></td>
+
+            <%end%>
+            <%
+            books_category=MgManageSubject.find_by(:id=>books_data.mg_subject_id)
+            %>
+            <%if books_category.nil?%>
+            <td class="mg-align-center"><%="General Reading"%></td>
+            <%else%>
+        <td class="mg-align-center"><%=books_category.name%></td>
+            <%end%>
+</tr>
+<%end%>
+
+</table>
+<%#= will_paginate @data, :container => false %>
+<%else%>
+<%="No Records Are Present"%>
+<%end%>
+</div>
+<%= render  partial: 'schools/school_left_close' %>
+
+
+<script>
+$(document).ready(function () {
+        focusCurrentTab("borrowedBooksListAID","borrowedBooksListLiID");
+        focusLibrary();
+
+        //focusMasterSettings();
+      });
+
+</script>

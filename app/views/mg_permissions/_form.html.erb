@@ -1,0 +1,48 @@
+<!-- Sec --> 
+<%= form_for(@mg_permission) do |f| %>
+  <% if @mg_permission.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@mg_permission.errors.count, "error") %> prohibited this mg_permission from being saved:</h2>
+
+      <ul>
+      <% @mg_permission.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :mg_model_id ,:class=>"mg-label"%><br>
+    <%= f.collection_select(:mg_model_id,MgModel.all, :id, :model_name,{:include_blank => 'Please Select'})%>
+  </div>
+<!-- Adding Dropdown for edit part -->
+  <%if @type=="edit"%>
+    <div class="field">
+    <%= f.label :mg_action_id ,:class=>"mg-label"%><br>
+    <%= f.collection_select(:mg_action_id,MgAction.all, :id, :action_name,{:include_blank => 'Please Select'})%>
+  </div><br> 
+  <%end%>
+<!-- Adding Dropdown for edit part -->
+
+<!-- Adding checkboxes instead of dropdown for new -->
+<%if @type=="new"%>
+<label class="mg-label"><%=t("actions")%></label><br>
+ <table> 
+  <%actions=MgAction.all%>
+      <% actions.each do |action|%>
+        <tr>
+          <td><%=action.action_name%></td>
+          <td>
+            <%#=hidden_field_tag 'action_ids[]', 0 %>
+            <%=check_box_tag "action_ids[]",action.id %>
+          </td>
+        </tr>
+      <%end%>
+  </table><br>
+  <%end%>
+<!-- Adding checkboxes instead of dropdown -->
+  <div class="actions">
+    <%= f.submit "Submit" ,:class=>"mg-small-form-btn"%>
+  </div>
+<% end %>

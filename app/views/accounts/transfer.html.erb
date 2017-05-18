@@ -1,0 +1,170 @@
+<% navigation_add 'Accounts Transfer', :controller => 'accounts', :action => 'transfer' %>
+<%= render  partial: 'accounts/accounts_left' %>
+<h4 class="mg-h4"><%= t('accounts_transfer') %></h4>
+<button class="new-add-central-accounts mg-btn-bottom-margin mg-custom-form-btn"><%= t('add_accounts')%></button>
+<div class="mg_pagination">
+<%if @account.present?%>
+<table  class="batch-tbl mg-tbl-margin">   <!-- border="2" --> 
+  <tr class="subject-table-header">
+    <th><%= t('transferred_to') %></th>
+    <th><%= t('amount') %></th>
+    <th><%= t('status') %></th>
+    <th style="width: 92px;"><%= t('actions') %></th>
+  </tr>
+ 
+  <% @account.each do |account| %>
+    <tr>
+      <td><%accounts=MgAccount.find_by(:id=>account.mg_to_account_id)%>
+      <%= accounts.try(:mg_account_name) %></td>
+      <td><%= account.try(:amount) %></td>
+      <td><%= account.try(:status) %></td>
+      <td>
+      <button title="Show" id="<%=raw account.id %>-showlabBTNID" class="show-account-central-incharge-btn mg-icon-btn"><i class="fa fa-eye"></i></button> 
+
+        <button title="Edit" id="<%=raw account.id %>-editaccountBTNID" class="edit-account-central-incharge-btn mg-icon-btn"><i class="fa fa-pencil-square-o"></i></button>
+
+        <button title="Delete" id="<%=raw account.id %>-deletelabBTNID" class="delete-account-central-incharge-btn mg-icon-btn"><i class="fa fa-trash"></i></button>
+      </td>
+    </tr>
+  <% end %>
+</table>
+<br/>
+ <div class="pagination-align" style="position: relative; bottom: 10px;">
+              <%= will_paginate @account, :container => false %>
+           </div>
+<%else%>
+<h5>No Incharge is created </h5>
+<%end%>
+</div>
+<div id="newAddAccountsCentralInchargeDIVID"></div>
+<div id="editAccountsCentralInchargeDIVID"></div>
+
+
+<div id="showCentralAccountTransectionDIVID"></div>
+
+
+<%= render  partial: 'application/common_left_close' %>
+
+<script>
+$( document ).ready(function() {
+            focusCurrentTab("viewaccountsAssistantInchargeTransferId","viewaccountsAssistantInchargeTransferLiID");
+});
+
+
+
+$(document).on("click", ".delete-account-central-incharge-btn", function(e)
+{
+     e.preventDefault();
+    var myID =$(this).attr('id');
+    var Id=myID.split("-");
+    var retVal = confirm("Are you sure to delete?");
+    if(retVal)
+    {
+         var urlLink = "/accounts/transfer_delete/"+Id[0];
+
+          $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(html)
+            {
+                window.location.reload();
+            }
+        });
+    }else
+    {
+       return false;
+    }
+}); 
+
+
+
+
+
+
+$(document).on("click", ".show-account-central-incharge-btn", function(e){
+        var myID =$(this).attr('id');
+        var Id=myID.split("-");
+        var urlLink = "/accounts/transfer_show/"+Id[0];
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(html){
+                  $('#showCentralAccountTransectionDIVID').dialog({
+                    modal: true,
+                     minHeight: 'auto',
+                    minWidth: '450px',
+                    title: "Show Accounts",
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+});
+
+
+$(document).on("click", ".edit-account-central-incharge-btn", function(e){
+        var myID =$(this).attr('id');
+        var Id=myID.split("-");
+        var urlLink = "/accounts/transfer_edit/"+Id[0];
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(html){
+                  $('#editAccountsCentralInchargeDIVID').dialog({
+                    modal: true,
+                     minHeight: 'auto',
+                    minWidth: '350px',
+                    title: "Edit Accounts",
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+});
+
+$(document).on("click", ".new-add-central-accounts", function(e){
+        var urlLink = "/accounts/transfer_new";
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(html){
+                  $('#newAddAccountsCentralInchargeDIVID').dialog({
+                    modal: true,
+                     minHeight: 'auto',
+                    minWidth: '350px',
+                    
+                    title: "Add Accounts",
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+});
+</script>
+<style>
+
+
+.table-batchs-tbl {
+   /* font-family: verdana,arial,sans-serif;*/
+    font-size:13px;
+    color:#363131;
+    border-width: 1px;
+    border-color:  #363131;
+    border-collapse: collapse;
+    padding: 12px ;
+    font-size: 0.8em;
+    width: 261px !important;
+    /* margin-left: 2px; */
+}
+</style>
+
+

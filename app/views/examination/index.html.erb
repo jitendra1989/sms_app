@@ -1,0 +1,19 @@
+<!-- breadcrumbs Work -->
+<% navigation_add 'Examinations', examinations_path %>
+<!-- breadcrumbs Work -->
+
+
+
+<%= render  partial: 'examination_table_left' %>
+
+<%= render  partial: 'examination_index' %>
+
+<%= render  partial: 'examination_table_close' %>
+
+<script type="text/javascript">
+	$(document).ready(function() {
+        focusCurrentTab("viewStudentListAId","viewStudentListLiId");
+        focusExaminationHeaderBox();
+	});
+
+</script>

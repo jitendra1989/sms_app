@@ -1,0 +1,43 @@
+
+<%school=MgSchool.find(session[:current_user_school_id])%>
+
+
+
+<table border="1" class="mg-showdata-bg mg-tbl-layout" cellspacing="1" cellpadding="1">
+   <tr>
+     <td class="mg-td-width-half" valign="top">
+   		<label class="mg-label"> Date</label>
+   	 </td>
+   	 <td class="mg-td-width-half" valign="top">
+   	 <%if @employee_biometric_attendances.date.present?%>
+  		<%= @employee_biometric_attendances.date.strftime(school.date_format) %>
+  	<%end%>
+  	 </td>
+ </tr>
+
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+  		<label class="mg-label"><%=t('check_in')%></label>
+  	 </td>
+  	 <td class="mg-td-width-half" valign="top">
+  		<%= @employee_biometric_attendances.check_in.strftime('%I:%M%p') %>
+  	 </td>
+ </tr>
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+  		<label class="mg-label"><%=t('check_out')%></label>
+  	 </td>
+  	 <td class="mg-td-width-half" valign="top">
+  		<%= @employee_biometric_attendances.check_out.strftime('%I:%M%p') %>
+  	 </td>
+ </tr>
+  <tr>
+     <td class="mg-td-width-half" valign="top">
+  		<label class="mg-label"><%=t('employee_name')%></label>
+  	 </td>
+  	 <td class="mg-td-width-half" valign="top">
+  <%= MgEmployee.find(@employee_biometric_attendances.mg_employee_id).employee_name %>
+  	
+  	 </td>
+ </tr>
+</table>

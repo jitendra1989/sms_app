@@ -1,0 +1,78 @@
+<% navigation_add t('training_required'),"/placements/placement_training_required_index" %>
+ <%=render partial: "dashboards/student_dashboard_left"%>
+
+<%#= link_to t('Add new'),{:controller => "placements", :action => "placement_training_required_new"},:class=>"mg-icon-btn" %>
+
+<button onclick="window.location.href='/placements/placement_training_required_new'" class="mg-btn-bottom-margin mg-custom-form-btn"><%= t('add_required_training')%></button>
+
+<h4 class="mg-h4"><%= t('training_required_list')%></h4>
+<%if @training_required.length>0%>
+ <div class="mg_pagination">
+ <table class="batch-tbl mg-tbl-margin"> 
+ <tr >
+  	<th class="mg-rm-text-trans"><%=t('area_of_training_required')%></th>
+    <th> <%=t('description')%></th>
+    <th> <%=t('status')%></th>
+    <th><%=t('actions')%></th>
+ </tr>
+
+ </tr>
+  <% @training_required.each do |e| %>
+    <tr>
+      <td><%= e.area_of_training_required %></td>
+      <td><%=truncate(e.description.to_s, :length => 25, :separator => ' ')  %></td>
+      <td><%= e.try(:status)%></td>
+      <td>
+       <button title="Show" id="<%=e.id%>" class="mg-icon-btn showplacementManagementsBTNID"><i class="fa fa-eye"></i>
+       </button>
+       
+       <button title="Edit" id="" class=" mg-icon-btn" onclick="window.location.href='/placements/<%=e.id%>/placement_training_required_edit'"><i class="fa fa-pencil-square-o" ></i></button>
+       <span style="left: -2px; position: relative; float: right; top:-2px;"> 
+
+       <%= link_to "<i class=\"fa fa-trash\"></i>".html_safe,{:controller => "placements", :action => "placement_training_required_delete",:id=>e.id },data: { confirm: "Are you sure?" } ,:title=> "Delete" ,:class=>"mg-icon-btn"%></td>
+                            
+    </tr>
+   <% end %>
+  </table>
+  <%= will_paginate @training_required, :container => false %> 
+  </div>
+  <%else%>
+<%="No Records"%>
+  <%end%>
+  <div id="showTrainingRequiredDIVID"></div>
+  <%= render  partial: 'common_left_close' %>
+ 
+  <script type="text/javascript">
+  $( document ).ready(function() {
+    focusCurrentTab("trainingRequestsAID","trainingRequestsLiID");
+  });
+
+ 
+    $(document).on("click", ".showplacementManagementsBTNID", function(e){
+        var Id=$(this).attr('id');
+        var urlLink = "/placements/placement_training_required_show/"+Id;
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(html){  
+
+                    $('#showTrainingRequiredDIVID').dialog({
+                        modal: true,
+                        title: "Show Training Required",
+                        minHeight: 'auto',
+                        width: 'auto',
+                        open: function () {
+                              $(this).html(html);
+                      }
+                }); 
+            },
+            error: function(html){
+              alert("errorr");
+            }
+        });
+	})	;
+
+
+
+
+  </script>

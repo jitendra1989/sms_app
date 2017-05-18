@@ -1,0 +1,89 @@
+<% navigation_add t('results'), :controller=>'sports_management', :action=>'results' %>
+<%= render  partial: 'sports_left' %>
+
+<%= button_to 'Add Result', {:controller=>'sports_management',:action=>'results_new_data'}, :class=> 'mg-custom-form-btn' %>
+<br/>
+<h4 class="mg-h4"><%= t('results_list')%></h4>
+
+<%if @results.present?%>
+<div class="mg_pagination">
+<table class="batch-tbl mg-tbl-margin">   <!-- border="2" --> 
+ <tr >
+  	<th  class="mg-align-center"><%=t('activity')%></th>
+    <th  class="mg-align-center"><%=t('comittee')%></th>
+    <th  class="mg-align-center"> <%=t('event')%></th>
+  	<th  class="mg-align-center"><%=t('event_date')%></th>
+  	<th  class="mg-align-center"><%=t('game')%></th>
+
+
+    <th><%=t('actions')%></th>
+  </tr>
+  <% @results.each do |e| %>
+    <tr>
+    <%if e.sport_type=="individual"%>
+    <td><%="Individual Sports"%></td>
+    <%elsif e.sport_type=="group"%>
+<td><%="Group Sports"%></td>
+    <%end%>
+      <% committee=MgEventCommittee.find_by(:id=>e.mg_event_committee_id).committee_name%>
+      	<td  class="mg-align-center"><%= committee %></td>
+      	
+      <% event=MgEvent.find_by(:id=>e.mg_event_id).title%>
+
+      <td  class="mg-align-center"><%= event  %></td>
+
+     <%    @timeformat=MgSchool.find_by(:id=>session[:current_user_school_id])
+%>
+      <td  class="mg-align-center"><%= e.date_of_event.strftime(@timeformat.date_format)  %></td>
+
+    	<%game=MgSportGame.find_by(:id=>e.mg_sport_game_id)%>
+
+      	<td  class="mg-align-center"><%= game.name %></td>
+      
+
+     
+
+
+      <td>
+      <%if e.sport_type=="individual"%>
+        <button title="Show" id="<%=raw e.id %>-showjobUploadBTNID" class="show-job-upload-fom-btn mg-icon-btn" onclick="window.location='/sports_management/result_show/<%=e.id%>'"><i class="fa fa-eye"></i></button>
+ <%elsif e.sport_type=="group"%>
+ <button title="Show" id="<%=raw e.id %>-showjobUploadBTNID" class="show-job-upload-fom-btn mg-icon-btn" onclick="window.location='/sports_management/schedule_show/<%=e.id%>'"><i class="fa fa-eye"></i></button>
+
+ <%end%>
+       <%if e.sport_type=="individual"%>
+
+        <button title="Edit" id="<%=raw e.id %>-editjobUploadBTNID" class="edit-job-upload-fom-btn mg-icon-btn" onclick="window.location='/sports_management/results_edit/<%=e.id%>'"><i class="fa fa-pencil-square-o"></i></button>
+ <%elsif e.sport_type=="group"%>
+
+<button title="Edit" id="<%=raw e.id %>-editjobUploadBTNID" class="edit-job-upload-fom-btn mg-icon-btn" onclick="window.location='/sports_management/schedule_edit/<%=e.id%>'"><i class="fa fa-pencil-square-o"></i></button>
+ <%end%>
+
+	    <button title="Delete" onclick="confirm('Are you sure to delete?') ? window.location='/sports_management/<%=e.id%>/result_delete' : ''" class="mg-icon-btn"><i class="fa fa-trash"></i></button>    
+	    </td>
+    </tr>
+  <% end %>
+</table>
+<div>
+ <%= will_paginate @results, :container => false %>
+  </div>
+  <%else%>
+  	<p><%="No Records"%></p>
+  <%end%>
+<%= render  partial: 'application/common_left_close' %>
+
+
+
+
+<script>
+	
+   	
+      $(document).ready(function(){
+                 focusCurrentTab("resultsAID","resultsLiID");
+
+             });
+
+              
+
+	
+</script>

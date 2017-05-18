@@ -1,0 +1,94 @@
+<!-- Sec --> 
+<section id="userBodyContentBox" style="margin: 0 auto;">
+    <table width=100% border="0" cellspacing="0" cellpadding="0"  style="margin-bottom: 0px;">
+        <tr>
+            <td valign="top" class="userBodyContentBox1">
+                <aside class="userMenuBoxLeft" style="width: 210px;">
+                    <ul class="menuListHome">
+                     <li class="myAccountMenu"><%=t('attendance')%></li>
+
+                                               
+
+
+                        <li id="employeeAttendanceLiID" >
+
+                            <a id="employeeAttendanceAID" href="/employees_attendances"><div><i class="fa fa-check-square">&nbsp;&nbsp;</i><%=t('employeeattendance')%><!-- <i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i> --></div></a>
+
+                        </li>
+
+                        <li id="viewEmployeetListLiID">
+                            <a class="menuItemsActivities" href="/mg_employee_leave_types/" id="viewEmployeetList">
+
+                                <div class="setMenu"><i class="fa fa-list">&nbsp;&nbsp;</i><%=t('leavetypelist')%><!-- <i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"> --></i>
+
+                                </div>
+                            </a>
+                        </li>
+                         
+                        <li id="EmployeeLeaveTypesLiID">
+                            <a class="menuItemsActivities1" href="/mg_employee_leave_types/new/" id="EmployeeLeaveTypes">
+
+                                <div class="setMenu"><i class="fa fa-tag">&nbsp;&nbsp;</i><%=t('createleavetypes')%><!-- <i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i> -->
+
+                                </div>
+                            </a>
+                        </li>
+                        <li id="employeeLeaveResetqLiID">
+                            <a class="menuItemsActivities2" href="/mg_employee_leave_types/emp_attendances/" id="employeeLeaveResetq">
+
+                                <div class="setMenu"><i class="fa fa-tags">&nbsp;&nbsp;</i><%=t('resetleave')%><!-- <i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i>
+ -->
+ 
+                                </div>
+                            </a>
+                        </li>
+                        <%user_obj=MgUser.where(:id=>session[:user_id], :user_type=>'principal', :is_deleted=>0)%>
+                        <%if user_obj[0].present?%>
+                         <li id="resetLeaveApplicationLiID">
+                            <a class="menuItemsActivities2" href="/mg_employee_leave_types/leave_for_approve/" id="employeeLeavepplicationA">
+                                <div class="setMenu"><i class="fa fa-navicon">&nbsp;&nbsp;</i><%=t('leave Details')%><!-- <i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i> -->
+
+                                </div>
+                            </a>
+                        </li>
+                      <%end%>
+
+                        
+
+                       <!--  <li >
+                            <a class="menuItemsActivities2" href="/mg_employee_leave_types/from_emp" id="em">
+                                <div class="setMenu"><i class="fa fa-tachometer">&nbsp;&nbsp;</i>Employee<i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px;"></i>
+                                </div>
+                            </a>
+                        </li> -->
+
+                        <li id="resetLeaveImportAttendanceLiID">
+                            <a class="menuItemsActivities2" href="/employees_attendances/import_attendance/" id="employeeLeaveImportAttendance">
+                                <div class="setMenu"><i class="fa fa-upload">&nbsp;&nbsp;</i><%=t('import attendance')%><!-- <i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i> -->
+
+                                </div>
+                            </a>
+                        </li>
+                        <li id="employeeBiometricAttendanceLiID">
+                            <a class="menuItemsActivities2" href="/employee_biometric_attendances/" id="employeeBiometricAttendance">
+                                <div class="setMenu"><i class="fa fa-upload">&nbsp;&nbsp;</i><%=t('biometric_attendances')%><!-- <i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i> -->
+
+                                </div>
+                            </a>
+                        </li>
+                        <li id="importEmployeeBiometricAttendanceLiID">
+                            <a class="menuItemsActivities2" href="/employee_biometric_attendances/import" id="importEmployeeBiometricAttendance">
+                                <div class="setMenu"><i class="fa fa-upload">&nbsp;&nbsp;</i><%=t('import_biometric_attendances')%><!-- <i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i> -->
+
+                                </div>
+                            </a>
+                        </li>
+             
+                    </ul>    
+
+                </aside>
+            </td>
+            <td  valign="top" id="manageStudentCategoryID" class="mg-table-td-main-2">
+
+
+                

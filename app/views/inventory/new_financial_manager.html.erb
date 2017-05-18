@@ -1,0 +1,59 @@
+<div class="mg-custom-labels">
+  <%= form_for :financial_manager, url: create_financial_officer_path, :html => {
+                              :id => 'financialOfficerCreateID' } do |f| %>
+    <%= f.hidden_field :is_deleted, :value => 0 %>
+    <%= f.hidden_field :mg_school_id, :value => session[:current_user_school_id] %>
+    <%= f.hidden_field :created_by, :value => session[:user_id] %>
+    <%= f.hidden_field :updated_by, :value => session[:user_id] %>
+    <%= f.hidden_field :user_type, :value => "financial_manager" %>
+    <% school_subdomain = MgSchool.where(:id=>session[:current_user_school_id],:is_deleted=>0) %>
+    <% @subdomain = school_subdomain[0].subdomain%>
+    
+    <p>
+        <label class="mg-label" style="width:140px"><%= t('user_name') %><span class="required-field">&nbsp;*</span></label>
+        <br/>
+       <%=@subdomain%><%= f.text_field :user_name,:class=>"mg-text-field" %>
+    </p>
+    <p>
+        <label class="mg-label" style="width:140px"><%= t('password') %><span class="required-field">&nbsp;*</span></label>
+        <br/>
+       <%= f.password_field :password,:class=>"mg-text-field" %>
+    </p>
+    <p class="mg-p-mgtop">
+     	 <%=f.submit "submit", :id=>"financialOfficerCreateSubmitID", :style=>"display:none"%>
+      <a onclick="check_uniqueness();" class="mg-small-form-btn"><%=t("save")%></a>
+      <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+    </p>
+  <% end %>
+</div>
+<!-- <%#= render  partial: 'application/common_left_close' %> -->
+
+
+
+<script>
+
+$("#financialOfficerCreateID").validate({
+        rules: {        
+        "financial_manager[user_name]": {required: true},
+        "financial_manager[password]": {required: true}
+      }
+    });
+
+function check_uniqueness(){
+    var user_name=$("#financial_manager_user_name").val();
+    var urlLink = "/inventory/unique_username";
+    $.ajax({
+      url: urlLink ,
+      cache: false,
+      data: {"user_name":user_name},
+      success: function(data){
+        if(data==1){
+          alert("User Name already Exists..");
+          $("#financial_manager_user_name").val('');
+        }else{
+            $("#financialOfficerCreateSubmitID").click();
+        }
+      }
+    });
+  }
+</script>

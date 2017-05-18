@@ -1,0 +1,52 @@
+<% navigation_add t('shortlist'), :controller=>'placements', :action=>'placement_student_selection' %>
+<%= render  partial: 'placements_left' %>
+<!-- <button onclick="window.location.href='/placements/student_selection_new'" class="mg-btn-bottom-margin mg-custom-form-btn"><%= t('shortlist_student')%></button>  --> 
+<h4 class="mg-h4"><%= t('shortlisted_list')%></h4>
+<%if @job_upload_data.present?%>
+<div class="mg_pagination">
+<table class="batch-tbl mg-tbl-margin">   <!-- border="2" --> 
+ <tr >
+    <th class="mg-rm-text-trans "><%=t('name_of_the_company')%></th>
+<th class="mg-rm-text-trans"><%=t('placement_job_id')%></th>
+    
+    <th><%=t('actions')%></th>
+  </tr>
+  <% @job_upload_data.each do |e| %>
+    <tr>
+    <%placement=MgPlacementRegistration.find_by(:id=>e.company)%>
+      <%#=placement.status%>
+    <%
+      if placement.status!='Active'
+          # break
+          next
+      end
+    %>
+      <td class='mg-capitalize-text'><%= placement.try(:name_of_the_company) %></td>
+      <td><%= e.try(:job_id) %></td>
+
+         
+      
+      <td>
+        <button title="Show" onclick="window.location.href='/placements/<%=e.id%>/placement_student_selection_show'" class="mg-icon-btn"><i class="fa fa-eye"></i></button>
+        <button title="Edit" onclick="window.location.href='/placements/<%=e.id%>/placement_student_selection_edit'" class="edit-event-type-btn mg-icon-btn"><i class="fa fa-pencil-square-o"></i></button>
+        <!-- <button title="Delete"  onclick="confirm('Are you sure to delete?') ? window.location.href='/placements/<%=e.id%>/student_selection_delete/' : ''" class="delete-event-type-btn mg-icon-btn"><i class="fa fa-trash"></i></button> --></td>
+    </tr>
+  <% end %>
+</table>
+ <%#= will_paginate @short_list_students, :container => false %>
+  </div>
+
+<%else%>
+<p>No Records</p>
+<%end%>
+
+
+<div id="showPlacementsRegistrationDIVID"></div>
+
+
+<%= render  partial: 'application/common_left_close' %>
+<script>
+  $( document ).ready(function() {
+    focusCurrentTab("student_selectionAID","student_selectionLiID");
+  });
+</script>

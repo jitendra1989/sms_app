@@ -1,0 +1,287 @@
+<%= form_for :inventory_new_fine_particular, url: inventory_fine_particular_create_path, :html => {:id => 'inventoryFineParticularCreateFormId', :class => 'elm_class',:style => 'elm_style' } do |f| %>
+
+ 	<%= f.hidden_field :mg_school_id, :value=> session[:current_user_school_id]%>
+ 	<%= f.hidden_field :is_deleted, :value=> 0%>
+ 	<%= f.hidden_field :created_by, :value=> session[:user_id]%>
+ 	<%= f.hidden_field :updated_by, :value=> session[:user_id]%>
+ 	<div style="float:left; width:40%">
+ 		<p>
+      		<%= f.label :fine_name ,:class=>"mg-label"%><span class="required-field"> *</span><br>
+       		<%= f.text_field :fine_name ,:class=>"mg-text-field"%>
+      	</p>
+      	<p>
+        	<%= f.label :description ,:class=>"mg-label"%><br>
+        	<%= f.text_area :description ,:class=>"mg-text-field"%>
+      	</p>
+      	<p>
+      		<%= f.label :select_item_category ,:class=>"mg-label"%><span class="required-field"> *</span><br>
+      		<%= f.collection_select(:mg_inventory_item_category_id,MgInventoryItemCategory.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]), :id, :name,{:include_blank => t("select")},:class => "mg-select-btn",:onchange=>"itemCategoryChangeFunction(this.value)")%>
+      	</p>
+
+      	<p>
+      		<label class="mg-label mg-tt-width" style="width:185px"><%=t('select_item')%><span class="required-field"> *</span></label><br>
+      		<%=f.select :mg_inventory_item_id,options_for_select([]),{:include_blank => t('select')} ,:class=>"mg-select-btn"%>
+      	</p>
+
+      	<!-- <p>
+			<label class="mg-label mg-tt-width" style="width:185px"><%#=t('select_room')%><span class="required-field"> *</span></label>
+			<%#=f.collection_select(:mg_inventory_room_id,MgInventoryRoomManagement.where(:is_deleted=>0, :mg_school_id=>session[:current_user_school_id]),:id, :room_no,{:include_blank => t('select')},:class=>"mg-select-btn",:onchange=>"roomChangeFunction(this.value)")%>
+		</p>
+		<p>
+			<label class="mg-label mg-tt-width" style="width:185px"><%#=t('select_rack')%><span class="required-field"> *</span></label><br>
+			<%#=f.select :mg_inventory_rack_id,options_for_select([]),{:include_blank => t('select')} ,:class=>"mg-select-btn"%>
+		</p> -->
+		<p>
+      		<%= f.label :amount ,:class=>"mg-label"%><span class="required-field"> *</span><br>
+      		<%= f.text_field :amount ,:class=>"mg-text-field"%>
+      	</p>
+      	<p>
+       		<%= f.label :Start_Date ,:class=>"mg-label"%><span class="required-field"> *</span><br>
+      		<%= f.text_field :start_date, :class=>"fee-collection-start-date-class mg-text-field" %>
+      	</p>
+      	<p>
+       		<%= f.label :End_Date ,:class=>"mg-label"%><span class="required-field"> *</span><br>
+     		<%= f.text_field :end_date, :class=>"fee-collection-end-date-class mg-text-field" %>
+      	</p>
+      	<p>
+     		<%= f.label :Due_Date ,:class=>"mg-label"%><span class="required-field"> *</span><br>
+      		<%= f.text_field :due_date, :class=>"fee-collection-due-date-class mg-text-field" %>
+      	</p>
+      	<p class="mg-p-mgtop">
+
+      		<%= f.submit t('save') ,:class=>"mg-small-form-btn fee-particular-new-class" , :style=>"display:none"%>
+			<a onclick="submission_criteria_form(); " class="input_field mg-small-form-btn "><%=t("save")%></a>
+
+        	<!-- <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%#=t("save")%></a> -->
+         	<%= link_to t('cancel'), "#", {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+      	</p>
+ 	</div>
+ 	<div style="float:left;width:60%">
+    	<label class="mg-label"><%=t('select_semester')%></label><br/>
+    	<label class="mg-label"><%=t('select')%></label> 
+    	<a href="#" id="checkAllCheckBoxInFeeParticularId" class="mg-pop-link">All</a>
+    	<a href="#" id="unCheckAllCheckBoxInFeeParticularId" class="mg-pop-link">None</a>
+    	<div id="error_div_ID" class="error" style="display:none;">This field is required</div>
+    	<%
+    		batches=MgBatch.where(:mg_school_id => session[:current_user_school_id],:is_deleted=>0).order("mg_course_id").pluck(:name,:id,:mg_course_id)
+    	%>
+    	<div id="classSectionDivID" class="mg-scroll-bar-course-batch">
+	    	<%batches.each do |batch|%>
+	    		<input id="item_selected_batches1"  class="auto-ckeckbox-fee-particular-batch-cls" name="selected_batches1[]" type="checkbox" value="<%=raw batch[1]%>" />
+	    		<%course=MgCourse.select(:course_name).find_by_id(batch[2])%>
+	    		<%if course!=nil%>
+	                <%= course.course_name %> - <%=batch[0]%><br/> 
+	            <%else%>
+	                <%=batch[0]%><br/> 
+	            <%end%>
+	    	<%end%>
+    	</div>
+ 	
+	 	<div id="values" name="value">
+	 		<%#= f.label :All ,:class=>"mg-label"%>
+	        <%#= f.radio_button :value1,"All",:checked=> true, id:"radiobuttonAllID"%><br>
+
+	         <label class="mg-label" id="studentListLabelID" style="display:none;"><%= t('student_list') %></label>
+	        <%#= f.radio_button :value1,"demo",:checked=> false%><br>
+
+	        <div class="fee-particular-admission-number-cls">
+	          <!-- <label class="mg-label" for="admissionNumber"><%#= t('admissionnumber') %></label> -->
+	          <%#=select_tag :admission_no,options_for_select([]),:multiple => true,:size =>10 ,:class=>"mg-add-fee-particular"%>
+	        </div>
+
+	        <!-- <label class="mg-label"><%#= t('studentCategory') %></label>
+	        <%#= f.radio_button :value1,"demo2",:checked=> false%> -->
+
+	        <!-- <div class="fee-particular-student-category-cls" style="display:none;">
+	          <%#=f.collection_select(:mg_student_category_id, MgStudentCategory.where(:is_deleted=>0, :mg_school_id=>session[:current_user_school_id]), :id, :name, {:include_blank=>"Select"} ,:class=> 'mg-select-btn' )%>
+	        </div> -->
+	 	</div>
+ 	</div>
+<%end%>
+
+<style type="text/css">
+  .mg-scroll-bar-course-batch{
+      width: 250px;
+      height: 150px;
+      overflow: scroll;
+  }
+</style>
+
+<script>
+	$(document).ready(function(){
+		dateFormatStr =  getJsDateFormat();
+	    $( ".fee-collection-start-date-class" ).datepicker({ changeMonth: true,
+	                changeYear: true,dateFormat: dateFormatStr });
+	    $( ".fee-collection-end-date-class" ).datepicker({ changeMonth: true,
+	                changeYear: true,dateFormat: dateFormatStr });
+	    $( ".fee-collection-due-date-class" ).datepicker({ changeMonth: true,
+	                changeYear: true,dateFormat: dateFormatStr });
+
+	    $("#inventoryFineParticularCreateFormId").validate({
+	      rules: 
+	      {
+	          "inventory_new_fine_particular[fine_name]": {required: true},
+	          "inventory_new_fine_particular[amount]": {required: true,number: true,min:1},
+	          "inventory_new_fine_particular[mg_inventory_item_category_id]": {required: true},
+	          "inventory_new_fine_particular[mg_inventory_item_id]": {required: true},
+	          "inventory_new_fine_particular[mg_inventory_room_id]": {required: true},
+	          "inventory_new_fine_particular[mg_inventory_rack_id]": {required: true},
+	          "inventory_new_fine_particular[start_date]": {required: true},
+	          "inventory_new_fine_particular[end_date]": {required: true},
+	          "inventory_new_fine_particular[due_date]": {required: true},
+	          "selected_batches1[]": {required: true}
+	          //"selectedStudents[]": {required: true}
+	      }
+    	});
+	});
+
+
+	$(".auto-ckeckbox-fee-particular-batch-cls").change(function(){
+    		$("#error_div_ID").hide();
+
+    	});
+
+	$(document).on("click",".auto-ckeckbox-fee-particular-batch-cls",function(){
+		var checkedvalue=checkingBatchesSelected();
+    	checkedvalue=checkedvalue.trim().replace(/ /g,",");
+  		console.log("val");
+  		console.log(checkedvalue);
+  		jQuery.ajax({
+            url: "/fees/section_students",
+            type: "GET",
+            data: {"batch_value":checkedvalue},
+            dataType: "html",
+            success: function(html) {
+               $("#studentListLabelID").show();
+               $(".fee-particular-admission-number-cls").html(html);
+            },
+            error:function(){
+              alert("Something went wrong!");
+            }	
+    	});
+	});
+
+	$(document).on("click","#inventory_new_fine_particular_value1_demo",function(){
+		var checked=checkingBatchesSelected();
+		if (checked.length==0)
+	    {
+	      alert("Please select the Class & Section");
+	    }
+	});
+
+	function checkingBatchesSelected(){
+		var checkedvalue="";
+    	var uncheckedvalue="";
+    	$("input[name^=selected_batches]:checked").each(function(index){
+      		checkedvalue+=$(this).val()+" ";
+    	});
+    	return checkedvalue;
+	}
+
+	function submission_criteria_form(){
+		var temp=0;
+		$("input[name^=selected_batches]:checked").each(function(index){
+      		//checkedvalue+=$(this).val()+" ";
+      		temp++;
+
+    	});
+    	if (temp>0)
+    	{
+    		student_selected();
+    	}
+    	else{
+    		alert("Please select semester");
+
+    	}
+	}
+
+	function student_selected(){
+		var selected_students=$("#selectedStudents").val();
+		if(selected_students==null){
+			alert("Please select students");
+		}
+		else
+		{
+			$(".fee-particular-new-class").click();
+		}
+	}
+
+
+
+	// $(document).on("click", "#radiobuttonAllID", function(){
+ //    	$("#feeParticularAdmissionID").val('');
+ //    	document.getElementById('inventory_new_fine_particular_mg_student_category_id').selectedIndex = -1;
+ //    	$(".fee-particular-student-category-cls").css({  
+ //            'display': 'none'
+ //    	}); 
+ //    	$(".fee-particular-admission-number-cls").css({  
+ //            'display': 'none'
+ //    	});
+	// });
+
+	$(document).on("change","#inventory_new_fine_particular_start_date",function(e){
+    	var end_date=$("#inventory_new_fine_particular_end_date").val();
+    	if (!(end_date=="")){
+	      	var start_date=$(this).val();
+	     	if(getDateObj(start_date,dateFormatStr)>getDateObj(end_date,dateFormatStr)){
+	        	alert("Start Date should be less than End Date");
+	        	document.getElementById('inventory_new_fine_particular_start_date').value ="";
+	      	}
+	      	var temp=$("#inventory_new_fine_particular_due_date").val();
+	      	if(!temp=="")
+	      	{
+	      		var end_date=$("#inventory_new_fine_particular_end_date").val();
+	      		var start_date=$("#inventory_new_fine_particular_start_date").val();
+	      		var due_date=$("#inventory_new_fine_particular_due_date").val();
+
+	     		if(!(getDateObj(due_date,dateFormatStr)>=getDateObj(start_date,dateFormatStr)&&getDateObj(due_date,dateFormatStr)<=getDateObj(end_date,dateFormatStr))){
+	        		alert("Due Date should be between Start Date and End Date");
+	        		document.getElementById('inventory_new_fine_particular_start_date').value ="";
+	      		}
+			}	
+      	}
+    });
+
+	$(document).on("change","#inventory_new_fine_particular_end_date",function(e){
+    	var start_date=$("#inventory_new_fine_particular_start_date").val();
+    	if (!(start_date=="")){
+	      	var end_date=$(this).val();
+	     	if(getDateObj(start_date,dateFormatStr)>getDateObj(end_date,dateFormatStr)){
+	       		alert("End Date should be more than Start Date");
+	        	document.getElementById('inventory_new_fine_particular_end_date').value ="";
+	      	}
+			var temp=$("#inventory_new_fine_particular_due_date").val();
+	      	if(!temp=="")
+	      	{
+	      		var end_date=$("#inventory_new_fine_particular_end_date").val();
+	      		var start_date=$("#inventory_new_fine_particular_start_date").val();
+	      		var due_date=$("#inventory_new_fine_particular_due_date").val();
+
+	     		if(!(getDateObj(due_date,dateFormatStr)>=getDateObj(start_date,dateFormatStr)&&getDateObj(due_date,dateFormatStr)<=getDateObj(end_date,dateFormatStr))){
+	        		alert("Due Date should be between Start Date and End Date");
+	        		document.getElementById('inventory_new_fine_particular_end_date').value ="";
+	      		}
+			}
+      	}
+    });
+	
+	$(document).on("change","#inventory_new_fine_particular_due_date",function(e){
+    	var end_date=$("#inventory_new_fine_particular_end_date").val();
+        var start_date=$("#inventory_new_fine_particular_start_date").val();
+        var due_date=$("#inventory_new_fine_particular_due_date").val();
+		if(start_date=="" || end_date=="")
+		{
+  			alert("Enter The Start Date And End Date");
+  			document.getElementById('inventory_new_fine_particular_due_date').value ="";
+		}
+      	else
+      	{
+
+     		if(!(getDateObj(due_date,dateFormatStr)>=getDateObj(start_date,dateFormatStr)&&getDateObj(due_date,dateFormatStr)<=getDateObj(end_date,dateFormatStr))){
+        		alert("Due Date should be between Start Date and End Date");
+        		document.getElementById('inventory_new_fine_particular_due_date').value ="";
+      		}
+   		}
+   });
+
+</script>

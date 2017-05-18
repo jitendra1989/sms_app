@@ -1,0 +1,41 @@
+<!-- Sec --> 
+
+<!-- breadcrumbs Work -->
+<% navigation_add 'Employee Category', mg_employee_categories_path %>
+
+<!-- breadcrumbs Work -->
+
+
+<!-- Partial left content -->
+<%= render  partial: 'master_settings/master_settings_left.html' %>
+<!-- Partial Index -->
+<%= render partial: 'index' %>
+<!-- Partial Section close-->
+<%= render partial: 'application/emp_section_close' %>
+
+
+<script type="text/javascript">
+     $(document).ready(function(){
+            $("li").removeClass( "active" );
+            $("a").removeClass( "activeMenu" );
+
+            $("#createManCatLiID").addClass("active");
+            $("#manageEmployeeCategory").addClass("activeMenu");
+
+              focusMasterSettings();
+
+
+
+		   $(".new_mg_employee_category").validate({
+		  rules: {
+		    
+		    "mg_employee_category[category_name]": {required:true},
+		          "mg_employee_category[prefix]": {required:true},
+		          "mg_employee_category[suffix]": {required:true}
+		  }
+		  });
+   });
+</script>
+
+
+

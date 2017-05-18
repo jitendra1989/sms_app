@@ -1,0 +1,53 @@
+<%= render  partial: 'examination_table_left' %>
+<h4 class="mg-h4">Select Criteria</h4>
+<div>
+
+<%= form_for :ScholasticFaCriteria, :url=>{:controller=>'examination',:action=>'exammanagement_resultEntryCreate'},:html => {
+                            :id => 'rankingCategoryCreateFormId', :class => 'elm_class',
+ 
+                            :style => 'elm_style' } do |f| %>
+
+<%#=hidden_field_tag :mg_course_id, @Id, :id=>"observationsCourseId"%>
+
+
+<p>
+<%#=hidden_field_tag 'category_id', @category_id%>
+
+        <%@value.each do |data|%>
+        
+        <%datas=MgFaGroup.find_by(:id=>data,:mg_cce_exam_category_id=>@category_id,:is_deleted=>0,:mg_school_id=>session[:current_user_school_id])%>
+
+        <%if datas.present?%>
+       
+      
+        
+      <%exam_category=MgCceExamCategory.find(datas.mg_cce_exam_category_id)%>
+
+          <%@data1=datas.name%>                  
+         <%@datas=exam_category.name %>
+      
+    <a href="#" id="<%=raw datas.id%>-<%=raw @exam_id%>-<%=raw @subID%>-<%=raw @category_id%>" class="Exam-Fa-Class mg-table-heading"><%="#{@data1}-#{@datas}"%></a><br/>
+ 
+        <%end%>
+        <%end%>
+      </p>
+
+<%end%>
+
+
+<div id="coscholastic_Fa_data_entry">
+</div>
+</div>
+
+<p class="mg-p-mgtop">
+     <%= link_to t('back'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+</p>
+<%= render  partial: 'examination_table_close' %>
+
+<script>
+$(document).ready(function(){
+  focusCurrentTab("createNewStudentAID","createNewStudentLiID");
+        focusExaminationHeaderBox();
+});
+</script>
+

@@ -1,0 +1,96 @@
+<% navigation_add t('menu'), :controller=>'canteen_managements', :action=>'menu' %>
+<% navigation_add t('show_menu'), :controller=>'canteen_managements', :action=>'show_menu' , :id=>@canteen.id %>
+
+<%= render  partial: 'canteen_managements/canteen_management_left' %>
+<h4 class="mg-h4"><%= t('show_menu') %></h4>
+<%
+    weekDays=Hash.new
+    weekDays[0]='Sunday'
+    weekDays[1]="Monday"
+    weekDays[2]="Tuesday"
+    weekDays[3]="Wednesday"
+    weekDays[4]="Thursday"
+    weekDays[5]="Friday"
+    weekDays[6]="Saturday"
+
+    @food_item=MgFoodItem.where(:is_deleted=>0, :mg_school_id=>session[:current_user_school_id]).pluck(:item_name, :id )
+%>
+<%#= form_for :canteen_managements ,  :url=>{:controller=>'canteen_managements',:action=>'create_menu'}, :html=>{:id=>'canteen_managements_new_menu_form_id', :multipart=>true} do |f| %>
+
+<%= form_for :canteen, :url=>{:controller=>'canteen_managements',:action=>'update_menu',:id=>@canteen.id},:html => {:id => 'canteenUpdateID' } do |f| %>
+
+        <%= f.hidden_field :is_deleted ,:value=>0%>
+        <%= f.hidden_field :mg_school_id ,:value=>session[:current_user_school_id]%>
+        <%= f.hidden_field :created_by ,:value=>session[:user_id]%>
+        <%= f.hidden_field :updated_by ,:value=>session[:user_id]%>
+
+<p>
+   <label class="mg-label mg-tt-width" ><%= t('name') %><span class="required-field">&nbsp;</span></label>
+   <%= @canteen.try(:name) %><br>
+   <label class="mg-label mg-tt-width "><%=t('start_date') %></label>
+   <%= @canteen.try(:start_date).strftime(date_format(session[:current_user_school_id])) %><br>
+   <label class="mg-label mg-tt-width "><%=t('end_date') %></label>
+   <%= @canteen.try(:end_date).strftime(date_format(session[:current_user_school_id])) %><br>
+   <label class="mg-label mg-tt-width" ><%= t('status') %><span class="required-field">&nbsp;</span></label>
+   <%= @canteen.try(:status) %><br>
+</p>
+
+<!-- =========================================================================== -->
+
+<table class="batch-tbl mg-tbl-layout mg-tbl-margin mg-std-tbl-width mg-table-normal-whitespace mg-custom-labels" style="width: 98%; max-width: 98%;">
+		 	<tr>
+		 		<!-- <th>FOOD CATEGORY</th> -->
+		 		<th bgcolor="#e6b319">Days/Meal</th>
+		 		<%@foodCategory= MgMealCategory.where(:is_deleted=>0, :mg_school_id=>session[:current_user_school_id]).order("priority")%>
+		 		<%@foodCategory.each do |category| %>
+		 			<th id="#{category.try(:id)}" bgcolor="#b78ee0" ><%=category.try(:name)%></th>
+		 		<%end%>
+		 	</tr>
+
+		 	<%weekDays.each_with_index do |days,index|%>
+
+		 		<tr>
+		 			<td class="mg-align-center" bgcolor="#FFE6BF">
+		 				<%=weekDays[index]%>
+		 			</td>
+
+		 			<%@foodCategory.each do |category| %>
+		 			<%str="#{index}_#{category.try(:id)}"
+          %>
+		 				<td class="showMenuDataTdClass" style="height:98px; display:table-cell;">
+                <%item_data_ids=MgCanteenMeal.where(:is_deleted=>0, :mg_school_id=>session[:current_user_school_id], :mg_meal_category_id=> category.try(:id), :mg_day_id=> index, :mg_canteen_id=> @canteen.id).pluck(:mg_food_item_id)%>
+
+                <%item_data_ids.each do |item_data|
+                    food_item=MgFoodItem.find_by(:id=>item_data)
+                    %><%=food_item.try(:item_name)%>
+                    <br/><%
+                end
+                  %>
+		 						<!-- <b><%#=t('select_item')%></b> -->
+								<%#= select_tag "mg_food_item_id[#{str}][]",options_for_select(@food_item,MgCanteenMeal.where(:is_deleted=>0, :mg_school_id=>session[:current_user_school_id], :mg_meal_category_id=> category.try(:id), :mg_day_id=> index, :mg_canteen_id=> @canteen.id).pluck(:mg_food_item_id)),:multiple => true,:size =>10,:class=>"food_item_multiple_class mg-text-field"%>	 					
+		 				</td>
+		 			<%end%>
+
+		 		</tr>
+		 	<%end%>
+</table>
+
+
+  <p class="mg-p-mgtop">
+    <!-- <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn" id="sumiteBtnAID"><%#=t("save")%></a> -->
+    <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+  </p>
+
+
+<%end%>
+
+<%= render  partial: 'application/common_left_close' %>
+
+
+
+<script>
+	$( document ).ready(function() {
+    $(".showMenuDataTdClass").css("background", "#ccffcc");
+    focusCurrentTab("canteenMenuDetailsAID","canteenMenuDetailsLID");
+	});
+</script>

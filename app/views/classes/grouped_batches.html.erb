@@ -1,0 +1,49 @@
+
+
+
+ 
+  <h3>Grouped Batches</h3>
+ 
+</div>
+<div id="page-yield">
+
+  
+
+  
+  
+    <%=form_for :batch_group,:url=>{:action=>"create_batch_group", :course_id=>@course.id} do |f| %>
+
+      <div id="form-content">
+        <div class="label-field-pair">
+          <label for="name">Name</label>
+          <div class="text-input-bg"><%= f.text_field :name %></div>
+        </div>
+        <div class="grades">
+        <div class="label-field-pair">
+          <label for="configuration_grading_systems">Select Batches :</label>
+        </div>
+        <div class="fee_category_scroll">
+          <% @batches.each do |b| %>
+         
+            <div class="each_batch">
+              <%= check_box_tag "batch_ids[]", b.id,false,:class=>'batches_box' %> <%= b.name %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+
+        <div class="extender"></div>
+
+        <div id="submit-button">
+          <%=f.submit "submit" %>
+        </div>
+
+
+      </div>
+    <% end %>
+  </div>
+  <div id="category-list">
+    <%#= render :partial=>"batch_groups" %>
+  </div>
+
+</div>

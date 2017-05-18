@@ -1,0 +1,51 @@
+<!-- Sec --> 
+
+<button class="new-employee-category mg-btn-bottom-margin mg-custom-form-btn" id="newEmployeeCategoryID">New Category</button>
+<h4 class="mg-h4">Listing Category</h4>
+<% if @employee_categories.length > 0 %>
+<div class="mg_pagination">
+    <table class="batch-tbl mg-tbl-margin" id="EmpCatTableID">
+        <tr>
+          <th><%=t('categoryname')%></th>
+          <th><%=t('prefix')%></th>
+          <th><%=t('suffix')%></th>
+          <!-- <th>Status</th> -->
+          <th><%=t('actions')%></th>
+        </tr>
+       
+        <% @employee_categories.each do |employee_category| %>
+           <%= render partial: 'table_row', locals: {employee_category: employee_category} %>
+        <% end %>
+    </table><br/>
+     <%= will_paginate @employee_categories, :container => false %>
+    </div>
+<% else %>
+  <h4>Please create some employee category... </h4>
+
+<% end %>
+
+<div id="newEmployeeCategoryDialogID" ></div>
+<div id="editEmployeeCategoryDialogID" ></div>
+<script>
+ 
+$(document).ready(function(){
+//    $("#createCategoryFormId").validate({
+//   rules: {
+    
+//     "mg_employee_category[category_name]": {required:true},
+//           "mg_employee_category[prefix]": {required:true},
+//           "mg_employee_category[suffix]": {required:true}
+//   }
+//   });
+
+ // $(".new_mg_employee_category").validate({
+ //      rules: {
+        
+ //        "mg_employee_category[category_name]": {required:true},
+ //              "mg_employee_category[prefix]": {required:true},
+ //              "mg_employee_category[suffix]": {required:true}
+ //      }
+ //      });
+
+});
+// </script>

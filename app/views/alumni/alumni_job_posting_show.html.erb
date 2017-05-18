@@ -1,0 +1,138 @@
+<%=render partial: "alumni_left"%>
+<% navigation_add t('alumni_job_posting'),"/alumni/alumni_job_posting_index" %>
+<% navigation_add t('show_alumni_job_details'), :controller=>'alumni', :action=>'alumni_job_posting_show',:id=>params[:id] %>
+
+
+<h4 class="mg-h4"><%=t('show_alumni_job_details')%></h4>
+
+<table border="1" class="mg-showdata-bg" cellspacing="1" cellpadding="1">
+  <%school=MgSchool.find(session[:current_user_school_id])%>
+  <tr>
+   <td class="mg-td-width-half" valign="top">
+    <label class="mg-label"> <%= t('position')%></label>
+   </td>
+   <td class="mg-td-width-half" valign="top"><%=@alumni_job_posting.try(:position)%></td>
+  </tr>
+  <tr>
+   <td class="mg-td-width-half" valign="top">
+    <label class="mg-label"> <%= t('job_description')%></label>
+   </td>
+   <td class="mg-td-width-half" valign="top">
+      <div class="text-scroll-for-log-text-cls comments-space" style="padding: 5px 40 0 10px">
+        <%=@alumni_job_posting.try(:job_description)%>
+      </div>
+    </td>
+  </tr>
+  <tr>
+   <td class="mg-td-width-half" valign="top">
+    <label class="mg-label"> <%= t('functional_area')%></label>
+   </td>
+   <td class="mg-td-width-half" valign="top">
+     
+        <%=@alumni_job_posting.try(:functional_area)%>
+      
+    </td>
+  </tr>
+  <tr>
+   <td class="mg-td-width-half" valign="top">
+    <label class="mg-label"> <%= t('educational_qualification')%></label>
+   </td>
+   <td class="mg-td-width-half" valign="top"><%=@alumni_job_posting.try(:minimum_qualification)%></td>
+  </tr>
+  
+  <tr>
+   <td class="mg-td-width-half" valign="top">
+    <label class="mg-label"> <%= t('minimum_experience_required')%></label>
+   </td>
+   <td class="mg-td-width-half" valign="top"><%=@alumni_job_posting.try(:minimum_experience_required)%></td>
+  </tr>
+   <tr>
+   <td class="mg-td-width-half" valign="top">
+    <label class="mg-label"> <%= t('technical_skills')%></label>
+   </td>
+   <td class="mg-td-width-half" valign="top"><%=@alumni_job_posting.try(:technical_skills)%></td>
+  </tr>
+   <tr>
+   <td class="mg-td-width-half" valign="top">
+    <label class="mg-label"> <%= t('soft_skills')%></label>
+   </td>
+   <td class="mg-td-width-half" valign="top"><%=@alumni_job_posting.try(:soft_skills)%></td>
+  </tr>
+   <tr>
+   <td class="mg-td-width-half" valign="top">
+    <label class="mg-label"> <%= t('salary')%></label>
+   </td>
+   <td class="mg-td-width-half" valign="top"><%=@alumni_job_posting.try(:salary)%></td>
+  </tr>
+  <tr>
+   <td class="mg-td-width-half" valign="top">
+    <label class="mg-label"> <%= t('company')%></label>
+   </td>
+   <td class="mg-td-width-half" valign="top"><%=@alumni_job_posting.try(:company)%></td>
+  </tr>
+
+  <tr>
+   <td class="mg-td-width-half" valign="top">
+    <label class="mg-label"> <%= t('company_website')%></label>
+   </td>
+   <td class="mg-td-width-half" valign="top"><%=@alumni_job_posting.try(:company_website)%></td>
+  </tr>
+
+  <tr>
+   <td class="mg-td-width-half" valign="top">
+    <label class="mg-label"> <%= t('relevant_experience')%></label>
+   </td>
+   <td class="mg-td-width-half" valign="top"><%=@alumni_job_posting.try(:relevant_experience)%></td>
+  </tr>
+  <tr>
+   <td class="mg-td-width-half" valign="top">
+    <label class="mg-label"> <%= t('alumni_id')%></label>
+   </td>
+   <td class="mg-td-width-half" valign="top"><%=@alumni_job_posting.try(:alumni_id)%></td>
+  </tr>
+  <tr>
+   <td class="mg-td-width-half" valign="top">
+    <label class="mg-label"> <%= t('referral_code')%></label>
+   </td>
+   <td class="mg-td-width-half" valign="top"><%=@alumni_job_posting.try(:referral_code)%></td>
+  </tr>
+   <tr>
+   <td class="mg-td-width-half" valign="top">
+    <label class="mg-label"> <%= t('interview_date')%></label>
+   </td>
+    <% @dateFormat = MgSchool.find_by_id(session[:current_user_school_id]).date_format %>
+   <td class="mg-td-width-half" valign="top"><%=@alumni_job_posting.try(:interview_date).strftime(@dateFormat)%></td>
+  </tr>
+   <tr>
+   <td class="mg-td-width-half" valign="top">
+    <label class="mg-label"> <%= t('last_date_of_application')%></label>
+   </td>
+   <td class="mg-td-width-half" valign="top"><%=@alumni_job_posting.try(:last_date_of_application).strftime(@dateFormat)%></td>
+  </tr>
+  <tr>
+   <td class="mg-td-width-half" valign="top">
+    <label class="mg-label"> <%= t('status')%></label>
+   </td>
+ <%if Date.today>@alumni_job_posting.interview_date%>
+
+   <td class="mg-td-width-half" valign="top"><%="Inactive"%></td>
+
+   <%else%>
+
+   <td class="mg-td-width-half" valign="top"><%="Active"%></td>
+
+ <%end%>
+
+  </tr>
+</table>
+</br>
+ <%= link_to t('cancel'),alumni_job_posting_index_path ,{:class=>"mg-small-form-btn cancel-form-dialog"} %>
+<%=render partial: "common_left_close"%>
+
+<script type="text/javascript">
+$(document).ready(function () {
+  focusCurrentTab("alumniJobPostingAId","alumniJobPostingLiId");
+  textSeeMoreLess();
+});
+
+</script>

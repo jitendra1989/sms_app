@@ -1,0 +1,242 @@
+
+   <%if flash[:error].present?%>
+  <div class="alert alert-info mg-success-msg">
+
+        <%=flash[:error]%>
+  <div class="alert alert-info mg-success-msg">
+        
+   <%end%>
+<h4 class="mg-h4"><%= t('create_vehicle')%></h4>
+<div class="box">
+<%= form_for :vehicle ,  url:vehicles_path, :html=>{:id=>'vehicle_form'} do |f| %>
+
+        <%= f.hidden_field :is_deleted ,:value=>0%>
+        <%= f.hidden_field :mg_school_id ,:value=>@school_id%>
+        <%#= f.text_field :vehicle_number ,:class=>"mg-text-field"%>
+        
+<table class="pop-up-inner-text mg-tbl-margin mg-show-tbl-width">
+    <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="vehicleNumber"><%= t ('vehicle_number') %><span class="required-field">&nbsp;*</span></label><br/>
+        <%= f.text_field :vehicle_number ,:class=>"mg-text-field"%>
+      </td>
+    </tr>
+    <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label"  for="make"><%= t ('make') %></label><br/>
+        <%= f.text_field :make ,:class=>"mg-text-field"%>
+      </td>
+    </tr>
+    <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label"  for="model"><%= t ('model') %></label><br/>
+        <%= f.text_field :model ,:class=>"mg-text-field"%>
+      </td>
+    </tr>
+    <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label mg-label-text-transform-none" for="dateofPurchase"><%= t ('date_of_purchase') %></label><br/>
+        <%= f.text_field :date_of_purchase ,:class=>"mg-text-field mg-start-time-field"%>
+      </td>
+    </tr>
+    <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label mg-label-text-transform-none"  for="noofSeats"><%= t ('no_of_seats') %><span class="required-field">&nbsp;*</span></label><br/>
+        <%= f.text_field :no_of_seats ,:class=>"mg-text-field"%>
+      </td>
+    </tr>
+    <tr>
+      
+      <td class="mg-td-width-one-third">
+        <label class="mg-label"  for="currentInsuranceDueDate"><%= t ('current_insurance_due_date') %></label><br/>
+        <%= f.text_field :Current_insurance_due_date ,:class=>"mg-text-field mg-end-time-field"%>
+      </td>
+    </tr>
+    <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label"  for="make"><%= t ('last_insurance_amount') %></label><br/>
+        <%= f.text_field :last_insurance_amount,:class=>"mg-text-field"%>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <label class="mg-label" for="LastServiceDate"><%= t ('last_service_date') %></label><br/>
+          <%= f.text_field :last_service_date,:class=>"mg-text-field"%>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <label class="mg-label" for="nextServiceDate"><%= t ('next_service_date') %></label><br/>
+          <%= f.text_field :next_service_date,:class=>"mg-text-field"%>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <label class="mg-label" for="isUnderRepair"><%= t ('is_under_repair') %></label><br/>
+          <%=f.check_box :is_under_repair%>
+      </td>
+    </tr>
+    <tr>
+      <td>
+    <div id="vehiclemanagement" class="vehicle-Div-Class" style="display: none;">
+                          
+        <label class="mg-label" for="repairCompletionDate"><%= t ('repair_completion_date') %></label><br/>
+
+    </div>
+    <div id="vehiclemanage" class="vehicle-Div-Class" style="display: none;">
+          <%= f.text_field :repair_completion_date,:class=>"mg-text-field"%>
+     
+     </div>
+      </td>
+    </tr>
+      <tr>
+      <td>
+        <label class="mg-label" for="nextServiceDate"><%= t ('vehicle_status') %><span class="required-field">&nbsp;*</span></label><br/>
+          <%= f.select :vehicle_status,options_for_select([["In Service","In service"],["Permanently out of Service","permanently out of service"]]),:prompt=>"Select"%>
+      </td>
+    </tr>
+</table>
+  
+ <br/> <p class="mg-custom-labels">
+<%= submit_tag t("save"),:class=>"mg-small-form-btn"%>
+ <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+ </p>
+  </div>
+<%end%>
+ 
+<script>
+    $(document).ready(function(){
+
+    $("#vehicle_is_under_repair").change(function(){
+ 
+    $(".vehicle-Div-Class").toggle();
+     
+  });
+
+  focusCurrentTab("timeTableAssociateAID","vehiclemanagementAssociateLiID");
+
+    dateFormatStr =  getJsDateFormat();
+
+    $('#vehicle_date_of_purchase').datepicker({ changeMonth: true,
+                changeYear: true,yearRange: "-50:+0",maxDate: "0",dateFormat: dateFormatStr});
+
+    $('#vehicle_Current_insurance_due_date').datepicker({ changeMonth: true,
+                changeYear: true,yearRange: "-50:+40",dateFormat: dateFormatStr});
+
+    $('#vehicle_last_service_date').datepicker({ changeMonth: true,
+                changeYear: true,yearRange: "-50:+0",maxDate: "0",dateFormat: dateFormatStr});
+
+    $('#vehicle_next_service_date').datepicker({ changeMonth: true,
+                changeYear: true,yearRange: "-50:+40",dateFormat: dateFormatStr});
+
+    $('#vehicle_repair_completion_date').datepicker({ changeMonth: true,
+                changeYear: true,yearRange: "-50:+50",dateFormat: dateFormatStr});
+  
+  
+
+$(function () {
+    $.validator.addMethod('dateFormat',
+    function (value, element) {
+      dateFormatStr =  getJsDateFormat();
+        if (this.optional(element)) {
+            return true;
+        }
+        var ok = true;
+        try {
+            $.datepicker.parseDate(dateFormatStr, value);
+        }
+        catch (err) {
+            ok = false;
+        }
+        return ok;
+    },
+
+
+      "Please enter a date in the format "+ getDateFormat(dateFormatStr) +".");
+      dateFormatStr =  getJsDateFormat();
+
+    $(".datefield").datepicker({ dateFormat: dateFormatStr, changeYear: true });
+});
+
+
+    $("#vehicle_form").validate({
+      rules:{
+        "vehicle[vehicle_number]":{required:true},
+        "vehicle[no_of_seats]":{required:true,number:true,min:1},
+        "vehicle[vehicle_status]":{required:true},
+        "vehicle[Current_insurance_due_date]":{dateFormat:true},
+        "vehicle[date_of_purchase]":{dateFormat:true},
+        "vehicle[last_service_date]":{dateFormat:true},
+        "vehicle[next_service_date]":{dateFormat:true},
+        "vehicle[repair_completion_date]":{dateFormat:true},
+        "vehicle[last_insurance_amount]":{number:true}
+
+      },
+     });
+     });
+
+    $(document).on("change","#vehicle_last_service_date",function(e){
+      var end_date=$("#vehicle_next_service_date").val();
+      if(!(end_date==""))
+      {
+            var start_date=$(this).val();
+
+     // console.log("Changed dob"); 
+     // console.log(new Date(Date.parse(dob,dateFormatStr)).toString());
+     // console.log(new Date(Date.parse(admission_date,dateFormatStr)).toString());
+
+     if(getDateObj(start_date,dateFormatStr)>getDateObj(end_date,dateFormatStr)){
+        alert("Last Service Date should be less than Next Service Date");
+        document.getElementById('vehicle_last_service_date').value ="";
+      }
+
+      //var temp=$("#fee_schedule_due_date").val();
+//       if(!temp=="")
+//       {
+//       var end_date=$("#fee_schedule_end_date").val();
+//       var start_date=$("#fee_schedule_start_date").val();
+//       var due_date=$("#fee_schedule_due_date").val();
+
+//      if(!(getDateObj(due_date,dateFormatStr)>=getDateObj(start_date,dateFormatStr)&&getDateObj(due_date,dateFormatStr)<=getDateObj(end_date,dateFormatStr))){
+//         alert("Due Date should be between Start Date and End Date");
+//         document.getElementById('fee_schedule_start_date').value ="";
+//       }
+// }
+      }
+      
+   });
+
+
+    $(document).on("change","#vehicle_next_service_date",function(e){
+      var start_date=$("#vehicle_last_service_date").val();
+      if(!(start_date==""))
+      {
+        var end_date=$(this).val();
+
+     // console.log("Changed dob"); 
+     // console.log(new Date(Date.parse(dob,dateFormatStr)).toString());
+     // console.log(new Date(Date.parse(admission_date,dateFormatStr)).toString());
+
+     if(getDateObj(start_date,dateFormatStr)>getDateObj(end_date,dateFormatStr)){
+        alert("Next Service Date should be more than Last Service Date");
+        document.getElementById('vehicle_next_service_date').value ="";
+      }
+// var temp=$("#fee_schedule_due_date").val();
+//       if(!temp=="")
+//       {
+//       var end_date=$("#fee_schedule_end_date").val();
+//       var start_date=$("#fee_schedule_start_date").val();
+//       var due_date=$("#fee_schedule_due_date").val();
+
+//      if(!(getDateObj(due_date,dateFormatStr)>=getDateObj(start_date,dateFormatStr)&&getDateObj(due_date,dateFormatStr)<=getDateObj(end_date,dateFormatStr))){
+//         alert("Due Date should be between Start Date and End Date");
+//         document.getElementById('fee_schedule_end_date').value ="";
+//       }
+// }
+      }
+      
+   });
+
+
+</script>
+

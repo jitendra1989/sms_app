@@ -1,0 +1,78 @@
+<%= form_for :rankings, :url=>{:controller=>'examination',:action=>'ranking_update',:id=>@rankings.id},:html => {
+                            :id => 'rankingEditCategoryCreateFormId', :class => 'elm_class',
+                            :style => 'elm_style' } do |f| %>
+
+    
+
+
+  <div class="mg-custom-labels" style="float:left;width:50%"> 
+
+      <p>
+        <label class="mg-label" for="name"> <%= t('name') %><br/>
+        <%= f.text_field :name ,:class=>"mg-text-field"%>
+      </p>
+     
+      <p>
+        <label class="mg-label" for="gpa"> <%= t('gpa') %><br/>
+        <%= f.text_field :gpa ,:class=>"mg-text-field"%>
+      </p>
+      <p>
+        <label class="mg-label" for="marks"> <%= t('marks') %><br/>
+        <%= f.text_field :marks ,:class=>"mg-text-field"%>
+      </p>
+    <p>
+ <label class="mg-label" for="marks_limit_type"> <%= t('marks_limit_type') %><br/>
+ <%= f.select :marks_limit_type, options_for_select([["Select"],["Upper","upper"], ["Lower","lower"],["Exact","exact"]])%>
+ </p>
+       
+    <p>
+       <label class="mg-label" for="subject_count"> <%= t('subject_count') %><br/>
+        <%= f.text_field :subject_count ,:class=>"mg-text-field"%>
+      </p>
+      <p>
+     <label class="mg-label" for="subject_limit_type"> <%= t('subject_limit_type') %><br/>
+      <%= f.select :subject_limit_type, options_for_select([["Select"],["Upper","upper"], ["Lower","lower"],["Exact","exact"]])%>
+    </p>
+
+    <p>
+       <label class="mg-label" for="full_course_duration"> <%= t('full_course_duration') %><br/>
+        <%= f.check_box :full_course ,:class=>"mg-text-field" ,:style=>"position: relative; left: -5em;"%>
+      </p>
+      
+
+ 
+      
+<div style="display:none;">
+      <p>
+        <label for="is_deleted" class="mg-label "><%=t('status')%></label><br />
+        <label for="is_deleted" class="mg-label-inner-form "><%=t('active')%></label>
+        <%= f.radio_button :is_deleted, false , :checked => true%>
+        <label for="is_deleted" class="mg-label-inner-form "><%=t('inactive')%></label>
+        <%= f.radio_button :is_deleted, true %>
+      </p>
+  </div>
+
+      <br/>
+      <%= f.submit t('save') ,:class=>"mg-small-form-btn"%><br>
+<%end%>
+
+
+
+
+<script>
+ $("#rankingEditCategoryCreateFormId").validate({
+        //debug: true,
+        rules: {
+                  "rankings[name]": {required: true},
+                  "rankings[gpa]": {required: true},
+                  "rankings[marks]": {required: true},
+                  "rankings[marks_limit_type]": {required: true},
+                  "rankings[subject_count]": {required: true},
+                  "rankings[subject_limit_type]": {required: true},
+                  
+                  
+                      
+        }
+      });
+ 
+</script>

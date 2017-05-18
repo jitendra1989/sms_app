@@ -1,0 +1,130 @@
+<!-- Sec --> 
+<%= form_for :student_hostel_attendances ,:html => {
+                            :id => 'studentsAttendancesFormsID'} do |f| %>
+   <p> 
+        <%= f.label :is_late_come, t('is late come?') ,:class=> "mg-label"%>    
+        <!-- <input id="emp_attendances_latecom" type="checkbox"  > -->
+        <%= f.check_box :is_late_come,:onclick=>"toggleLateCome();" %>
+   </p> 
+  <div id="employeeAttendanceLateComeHideID">
+           
+          
+          <p>
+              <%= f.label :absent_without_notice, t('absentwithoutnotice') ,:class=> "mg-label" %>
+              <%= f.check_box :absent_without_notice %> 
+
+          </p>
+             
+          <p>
+              <%= f.label :reason , t('reason'),:class=> "mg-label"%><span class="required-field"> *</span></br>
+              <%= f.text_area :reason ,:class=>"mg-text-field"%>
+          </p>
+
+  </div>
+
+          <%=hidden_field_tag :school_employee_weekday_arr, @school_employee_weekday_arr%>
+
+
+
+  <div id="lateComeEmployeeID" style="display:none">
+  <p>
+              <%= f.label :morning_reason , t('reason'),:class=> "mg-label"%><span class="required-field"> *</span></br>
+              <%= f.text_area :morning_reason ,:class=>"mg-text-field"%>
+          </p>
+
+ <%= f.label :time, t('time') ,:class=> "mg-label"%><span class="required-field"> *</span></br>
+    <%= f.text_field :time %>
+  </div>
+
+
+<%= f.hidden_field :mg_hostel_detail_id, :value => @mg_hostel_details_id %>
+<%= f.hidden_field :mg_wing_id, :value => @mg_wing_id %>
+<%#= f.hidden_field :mg_employee_id, :value => @student_id %>
+              
+
+
+<%= f.hidden_field :mg_employee_department_id, :value => @deptId %> 
+<%= f.hidden_field :mg_employee_id, :value => @student_id %>
+<%= f.hidden_field :absent_date, :value => @final_date %>
+<%= f.hidden_field :is_approved, :value => 1 %>
+<%= f.hidden_field :is_deleted, :value => 0 %>
+<%= f.hidden_field :mg_school_id, :value =>session[:current_user_school_id] %>
+<%= f.hidden_field :created_by, :value =>session[:user_id] %>
+<%= f.hidden_field :updated_by, :value => session[:user_id] %>
+<%= f.hidden_field :mororeve, :value => @mororeve %>
+<%= f.hidden_field :no_of_days, :value => 1 %>
+<%#= f.hidden_field :is_deleted, :value => 0 %>
+
+
+
+<%@check=MgUser.where(:is_deleted=>0, :mg_school_id=>session[:current_user_school_id], :user_type=>'principal', :id=>session[:user_id])%>
+<% if @check.present?%>
+<label class="mg-label"><%= f.label :is_lock, "Unlock" %></label>
+ <%=f.check_box :is_lock%>
+<% end %>
+<% end %>
+
+<p>
+
+<button id="mg_employee_attendance_save_btns" class="btn btn-delete save_hostel_management_new" style="display:none"><%=t('save')%></button>
+<button id="" type="button" class="btn btn-delete" onclick="validatemethod()"><%=t('save')%></button>
+<button class="cancel-form-dialog btn btn-delete"><%= t('cancel') %></button>
+</p>
+<script type="text/javascript">
+
+$(document).ready(function () {
+   var date = new Date();
+  $('#start_date').val($.datepicker.formatDate('dd-mm-yy', new Date(new Date().getFullYear(), new Date().getMonth(), 1)));
+  $('#student_hostel_attendances_time').timepicker({ 'scrollDefault': 'now' });
+
+  //$('#studentsAttendancesFormsID').valid();
+
+    $("#studentsAttendancesFormsID").validate({
+
+          rules: {
+          "student_hostel_attendances[reason]": {required: true},
+          "student_hostel_attendances[morning_reason]": {required: true},
+          "student_hostel_attendances[time]": {required: true}
+          }
+      });
+
+});
+
+function validatemethod(){
+  if ($('#studentsAttendancesFormsID').valid())
+  {
+    $(".save_hostel_management_new").click();
+  }
+}
+
+
+
+
+
+
+
+function toggleAll()
+{
+ //    alert("i'm in toggleAll function");
+  $("#whatever").toggle();
+  $(".no-of-days-employee-attendence").toggle();
+  $("#student_hostel_attendances_no_of_days").val(0);
+
+
+}
+
+function toggleLateCome(){
+   $("#lateComeEmployeeID").toggle();
+   $("#employeeAttendanceLateComeHideID").toggle();
+
+   $("#student_hostel_attendances_time").timepicker('setTime', new Date());
+
+}
+
+
+
+
+
+
+</script>
+

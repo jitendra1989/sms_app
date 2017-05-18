@@ -1,0 +1,34 @@
+<h4 class="mg-h4">Contact Details</h4>  
+ <%= form_for :guardian,:html => { :id => 'guardianStudentProfileContactEditFormID'}, url: student_contact_edit_by_guardian_path(@student[0].id), method: :patch do |f| %>
+
+      <%= render :partial => "students/contact_inline" ,:locals => {:phone_types => "phone"} %>
+      <%= render :partial => "students/contact_inline" ,:locals => {:phone_types => "mobile"} %>
+      <%= render :partial => "students/email_inline" %>
+
+             <br/>
+
+       <%= submit_tag t('save'), class: "submit" ,:class=>"mg-small-form-btn mg-inner-tbl-align" %> <%= link_to t('cancel'), '#', {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+<% end %>
+
+
+
+
+<script>
+	$(document).ready(function(){
+
+			      $("#guardianStudentProfileContactEditFormID").validate({
+	        //debug: true,
+				rules: {
+			                  "phone[phone_number]": {required: true, number: true},
+			                  "mobile[phone_number]": {required: true, number: true},
+			                  "email[mg_email_id]": {required: true,  email: "Your email must be in the format of name@domain.com"}
+	              }
+	
+	      });
+	});
+
+
+
+
+
+</script>

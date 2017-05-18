@@ -1,0 +1,85 @@
+
+
+
+<%= form_for :FaAssesment, :html => {
+                            :id => 'observationCategoryCreateFormId', :class => 'elm_class', :style => 'elm_style' } do |f| %>
+    <p>
+    <table class="mg-checkbox-spacing">
+        <tr>
+            <td id="faCheckedTdID">
+                <%@info.each do |value|%>
+                    <%= check_box_tag "weekdays[#{value}]", 1,  @cceID.include?(value) ? true : false ,:style=>"position: relative; top: 0px;"%><br>
+                    
+                 <%end%>
+            </td>
+            <td class="mg-cce-weightage-spacing">
+              <%@groups.each do |data|%>
+            <div>                            
+        <%= data.name %>
+        <%id=MgCceExamCategory.find(data.mg_cce_exam_category_id)%>
+  <% @datas=id.name %>
+        <%="(#{@datas})"%><br>
+        </div>
+        
+                <%end%> 
+            </td>
+        </tr>
+    </table>
+    </p>
+  <div style="display:none;">
+    <p>
+        <label for="is_deleted" class="mg-label "><%=t('status')%></label><br />
+        <label for="is_deleted" class="mg-label-inner-form "><%=t('active')%></label>
+        <%= f.radio_button :is_deleted, false , :checked => true%>
+        <label for="is_deleted" class="mg-label-inner-form "><%=t('inactive')%></label>
+        <%= f.radio_button :is_deleted, true %>
+      </p>
+  </div>
+  <p>
+<button id="saved" class="btn btn-delete"><%=t('save')%></button>
+<%= link_to t('cancel'), :back, {:class=>"btn btn-delete cancel-form-dialog"} %> 
+</p>
+<%end%>
+
+
+<script>
+    $(document).on("click","#saved",function(e){
+        e.preventDefault();
+      
+        var courseId=$("#mg_course_id").val();
+        var subjectId =$(" #mg_subject_id").val();
+        var checkedvalue="";
+        var uncheckedvalue="";
+        $("#faCheckedTdID > input").each(function(index) {
+                 var currentInputIDS = $(this).attr("id");
+                 var checked=$("input#"+currentInputIDS).is(':checked');
+                 if(checked){
+                    checkedvalue+=currentInputIDS.split("_")[1]+","; 
+
+                 }
+                 else{
+                    uncheckedvalue+=currentInputIDS.split("_")[1]+",";
+                    
+                 }
+                
+          });
+   //     alert(checkedvalue);
+  //      alert(uncheckedvalue);
+                
+        jQuery.ajax({
+            url: "/examination/ScholasticFaGroups_create/",
+            type: "GET",
+            data: {"mg_course_id" :courseId,"mg_subject_id" :subjectId,"checked" :checkedvalue,
+            "unchecked":uncheckedvalue},
+            dataType: "html",
+            success: function(data) {
+                //alert("successfully saved")
+                 alert("Wait for a moment");
+                window.location="ScholasticFaGroups_index"
+            },
+            error:function(){
+               // alert("Something went wrong!");
+            }
+        });
+    });
+    </script>

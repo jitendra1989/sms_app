@@ -1,0 +1,82 @@
+
+
+<%if @payslip.present?%>
+<!-- <div class="mg_pagination"> -->
+ 
+
+<table class="batch-tbl mg-tbl-margin mg-scrl-width-bar mg-tbl-layout">
+<tr>
+	<!-- <th><%#=t('sl_no')%></th> -->
+	<th><%=t('name')%></th>
+	<th><%=t('employee_number')%></th>
+	<th><%=t('department')%></th>
+	<th><%=t('month')%></th>
+	<th><%=t('year')%></th>
+	<th><%=t('status')%></th>
+	<%#if session[:user_type]=='admin'%>
+	<th><%=t('is_released')%></th>
+	<%#end%>
+	<th> 
+		<div class="mg-text-margin">
+        	<a class="select-all-payslip-approval mg-pop-link"><%=t('all')%></a>&nbsp;<a class="select-non-payslip-approval mg-pop-link"><%=t('none')%></a>
+      </div>
+    </th>
+	<th style="width: 120px;"><%=t('actions')%></th>
+</tr>
+<%gen_count=0%>
+<%@payslip.each do |slip|%>
+	<%object=slip.mg_employee%>
+	<%if object.present?%>
+		<tr>
+			<!-- <td><%#=gen_count +=1%></td> -->
+			<td class="mg-capitalize-text"><%=object.employee_name%></td>
+			<td><%=object.employee_number%></td>
+			<td><%=object.dept_name%></td>
+			<td><%=Date.new(slip.year,slip.month,01).strftime("%B")%></td>
+			<td><%=slip.year%></td>
+			<td><%= slip.try(:is_approved).to_s=="Reject" ? t('rejected') : t("#{slip.try(:is_approved)}")%></td>
+			<td class="mg-align-center"><%=slip.is_released? ? t('yes') : t('no')%></td>
+			<%if session[:user_type]=='admin'%>
+				<td class="mg-align-center">
+			
+				<%=check_box_tag 'payslip_approved[]',slip.id,false, {:class=>"payslip-approval-cls", :id=>slip.is_approved=="approved" ? "yes" : "no" ,:disabled =>(slip.is_approved!="approved" ? true : false)} %>
+				</td>
+			<%else%>
+			<td class="mg-align-center">
+			
+				<%=check_box_tag 'payslip_approved[]',slip.id,false, {:class=>"payslip-approval-cls", :id=>slip.is_approved=="approved" ? "yes" : "no" } %>
+			</td>
+			<%end%>
+			
+			<td class="mg-align-center">
+	        <button title="Show" id="<%=raw slip.id %>-showPayslipShowBTNID" class="show-payslip-gen-btn mg-icon-btn"><i class="fa fa-eye"></i></button>
+	        <button title="Edit" id="<%=raw slip.id %>-editPayslipBTNID" class="edit-payslip-gen-cls-btn mg-icon-btn"><i class="fa fa-pencil-square-o"></i></button>
+	        <button title="Pdf" id="<%=raw slip.mg_employee_id %>-<%=slip.month%>-<%=slip.year%>-<%=raw slip.id %>-PdfPayslipBTNID" class="pdf-payslip-gen-btn mg-icon-btn"><i class="fa fa-file-pdf-o"></i></button>
+	        <%if session[:user_type]=='admin'%>
+	        <button title="Delete" id="<%=raw slip.id %>-deletePayslipBTNID" class="delete-payslip-gen-btn mg-icon-btn"><i class="fa fa-trash"></i></button>
+	        <%end%></td>
+		</tr>
+	<%end%>
+<%end%>
+
+
+
+	
+</table>
+
+
+
+
+
+
+<%#= will_paginate  @payslip, :container => false, :params=>{:date_month_approve_date=>"#{@month}-#{@year}"}%>
+  <!-- </div> -->
+<%else%>
+<h5>No Records are Present</h5>
+<%end%>
+
+
+
+<script type="text/javascript">
+
+</script>

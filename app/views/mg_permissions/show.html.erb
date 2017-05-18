@@ -1,0 +1,15 @@
+<!-- Sec --> 
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Mg model:</strong>
+  <%= @mg_permission.mg_model_id %>
+</p>
+
+<p>
+  <strong>Mg action:</strong>
+  <%= @mg_permission.mg_action_id %>
+</p>
+
+<%= link_to "<i class=\"fa fa-pencil-square-o\"></i>".html_safe, edit_mg_permission_path(@mg_permission) ,:title=>"Edit" ,:class=>"mg-icon-btn"%> |
+<%= link_to "<i class=\"fa fa-fast-backward\"></i>".html_safe, mg_permissions_path ,:title=>"Back" ,:class=>"mg-icon-btn"%>

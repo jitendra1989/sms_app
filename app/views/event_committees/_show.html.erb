@@ -1,0 +1,82 @@
+<table border="1" class="batch-tbl mg-showdata-bg mg-tbl-layout" cellspacing="1" cellpadding="1">
+   <tr>
+     <td class="mg-td-width-half" valign="top">
+   		<label class="mg-label"> <%= t('committee_name')%></label>
+   	 </td>
+   	 <td class="mg-td-width-half" valign="top">
+  		<%= @event_committees.committee_name %>
+  	 </td>
+ </tr>
+
+ 
+</table><br/>
+
+<%members=MgCommitteeMember.where(:is_deleted=>0, :mg_school_id=>@event_committees.mg_school_id, :mg_event_committee_id=>@event_committees.id, :mg_student_id=>nil)%>
+<h4 class="mg-h4"><%= t('employees')%></h4>
+<%if members.present?%>
+
+<table border="1" class="batch-tbl mg-showdata-bg mg-tbl-layout" cellspacing="1" cellpadding="1">
+	<tr>
+		<th><%=t('name')%></th>
+		<th><%=t('employee_number')%></th>
+		<th><%=t('department')%></th>
+	</tr>
+	<%members.each do |emp|%>
+	
+	<%employee=MgEmployee.where(:is_deleted=>0, :id=>emp.mg_employee_id, :mg_school_id=>@event_committees.mg_school_id)%>
+		<%if employee[0].present?%>
+			<tr>
+				<td class="mg-td-width-half" valign="top">
+					<label class="mg-label"><%=employee[0].employee_name%></label>
+				</td>
+				<td class="mg-td-width-half" valign="top">
+					<label class="mg-label"><%=employee[0].employee_number%></label>
+				</td>
+				<td class="mg-td-width-half" valign="top">
+					<label class="mg-label"><%=employee[0].dept_name%></label>
+				</td>
+			</tr>
+		<%end%>
+	<%end%>
+</table>
+<%else%>
+<h5>No Employees in this committee</h5>
+<%end%><br/>
+<%members_students=MgCommitteeMember.where(:is_deleted=>0, :mg_school_id=>@event_committees.mg_school_id, :mg_event_committee_id=>@event_committees.id, :mg_employee_id=>nil)%>
+<h4 class="mg-h4"><%= t('students')%></h4>
+<%if members_students.present?%>
+
+
+<table border="1" class="batch-tbl mg-showdata-bg mg-tbl-layout" cellspacing="1" cellpadding="1">
+	<tr>
+		<th><%=t('name')%></th>
+		<th><%=t('admission_number')%></th>
+		<th><%=t('class_&_section')%></th>
+	</tr>
+	<%members_students.each do |std|%>
+	
+	<%student=MgStudent.where(:is_deleted=>0, :id=>std.mg_student_id, :mg_school_id=>@event_committees.mg_school_id)%>
+		<%if student[0].present?%>
+			<tr>
+				<td class="mg-td-width-half" valign="top">
+					<label class="mg-label"><%=student[0].student_name%></label>
+				</td >
+				<td class="mg-td-width-half" valign="top">
+					<label class="mg-label"><%=student[0].admission_number%></label>
+				</td>
+				<td class="mg-td-width-half" valign="top">
+					<label class="mg-label"><%=student[0].course_batch_name_student%></label>
+				</td>
+			</tr>
+		<%end%>
+	<%end%>
+</table>
+<%else%>
+<h5>No Student in this committee</h5>
+<%end%>
+
+<p class="mg-p-mgtop">
+    <!-- <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%#=t("save")%></a> -->
+      <%#= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+      <a  class="mg-small-form-btn cancel-form-dialog"><%=t("cancel")%></a>
+  </p>

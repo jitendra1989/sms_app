@@ -1,0 +1,151 @@
+<%@dateFormat = MgSchool.find_by(:id=>session[:current_user_school_id]).date_format %>
+<% if @checkup_particular.present? %>
+  <div class="schedule-divscroll-bar">
+  <%if params[:mg_batch_id].present? %>
+    <table  class="batch-tbl mg-tbl-margin"> 
+      <tr class="subject-table-header">
+        <th rowspan="2"><%= t('name') %></th>
+        <th rowspan="2"><%= t('normal') %></th>
+        <% @health_test_record_history.each do |schedule_id|%>
+          <%schedule_date=MgCheckUpSchedule.find_by(:id=>schedule_id,:is_deleted=>0,:mg_school_id=>session[:current_user_school_id])%>
+          <th colspan="2"><%= schedule_date.try(:date).try(:strftime, @dateFormat) %></th>
+        <%end%>
+        <th colspan="2"><%=Date.today.try(:strftime, @dateFormat) %></th>
+      </tr>
+      <tr>
+        <% @health_test_record_history.each do |schedule_id|%>
+          <th class="mg-align-center"><%=t('result')%></th>
+          <th class="mg-align-center"><%=t('recommendation')%></th>
+        <%end%>
+        <th class="mg-align-center"><%=t('result')%></th>
+        <th class="mg-align-center"><%=t('recommendation')%></th>
+      </tr>
+      <% @checkup_particular.each do |f| %>
+        <%=hidden_field_tag "mg_checkup_particular_id[]",f.id%>
+        <%@healt_test_record = MgHealthTest.where(:mg_check_up_type_id=>params[:check_type_id],:mg_batch_id=>params[:mg_batch_id],:mg_student_id=>params[:mg_student_id],:mg_check_up_schedule_id=>params[:mg_check_up_schedule_id],:mg_checkup_particular_id=>f.id,:is_deleted=>0)%>
+
+        <% if @healt_test_record.present?%>
+          <tr>
+            <td class="mg-align-center mg-capitalize-text"><%= f.particulars %></td>
+            <td class="mg-align-center mg-capitalize-text"><%= f.normal %></td>
+
+            <% if @health_test_record_history.present?%>
+              <% @health_test_record_history.each do |schedule_id|%>
+                <%@last_history = MgHealthTest.where(:mg_check_up_type_id=>params[:check_type_id],:mg_batch_id=>params[:mg_batch_id],:mg_student_id=>params[:mg_student_id],:mg_check_up_schedule_id=>schedule_id,:mg_checkup_particular_id=>f.id,:is_deleted=>0)%>
+                <% if @last_history.present?%>
+                  <td class="mg-align-center"><%= @last_history[0].result%></td>
+                  <td class="mg-align-center"><%= @last_history[0].recommendation%></td>
+                <%else%>
+                  <td class="mg-align-center"><%= ''%></td>
+                  <td class="mg-align-center"><%= ''%></td>
+                <%end%>
+              <%end%>
+            <%end%>
+
+            <td class="mg-align-center"><%= text_field_tag "result[]",@healt_test_record[0].result,:class=>"mg-text-field" %></td>
+            <td class="mg-align-center"><%= text_field_tag "recommendation[]",@healt_test_record[0].recommendation,:class=>"mg-text-field" %></td>
+          </tr>
+        <%else%>
+          <tr>
+            <td class="mg-align-center mg-capitalize-text"><%= f.particulars %></td>
+            <td class="mg-align-center mg-capitalize-text"><%= f.normal %></td>
+            <%if @health_test_record_history.present?%>
+              <% @health_test_record_history.each do |schedule_id|%>
+                <%@last_history = MgHealthTest.where(:mg_check_up_type_id=>params[:check_type_id],:mg_batch_id=>params[:mg_batch_id],:mg_student_id=>params[:mg_student_id],:mg_check_up_schedule_id=>schedule_id,:mg_checkup_particular_id=>f.id,:is_deleted=>0)%>
+                <% if @last_history.present?%>
+                  <td class="mg-align-center"><%= @last_history[0].result%></td>
+                  <td class="mg-align-center"><%= @last_history[0].recommendation%></td>
+                <%else%>
+                  <td class="mg-align-center"><%= ''%></td>
+                  <td class="mg-align-center"><%= ''%></td>
+                <%end%>
+              <%end%>
+            <%end%>
+            <td class="mg-align-center"><%= text_field_tag "result[]",nil,:class=>"mg-text-field" %></td>
+            <td class="mg-align-center"><%= text_field_tag "recommendation[]",nil,:class=>"mg-text-field" %></td>
+          </tr>
+        <%end%>
+      <% end %>
+    </table>
+  <%else%>
+    <table  class="batch-tbl mg-tbl-margin"> 
+      <tr class="subject-table-header">
+        <th rowspan="2"><%= t('name') %></th>
+        <th rowspan="2"><%= t('Normal') %></th>
+
+        <% @health_test_record_history.each do |schedule_id|%>
+          <%schedule_date=MgCheckUpSchedule.find_by(:id=>schedule_id,:is_deleted=>0,:mg_school_id=>session[:current_user_school_id])%>
+          <th colspan="2"><%= schedule_date.try(:date).try(:strftime, @dateFormat) %></th>
+        <%end%>
+        <th colspan="2"><%=Date.today.try(:strftime, @dateFormat) %></th>
+      </tr>
+      <tr>
+        <% @health_test_record_history.each do |schedule_id|%>
+          <th class="mg-align-center"><%=t('result')%></th>
+          <th class="mg-align-center"><%=t('recommendation')%></th>
+        <%end%>
+        <th class="mg-align-center"><%=t('result')%></th>
+        <th class="mg-align-center"><%=t('recommendation')%></th>
+      </tr>
+
+      <% @checkup_particular.each do |f| %>
+        <%=hidden_field_tag "mg_checkup_particular_id[]",f.id%>
+        <%@healt_test_record = MgHealthTest.where(:mg_check_up_type_id=>params[:check_type_id],:mg_employee_department_id=>params[:mg_employee_department_id],:mg_employee_id=>params[:mg_employee_id],:mg_check_up_schedule_id=>params[:mg_check_up_schedule_id],:mg_checkup_particular_id=>f.id,:is_deleted=>0)%>
+        <% if @healt_test_record.present?%>
+          <tr>
+            <td class="mg-align-center mg-capitalize-text"><%= f.particulars %></td>
+            <td class="mg-align-center mg-capitalize-text"><%= f.normal %></td>
+            <% if @health_test_record_history.present?%>
+              <% @health_test_record_history.each do |schedule_id|%>
+                <%@last_history = MgHealthTest.where(:mg_check_up_type_id=>params[:check_type_id],:mg_employee_department_id=>params[:mg_employee_department_id],:mg_employee_id=>params[:mg_employee_id],:mg_check_up_schedule_id=>schedule_id,:mg_checkup_particular_id=>f.id,:is_deleted=>0)%>
+                <% if @last_history.present?%>
+                  <td class="mg-align-center"><%= @last_history[0].result%></td>
+                  <td class="mg-align-center"><%= @last_history[0].recommendation%></td>
+                <%else%>
+                  <td class="mg-align-center"><%= ''%></td>
+                  <td class="mg-align-center"><%= ''%></td>
+                <%end%>
+              <%end%>
+            <%end%>
+
+            <td class="mg-align-center"><%= text_field_tag "result[]",@healt_test_record[0].result,:class=>"mg-text-field" %></td>
+            <td class="mg-align-center"><%= text_field_tag "recommendation[]",@healt_test_record[0].recommendation,:class=>"mg-text-field" %></td>
+          </tr>
+        <%else%>
+          <tr>
+            <td class="mg-align-center mg-capitalize-text"><%= f.particulars %></td>
+            <td class="mg-align-center mg-capitalize-text"><%= f.normal %></td>
+            <% if @health_test_record_history.present?%>
+              <% @health_test_record_history.each do |schedule_id|%>
+                <%@last_history = MgHealthTest.where(:mg_check_up_type_id=>params[:check_type_id],:mg_employee_department_id=>params[:mg_employee_department_id],:mg_employee_id=>params[:mg_employee_id],:mg_check_up_schedule_id=>schedule_id,:mg_checkup_particular_id=>f.id,:is_deleted=>0)%>
+                <% if @last_history.present?%>
+                  <td class="mg-align-center"><%= @last_history[0].result%></td>
+                  <td class="mg-align-center"><%= @last_history[0].recommendation%></td>
+                <%else%>
+                  <td class="mg-align-center"><%= ''%></td>
+                  <td class="mg-align-center"><%= ''%></td>
+                <%end%>
+              <%end%>
+            <%end%>
+            <td class="mg-align-center"><%= text_field_tag "result[]",nil,:class=>"mg-text-field" %></td>
+            <td class="mg-align-center"><%= text_field_tag "recommendation[]",nil,:class=>"mg-text-field" %></td>
+          </tr>
+        <% end %>
+      <% end %>
+    </table>
+  <%end%>
+  </div>
+<%else%>
+  <h5>No Particular Created Please Create some particular </h5>
+<%end%>
+
+<style type="text/css">
+  .schedule-divscroll-bar{
+    border: 1px solid #b2b2b2;
+    display: inline-block;
+    max-height: 310px;
+    max-width: 735px;
+    overflow-y: scroll;
+    width: auto;
+  }
+</style>

@@ -1,0 +1,40 @@
+<!-- Sec --> 
+<h4 class="mg-h4">Select Manager</h4>
+
+    <!-- first select box-->
+
+    <label class="mg-label mg-custom-labels mg-label-width" for="selectDepartment">Select Department</label>
+    <%= select_tag :department, options_for_select(@departments),:prompt => "Select Department",:onchange=>"mg_employee_list(this.value)" ,:class=>"select-width-mod"%><br>
+
+    <!-- second select box-->
+
+    <div id="employeeSelect">
+      <%= render :partial => 'employee_list', :object => @employee %>
+    </div>
+
+    <div id="employeeUnderManager" style="display:none">
+      <%= render :partial => 'employee_under_manager', :object => @employeeUnderManager %>
+    </div>
+
+    <h4 class="mg-h4" >Add Employee</h4>
+    <label class="mg-label mg-custom-labels mg-label-width " for="selectDepartment">Select Department</label>
+    <%= select_tag :add_department, options_for_select(@departments),:prompt => "Select Department",:onchange=>"list_of_employee(this.value)" ,:class=>"select-width-mod"%><br>
+
+    <%= hidden_field_tag :mg_manager_id, :value => 0,:id => "selectedEmployeeID"%>
+    
+    <div id="listOfEmployee" style="display:none">
+    <%= render :partial => 'employee_list_table', :object => @employee %>
+    </div>
+    
+<script>
+
+    $(document).ready(function(){
+            $("li").removeClass( "active" );
+            $("a").removeClass( "activeMenu" );
+            $("#employeeHierarchyID").addClass("active");
+            $("#manageEmployeeHierarchy").addClass("activeMenu");
+
+            focusEmployee();
+   });
+
+</script>

@@ -1,0 +1,149 @@
+<%= render  partial: 'laboratory/laboratry_left' %>
+
+<% navigation_add t('manage_subject'), "/laboratory/subject" %>
+
+<h4 class="mg-h4"><%= t('manage_subject') %></h4>
+
+<button class="new-add-laboratory_subject mg-btn-bottom-margin mg-custom-form-btn"><%= t('add_subject')%></button>
+
+<!-- <%#= button_to 'Add Laboratory', {:controller => "laboratory", :action => "new" } ,:class=>"mg-custom-form-btn"%> -->
+<div class="mg_pagination">
+<%if @subject.length>0%>
+<table  class="batch-tbl mg-tbl-margin">   <!-- border="2" --> 
+  <tr class="subject-table-header">
+    <!-- <th>Subject Id</th> -->
+    <th><%= t('name') %></th>
+    <th><%= t('description') %></th>
+    <th style="width: 92px;"><%= t('actions') %></th>
+
+  </tr>
+ 
+  <% @subject.each do |subject| %>
+    <tr>
+      <td><%= subject.name %></td>
+      <td class="mg-desc-text-justify"><%=truncate(subject.description.to_s, :length => 25, :separator => ' ')%></td>
+      <td>
+      	
+      <button title="Show" id="<%=raw subject.id %>-showlabBTNID" class="show-laboratory-subject-btn mg-icon-btn"><i class="fa fa-eye"></i></button>
+
+        <button title="Edit" id="<%=raw subject.id %>-editlabBTNID" class="edit-laboratory-subject-btn mg-icon-btn"><i class="fa fa-pencil-square-o"></i></button>
+
+        <button title="Delete" id="<%=raw subject.id %>-deletelabBTNID" class="delete-laboratory-subject-btn mg-icon-btn"><i class="fa fa-trash"></i></button>
+
+        <%#= link_to "<i class=\"fa fa-trash\"></i>".html_safe, {:controller => "laboratory", :action => "delete",:id =>lab.id }, :method=>'post' ,:title=>"Delete" ,:class=>"mg-icon-btn",data: { confirm: 'Are you sure to delete?' } %>
+
+      </td>
+
+    </tr>
+  <% end %>
+</table>
+<br/>
+ <div class="pagination-align" style="position: relative; bottom: 10px;">
+              <%= will_paginate @subject, :container => false %>
+           </div>
+<%else%>
+<h5>No subject is created </h5>
+<%end%>
+</div>
+<div id="newAddlaboratorySubjectDIVID"></div>
+<div id="editlaboratorySubjectDIVID"></div>
+
+
+<div id="showlaboratorySubjectDIVID"></div>
+
+
+<%= render  partial: 'application/common_left_close' %>
+
+<script>
+$( document ).ready(function() {
+            focusCurrentTab("viewlaboratorysubject","viewlaboratorysubjectLiID");
+          //focusStudentHeaderBox();
+});
+
+
+$(document).on("click", ".show-laboratory-subject-btn", function(e){
+        var myID =$(this).attr('id');
+        var Id=myID.split("-");
+        var urlLink = "/laboratory/subject_show/"+Id[0];
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(html){
+                  $('#showlaboratorySubjectDIVID').dialog({
+                    modal: true,
+                     minHeight: 'auto',
+                     width: 'auto',
+                     title: "Show Subject",
+                     open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+});
+
+
+$(document).on("click", ".edit-laboratory-subject-btn", function(e){
+        var myID =$(this).attr('id');
+        var Id=myID.split("-");
+        var urlLink = "/laboratory/subject_edit/"+Id[0];
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(html){
+                  $('#editlaboratorySubjectDIVID').dialog({
+                    modal: true,
+                     minHeight: 'auto',
+                    minWidth: 260,
+                    title: "Edit Subject",
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+});
+
+$(document).on("click", ".new-add-laboratory_subject", function(e){
+        var urlLink = "/laboratory/subject_new";
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(html){
+                  $('#newAddlaboratorySubjectDIVID').dialog({
+                    modal: true,
+                     minHeight: 'auto',
+                    minWidth: 260,
+                    title: "Add Subject",
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+});
+</script>
+<style>
+
+
+.table-batchs-tbl {
+   /* font-family: verdana,arial,sans-serif;*/
+    font-size:13px;
+    color:#363131;
+    border-width: 1px;
+    border-color:  #363131;
+    border-collapse: collapse;
+    padding: 12px ;
+    font-size: 0.8em;
+    width: 261px !important;
+    /* margin-left: 2px; */
+}
+</style>
+
+

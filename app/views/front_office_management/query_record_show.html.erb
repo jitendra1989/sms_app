@@ -1,0 +1,127 @@
+<%#= navigation_add t('show_query'), :controller=>"front_office_management", :action=>"query_record_show", :id=>@query_record_data.id%>
+
+<h4 class="mg-h4"><%=t('show_query_record_details')%></h4>
+
+  <table border="1" class="mg-showdata-bg " cellspacing="1" cellpadding="1">
+   <tr>
+     <td class="mg-td-width-half" valign="top">
+   		<label class="mg-label"> <%= t('query_number')%></label>
+   	 </td>
+   	 <td class="mg-td-width-half" valign="top">
+  		<%= @query_record_data.query_number %>
+  	 </td>
+ </tr>
+
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+  		<label class="mg-label"><%=t('name')%></label>
+  	 </td>
+  	 <td class="mg-td-width-half " valign="top" >
+       
+  		    <%= @query_record_data.caller_name %>
+        
+  	 </td>
+ </tr>
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"><%=t('phone_number')%></label>
+     </td>
+     <td class="mg-td-width-half " valign="top"   >
+        
+          <%= @query_record_data.phone_number %>
+       
+     </td>
+ </tr>
+
+
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"><%=t('request_type')%></label>
+     </td>
+     <% request_type=MgCallerCategoryFom.find_by(:id=>@query_record_data.mg_caller_category_fom_id)%>
+    
+     <td class="mg-td-width-half " valign="top"   >
+        
+          <%= request_type.try(:name) %>
+        
+     </td>
+ </tr>
+
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"><%=t('query')%></label>
+     </td>
+     <td class="mg-td-width-half " valign="top"   >
+        <div class="text-scroll-for-log-text-cls comments-space" style="padding: 5px 40 0 10px">
+          <%= @query_record_data.query %>
+        </div>
+     </td>
+ </tr>
+ <tr>
+    <td class="mg-td-width-half" valign="top">
+      <label class="mg-label mg-rm-text-trans"><%=t('caller_category')%></label>
+    </td>
+     <%caller_category=MgCallerCategory.find_by(:id=>@query_record_data.mg_caller_category_id )%>
+    <td class="mg-td-width-half " valign="top"   >
+      <%= caller_category.try(:name)%>
+    </td>
+ </tr>
+
+ <tr>
+    <td class="mg-td-width-half" valign="top">
+      <label class="mg-label mg-rm-text-trans"><%=t('query_type')%></label>
+    </td>
+     <%query_record=MgFomQueryRecord.find_by(:id=>@query_record_data.mg_fom_query_record_id )%>
+    <td class="mg-td-width-half " valign="top"   >
+      <%= query_record.try(:name)%>
+    </td>
+ </tr>
+
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"><%=t('response_given')%></label>
+     </td>
+     <td class="mg-td-width-half " valign="top"   >
+        <div class="text-scroll-for-log-text-cls comments-space" style="padding: 5px 40 0 10px">
+          <%= @query_record_data.response_given %>
+        </div>
+     </td>
+ </tr>
+
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"><%=t('followup_action')%></label>
+     </td>
+     <td class="mg-td-width-half " valign="top"   >
+        <div class="text-scroll-for-log-text-cls comments-space" style="padding: 5px 40 0 10px">
+          <%= @query_record_data.follow_up_action %>
+        </div>
+     </td>
+ </tr>
+
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"><%=t('action_required')%></label>
+     </td>
+     <td class="mg-td-width-half " valign="top"   >
+        <div class="text-scroll-for-log-text-cls comments-space" style="padding: 5px 40 0 10px">
+        <%action_data=MgActionRequired.find_by(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id],:id=>@query_record_data.action_required)%>
+          <%= action_data.try(:action_required) %>
+        </div>
+     </td>
+ </tr>
+</table>
+<br>
+<br>
+ <p class="mg-p-mgtop">
+     <%= link_to t('back'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+
+  </p>
+
+<script type="text/javascript">
+$(document).ready(function () {
+//  textSeeMoreLess();
+});
+
+</script>
+	

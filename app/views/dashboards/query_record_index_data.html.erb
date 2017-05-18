@@ -1,0 +1,113 @@
+<div id="queryRecordindexListID">
+  <%= form_tag '', :id =>'dashboardQueryRecordForm', multipart: true do %>
+    <%=hidden_field_tag "sear_value",params["search_date"]%>
+    &nbsp;<%= t('search_by_date')%>
+    &nbsp;&nbsp;<%=text_field_tag :search_date,nil, :class=> 'mg-text-field' %><br/><br/>
+    <!-- <a onclick="$(this).closest('form').submit()" id="saveStudentRecordID" class="submit mg-small-form-btn"><%#=t("search")%></a>  -->
+    <a onclick="searchByDate()" id="" class="submit mg-small-form-btn"><%=t("search")%></a> 
+  <%end%>
+  <% if @query_record_data.present? %>
+    <table  class="batch-tbl mg-tbl-margin  mg-tbl-layout">   <!-- border="2" --> 
+      <tr class="subject-table-header">
+        <th><%= t('query_number') %></th>
+        <th><%= t('name') %></th>
+        <th><%= t('request_type') %></th> 
+        <th><label class="mg-rm-text-trans"><%= t('type_of_query') %></label></th>
+        <th style="width: 120px ,margin-left: 38px;"><%= t('action') %></th>
+      </tr>
+
+      <% @query_record_data.each do |s| %>
+        <tr class="export-excel-class">
+          <td><%= s.query_number %></td>
+          <td><%= s.caller_name %></td>
+          <%request_type=MgCallerCategoryFom.find_by(:id=>s.mg_caller_category_fom_id)%>
+          <td><%= truncate(request_type.try(:name),:length=>25,:seperate=>'') %></td>
+          
+          <%query_record=MgFomQueryRecord.find_by(:id=>s.mg_fom_query_record_id )%>
+          <td><%= query_record.try(:name)%></td> 
+          <%if session[:user_type]=="front_office_manager"%>
+            <td class="mg-align-center">
+              <%= check_box_tag("export_excel[]", name=s.id, false, :onclick=>"",:class=>"checked-checkbox-for-excel excel-checkbox-checkstatus")%>          
+            </td> 
+          <%end%>
+          <td > 
+            <button title="Show" id="<%=raw s.id %>-showquery_recordFomBTNID" class="show-query-record-fom-btn mg-icon-btn"><i class="fa fa-eye"></i></button>
+          </td>
+        </tr>
+      <% end %>
+    </table>
+  <%else%>
+    <h5>No records are created </h5>
+  <%end%>
+</div>
+
+<script>
+  $(document).ready(function(){
+    var date_val=$("#sear_value").val();
+    $("#search_date").val(date_val)
+
+    dateFormatStr =  getJsDateFormat();
+    $( "#search_date" ).datepicker({changeMonth: true,changeYear: true,yearRange: "-50:+0",maxDate: "0",dateFormat: dateFormatStr});
+
+    $(function () {
+      $.validator.addMethod('dateFormat',
+      function (value, element) {
+        dateFormatStr =  getJsDateFormat();
+        if (this.optional(element)) {
+          return true;
+        }
+        var ok = true;
+        try {
+          $.datepicker.parseDate(dateFormatStr, value);
+        }
+        catch (err) {
+          ok = false;
+        }
+        return ok;
+      },
+      "Please enter a date in the format "+ getDateFormat(dateFormatStr) +".");
+      dateFormatStr =  getJsDateFormat();
+      $(".datefield").datepicker({ dateFormat: dateFormatStr, changeYear: true });
+    });
+
+   $("#dashboardQueryRecordForm").validate({
+        rules: {        
+        "search_date": {required: true, dateFormat: true}
+      }
+    });
+  });
+
+  function searchByDate(){
+    var date = $("#search_date").val();
+    urlLink = "/dashboards/query_record_index_data";
+    if(date !=''){
+      $.ajax({
+        url: urlLink,
+        data: {"search_date":date,"search_by_date":"search_by_date"},
+        cache: false,
+        success: function(html){
+          //console.log(html);
+          $("#queryRecordindexListID").html(html);
+        }
+      });
+    }else{
+      alert("Please Enter Date");
+    }
+  }
+    $(document).on("change","#search_date",function(){
+      var date = $("#search_date").val();
+      urlLink = "/dashboards/query_record_index_data";
+      if(date ==''){
+        $.ajax({
+          url: urlLink,
+          //data: {"search_date":date,"search_by_date":"search_by_date"},
+          cache: false,
+          success: function(html){
+            $("#queryRecordindexListID").html(html);
+          }
+        });
+      }
+    });
+
+
+</script>

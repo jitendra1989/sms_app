@@ -1,0 +1,172 @@
+<!-- Sec --> 
+<%= form_for :fesses2, :url=>{:controller=>'canteen_managements',:action=>'canteen_update_fee_particular',:id=>@fesses2.id,}, :html => {
+                            :id => 'inventoryfeeParticularEditFormId', :class => 'elm_class',
+                            :style => 'elm_style' } do |f| %>
+
+ <% if @fesses2 != nil%>
+ <% if @fesses2.errors.any? %>
+  <div id="error_explanation">
+    <h2><%= pluralize(@fesses2.errors.count, "error") %> prohibited
+      this from being saved:</h2>
+    <ul>
+    <% @fesses2.errors.full_messages.each do |msg| %>
+      <li><%= msg %></li>
+    <% end %>
+    </ul>
+  </div>
+  <% end %>
+  <% end %>
+  
+<div>  
+  <p>
+    <%= f.label :fee_category ,:class=>"mg-label"%><br>
+    <%@category=MgFeeCategory.where(:id=>session[:feedetails_id]).pluck(:name,:id)%>
+    <%=f.select :fee_category,options_for_select(@category)%>
+  </p>
+  <p>
+   <%= f.label :account ,:class=>"mg-label"%><span class="required-field"> *</span><br>
+   <%
+      account=Array.new
+      account.push("Central","central")
+      accounts=MgAccount.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:mg_account_name,:id)
+      accounts.insert(0,account)
+      account_id=MgFeeParticular.where(:fee_category=>session[:feedetails_id],:mg_particular_type_id=>@fesses2.mg_particular_type_id).pluck(:mg_account_id)
+      is_to_central=MgFeeParticular.where(:fee_category=>session[:feedetails_id],:mg_particular_type_id=>@fesses2.mg_particular_type_id).pluck(:is_to_central)
+   %>
+   <%if account_id.length>0 || is_to_central.length>0%>
+      <%if account_id.any?%>
+        <%=select_tag :mg_account_id,options_for_select(accounts,account_id),:prompt=>"Select",:class=>"mg-text-field disabled-accounts-class", :disabled => "disabled"%>
+      <%elsif is_to_central.any?%>
+        <%=select_tag :mg_account_id,options_for_select(accounts,"central"),:prompt=>"Select",:class=>"mg-text-field disabled-accounts-class", :disabled => "disabled"%>
+      <%end%>
+    <%end%>
+  </p>
+
+   <p>
+    <%= f.label :fee_particular ,:class=>"mg-label"%><span class="required-field"> *</span><br>
+    <%@particularName=MgParticularType.where(:mg_fee_category_id=>session[:feedetails_id]).pluck(:particular_name,:id)%>
+    <%=f.select :mg_particular_type_id,options_for_select(@particularName,:selected=>@fesses2.mg_particular_type_id), {:include_blank => t('select')} ,:class=>"mg-select-btn"%>
+  </p>
+  <p>
+    <%@batchId=MgBatch.find(@fesses2.mg_batch_id)%>
+    <%courseId=MgCourse.find(@batchId.mg_course_id)%>
+    <%@courseName=courseId.course_name%>
+    <%@batchName=@batchId.name%>
+    <%= f.label :Semester_name ,:class=>"mg-label"%><br>
+    <%=text_field_tag :mg_batch_id,"#{@courseName}-#{@batchName}",:readonly => "readonly",:class=>"mg-text-field"%>
+    </p>
+    <%if @fesses2.admission_no.nil?%>
+    <%else%>
+    <p>
+      <%@admission_number=MgFeeParticular.find(@fesses2.id)%>
+      <%= f.label :Admission_Number ,:class=>"mg-label"%><br>
+      <%=f.text_field :admission_no,:readonly => "readonly",:class=>"mg-text-field"%>
+    </p>
+    <p>
+    <%@student=MgStudent.find_by(:admission_number=>@fesses2.admission_no)%>
+      <%#=@fesses2.mg_batch_id%>
+      <%#=@fesses2.admission_no%>
+      <%@firstName=@student.first_name%>
+      <%@lastName=@student.last_name%>
+      <%= f.label :Full_Name ,:class=>"mg-label"%><br>
+      <%=text_field_tag :full_name,"#{@firstName}" "#{@lastName}",:readonly => "readonly",:class=>"mg-text-field"%>
+    </p>
+<%end%>
+   <%if @fesses2.mg_student_category_id.nil?%>
+   <%else%>
+    <p>
+     <%@studentCategory=MgStudentCategory.find(@fesses2.mg_student_category_id)%>
+    <%= f.label :Category_Name ,:class=>"mg-label"%><br>
+      <%=text_field_tag :category_name,@studentCategory.name,:readonly => "readonly",:class=>"mg-text-field"%>
+    </p>
+  <%end%>
+    </p>
+
+      <div style="display:none;">
+   
+    <p>
+      <%= f.label :description ,:class=>"mg-label"%><br>
+      <%= f.text_area :description ,:class=>"mg-text-field"%>
+    </p>
+</div>
+    <p>
+      <%= f.label :amount ,:class=>"mg-label"%><span class="required-field"> *</span><br>
+      <%= f.text_field :amount ,:class=>"mg-text-field"%>
+    </p>
+     <%= f.hidden_field :mg_school_id, :value=> session[:current_user_school_id]%>
+<div style="display:none;">
+    <p>
+   
+    
+      <%= f.label :is_deleted, "Is Active" ,:class=>"mg-label"%><br />
+       <label for="is_deleted" class="mg-label-inner-form "><%=t('active')%></label>
+
+      <%#= f.label :is_deleted, "Active", :value => "true" ,:class=>"mg-label-inner-form"%>
+      <%= f.radio_button :is_deleted, false , :checked => true%>
+       <label for="is_deleted" class="mg-label-inner-form "><%=t('inactive')%></label>
+      <%#= f.label :is_deleted, "In Active", :value => "false" ,:class=>"mg-label-inner-form"%>
+      <%= f.radio_button :is_deleted, true %>
+    </p>
+</div>
+    <p class="mg-p-mgtop">
+      <%#= f.submit 'Submit' ,:class=>"mg-small-form-btn"%>
+      <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("save")%></a>
+       <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+
+    </p>
+   
+</div>
+
+<% end %>
+
+
+<script>
+  $(document).ready(function(){
+    $("#fesses2_mg_particular_type_id").attr("disabled", true);
+    $("#inventoryfeeParticularEditFormId").validate({
+      rules: 
+      {
+          "fesses2[name]": {required: true},
+          "fesses2[amount]": {required: true,number: true,min:1},
+          "fesses2[mg_particular_type_id]": {required: true}
+      }
+    });
+  });
+   $(document).on("click","#fesses2_value1_demo",function(e){
+    //$(document).ready(function(e){
+    
+    var checkedvalue="";
+    var uncheckedvalue="";
+
+    
+    $("input[name^=selected_batches]:checked").each(function(index){
+      
+      
+      checkedvalue+=$(this).val()+" ";
+    });
+
+      checkedvalue=checkedvalue.trim().replace(/ /g,",");
+      console.log("val");
+      console.log(checkedvalue);
+      jQuery.ajax({
+            url: "/fees/section_students",
+            type: "GET",
+            data: {"batch_value":checkedvalue},
+            dataType: "html",
+            success: function(data) {
+               $(".fee-particular-admission-number-cls").empty();
+               $(".fee-particular-admission-number-cls").append(data);
+             
+              
+            },
+            error:function(){
+              alert("Something went wrong!");
+            }
+        });
+  });
+
+
+
+   
+</script
+ 

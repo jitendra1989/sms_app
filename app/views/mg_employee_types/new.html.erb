@@ -1,0 +1,45 @@
+<%= render  partial: 'mg_employee_leave_types/mg_employee_leave_types_left' %>
+<%= form_for :employee_types, :url=>{:controller=>'mg_employee_types',:action=>'create'},:html => {
+                                :id => 'employeeTypes', :class => 'elm_class',
+                                :style => 'elm_style' } do |f| %>
+        <p>                        
+
+         <label class="mg-label" for="exam_name"> <%=t('employeetype') %>
+         <span class="required-field">*</span>
+         </label><br/>
+            <%= f.text_field :employee_type ,:class=>"mg-text-field"%>
+            </p>
+<div id="isdelete" class="is_deleted" style="display: none;">
+            <p>
+        <label for="is_deleted" class="mg-label "><%=t('status')%></label><br />
+        <label for="is_deleted" class="mg-label-inner-form "><%=t('active')%></label>
+        <%= f.radio_button :is_deleted, false , :checked => true%>
+        <label for="is_deleted" class="mg-label-inner-form "><%=t('inactive')%></label>
+        <%= f.radio_button :is_deleted, true %>
+      </p>
+       
+</div>
+<%#= f.hidden_field :is_deleted, :value => 0 %>
+  <%= f.hidden_field :mg_school_id, :value => session[:current_user_school_id] %>
+<%= f.submit "submit",:class=>"mg-text-field"%>
+
+
+<%end%>
+<%= render  partial: 'application/common_left_close' %>
+
+<script>
+$(document).ready(function () {
+
+focusCurrentTab("EmployeeLeaveTypes","EmployeeLeaveTypesLiID");
+    focusAttendance();
+    
+    $("#employeeTypes").validate({
+
+
+        rules: {
+        "employee_types[employee_type]": {required: true}
+    }
+});
+});
+
+</script>

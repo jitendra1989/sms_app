@@ -1,0 +1,7 @@
+<%@subject=MgSubject.where(:is_deleted => '0', :mg_school_id=>session[:current_user_school_id]).pluck(:subject_name, :id)%>
+
+        <%=select_tag :mg_subject_id, options_for_select(@subject),:prompt=>"Select A Subject",:onchange=>"myEmployeeTopicFunction(this.value)" %><br>
+      
+
+
+

@@ -1,0 +1,331 @@
+
+<% navigation_add 'Vehicles', vehicles_path %>
+<% navigation_add 'Add Report', vehicles_vehicle_report_index_path %>
+
+<%# navigation_add 'Edit Report', vehicles_vehicle_report_index_path %>
+
+
+
+
+ <%if flash[:error].present?%>
+  <div class="alert alert-info mg-success-msg">
+
+        <%=flash[:error]%>
+  <div class="alert alert-info mg-success-msg">
+        
+   <%end%>
+<h4 class="mg-h4"><%= t('Edit Report')%></h4>
+<div class="box">
+<%= form_for :vehicle_report ,  :url=>{:controller=>'vehicles',:action=>'vehicle_report_update',:id=>@vehicle_report.id}, :html=>{:id=>'edits_vehicle_report_form',:multipart => true} do |f| %>
+
+        <%= f.hidden_field :is_deleted ,:value=>0%>
+        <%= f.hidden_field :mg_school_id ,:value=>@school_id%>
+        <%#= f.text_field :vehicle_number ,:class=>"mg-text-field"%>
+        
+<table class="mg-tbl-margin mg-show-tbl-width">
+    <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="selectVehicle"><%= t ('select_vehicle') %><span class="required-field">&nbsp;*</span></label><br/>
+          <%=f.select :mg_vehicle_id	,options_for_select(@add_report_index,:selected=>@vehicle_report.mg_vehicle_id),:prompt=>"Select"%><br>
+
+     
+      </td>
+    </tr>
+    <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="selectReportType"><%= t ('select_report_type') %><span class="required-field">&nbsp;*</span></label><br/>
+        <%=f.select :mg_report_type_id,options_for_select(@add_report_type,:selected=>@vehicle_report.mg_report_type_id),:prompt=>"Select"%><br>
+      </td>
+    </tr>
+     <tr>
+      
+      <td class="mg-td-width-one-third">
+        <label class="mg-label"  for="vendorName"><%= t ('vendor_name') %></label><br/>
+        <%= f.text_field :vendor_name ,:class=>"mg-text-field mg-end-time-field"%>
+      </td>
+    </tr>
+    <tr>
+    <tr>
+      
+      <td class="mg-td-width-one-third">
+        <label class="mg-label"  for="validFrom"><%= t ('valid_from') %></label><br/>
+        <%= f.text_field :valid_from ,:class=>"mg-text-field mg-end-time-field"%>
+      </td>
+    </tr>
+    <tr>
+    <td>
+        <label class="mg-label" for="validTo"><%= t ('valid_to') %></label><br/>
+          <%= f.text_field :valid_to,:class=>"mg-text-field"%>
+      </td>
+    </tr>
+    
+    
+    
+    <tr>
+    <td>
+        <label class="mg-label" for="comments"><%= t ('comments') %></label><br/>
+         <%= f.cktext_area :comments,:class=>"mg-text-field"%>
+    </tr>
+
+        <tr>
+        <td>
+    <label class="mg-label" for="LastServiceDate"><%= t ('upload_report') %></label><br/>
+
+        <%@document=MgDocumentManagement.where(:mg_add_report_id=>@vehicle_report.id,:document_type=>"Report",:is_deleted=>0,:mg_school_id=>session[:current_user_school_id])%>
+                   
+            <%@document.each_with_index do |user,i|%>
+                    
+                <li data-index="<%= i %>" class="mg-custom-labels">
+                <div delete-index="<%= i %>">
+                 <label class="mg-file-clr mg-label-inner-form"><%= user.file_file_name %></label>
+                  <a class="delete-operation mg-icon-btn" style="cursor: pointer; text-decoration: none; color: #363131; font-size: 0.85em;" id="<%=user.id %>" title="Delete"><i class="fa fa-trash"></i></a>
+                    </div>
+                    </li>
+                     
+                   <%end%>
+                   </td>
+                   </tr>
+        <tr>
+        <td>
+        <div>
+        <div class="students_files_files_divs" id="dueFineDivId" style="float: left; width: 100%;">
+   <span style="float: left;">
+         <%= file_field_tag 'files[]' %>
+ 
+</span>
+  <a  class="edit-reports-uploads mg-custom-form-btn mg-icon-btn" style="color: #297ACC; font-size:0.8em; float: left; position: relative; right: 0px; margin-top: 3px;"><i class="fa fa-trash"></i></a>
+ </div>
+  <a  id="edit_file_reports_uploads" class="mg-label-inner-form mg-custom-form-btn mg-icon-btn" style="color: #297ACC; font-size:0.8em;" ><i class="fa fa-plus">&nbsp;Add File</i></a> <br/>
+  </div>
+          
+      </td>
+    </tr>
+    <td>
+        <label class="mg-label" for="isPaymentMade"><%= t ('is_payment_made') %></label><br/>
+          <%= f.check_box :is_payment_made%>
+      </td>
+   <tr>
+      
+      <td class="mg-td-width-one-third">
+      <div id="ehiclemanamen" class="vehicles-Divss-Classes" style="display: none;">
+        <label class="mg-label"  for="validFrom"><%= t ('payment_date') %><span class="required-field">&nbsp;*</span></label><br/>
+        </div>
+        <div id="ehiclemanage" class="vehicles-Divss-Classes" style="display: none;">
+        <%= f.text_field :payment_date ,:class=>"mg-text-field mg-end-time-field"%>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td class="mg-td-width-one-third">
+    <div id="ehiclemanagemen" class="vehicles-Divss-Classes" style="display: none;">
+
+        <label class="mg-label" for="selectReportType"><%= t ('select_payment_type') %><span class="required-field">&nbsp;*</span></label><br/>
+        </div>
+    <div id="ehiclemanageme" class="vehicles-Divss-Classes" style="display: none;">
+
+        <%=f.select :mg_payment_type_id,options_for_select(@add_payment_type,:selected=>@vehicle_report.mg_payment_type_id),:prompt=>"Select"%><br>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      
+      <td class="mg-td-width-one-third">
+    <div id="ehiclemanagement" class="vehicles-Divss-Classes" style="display: none;">
+
+        <label class="mg-label"  for="amount"><%= t ('amount') %><span class="required-field">&nbsp;*</span></label><br/>
+        </div>
+    <div id="hiclemanagement" class="vehicles-Divss-Classes" style="display: none;">
+
+        <%= f.text_field :amount ,:class=>"mg-text-field mg-end-time-field"%>
+        </div>
+      </td>
+    </tr>
+    <tr>
+        <td>
+    <div id="clemanagement" class="vehicles-Divss-Classes" style="display: none;">
+
+    <label class="mg-label" for="LastServiceDate"><%= t ('upload_bill') %></label><br/>
+</div>
+    <div id="lemanagement" class="vehicles-Divss-Classes" style="display: none;">
+
+        <%@document=MgDocumentManagement.where(:mg_add_report_id=>@vehicle_report.id,:document_type=>"Payment",:is_deleted=>0,:mg_school_id=>session[:current_user_school_id])%>
+                   
+            <%@document.each_with_index do |user,i|%>
+                    
+                <li data-index="<%= i %>" class="mg-custom-labels">
+                <div delete-index="<%= i %>">
+                 <label class="mg-file-clr mg-label-inner-form"><%= user.file_file_name %></label>
+                  <a class="delete-operation mg-icon-btn" style="cursor: pointer; text-decoration: none; color: #363131; font-size: 0.85em;" id="<%=user.id %>" title="Delete"><i class="fa fa-trash"></i></a>
+                    </div>
+                    </li>
+                     
+                   <%end%>
+                   </div>
+                   </td>
+                   </tr>
+     <tr>
+    <td>
+        
+        <div>
+    <div id="emanagement" class="vehicles-Divss-Classes" style="display: none;">
+
+        <div class="edit_edit_student_payments_file_file_div" id="dueFineDivId" style="float: left; width: 100%;">
+   <span style="float: left;">
+         <%= file_field_tag 'files_report[]' %>
+ 
+</span>
+  <a  class="edit_payment_reports-upload mg-custom-form-btn mg-icon-btn" style="color: #297ACC; font-size:0.8em; float: left; position: relative; right: 0px; margin-top: 3px;"><i class="fa fa-trash"></i></a>
+ </div>
+  <a  id="edit_file_payment_reports_uploads" class="mg-label-inner-form mg-custom-form-btn mg-icon-btn" style="color: #297ACC; font-size:0.8em;" ><i class="fa fa-plus">&nbsp;Add File</i></a> <br/>
+  </div>
+  </div>
+          
+      </td>
+    </tr> 
+</table>
+<br/> <p class="mg-custom-labels">
+<%= submit_tag t("save"),:class=>"mg-small-form-btn"%>
+ <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+ </p>
+  </div>
+<%end%>
+
+
+<script>
+ $(document).ready(function(){
+
+   var check=$('#vehicle_report_is_payment_made').is(':checked');
+    //alert(check);
+    if (check==true)
+    {
+        $(".vehicles-Divss-Classes").show();
+    }
+
+ 
+
+dateFormatStr =  getJsDateFormat();
+
+    $('#vehicle_report_valid_from').datepicker({ changeMonth: true,
+                changeYear: true,yearRange: "-50:+0",maxDate: "0",dateFormat: dateFormatStr});
+
+    var valid_from =  $.datepicker.formatDate(dateFormatStr,new Date($('#vehicle_report_valid_from').val()));
+    if (valid_from=="NaN/NaN/NaN")
+    {
+    $('#vehicle_report_valid_from').val("");
+    }
+    else{
+    $('#vehicle_report_valid_from').val(valid_from);
+       }
+
+    $('#vehicle_report_valid_to').datepicker({ changeMonth: true,
+                changeYear: true,yearRange: "-50:+50",dateFormat: dateFormatStr});
+
+    var valid_to =  $.datepicker.formatDate(dateFormatStr,new Date($('#vehicle_report_valid_to').val()));
+    if (valid_to=="NaN/NaN/NaN")
+    {
+    $('#vehicle_report_valid_to').val("");
+    }
+    else{
+    $('#vehicle_report_valid_to').val(valid_to);
+        }
+
+$('#vehicle_report_payment_date').datepicker({ changeMonth: true,
+                changeYear: true,yearRange: "-50:+0",maxDate: "0",dateFormat: dateFormatStr});
+
+var payment_to =  $.datepicker.formatDate(dateFormatStr,new Date($('#vehicle_report_payment_date').val()));
+     if (payment_to=="NaN/NaN/NaN")
+     {
+     $('#vehicle_report_payment_date').val("");
+     }
+     else{
+    $('#vehicle_report_payment_date').val(payment_to);
+        }
+$(function () {
+    $.validator.addMethod('dateFormat',
+    function (value, element) {
+      dateFormatStr =  getJsDateFormat();
+        if (this.optional(element)) {
+            return true;
+        }
+        var ok = true;
+        try {
+            $.datepicker.parseDate(dateFormatStr, value);
+        }
+        catch (err) {
+            ok = false;
+        }
+        return ok;
+    },
+
+
+      "Please enter a date in the format "+ getDateFormat(dateFormatStr) +".");
+      dateFormatStr =  getJsDateFormat();
+
+    $(".datefield").datepicker({ dateFormat: dateFormatStr, changeYear: true });
+});
+
+
+
+    $("#edits_vehicle_report_form").validate({
+      rules:{
+        "vehicle_report[mg_vehicle_id]":{required:true},
+        "vehicle_report[mg_report_type_id]":{required:true},
+        "vehicle_report[payment_date]":{required:true,dateFormat:true},
+        "vehicle_report[mg_payment_type_id]":{required:true},
+        "vehicle_report[amount]":{required:true,number:true},
+        "vehicle_report[valid_from]":{dateFormat:true},
+        "vehicle_report[valid_to]":{dateFormat:true}  
+        
+      },
+     });
+
+
+
+});
+
+ $("#vehicle_report_is_payment_made").change(function(){
+  
+    $(".vehicles-Divss-Classes").toggle();
+});
+ 
+$(document).on("click", ".delete-operation", function(e){
+    var myID =$(this).attr('id');
+    //alert(myID)
+
+    var splString = myID.split("-");
+    var retVal = confirm("Are you sure to delete?");
+    if(retVal){
+       // alert(retVal);
+         var urlLink = "/vehicles/delete_record"
+
+          $.ajax({
+            url: urlLink ,
+            cache: false,
+            data:{"documentID":myID},
+
+            success: function(html){
+              alert("SuccessFully Deleted");
+              console.log("$(this)");
+           console.log($("#"+myID));
+           console.log("$(this).parent()");
+           console.log($("#"+myID).parent().parent());
+           $("#"+myID).parent().parent().hide();
+
+               
+
+                           
+            }
+        });
+
+
+
+
+
+    }else{
+       // alert(retVal);     
+       return false;
+    }
+   
+});   
+ 
+</script>

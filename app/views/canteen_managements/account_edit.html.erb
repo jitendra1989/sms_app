@@ -1,0 +1,49 @@
+<%= form_for :canteen_managements, :url=>{:controller=>'canteen_managements',:action=>'account_update',:id=>@account.id},:html => {:id => 'accountCanteenID' } do |f| %>
+<%= f.hidden_field :is_deleted, :value => 0 %>
+<%= f.hidden_field :mg_school_id, :value => session[:current_user_school_id] %>
+<%= f.hidden_field :updated_by, :value => session[:user_id] %>
+
+<%= hidden_field_tag :previous_amount,@account.try(:amount) %>
+<%= hidden_field_tag :previous_account_id,@account_data_id %>
+   <%
+    account=Array.new
+    account.push("Central","central")
+    accounts=MgAccount.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:mg_account_name,:id)
+    accounts.insert(0,account)
+  %>
+
+  <label class="mg-label mg-tt-width" style="width:185px"><%= t('select_account') %><span class="required-field">&nbsp;*</span></label><br/>
+  <%=f.select :mg_account_id,options_for_select(accounts,@account_data_id),{:include_blank => t('Select')},:class=> "mg-select-btn", :disabled=>true %><br/>
+  <!-- Added By Bindhu for accounts ends -->
+
+   <label class="mg-label mg-tt-width" style="width:185px"><%= t('amount') %><span class="required-field">&nbsp;*</span></label><br/>
+   <%= f.text_field :amount,:class =>"mg-select-btn"%><br/>
+
+
+<p class="mg-p-mgtop">
+    <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("save")%></a>
+<a class="mg-small-form-btn cancel-form-dialog"><%=t("cancel")%></a>
+
+</p>
+
+<%end%>
+
+<%#= render  partial: 'application/common_left_close' %>
+
+<script>
+
+$("document").ready(function(){
+  var amu=$("#previous_amount").val();
+  $("#canteen_managements_amount").val(amu);
+  // alert(amu);
+})
+
+
+$("#accountCanteenID").validate({
+
+        rules: {        
+        "canteen_managements[name]": {required: true},
+       "canteen_managements[description]": {required: true}
+      }
+    });
+</script>

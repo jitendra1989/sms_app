@@ -1,0 +1,184 @@
+<% navigation_add 'Account', :controller => 'canteen_managements', :action => 'account' %>
+
+<% if !params[:notice].blank? %>
+  <div class="alert alert-info mg-danger-msg">
+   <%= params[:notice] %>
+  </div>
+<% end %>
+
+<%= render  partial: 'canteen_managements/canteen_management_left' %>
+
+<h4 class="mg-h4"><%= t('account_list') %></h4>
+<%#=@account.inspect%>
+
+<button class="new-add-canteen-account mg-btn-bottom-margin mg-custom-form-btn"><%= t('add_account')%></button>
+
+<div class="mg_pagination">
+<%if @account.present?%>
+<table  class="batch-tbl mg-tbl-margin">   <!-- border="2" --> 
+  <tr class="subject-table-header">
+    <!-- <th>Subject Id</th> -->
+    <th><%= t('account') %></th>
+    <th><%= t('amount') %></th>
+    <th><%= t('actions') %></th>
+
+  </tr>
+ 
+  <% @account.each do |account| %>
+    <tr>
+      <%if account.is_central==true%>
+          <td><%='Central'%></td>
+      <%elsif account.is_account==true
+          account_transaction_data=MgAccountTransaction.find_by(:for_module=>'canteen_managements',:mg_particular_id=>account.id)
+          account_data=MgAccount.find_by(:id=>account_transaction_data.try(:mg_to_account_id))
+      %>
+          <td><%=account_data.try(:mg_account_name)%></td>
+      <%else%>
+          <td></td>
+      <%end%>
+      <td><%=account.try(:amount)%></td>
+      <td>
+      	
+      <!-- button title="Show" id="<%#=raw category.id %>-showlabBTNID" class="show-inventory-category-btn mg-icon-btn"><i class="fa fa-eye"></i></button> -->
+
+        <button title="Edit" id="<%=raw account.id %>-editlabBTNID" class="edit-canteen-account-btn mg-icon-btn"><i class="fa fa-pencil-square-o"></i></button>
+
+        <button title="Delete" id="<%=raw account.id %>-deletelabBTNID" class="delete-canteen-account-btn mg-icon-btn"><i class="fa fa-trash"></i></button>
+
+      </td>
+    </tr>
+  <% end %>
+</table>
+<br/>
+ <div class="pagination-align" style="position: relative; bottom: 10px;">
+              <%= will_paginate @account, :container => false %>
+           </div>
+<%else%>
+<h5>No data is created </h5>
+<%end%>
+</div>
+<div id="newAddCanteenAccountDIVID"></div>
+<div id="editAddCanteenAccountDIVID"></div>
+
+
+<div id="showinventorycategoryDIVID"></div>
+
+
+<%= render  partial: 'application/common_left_close' %>
+
+<script>
+$( document ).ready(function() {
+            focusCurrentTab("canteenAccountDetailsAID","canteenAccountDetailsLID");
+          //focusStudentHeaderBox();
+});
+
+
+// $(document).on("click", ".show-inventory-category-btn", function(e){
+//         var myID =$(this).attr('id');
+//         var Id=myID.split("-");
+//         var urlLink = "/inventory/show/"+Id[0];
+//         $.ajax({
+//             url: urlLink ,
+//             cache: false,
+//             success: function(html){
+//                   $('#showinventorycategoryDIVID').dialog({
+//                     modal: true,
+//                      minHeight: 'auto',
+//                      width: 'auto',
+//                      title: "Show Item Category",
+//                      open: function () {
+                        
+//                         $(this).html(html);
+//                     }
+//                 }); 
+               
+//             }
+//         });
+// });
+
+
+$(document).on("click", ".delete-canteen-account-btn", function(e){
+     e.preventDefault();
+                var myID =$(this).attr('id');
+            var Id=myID.split("-");
+                var retVal = confirm("Are you sure to delete?");
+                if(retVal){
+                     var urlLink = "/canteen_managements/account_delete/"+Id[0];
+                      $.ajax({
+                        url: urlLink ,
+                        cache: false,
+                        success: function(html){
+                            window.location.reload();                
+                        }
+                    });
+                }else{
+                   return false;
+                }
+        }); 
+
+
+
+
+$(document).on("click", ".edit-canteen-account-btn", function(e){
+        var myID =$(this).attr('id');
+        var Id=myID.split("-");
+        var urlLink = "/canteen_managements/account_edit/"+Id[0];
+        // alert(Id[0]);
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(html){
+                  $('#editAddCanteenAccountDIVID').dialog({
+                    modal: true,
+                     minHeight: 'auto',
+                    minWidth: 260,
+                    title: "Edit Account",
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+});
+
+$(document).on("click", ".new-add-canteen-account", function(e){
+        var urlLink = "/canteen_managements/account_new";
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(html){
+                  $('#newAddCanteenAccountDIVID').dialog({
+                    modal: true,
+                     minHeight: 'auto',
+                    minWidth: 260,
+                    title: "Add Account",
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+});
+</script>
+
+
+<style>
+.table-batchs-tbl {
+   /* font-family: verdana,arial,sans-serif;*/
+    font-size:13px;
+    color:#363131;
+    border-width: 1px;
+    border-color:  #363131;
+    border-collapse: collapse;
+    padding: 12px ;
+    font-size: 0.8em;
+    width: 261px !important;
+    /* margin-left: 2px; */
+}
+</style>
+
+

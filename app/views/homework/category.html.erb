@@ -1,0 +1,150 @@
+<%= render  partial: 'master_settings/master_settings_left.html' %>
+<h4 class="mg-h4"><%= t('homework_list') %></h4>
+<button class="new-add-library mg-btn-bottom-margin mg-custom-form-btn"><%= t('add_category')%></button>
+
+<!-- <%#= button_to 'Add Laboratory', {:controller => "laboratory", :action => "new" } ,:class=>"mg-custom-form-btn"%> -->
+<div class="mg_pagination">
+<%if @category.length>0%>
+<table  class="batch-tbl mg-tbl-margin">   <!-- border="2" --> 
+  <tr class="subject-table-header">
+    <!-- <th>Subject Id</th> -->
+    <th><%= t('name') %></th>
+    <th><%= t('description') %></th>
+    <th><%= t('action') %></th>
+
+  </tr>
+ 
+  <% @category.each do |category| %>
+    <tr>
+      <td><%= category.name %></td>
+      <td><%= category.description %></td>
+      <td>
+      	
+      <button title="Show" id="<%=raw category.id %>-showlabBTNID" class="show-homework-btn mg-icon-btn"><i class="fa fa-eye"></i></button>
+
+        <button title="Edit" id="<%=raw category.id %>-editlabBTNID" class="edit-homework-btn mg-icon-btn"><i class="fa fa-pencil-square-o"></i></button>
+
+        <button title="Delete" id="<%=raw category.id %>-deletelabBTNID" class="delete-homework-btn mg-icon-btn"><i class="fa fa-trash"></i></button>
+
+        <%#= link_to "<i class=\"fa fa-trash\"></i>".html_safe, {:controller => "laboratory", :action => "delete",:id =>lab.id }, :method=>'post' ,:title=>"Delete" ,:class=>"mg-icon-btn",data: { confirm: 'Are you sure to delete?' } %>
+
+      </td>
+
+    </tr>
+  <% end %>
+</table>
+<br/>
+ <div class="pagination-align" style="position: relative; bottom: 10px;">
+              <%= will_paginate @category, :container => false %>
+           </div>
+<%else%>
+<h5>No category is created </h5>
+<%end%>
+</div>
+<div id="newAddHomeworkDIVID"></div>
+<div id="editHomeworkDIVID"></div>
+
+
+<div id="showHomeworkDIVID"></div>
+
+
+<%= render  partial: 'application/common_left_close' %>
+
+<script>
+$( document ).ready(function() {
+          //   focusCurrentTab("viewlibrary","viewlibraryLiID");
+             focusCurrentTab("homeworkcategorytypeAID","homeworkcategorytypeLiID");
+
+          //focusStudentHeaderBox();
+});
+
+
+
+
+
+$(document).on("click", ".show-homework-btn", function(e){
+        var myID =$(this).attr('id');
+        var Id=myID.split("-");
+        var urlLink = "/homework/category_show/"+Id[0];
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(html){
+                  $('#showHomeworkDIVID').dialog({
+                    modal: true,
+                     minHeight: 'auto',
+                    width: 'auto',
+                    title: "Show Category",
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+});
+
+
+$(document).on("click", ".edit-homework-btn", function(e){
+        var myID =$(this).attr('id');
+        var Id=myID.split("-");
+        var urlLink = "/homework/category_edit/"+Id[0];
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(html){
+                  $('#editHomeworkDIVID').dialog({
+                    modal: true,
+                     minHeight: 'auto',
+                    width: '290',
+                    title: "Edit Category",
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+});
+
+$(document).on("click", ".new-add-library", function(e){
+        var urlLink = "/homework/category_new";
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(html){
+                  $('#newAddHomeworkDIVID').dialog({
+                    modal: true,
+                     minHeight: 'auto',
+                    width: '290',
+                    title: "Add Category",
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+});
+</script>
+<style>
+
+
+.table-batchs-tbl {
+   /* font-family: verdana,arial,sans-serif;*/
+    font-size:13px;
+    color:#363131;
+    border-width: 1px;
+    border-color:  #363131;
+    border-collapse: collapse;
+    padding: 12px ;
+    font-size: 0.8em;
+    width: 261px !important;
+    /* margin-left: 2px; */
+}
+</style>
+
+

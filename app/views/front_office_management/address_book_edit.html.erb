@@ -1,0 +1,64 @@
+<% navigation_add t('address_book'), address_book_path %>
+<% navigation_add t('edit_address'), :controller=>"front_office_management", :action=>"address_book_edit", :id=>@address_book.id%>
+
+<%=render partial: 'front_office_management_left'%>
+<h4 class="mg-h4"><%= t('edit_address') %></h4>
+
+ <%= form_for :address_book, :url=>{:action=>"address_book_update",:id=>@address_book.id},:html => {
+                            :id => 'edit_address_book_form_id' } do |f| %>
+
+  <p>
+    <%= f.label :name, t('name') ,:class=>"mg-label"%><span class="required-field"> *</span><br/>
+    <%= f.text_field :name, :class=>"mg-text-field"%>
+  </p>
+  <p>
+    <%= f.label :address, t('address') ,:class=>"mg-label"%><span class="required-field"> *</span><br/>
+    <%= f.text_area :Address, :class=>"mg-text-field"%>
+  </p>
+  
+  <p>
+    <%= f.label :contact_no, t('contact_no') ,:class=>"mg-label"%><span class="required-field"> *</span>&nbsp;<%= tooltip '<i class="fa fa-question"></i>'.html_safe, { :tooltip => 'Can enter digits only. No arbitrary symbols like -,*,#,etc are allowed. Phone Number should not be initialised with 0, eg: If your number is 06542-2651XX, then enter it like 65422651XX. No need to mention \'0\' in the beginning.' }, :class => 'mytooltip mg-icon-btn' ,:style=>"font-size: 0.85em;"%><br/>
+    <%= f.text_field :contact_number, :class=>"mg-text-field"%>
+  </p>
+  <p>
+    <%= f.label :designation, t('designation') ,:class=>"mg-label"%><span class="required-field"> *</span><br/>
+    
+    <%= f.text_field :designation, :class=>"mg-text-field"%>
+  </p>
+  <p>
+    <%= f.label :email_id, t('email_id') ,:class=>"mg-label"%><span class="required-field"> *</span><br/>
+    <%= f.text_field :email_id, :class=>"mg-text-field"%>
+  </p>
+  <%= f.hidden_field :mg_school_id, :value => session[:current_user_school_id]%>
+
+  <%= f.hidden_field :created_by, :value => session[:user_id]%> 
+  <%= f.hidden_field :updated_by, :value => session[:user_id]%> 
+
+  <%= f.hidden_field :is_deleted, :value => 0%> 
+
+  <p class="mg-p-mgtop">
+    <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("save")%></a>
+ <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>  
+ </p>
+<% end %>
+<%= render  partial: 'application/common_left_close' %>
+
+<script>
+$(document).ready(function () {
+   focusCurrentTab("address_bookAID","address_bookLiID");
+$("#edit_address_book_form_id").validate({
+
+    rules: {
+        "address_book[name]": {required: true},
+        "address_book[Address]":{required: true}, 
+        "address_book[description]": {required: true},
+        "address_book[contact_number]": {required: true, number: true, minlength: 10,maxlength: 10},
+        "address_book[email_id]": {required: true,  email: "Your email must be in the format of name@domain.com"},
+        "address_book[designation]": {required: true},
+        },
+       messages: {
+        "address_book[contact_number]": {minlength: "Please enter 10 digits.",maxlength: "Please enter only  10 digits"},
+          }
+});
+});
+</script>

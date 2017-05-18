@@ -1,0 +1,117 @@
+<!-- Sec --> 
+
+<%if flash[:error].present?%>
+ <%=flash[:error]%>
+ <%end%>
+ 
+<% if @employees.length > 0 %>
+    
+
+  <%   @catList =   MgEmployeeCategory.where(:is_deleted => 0)
+
+      dataHash = Hash.new 
+
+
+      @catList.each do |catObj|
+
+           @empSize = MgEmployee.where(:mg_employee_category_id => catObj.id,:mg_school_id=>session[:current_user_school_id]).size
+ 
+          dataHash[catObj.category_name] = @empSize
+       end 
+      
+
+  %>
+
+    <%= pie_chart(dataHash) %>
+
+<!-- Employee Search  -->
+<!-- <div class="search-container">
+   Search Employee:
+  <input type="search" name="employeesearch" id="employeeSearchBoxID">
+  <input type="submit" id="employeeSearchBtnID">
+</div>
+<div class="searched-employee-data-container" id="searchEmployeeDataID">
+  hello
+</div> -->
+<br/>
+
+
+<!-- Employee Search  -->
+   
+
+ <div class="mg_pagination">
+    <table class="batch-tbl mg-tbl-margin">
+      <tr>
+        <th><%= t('employee_name') %></th>
+        <th><%= t('employeenumber') %></th>
+        <th><%= t('profile') %></th>
+        <th><%= t('department') %></th>
+        <th><%= t('joiningdate') %></th>
+        <th><%= t('actions') %></th>
+        
+        
+      </tr>
+     
+      <% @employees.each do |employee| %>
+        <tr>
+          <td class="table-padding-mod mg-capitalize-text"><%= employee.employee_name%></td>
+          <td class="table-padding-mod"><%= employee.employee_number %></td>
+          
+
+          <div style="display:none", class="view-div" id="<%= employee.id%>">
+          <%#= render_breadcrumbs :separator => ' >> ' %>
+          </div>
+        <%@pos=MgEmployeePosition.find_by_id( employee.mg_employee_position_id)%>
+         <td class="table-padding-mod" style="width: 6.7em">
+              <%if @pos.present?%>
+              
+              <%=@pos.position_name%>
+              <%end%>
+        </td>
+          <td class="table-padding-mod">
+          <%  @dep=MgEmployeeDepartment.find_by_id( employee.mg_employee_department_id)%>
+          <%= @dep.department_name%>
+        </td>
+        <% @timeformat=MgSchool.find_by_id(employee.mg_school_id)%>
+        <% if @timeformat.present?%>
+          <td class="table-padding-mod">
+            <%= employee.joining_date.strftime(@timeformat.date_format) %>
+          </td>
+          <%else%>
+          <td></td>
+        <%end %>
+    
+          
+          <td class="table-padding-mod" style="text-align: center;">
+          <button title="<%= t('show') %>" class="show-employee mg-icon-btn" id="showEmployeeID-<%= employee.id%>"><i class="fa fa-eye"></i>
+          </button>
+          <button title="<%= t('edit') %>" class="edit-employee mg-icon-btn" id="editEmployeeID-<%= employee.id%>"><i class="fa fa-pencil-square-o"></i></button>
+          <button title="<%= t('delete') %>" class="delete-employee mg-icon-btn" id="deleteEmployeeID-<%= employee.id%>"><i class="fa fa-trash"></i></button>
+          </td>
+        </tr>
+      <% end %>
+    </table>
+    <%= will_paginate @employees, :container => false %>
+  </div>
+<% else %>
+  <h5><%=t('create_employee')%></h5>
+<% end %>
+<div id="editEmployeeDialog" style="padding: 2px;"></div>
+
+
+<script type="text/javascript">
+     $(document).ready(function(){
+
+        $("li").removeClass( "active" );
+        $("a").removeClass( "activeMenu" );
+
+        $("#manageLiID").addClass("active");
+        $("#viewEmployeeList").addClass("activeMenu");
+
+
+        focusEmployee();
+     });
+</script>
+
+
+

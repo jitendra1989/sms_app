@@ -1,0 +1,28 @@
+<%#if 1==1%>
+<%if Date.today>@inventaoru_update.due_date%>
+
+<table class="mg-tbl-margin mg-show-tbl-width">
+
+
+    <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="selectSection"><%= t ('fine_amount') %><span class="required-field">&nbsp;*</span></label><br/>
+        
+       <%=text_field_tag 'fine_amount',@amount,readonly: true%>
+       
+      </td>
+    </tr>
+
+    <br/>
+    
+    </table>
+
+    <span>
+     <button  id="Renew-<%=@inventory_id%>-<%=raw @studentid%>" class="submit_for_renew_fines_data  form_close_calss mg-custom-form-btn">Submit</button>
+      <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+      </span>
+     
+    <%end%>
+    
+
+    

@@ -1,0 +1,161 @@
+<%= render partial: 'classes/class_left' %>
+
+<% navigation_add t('class'), classes_path %>
+<% navigation_add t('create_class'), '/classes/new' %>
+
+<!-- Sec --><div class="page-yield">
+
+  <div class="box">
+    <h4 class="mg-h4"><%= t('new_class') %></h4>
+    <%= form_for @courses, :html=>{:id=>'new_course_form'}, url: {action: "create"} do |f| %>
+      
+      <label class="mg-label" for="course_name">Select Wing<span class="required-field"> *</label>  
+          <div class="input-container">
+          <%=f.select :mg_wing_id,options_for_select(@schoolWing),{:include_blank => t('select')} ,:class=>"mg-select-btn"%>
+          </div>
+       
+       <label class="mg-label" for="course_name"><%= t('class_name') %><span class="required-field"> *</span></label>
+       <div class="input-container">
+            <%= f.text_field :course_name ,:class=>"mg-text-field"%>
+            </div>
+
+          
+
+         <!--  <label>Select Wing</label>  
+          <select>
+              <option value=1>Junior Wing</option>
+              <option value=2>Middle School</option>
+              <option value=3>High School</option>
+          </select> -->
+
+       <!-- <label class="mg-label mg-custom-labels" for="section_name"><%#= t('section_name') %></label>
+            <div class="input-container">
+              <%#= f.text_field :section_name ,:class=>"mg-custom-labels"%>
+          </div>
+ -->
+
+          <label class="mg-label" for="code"><%= t('code') %><span class="required-field"> *</span></label>
+          <div class="input-container mg-btn-bottom-margin">
+              <%= f.text_field :code ,:class=>"mg-text-field"%>
+          </div>
+          <%= f.hidden_field :is_deleted, :value => 0 %> 
+          <%= f.hidden_field :mg_school_id, :value => session[:current_user_school_id] %> 
+          <%@school=MgSchool.find(session[:current_user_school_id])%>
+          <%= f.hidden_field :grading_type, :value =>@school.grading_system %> 
+          <!--Grading system will come here-->
+          
+          
+          <h4 class="mg-h4"><%= t('initial_section') %></h4>
+      
+          <%= fields_for :batch do |batch_form| %>
+           <%= batch_form.hidden_field :is_deleted, :value => 0 %> 
+           <%= batch_form.hidden_field :mg_school_id, :value => session[:current_user_school_id] %> 
+            <label class="mg-label" for="name"><%= t('name') %><span class="required-field"> *</span></label>
+                <div class="input-container">
+                    <%= batch_form.text_field :name ,:class=>"mg-text-field"%>
+                </div>
+
+            <label class="mg-label" for="Start date"><%= t('Start date') %><span class="required-field"> *</span></label>
+                <div class="input-container">
+
+                    <%= batch_form.text_field :start_date ,:class => 'Start_date mg-text-field' ,:id=>"Start_date"%>
+
+                </div> 
+
+             <label class="mg-label" for="End date"><%= t('End date') %><span class="required-field"> *</span></label>
+                <div class="input-container">
+                    <%= batch_form.text_field :end_date ,:id => 'End_date' ,:class=>"mg-text-field"%>
+                </div>      
+          <% end %>
+      <br/>
+      <%#= submit_tag t('save'), class: "submit" ,:class=>"mg-small-form-btn"%>
+           <a onclick="$(this).closest('form').submit()" class="submit mg-small-form-btn"><%=t("save")%></a>
+           <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+    <% end %><br>
+
+    <div class="extender"></div>
+
+  </div>
+</div>
+
+<%= render partial: 'application/emp_section_close' %>
+
+
+ <%#= button_to t('cancel'), courses_path , :method => :get%>   
+<script >
+ 
+
+   $(document).ready(function(){
+
+    focusCurrentTab("createCourseIDgff","createCourseTagLiID");
+      focusCourses();
+      
+     dateFormatStr =  getJsDateFormat();
+    $( "#End_date" ).datepicker({ changeMonth: true,
+                changeYear: true, dateFormat: dateFormatStr });
+    $( "#Start_date" ).datepicker({ changeMonth: true,
+                changeYear: true, dateFormat: dateFormatStr });
+    $( ".batch_start_date" ).datepicker({ changeMonth: true,
+                changeYear: true, dateFormat: dateFormatStr });
+
+    $("#new_course_form").validate({
+      rules:{
+        "mg_course[mg_wing_id]":{required:true},
+        "mg_course[course_name]":{required:true},
+     //   "mg_course[section_name]":{required:true},
+        "mg_course[code]":{required:true},
+        "batch[name]":{required:true},
+        "batch[start_date]":{required:true},
+        "batch[end_date]":{required:true},
+
+      }
+    });
+  });
+
+   $(document).on("change","#End_date",function(){
+     var dateFormatStr =  getJsDateFormat();
+    var start_date=$("#Start_date").val();
+    var end_date=$(this).val();
+    
+    if(start_date && end_date){
+      if(!(compareDate(start_date,end_date,dateFormatStr))){
+        alert("End date should be greater than start date");
+        document.getElementById('End_date').value="";
+      }
+    }
+  });
+
+   $(document).on("change","#Start_date",function(){
+     var dateFormatStr =  getJsDateFormat();
+    var start_date=$(this).val();
+    var end_date=$("#End_date").val();
+ 
+    if(start_date && end_date){
+      if(!(compareDate(start_date,end_date,dateFormatStr))){
+        alert("Start date should be less than end date");
+        document.getElementById('Start_date').value="";
+      }
+    }
+  });
+
+
+
+</script>
+
+<style type="text/css">
+  #userBodyContentBox .userMenuBoxLeft ul {
+  left: -40px;
+  list-style: outside none none;
+  position: relative;
+  width: 235px;
+}
+
+ 
+.userMenuBoxLeft ul .setMenu {
+  padding: 13px;
+  width: 195px;
+}
+</style>
+
+
+ 

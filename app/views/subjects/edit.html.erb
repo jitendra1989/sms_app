@@ -1,0 +1,96 @@
+<!-- Sec --> 
+<%= form_for @subjects, url: subject_path(@subjects), method: :patch, :html =>{:id=>"editSubjectFormID"} do |f| %>
+ <% if @students != nil%>
+ <% if @students.errors.any? %>
+  <div id="error_explanation">
+    <h2><%= pluralize(@students.errors.count, "error") %> prohibited
+      this from being saved:</h2>
+    <ul>
+    <% @students.errors.full_messages.each do |msg| %>
+      <li><%= msg %></li>
+    <% end %>
+    </ul>
+  </div>
+  <% end %>
+  <% end %>
+ <div>
+ <label class="mg-label" for="subject_name"><%= t('class_name') %><span class="required-field">&nbsp;*</span></label><br>
+    <%classes=MgCourse.find(@subjects.mg_course_id)%>
+
+    <%#= text_field :class_name,:value=>classes.course_name,:disabled%>
+    <%= text_field_tag 'class_name', classes.course_name, disabled: true%>
+  </div>
+  <div>
+ <label class="mg-label" for="subject_name"><%= t('subjectname') %><span class="required-field">&nbsp;*</span></label><br>
+    
+    <%= f.text_field :subject_name   %>
+  </div>
+ 
+  <div>
+  <label class="mg-label" for="subject_code"><%= t('subjectcode') %><span class="required-field">&nbsp;*</span></label><br>
+   
+    <%= f.text_field :subject_code %>
+  </div>
+
+  <div>
+  <label class="mg-label" for="max_weekly_class"><%= t('maxweeklyclass') %><span class="required-field">&nbsp;*</span></label><br>
+    
+    <%= f.text_field :max_weekly_class %>
+  </div>
+
+  <div>
+    <label class="mg-label " for="is_core_subject"><%= t('is_core_subject') %><span class="required-field">&nbsp;</span></label>
+    <%= f.check_box :is_core  %>
+  </div>
+
+  <div>
+    <label class="mg-label " for="is_lab"><%= t('is_lab') %><span class="required-field">&nbsp;</span></label>
+    <%= f.check_box :is_lab,:onClick=>"fnEnableNoOfClassText(this);"  %>
+  </div>
+
+  <%
+    if @subjects.is_lab==true
+      no_of_class_exist=false
+    else
+      no_of_class_exist=true
+    end
+  %>
+
+   <p>
+    <label class="mg-label mg-rm-text-trans" for="no_of_classes">No of Classes <span class="required-field">&nbsp;*</span></label><br>
+    <%= f.text_field :no_of_classes, :id=>'noOfClassesTextId', :class=>"mg-text-field", :readonly => no_of_class_exist %>
+  </p>
+  
+  <p>
+    <%#= f.submit t('save'),:class=>"mg-small-form-btn" %>
+    <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("save")%></a>
+     <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+  </p>
+  </p>
+<% end %>
+ 
+<script>
+  $(document).ready(function () {
+    $("#editSubjectFormID").validate({
+
+    rules: {
+      "mg_subject[subject_name]": {required: true},
+      "mg_subject[subject_code]": {required: true},
+      "mg_subject[max_weekly_class]": {required: true, number: true, max: 54},
+      "mg_subject[no_of_classes]": {required: true,number: true, min: 1}
+    }
+    });
+  });
+
+  function fnEnableNoOfClassText(that){
+    var lb_checkboxValue=$(that).is(':checked');
+    $("#noOfClassesTextId").prop('readonly', true);
+    
+    if(lb_checkboxValue) {
+      $("#noOfClassesTextId").prop('readonly', false);
+    } else {
+      $("#noOfClassesTextId").val('');
+    }
+  }
+
+</script>

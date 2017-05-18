@@ -1,0 +1,81 @@
+
+<!-- Sec --> 
+<%@curriculum=MgSyllabus.where(:is_deleted => '0', :mg_school_id=>session[:current_user_school_id])%>
+
+
+<h4 class="mg-h4"><%= t('curriculum_management') %></h4>
+
+<%= button_to 'Add Syllabus', {:controller => "curriculum", :action => "syllabus_index" } %>
+
+
+
+<table  class="batch-tbl mg-tbl-margin">   <!-- border="2" --> 
+  <tr class="subject-table-header">
+  	<!-- <th>Subject Id</th> -->
+    <th><%= t('name') %></th>
+    <th><%= t('description') %></th>
+    <th><%= t('actions') %></th>
+  </tr>
+ 
+  <% @curriculum.each do |curr| %>
+    <tr>
+<%
+      puts "dddddddddddddddddd"
+      puts curr.id
+      puts "ddddddddddddddddddd"
+%>
+  
+      <td><%= curr.name %></td>
+      <td><%= curr.description %></td>
+      <td>
+      <span style="float: left; margin-right: 3px;">
+        <%= link_to "<i class=\"fa fa-pencil-square-o\"></i>".html_safe, {:controller => "curriculum", :action => "subject_edit",:id =>curr.id } ,:title=>"Edit" ,:class=>"mg-icon-btn"%>
+      </span>
+      <span style="float: left;">
+        <%= link_to "<i class=\"fa fa-trash\"></i>".html_safe, {:controller => "curriculum", :action => "subject_delete",:id =>curr.id } , :title=>"Delete" ,:class=>"mg-icon-btn" %>
+      </span>
+      </td>
+
+    </tr>
+  <% end %>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

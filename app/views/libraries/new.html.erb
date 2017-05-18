@@ -1,0 +1,192 @@
+<%= render  partial: 'library_left' %>
+
+<% navigation_add 'Books Purchase', libraries_path %>
+<% navigation_add 'Create Library', libraries_new_path %>
+
+<%if flash[:error].present?%>
+  <div class="alert alert-info mg-success-msg">
+
+        <%=flash[:error]%>
+  <div class="alert alert-info mg-success-msg">
+        
+   <%end%>
+
+<h4 class="mg-h4"><%= t('Purchase Information')%></h4>
+<div class="box">
+<%= form_for :library_purchase_details ,  :url=>{:controller=>'libraries',:action=>'create'}, :html=>{:id=>'libraries_details_data'} do |f| %>
+
+        <%= f.hidden_field :is_deleted ,:value=>0%>
+        <%= f.hidden_field :mg_school_id ,:value=>@school_id%>
+        
+<table class="mg-tbl-margin mg-show-tbl-width">
+    <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="vendorName"><%= t ('vendor_name') %><span class="required-field">&nbsp;*</span></label><br/>
+        <%= f.text_field :vendor_name ,:class=>"mg-text-field"%>
+      </td>
+    </tr>
+    <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label mg-label-text-transform-none" for="dateofPurchase"><%= t ('date_of_purchase') %><span class="required-field">&nbsp;*</span></label><br/>
+        <%= f.text_field :date_of_purchase ,:class=>"mg-text-field"%>
+      </td>
+    </tr>
+    <tr>
+    <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="dateofPurchase"><%= t ('amount_paid') %><span class="required-field">&nbsp;*</span></label><br/>
+        <%= f.text_field :Amount_paid ,:class=>"mg-text-field"%>
+      </td>
+    </tr>
+    <tr>
+    </tr>
+</table>  
+<h4 class="mg-h4"><%= t('Item Information')%></h4> 
+<a href="#" id="library_details_for_data" class="mg-label-inner-form mg-custom-form-btn" style="color: #297ACC; font-size:0.8em; position: relative;" >Add </a> <br/>
+ <div class="mg-scroll-employee-bar mg-tbl-margin">   
+
+<table class="mg-show-tbl-width mg-table-nowrap batch-tbl mg-adjust-padding">  
+
+        <th>S No.</th>
+        <th>Book Name</th>
+        <th>Author</th>
+        <th>Publisher</th>
+        <th>Cost</th>
+        <th class="mg-rm-text-trans">No. of Copies</th>
+        <th>Total</th>
+        <th>Select Class</th>
+        <th><%=t('actions')%></th>
+        <tr class="demo-div">
+
+            <div id="finalDueFineDivId">
+            <div class="due-fine-div" id="dueFineDivId">
+            <td><span class="required-incremented-field">1</span></td>
+          
+          <td class="mg-align-center">
+          <%#= f.collection_select("mg_category_id[]",MgCourse.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]), :id, :course_name,{:include_blank => t("select")},:class => "call-purpose-class consumption-category-class category-laboratory-class",:name=>"mg_category_id[]")%>
+
+          <%= text_field_tag 'book_name[]' ,nil,:class=>"demo13 mg-text-field-particular required-field"%>
+
+          </td>
+          <td class="mg-align-center">
+          <%#= text_field_tag 'item_name[]' ,nil,:class=>"mg-text-field-particular required-field"%>
+          <%= text_field_tag 'author[]' ,nil,:class=>"mg-text-field-particular required-field demo12"%>
+          </td>
+          <td class="mg-align-center">
+          <%#= text_field_tag 'cost[]' ,nil,:class=>"mg-text-field-particular cost-auto-class required-field",:id=>"cost_"%>
+          <%= text_field_tag 'publisher[]' ,nil,:class=>"mg-text-field-particular required-field"%>
+          </td>
+          <td class="mg-align-center libraries-td-class">
+          <%#= text_field_tag 'unit[]' ,nil,:class=>"mg-text-field-particular required-field unit-auto-class",:id=>"unit_"%>
+          <%= text_field_tag 'cost[]' ,nil,:class=>"mg-text-field-particular required-field library-cost-auto-class"%>
+          </td>
+          <td class="mg-align-center unit-td-class">
+
+          <%= text_field_tag 'no_of_copies[]' ,nil,:class=>"mg-text-field-particular required-field library-auto-class "%>
+          <%#= text_field_tag 'total[]' ,nil,:class=>"mg-text-field-particular required-field total-auto-class",:id=>"total_amount", readonly: true%>
+          </td>
+          <td class="mg-align-center library-total-td-class">
+          <%= text_field_tag 'total[]' ,nil,:class=>"mg-text-field-particular required-field library-total-auto-class",readonly: true%>
+          </td>
+          <td class="mg-align-center">
+          <%#= text_field_tag 'select_class[]' ,nil,:class=>"mg-text-field-particular required-field"%>
+          <%= f.collection_select("select_class[]",MgCourse.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]), :id, :course_name,{:include_blank => t("select")},:class => "call-purpose-class consumption-category-class category-laboratory-class",:name=>"select_class[]")%>
+          </td>
+          <td class="mg-align-center">
+                      <a href="#" title="Remove" class="remove-library-details mg-icon-btn" style="color: #297ACC; font-size:0.8em;"> <i class="fa fa-trash"></i></a>
+                      
+            </td>   
+             </div>
+             </div>
+          </tr>
+
+
+
+</table >
+
+  </div>                
+                      
+                     
+
+<%#=f.submit "Submit" ,:class=>"mg-small-form-btn"%>
+ <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("Submit")%></a>
+
+<%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+<%end%>
+</div>
+<%= render  partial: 'application/common_left_close' %>
+
+
+<script>
+$(document).ready(function () {
+
+  
+    
+
+
+        focusCurrentTab("libraryinformationAID","libraryInformationLiID");
+        //focusMasterSettings();
+
+        dateFormatStr =  getJsDateFormat();
+
+    $('#library_purchase_details_date_of_purchase').datepicker({ changeMonth: true,
+                changeYear: true,yearRange: "-50:+0",maxDate: "0",dateFormat: dateFormatStr});
+
+
+
+    });
+
+
+ $(function () {
+    $.validator.addMethod('dateFormat',
+    function (value, element) {
+      dateFormatStr =  getJsDateFormat();
+        if (this.optional(element)) {
+            return true;
+        }
+        var ok = true;
+        try {
+            $.datepicker.parseDate(dateFormatStr, value);
+        }
+        catch (err) {
+            ok = false;
+        }
+        return ok;
+    },
+
+
+      "Please enter a date in the format "+ getDateFormat(dateFormatStr) +".");
+      dateFormatStr =  getJsDateFormat();
+
+    $(".datefield").datepicker({ dateFormat: dateFormatStr, changeYear: true });
+});
+ 
+$("#libraries_details_data").validate({
+//   $(".category-validation-class").rules("add", { 
+//   required:true
+// });
+        rules: {   
+        "library_purchase_details[vendor_name]": {required: true}, 
+        "library_purchase_details[date_of_purchase]": {required: true,dateFormat:true},    
+        "library_purchase_details[Amount_paid]": {required: true,number: true},
+        "laboratry[amount_paid]": {required: true, number: true},
+        "book_name[]": {required: true},
+        "author[]": {required: true},
+        "publisher[]": {required: true},
+        "cost[]": {required: true, number: true},
+        "no_of_copies[]": {required: true, number: true},
+        "total[]": {required: true, number: true},
+        "select_class[]":{required: true}
+      }
+    });
+
+
+
+
+</script>
+<style>
+.error{
+  float:left;
+  font-size:10px;
+}
+</style>

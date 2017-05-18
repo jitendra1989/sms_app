@@ -1,0 +1,6 @@
+<!-- Sec --> 
+    
+<%@feesquery=MgStudentCategory.where(:is_deleted => 0, :mg_school_id=>session[:current_student_user_id]).pluck(:name,:id)%>
+<%= label_tag :select_student_category %><br>
+<%@category=MgStudentCategory.where(:is_deleted => 0, :mg_school_id=>session[:current_student_user_id]).pluck(:name,:id)%>
+<%=select_tag :mg_student_category_id,options_for_select(@category)%>

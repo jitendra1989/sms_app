@@ -1,0 +1,123 @@
+<%=render partial: 'alumni_left'%>
+<% navigation_add t('get_togethers'),:controller=>'alumni',:action=>'index' %>
+<h4 class="mg-h4"><%= t('Get Together List') %></h4>
+<%= button_to 'Add Get Together',{:controller=>'alumni',:action=>'new'}, :class=> 'mg-custom-form-btn' %>
+<div class="mg_pagination">
+	<%if @get_together_data.length>0%>
+  	<table  class="batch-tbl mg-tbl-margin">
+  		<tr class="subject-table-header">
+    		<th><%= t('event_name') %></th>
+    		<th><%= t('event_date') %></th>
+    		<th><%= t('start_time') %></th>
+    		<th><%= t('end_time') %></th>
+    		<th><%= t('venue') %></th>
+    		<!-- <th><%#= t('status') %></th> -->
+    		<th><%= t('actions') %></th>
+  		</tr>
+
+      <% @get_together_data.each do |f| %>
+        <%if session[:user_id]==f.mg_user_id%>
+        	<tr>
+        		<td class="mg-capitalize-text"><%= f.event_name %></td>
+        		<td><%= f.event_date.strftime(date_format(session[:current_user_school_id])) %></td>
+        		<td><%= f.start_time.try(:strftime,"%l:%M%P") %></td>
+        		<td><%= f.end_time.try(:strftime,"%l:%M%P") %></td>
+        		<td><%= f.venue %></td>
+        		<!-- <td><%#= f.status %></td> -->
+        		<td>
+        			<button title="Show" id="<%=raw f.id %>-showlabBTNID" class="show-get-together-btn mg-icon-btn"><i class="fa fa-eye"></i></button>
+          		<button title="Edit" id="<%=raw f.id %>-editlabBTNID" class="edit-get-together-btn mg-icon-btn"><i class="fa fa-pencil-square-o"></i></button>        	
+              <button title="Delete" onclick="confirm('Are you sure to delete?') ? window.location='/alumni/delete/<%=f.id%>' : ''" class="mg-icon-btn"><i class="fa fa-trash"></i></button>
+        		</td>
+        	</tr>
+        <%else%>
+          <%get_together_record=get_together(f.mg_user_id,f.id)%>
+          <%if get_together_record.present?%>
+            <tr>
+              <td><%= f.event_name %></td>
+              <td><%= f.event_date.strftime(date_format(session[:current_user_school_id])) %></td>
+              <td><%= f.start_time.try(:strftime,"%l:%M%P") %></td>
+              <td><%= f.end_time.try(:strftime,"%l:%M%P") %></td>
+              <td><%= f.venue %></td>
+              <!-- <td><%#= f.status %></td> -->
+              <td>
+                <button title="Show" id="<%=raw f.id %>-showlabBTNID" class="show-get-together-btn mg-icon-btn"><i class="fa fa-eye"></i></button>
+                
+                <button title="Edit" onclick="alert('Event creater can only Edit') ? window.location='#' : ''" class="mg-icon-btn"><i class="fa fa-pencil-square-o"></i></button>
+                <button title="Delete" onclick="alert('Event creater can only Delete') ? window.location='#' : ''" class="mg-icon-btn"><i class="fa fa-trash"></i></button>
+              </td>
+            </tr>
+          <%end%>
+        <%end%>
+    	<% end %>
+  	</table>
+    <br/>
+    <div class="pagination-align" style="position: relative; bottom: 10px;">
+      <%= will_paginate @get_together_data, :container => false %>
+    </div>
+  <%else%>
+    <h5>No Get Together is created </h5>
+  <%end%>
+</div>  	
+
+<div class="pagination-align">
+    <%= will_paginate @get_together_data, :container => false %>
+  </div>
+<div id="newAlumniId"></div>
+<%= render  partial: 'application/common_left_close' %>
+<script>
+  $( document ).ready(function() {
+    focusCurrentTab("getTogethersAID","getTogethersliId");
+  });
+
+
+$(document).on("click", ".show-get-together-btn", function(e){
+    var myID =$(this).attr('id');
+        var Id=myID.split("-"); 
+        // alert(Id[0]);
+
+        var urlLink= 'alumni/'+Id[0] +'show/';
+        $.ajax({
+          url: urlLink,
+          cache: false,
+          // data: {"id":Id[0]},
+          success: function(html){
+            $("#newAlumniId").dialog({
+              modal:true,
+              minHeight: 'auto',
+              width: 'auto',
+              title: 'Show Get Together',
+              open: function(){
+                $(this).html(html);
+              }
+            })
+          }
+        })
+  });
+
+
+$(document).on("click", ".edit-get-together-btn", function(e){
+    var myID =$(this).attr('id');
+        var Id=myID.split("-"); 
+
+        var urlLink= 'alumni/'+Id[0]+'/edit';
+        $.ajax({
+          url: urlLink,
+          cache: false,
+          // data: {"id":Id[0]},
+          success: function(html){
+            $("#newAlumniId").dialog({
+              modal:true,
+              minHeight: 'auto',
+              width: 'auto',
+              title: 'Edit Get Together',
+              open: function(){
+                $(this).html(html);
+              }
+            })
+          }
+        })
+  });
+
+
+</script>

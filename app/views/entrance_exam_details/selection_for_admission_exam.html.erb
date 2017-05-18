@@ -1,0 +1,77 @@
+<% if @students_list.present? %>
+  <h4 class="mg-h4"><%=t('student_list')%></h4>
+  <div class="mg-scroll-employee-bar mg-btn-bottom-margin">
+    
+    <table class="batch-tbl mg-tbl-margin table-batchs-tbl">
+      <tr class="subject-table-header">
+        <th rowspan="2"><%= t('student_id') %></th>
+        <th rowspan="2"><%= t('name') %></th>
+        <th rowspan="2" class="mg-rm-text-trans"><%= t('dateofbirth') %></th>
+        <th colspan="2"><%= t('previous_examination_marks') %></th>
+        <th colspan="2"><%= t('entrance_exam_marks') %></th>
+        <th rowspan="2"><%= t('index') %></th> 
+        <th rowspan="2"><%= t('status') %></th>
+        <th rowspan="2" style="width: 13%;">
+          <a id="checkAllCheckBoxForAdmission" class="mg-pop-link">All</a>
+          <a id="unCheckAllCheckBoxForAdmission" class="mg-pop-link">None</a>
+        </th>
+      </tr>
+      <tr>
+        <td class="mg-align-center"><%=t('obtained_marks')%></td>
+        <td class="mg-align-center"><%=t('total_marks')%></td>
+        <td class="mg-align-center"><%=t('obtained_marks')%></td>
+        <td class="mg-align-center"><%=t('total_marks')%></td>
+      </tr>
+      <tbody id="">  
+        <% @students_list.each do |f| %>
+          <tr class="student-admissions-class">
+            <% @mg_id=params[:mg_course_id] %>
+            <td class="mg-align-center"><%= f.try(:student_temporary_id) %></td>            
+            <td class="mg-capitalize-text"><%= f.try(:first_name) %>&nbsp;<%= f.try(:middle_name) %>&nbsp;<%= f.try(:last_name) %></td>
+            <% @dateFormat = MgSchool.find_by(:id=>session[:current_user_school_id]).date_format %>
+            <td class="mg-align-center"><%= f.try(:date_of_birth).try(:strftime,@dateFormat) %></td>   
+           
+            <td class="mg-align-center"><%= f.try(:marks_obtained) %></td>
+            <td class="mg-align-center">
+              <%= f.try(:total_marks) %>
+            </td>
+            <td class="mg-align-center"><%= f.try(:obtained_marks) %></td>
+            <td class="mg-align-center"><%= f.try(:exam_total_marks) %></td>
+            <td class="mg-align-center"><%= f.try(:selection_index) %></td>
+            <td class="mg-capitalize-text"><%=f.is_shortlisted_for_admission %></td>
+            <%= hidden_field_tag "student_admission_id[]",f.id %>              
+            <td class="mg-align-center">
+              <%= check_box_tag("shortlisted_for_admission[]", name=f.id, false, :onclick=>"",:class=>"checked-checkbox-for-admission student-checkbox-status")%>       
+            </td>           
+          </tr>                      
+        <% end %>
+      </tbody>      
+    </table>
+  </div>
+    <p class="mg-p-mgtop">
+      <a onclick="optionFunction(1)" class="mg-small-form-btn" style="margin-right:4px;"><%= t("accept") %></a>
+      <a onclick="optionFunction(0)" class="mg-small-form-btn" style="margin-right:4px;"><%= t("reject") %></a>
+      <a onclick="printSelectedStudentList()" class="mg-small-form-btn" style="margin-right:4px;"><%= t("print") %></a>
+      <%=link_to t('cancel'),:back,:class=>"mg-small-form-btn"%>    
+    </p>
+<% else %>
+    <h5 class="mg-custom-labels"><%= t('no_student_display') %></h5>
+<% end %>
+
+<script>
+
+  $("#checkAllCheckBoxForAdmission").on("click", function(e){
+    $(".checked-checkbox-for-admission").prop('checked', true);
+    e.preventDefault();        
+  });
+
+  $("#unCheckAllCheckBoxForAdmission").on("click", function(e){
+    $(".checked-checkbox-for-admission").prop('checked', false);
+    e.preventDefault();
+  });  
+
+
+  
+   
+</script>
+

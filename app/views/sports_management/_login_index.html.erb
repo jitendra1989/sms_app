@@ -1,0 +1,95 @@
+<table  class="batch-tbl mg-tbl-margin">
+  <tr class="subject-table-header">
+    <th><%= t('user_name') %></th>
+    <th><%= t('actions') %></th>
+  </tr>
+ 
+  <% @users.each do |user| %>
+    <%=hidden_field_tag "user_type",user.user_type%>
+    <tr>
+      <td><%= user.try(:user_name) %></td>
+      <td>
+        <button title="Change Password" id="<%=raw user.id %>-showBTNID" class="change-user-password-btn mg-icon-btn"><i class="fa fa-exchange"></i></button>
+
+        <button title="Edit" id="<%=raw user.id %>-editaccountBTNID" class="edit-user-detail-btn mg-icon-btn"><i class="fa fa-pencil-square-o"></i></button>
+
+        <button title="Delete" id="<%=raw user.id %>-deletelabBTNID" class="delete-user-detail-btn mg-icon-btn"><i class="fa fa-trash"></i></button>
+      </td>
+    </tr>
+  <% end %>
+</table>
+<br/>
+<div id="editUserDivId"></div>
+<div id="changePasswordUserDIVID"></div>
+
+<script>
+
+$(document).on("click", ".delete-user-detail-btn", function(e)
+{
+  e.preventDefault();
+  var myID =$(this).attr('id');
+  var Id=myID.split("-");
+  var retVal = confirm("Are you sure to delete?");
+  if(retVal)
+  {
+    var urlLink = "/placements/delete_user/"+Id[0];
+    $.ajax({
+      url: urlLink ,
+      cache: false,
+      success: function(html)
+      {
+          window.location.reload();
+      }
+    });
+  }else
+  {
+    return false;
+  }
+}); 
+
+
+$(document).on("click", ".edit-user-detail-btn", function(e){
+  var user_type=$("#user_type").val();
+  var myID =$(this).attr('id');
+  var Id=myID.split("-");
+  var urlLink = "/placements/edit_user/"+Id[0];
+  $.ajax({
+      url: urlLink ,
+      cache: false,
+      success: function(html){
+            $('#editUserDivId').dialog({
+              modal: true,
+              minHeight: 'auto',
+              minWidth: '250px',
+              title: "Edit",
+              open: function () {
+                  $(this).html(html);
+              }
+          }); 
+      }
+  });
+});
+
+$(document).on("click", ".change-user-password-btn", function(e){
+  var myID =$(this).attr('id');
+  var Id=myID.split("-");
+  var urlLink = "/placements/change_password/"+Id[0];
+  $.ajax({
+      url: urlLink ,
+      cache: false,
+      success: function(html){
+            $('#changePasswordUserDIVID').dialog({
+              modal: true,
+              minHeight: 'auto',
+              minWidth: '250px',
+              title: "Change Password",
+              open: function () {
+                  $(this).html(html);
+              }
+          }); 
+      }
+  });
+});
+
+
+</script>

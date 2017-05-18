@@ -1,0 +1,105 @@
+<!-- breadcrumbs Work -->
+<% navigation_add 'Examinations', examinations_path %>
+<% navigation_add 'Exam Report', examination_report_center_path %>
+<% navigation_add 'View Report', cce_reports_path %>
+<% navigation_add 'Student Report', cce_reports_student_wise_report_path %>
+<!-- breadcrumbs Work -->
+
+
+
+<%= render  partial: 'examination/examination_table_left' %>
+
+
+<h4 class="mg-h4">Student CCE Report</h4>
+<div>
+
+    <table width="100%" cellspacing="0" cellpadding="0" border="0" class=" mg-table-spacing">
+      <tr >
+			<td>
+				<label class="mg-label select-width-mod">Select Class Section</label>
+   <%=select_tag :mg_batch_id,options_from_collection_for_select(@batches,"id","full_name"),:prompt=>"Select",:onchange=>"fetchStudentRecordForBatch(this)"%>
+				<%#=select_tag :mg_batch_id, options_for_select(@course_batches),:prompt=>t('selectcoursebatch') ,:onChange=>"fetchStudentRecordForBatch(this);"%><br>
+	      </td>
+
+	      </tr>
+<div id="student_list">
+    
+  </div>
+	      <tr>
+
+	      <td>
+
+				<div id="studentListDivId">
+					
+
+				</div>
+	      </tr>
+
+     
+
+     </table>
+
+
+ <div id="reportDivId"></div>
+
+</div>
+
+
+
+<%= render  partial: 'examination/examination_table_close' %>
+
+
+
+<script>
+
+
+ $(document).ready(function(){
+
+     focusCurrentTab("viewResultAID","viewResultLiID");
+    focusExaminationHeaderBox();
+
+});
+
+function fetchStudentRecordForBatch(that){
+
+    var batchId=that.value;
+    //alert(batchId);
+
+    var urlLink="/cce_reports/getStudentRecordFromBatchId/";
+    $("#studentListDivId").empty();
+
+    $.ajax({
+        url: urlLink ,
+        //type:json
+        cache: false,
+        data:
+        {
+             batchId:batchId
+
+         },
+        success: function(data){
+
+        	console.log(data);
+
+        	var str='';
+            for (var key in data.studentRecord) 
+            {
+                var d2 = data.studentRecord[key]
+                studentName=d2.first_name;
+                id=d2.id;
+                str +=studentName+"<br/>"
+
+
+                $("#studentListDivId").append("<a href='/cce_reports/make_scholastic_report/"+id+"' class='StudentId-cls'>"+studentName+"</a><br/>");
+                str='';
+            }
+
+        }
+
+    });
+
+
+}
+ 
+ 
+</script>

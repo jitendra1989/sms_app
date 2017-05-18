@@ -1,0 +1,87 @@
+<% navigation_add 'Proposal Review', :controller => 'inventory', :action => 'proposal_review' %>
+<%= render  partial: 'inventory/inventory_left' %>
+<h4 class="mg-h4"><%= t('manage_proposal') %></h4>
+
+<%#= button_to 'Add Proposal', {:controller => "inventory", :action => "proposal_new"} ,:class=>"mg-custom-form-btn"%>
+<div class="mg_pagination">
+<%if @proposal.length>0%>
+<table  class="batch-tbl mg-tbl-margin">   <!-- border="2" --> 
+  <tr class="subject-table-header">
+    <th><%= t('store_name') %></th>
+    <th><%= t('requisition_name') %></th>
+    <th class="mg-desc-text-justify"><%= t('description') %></th>
+    <th><%= t('action') %></th>
+  </tr>
+  <% @proposal.each do |proposal| %>
+    <tr>
+      <td>
+      <%tempStore=MgInventoryStoreManagement.find_by(:id=>proposal.try(:mg_store_id))%>
+      <%= tempStore.try(:store_name) %></td>
+      <td><%= proposal.try(:requisition_name) %></td>
+      <td class="mg-desc-text-justify"><%= truncate(proposal.try(:description).to_s, :length => 25, :separator => ' ') %>
+      </td>
+      <td>
+
+        <span class="mg-paginatin-a-link">
+      <%= link_to "<i class=\"fa fa-pencil-square-o\"></i>".html_safe, {:controller => "inventory", :action => "review_edit",:id =>proposal.id} , :method=>'post' ,:title=>"Edit" ,:class=>"mg-icon-btn"%>
+        </span>
+
+      </td>
+    </tr>
+  <% end %>
+</table>
+<br/>
+ <div class="pagination-align" style="position: relative; bottom: 10px;">
+              <%= will_paginate @proposal  %>
+              
+ </div>
+ 
+
+
+
+
+
+
+
+
+<%else%>
+<h5 >No Proposal is created </h5>
+<%end%>
+</div>
+<div id="showInventoryProposalDIVID"></div>
+
+
+<%= render  partial: 'application/common_left_close' %>
+
+<script>
+$( document ).ready(function() {
+            focusCurrentTab("viewInventoryItemProposalReviewIndex","viewItemProposalReviewLiID");
+          //focusStudentHeaderBox();
+});
+
+
+$(document).on("click", ".show-inventory-proposal-btn", function(e){
+        var myID =$(this).attr('id');
+        var Id=myID.split("-");
+        var urlLink = "/inventory/proposal_show/"+Id[0];
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(html){
+                  $('#showInventoryProposalDIVID').dialog({
+                    modal: true,
+                    minHeight: 'auto',
+                    width: 'auto',
+                    title: "Item Proposal",
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+});
+
+</script>
+

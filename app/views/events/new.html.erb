@@ -1,0 +1,251 @@
+ <%= form_for :events, url: events_path, :html => {
+                            :id => 'newEventsFormID' } do |f| %>
+
+
+ <p>
+    <%= f.label :Title, t('title') ,:class=>"mg-label"%><span class="required-field"> *</span><br>
+    <%= f.text_field :title   %>
+  </p>
+
+  <%= f.hidden_field :mg_school_id, :value => session[:current_user_school_id]%> 
+ <%= f.hidden_field :updated_by, :value =>  session[:user_id]%> 
+  <%= f.hidden_field :created_by, :value => session[:user_id]%> 
+
+  
+   <p>
+    <%= f.label :mg_event_type_id, t('eventtype') ,:class=>"mg-label"%><span class="required-field"> *</span><br>
+    <%= f.collection_select(:mg_event_type_id, MgEventType.where(:is_deleted=>0, :mg_school_id=>session[:current_user_school_id]), :id, :name,{:include_blank => 'Select'} ,:class=>"mg-select-btn")  %>
+  </p>
+
+   <p>
+    <%= f.label :mg_event_committee_id, t('committee_name') ,:class=>"mg-label"%><span class="required-field"> *</span><br>
+    <%= f.collection_select(:mg_event_committee_id, MgEventCommittee.where(:is_deleted=>0, :mg_school_id=>session[:current_user_school_id]), :id, :committee_name,{:include_blank => 'Select'} ,:class=>"mg-select-btn")  %>
+  </p>
+   <p>
+   
+
+   <!-- <%#= f.label :event_privacy ,:class=>"mg-label"%><span class="required-field"> *</span><br> -->
+    <%#= f.label :Select_all ,:class=>"mg-label" ,:style=>"width: 4.7em;"%>
+  
+   <!-- <%#= check_box_tag 'selectAll', 1,false, {:onclick=>"toggle(this)", :class=>"select-all-event-check-box-class"}%><br> -->
+<!--    <table>
+ 
+    <tr>
+      <td style="width: 4em;"><%#= f.label :guardian ,:class=>"mg-label-inner-form"%></td>
+      <td><%#= check_box_tag 'event_privacy[]','guardian',false,{:class=>"select-all-check-box-event",:onclick=>"toggleone(this)" ,:style=>"position: relative; top: -1px;"}%></td>
+
+    </tr>
+
+     <tr>
+        <td style="width: 4em;"> <%#= f.label :student ,:class=>"mg-label-inner-form"%></td>
+        <td><%#= check_box_tag 'event_privacy[]','student',false,{:class=>"select-all-check-box-event",:onclick=>"toggleone(this)" ,:style=>"position: relative; top: -1px;"}%></td>
+    </tr>
+   
+  <tr>
+        <td style="width: 4em;"> <%#= f.label :employee ,:class=>"mg-label-inner-form"%></td>
+        <td> <%#= check_box_tag 'event_privacy[]','employee',false,{:class=>"select-all-check-box-event", :onclick=>"toggleone(this)" ,:style=>"position: relative; top: -1px;"}%><br></td>
+    </tr> 
+
+      <tr>
+        <td style="width: 4em;"> <%#= f.label :teacher ,:class=>"mg-label-inner-form"%></td>
+        <td> <%#= check_box_tag 'event_privacy[]','teacher',false,{:class=>"select-all-check-box-event", :onclick=>"toggleone(this)" ,:style=>"position: relative; top: -1px;"}%></td>
+    </tr>
+   </table> -->
+  </p>
+   <p>
+    <%= f.label :event_description, t('eventdescription') ,:class=>"mg-label"%><span class="required-field"> *</span><br>
+    <%= f.text_area :event_description  ,:class=>"mg-text-field" %>
+  </p>
+
+  
+   
+
+  <p>
+    <table>
+      <tr>
+         <td><%= f.label :start_date, t('startdate') ,:class=>"mg-label"%><span class="required-field"> *</span></td>
+        <td> <%= f.label :start_time, t('starttime') ,:class=>"mg-label"%> <span class="required-field"> *</span></td>
+      </tr>
+      <tr>
+        <td valign="top"><%= f.text_field :event_date, :value=>Date.parse(@date).strftime(@school.date_format), :readonly => true, :id=>"clickDateID"%>
+        </td><td><%= f.text_field :start_time  %></td>
+      </tr>
+    </table>
+  </p>
+  <p>
+    <table>
+      <tr>
+         <td><%= f.label :end_date, t('enddate') ,:class=>"mg-label"%><span class="required-field"> *</span></td>
+        <td><%= f.label :end_time, t('endtime') ,:class=>"mg-label"%><span class="required-field"> *</span></td>
+      </tr>
+      <tr>
+        <td><%= f.text_field :end_date%></td><td> <%= f.text_field :end_time   %></td>
+      </tr>
+    </table>
+  </p>
+ 
+
+<p>
+
+</p>
+<%=f.hidden_field :is_deleted, :value=>0%>
+
+    
+
+  <p style="float: left;" class="mg-p-mgtop">
+    <%#= f.submit t('save') ,:class=>"mg-small-form-btn"%>
+    <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("save")%></a>
+     <%#= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+     <a class="mg-small-form-btn cancel-form-dialog"><%=t('cancel')%></a>
+  
+  </p>
+<% end %>
+
+
+
+
+<SCRIPT TYPE="text/javascript">
+
+
+function toggle(source) {
+  checkboxes = document.getElementsByName('event_privacy[]');
+  for(var i=0, n=checkboxes.length;i<n;i++) {
+    checkboxes[i].checked = source.checked;
+  }
+}
+
+function toggleone(source) {
+  // checkboxes = document.getElementsByName('selectAll');
+  // alert("checkboxes :"+checkboxes);
+  //   // checkboxes.checked=source.checked;
+  // checkboxes.checked = false;
+
+  checkboxes = document.getElementsByName('selectAll');
+  for(var i=0, n=checkboxes.length;i<n;i++) {
+    checkboxes[i].checked = false;
+  }
+}
+
+
+
+$(document).ready(function(){
+
+  var dateFormatStr =  getJsDateFormat();
+    $('#events_start_time').timepicker({ 'scrollDefault': 'now' });
+    $('#events_end_time').timepicker({ 'scrollDefault': 'now' });
+   var date=$("#clickDateID").val();
+   $( "#events_end_date" ).datepicker({  minDate: new Date(date),changeMonth: true,changeYear: true,yearRange: "-100:+0", dateFormat: dateFormatStr});
+   $(function () {
+    $.validator.addMethod('dateFormat',
+    function (value, element) {
+      dateFormatStr =  getJsDateFormat();
+        if (this.optional(element)) {
+            return true;
+        }
+        var ok = true;
+        try {
+            $.datepicker.parseDate(dateFormatStr, value);
+        }
+        catch (err) {
+            ok = false;
+        }
+        return ok;
+    },
+      "Please enter a date in the format "+ getDateFormat(dateFormatStr) +".");
+      dateFormatStr =  getJsDateFormat();
+
+    $(".datefield").datepicker({ dateFormat: dateFormatStr, changeYear: true });
+});
+      $("#newEventsFormID").validate({
+        rules: {
+        "events[title]": {required: true},
+        "events[mg_event_type_id]": {required: true},
+        "events[event_privacy]": {required: true},
+        "events[event_description]": {required: true},
+        "events[start_time]": {required: true},
+        "events[end_time]": {required: true},
+        "events[end_date]": {required: true,dateFormat: true},
+        "events[mg_event_committee_id]":{required: true}
+        }
+      });
+});
+
+$(document).on("change","#events_end_date",function(){
+    var dateFormatStr =  getJsDateFormat();
+    var start_date=$("#clickDateID").val();
+    var end_date=$(this).val();
+    console.log("Strat_date="+start_date);
+    console.log("end_date="+end_date);
+    if(start_date && end_date){
+      if(!(compareDate(start_date,end_date,dateFormatStr))){
+        alert("End date should be greater than start date");
+        document.getElementById('events_end_date').value="";
+      }else{
+        var from_date=$("#clickDateID").val();
+        var to_date=$("#events_end_date").val();
+        if (from_date==to_date){
+        var from = $('#events_start_time').val();
+        var to = $('#events_end_time').val();
+        var from_time=minFromMidnight(from);
+        var to_time=minFromMidnight(to);
+        if(from_time && to_time){
+          if(from_time > to_time){
+             alert("Start Time must be less than End Time");
+              document.getElementById('events_start_time').value="";
+          } 
+      }
+  }
+      }
+    }
+  });
+
+
+
+function minFromMidnight(tm){
+ var ampm= tm.substr(-2)
+ var clk = tm.substr(0, 4);
+ var m  = parseInt(clk.match(/\d+$/)[0], 10);
+ var h  = parseInt(clk.match(/^\d+/)[0], 10);
+ h += (ampm.match(/pm/i))? 12: 0;
+ return h*60+m;
+}
+
+
+  $(document).on("change","#events_start_time",function(){
+  var from_date=$("#clickDateID").val();
+  var to_date=$("#events_end_date").val();
+  if (from_date==to_date){
+    var from = $('#events_start_time').val();
+    var to = $('#events_end_time').val();
+    var from_time=minFromMidnight(from);
+    var to_time=minFromMidnight(to);
+      if(from_time && to_time){
+        if(from_time > to_time){
+         alert("Start Time must be less than End Time");
+          document.getElementById('events_start_time').value="";
+      } 
+    }
+  }
+});
+
+  $(document).on("change","#events_end_time",function(){
+  var from_date=$("#clickDateID").val();
+  var to_date=$("#events_end_date").val();
+  if (from_date==to_date){
+    var from = $('#events_start_time').val();
+    var to = $('#events_end_time').val();
+    var from_time=minFromMidnight(from);
+    var to_time=minFromMidnight(to);
+      if(from_time && to_time){
+        if(from_time > to_time){
+         alert("End Time must be greater than Start Time");
+          document.getElementById('events_end_time').value="";
+      } 
+    }
+  }
+});
+
+
+
+</SCRIPT>
+<!--  -->

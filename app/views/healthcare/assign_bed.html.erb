@@ -1,0 +1,108 @@
+<% navigation_add t('bed_assignment'), :controller=>'healthcare' ,:action=> 'assign_bed' %>
+<%=render partial: 'healthcare_left'%>
+
+<h4 class="mg-h4"><%=t('bed_assignment')%></h4>
+
+<%if session[:user_type]!='doctor'%>
+  <button class="assign-bed-for-healthcare mg-btn-bottom-margin mg-custom-form-btn"><%= t('assign_bed')%></button>
+<%end%>
+
+<% if @bed_assign_detail.present? %>
+  <div class="mg_pagination">
+    <table  class="batch-tbl mg-tbl-margin">   
+      <tr class="subject-table-header">
+        <th><%= t('bed_number') %></th>
+        <th><%= t('user_id') %></th>
+        <th><%= t('admitted_date') %></th>
+        <th><%= t('admitted_time') %></th>
+        <th><%= t('status') %></th>
+        <th><%= t('patient_type') %></th>
+        <!-- <th><%#= t('discharge_date') %></th> -->
+        <!-- <th><%#= t('discharge_time') %></th> -->
+        <th><%= t('actions') %></th>
+      </tr>
+      <% @bed_assign_detail.each do |f| %>
+        <%bed_obj = MgBedDetail.find_by(:id=>f.mg_bed_details_id)%>
+        <%@dateFormat = MgSchool.find_by(:id=>session[:current_user_school_id]).date_format %>
+   
+        <tr>
+          <td class="mg-align-center"><%= bed_obj.try(:bed_no) %></td>
+          <td class="mg-align-center"><%=f.user_id %></td>
+          <td class="mg-align-center"><%= f.try(:admitted_date).try(:strftime, @dateFormat) %></td>
+          <!-- <td class="mg-align-center"><%#=f.try(:admitted_time).try(:strftime,"%l:%M%P") %></td> -->
+          <!-- <td class="mg-align-center"><%#= f.try(:discharge_date).try(:strftime, @dateFormat) %></td> -->
+          <td class="mg-align-center mg-capitalize-text"><%= f.try(:admitted_time).try(:strftime,"%l:%M%P") %></td>
+          <td class="mg-align-center mg-capitalize-text"><%= f.try(:status) %></td>
+          <td class="mg-capitalize-text mg-align-center"><%= f.try(:module_type)%></td>
+          <td>
+            <button title="show" id="<%=raw f.id %>-showAssignBedDetailsBTNID" class="show-assign-bed-details-btn mg-icon-btn"><i class="fa fa-eye"></i></button>
+            <button title="Edit" id="<%=raw f.id %>-editAssignBedDetailsBTNID" class="edit-assign-bed-details-btn mg-icon-btn"><i class="fa fa-pencil-square-o"></i></button>
+            <%if session[:user_type]!='doctor'%>
+              <button title="Delete" id="<%=raw f.id %>-deleteAssignBedDetailsBTNID" class="delete-assign-bed-details-btn mg-icon-btn"><i class="fa fa-trash"></i></button>
+            <%end%>
+          </td>
+        </tr>
+      <% end %>
+    </table>
+    <br/>
+   <%= will_paginate @bed_assign_detail, :container => false %>
+  </div>
+<%else%>
+  <h5>No records are created </h5>
+<%end%>
+
+<div id="showAssignBedDetailsDivID"></div>
+<%= render  partial: 'application/common_left_close' %>
+
+<script type="text/javascript">
+  $(document).ready(function () {
+    focusCurrentTab("assignBedAID","assignBedLID");
+  });
+
+  $(document).on("click", ".assign-bed-for-healthcare", function(e){
+    var urlLink= '/healthcare/new_assign_bed';
+    window.location=urlLink;
+  });
+
+  
+  $(document).on("click", ".show-assign-bed-details-btn", function(e){
+    var myID =$(this).attr('id');
+    var Id=myID.split("-");
+    var urlLink = "/healthcare/show_assign_bed/"+Id[0];
+    $.ajax({
+      url: urlLink ,
+      cache: false,
+      data:{id:Id[0]},
+      success: function(html){
+        $('#showAssignBedDetailsDivID').dialog({
+          modal: true,
+          minHeight: 'auto',
+          width: 'auto',
+          title: "Show Bed Detail",
+          open: function () {
+            $(this).html(html);
+          }
+        }); 
+      }
+    });
+  });
+
+  $(document).on("click", ".edit-assign-bed-details-btn", function(e){
+    var myID =$(this).attr('id');
+    var Id=myID.split("-");
+    var urlLink = "/healthcare/edit_assign_bed/"+Id[0];
+    window.location=urlLink;
+  });
+
+  $(document).on("click", ".delete-assign-bed-details-btn", function(e){
+    var myID =$(this).attr('id');
+    var Id=myID.split("-");
+    var urlLink = "/healthcare/delete_assign_bed/"+Id[0];
+    var result = confirm("Are you sure to delete?");
+    if(result){
+      window.location=urlLink;
+    }
+  });
+
+
+</script>

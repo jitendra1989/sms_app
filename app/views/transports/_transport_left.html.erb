@@ -1,0 +1,61 @@
+<!-- Sec --> 
+<section id="userBodyContentBox" style="margin: 0 auto;">
+    <table width=100% border="0" cellspacing="0" cellpadding="0"  style="margin-bottom: 0px;">
+        <tr>
+            <td valign="top" class="userBodyContentBox1">
+                <aside class="userMenuBoxLeft" style="width: 210px;">
+                    <ul class="menuListHome">
+                        <li class="myAccountMenu"><%=t('transport_management')%></li>
+                    
+                       
+                        <li id="transport_route_managementAssociateLiID">
+                            <a class="menuItemsActivities" href="/transports" id="transport_route_managementAssociateAID">
+                                <div class="setMenu"><i class="fa fa-road">&nbsp;&nbsp;</i><%=t('route_management')%>
+                                </div>
+                            </a>
+                        </li>
+
+                        <li id="transport_pickup_drop_managementAssociateLiID">
+                            <a class="menuItemsActivities" href="/transports/transport_time_management_index" id="transport_pickup_drop_managementAssociateAID">
+                                <div class="setMenu"><i class="fa fa-clock-o">&nbsp;&nbsp;</i><%=t(' Pickup/Drop_points')%>
+                                </div>
+                            </a>
+                        </li>
+                         <li id="transportmanagementAssociateLiID">
+                            <a class="menuItemsActivities" href="/transports/confirmation_request" id="transportmanagementAssociateAID">
+                                <div class="setMenu"><i class="fa fa-check-circle-o">&nbsp;&nbsp;</i><%=t('confirmation')%>
+                                </div>
+                            </a>
+                        </li>
+                        <li id="studentstatustransportLiID">
+                            <a class="menuItemsActivities" href="/transports/student_status_data" id="studentstatustransportAID">
+                                <div class="setMenu"><i class="fa fa-chain">&nbsp;&nbsp;</i><%=t('Student Status')%>
+                                </div>
+                            </a>
+                        </li>
+
+                        <li id="transportfeesLiID">
+                            <a class="menuItemsActivities" href="/transports/transport_fee_category" id="transportfeesAID">
+                                <div class="setMenu"><i class="fa fa-sitemap">&nbsp;&nbsp;</i><%=t('transport_fees')%>
+                                </div>
+                            </a>
+                        </li>
+                        
+                        <li id="transportfeesscheduleLiID">
+                            <a class="menuItemsActivities" href="/transports/transport_fees_schedule_index" id="transportfeesscheduleAID">
+                                <div class="setMenu"><i class="fa fa-history">&nbsp;&nbsp;</i><%=t('transport_fee_schedule')%>
+                                </div>
+                            </a>
+                        </li>
+                       
+                    </ul>    
+
+                </aside>
+            </td>
+          <td class="mg-table-td-main-2 " valign="top">
+
+<script>
+$(document).ready(function(){
+    focusTransport();
+});
+</script>

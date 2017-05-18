@@ -1,0 +1,97 @@
+<% navigation_add t('room_creation'), :controller=>'front_office_management' ,:action=> 'room_creation_index' %>
+<%= render  partial: 'master_settings/master_settings_left' %>
+
+<%#=render partial: 'front_office_management_left'%>
+
+
+<h4 class="mg-h4"><%=t('room_list')%></h4>
+
+<button class="add-room-creation-for-fom mg-btn-bottom-margin mg-custom-form-btn"><%= t('add_room')%></button>
+
+<% if @room_creation_data.present? %>
+	<table  class="batch-tbl mg-tbl-margin">   <!-- border="2" --> 
+	  <tr class="subject-table-header">
+      <th><%= t('room_no_name') %></th>
+      <th><%= t('room_type') %></th>
+	    <th><%= t('capacity') %></th>
+	    <th><%= t('actions') %></th>
+	  </tr>
+	  <% @room_creation_data.each do |s| %>
+		  <tr>
+        <td class="mg-align-center"><%= s.room_no %></td>
+        <td class="mg-align-center mg-capitalize-text"><%= s.type_of_room %></td>
+	   		<td class="mg-align-center"><%= s.capacity %></td>
+	   		<td>
+	   		  <button title="Edit" id="<%=raw s.id %>-editRoomCreationFomBTNID" class="edit-room-creation-fom-btn mg-icon-btn"><i class="fa fa-pencil-square-o"></i></button>
+	   		   <span>
+           		<%= link_to "<i class=\"fa fa-trash\"></i>".html_safe ,{ action: "room_creation_delete", id: s.id },data: { confirm: "Are you sure to delete?" } ,:title=>"Delete" ,:class=>"mg-icon-btn"  %>
+        	 </span>
+	      </td>
+      </tr>
+    <% end %>
+	</table>
+	<br/>
+<%else%>
+  <h5>No records are created </h5>
+<%end%>
+
+
+<div id="fom_room_creation"></div>
+<div id="editRoomCreationfomdata"></div>
+<%= render  partial: 'application/common_left_close' %>
+
+<script type="text/javascript">
+	
+
+	$(document).ready(function () {
+         
+          focusCurrentTab("room_creationAID","room_creationLiID");
+          
+      });
+
+
+	$(document).on("click", ".add-room-creation-for-fom", function(e){
+		var urlLink= '/front_office_management/room_creation_new';
+		$.ajax({
+			url: urlLink,
+			cache: false,
+			success: function(html){
+				$("#fom_room_creation").dialog({
+					modal:true,
+					minHeight: 'auto',
+					title: 'New Room Creation',
+					open: function(){
+						$(this).html(html);
+					}
+				});
+			}
+		});
+	});
+
+	$(document).on("click", ".edit-room-creation-fom-btn", function(e){
+		var myID =$(this).attr('id');
+         var Id=myID.split("-");
+
+        var urlLink = "/front_office_management/room_creation_edit";
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            data:{id:Id[0]},
+            success: function(html){
+                  $('#editRoomCreationfomdata').dialog({
+                    modal: true,
+                    minHeight: 'auto',
+                    width: 'auto',
+                    title: "Edit Room Creation",
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+});
+
+
+</script>

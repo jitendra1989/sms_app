@@ -1,0 +1,15 @@
+<!-- Sec --> 
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Model name:</strong>
+  <%= @mg_model.model_name %>
+</p>
+
+<p>
+  <strong>Model description:</strong>
+  <%= @mg_model.description %>
+</p>
+
+<%= link_to "<i class=\"fa fa-pencil-square-o\"></i>".html_safe, edit_mg_model_path(@mg_model) ,:title=>"Edit" ,:class=>"mg-icon-btn"%> |
+<%= link_to "<i class=\"fa fa-fast-backward\"></i>".html_safe, mg_models_path ,:title=>"Back" ,:class=>"mg-icon-btn"%>

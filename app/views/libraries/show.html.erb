@@ -1,0 +1,75 @@
+
+
+<%  @book_purchase_data=MgBookPurchaseDetail.where(:mg_book_purchase_id=>params[:show_id],:is_deleted=>0,:mg_school_id=>session[:current_user_school_id])%>
+
+<table border="1" class="mg-showdata-bg mg-show-tbl-width" cellspacing="1" cellpadding="1">
+
+
+
+<tr>
+      <td class="mg-td-width-half" valign="top">
+       <label class="mg-label" for="categoryName"><%= t ('vendor_name') %></label>
+      </td>
+      <td class="mg-td-width-half" valign="top">
+        <label class="mg-label-inner-form"> <%= @library_purchase_details.vendor_name%></label>
+      </td>
+  </tr>
+  <tr>
+      <td class="mg-td-width-half" valign="top">
+       <label class="mg-label mg-label-text-transform-none" for="categoryName"><%= t ('date_of_purchase') %></label>
+      </td>
+      <td class="mg-td-width-half" valign="top">
+          <% @dateFormat = MgSchool.find_by_id(session[:current_user_school_id]).date_format %>
+          <%if @library_purchase_details.date_of_purchase.present?%>
+               
+        <label class="mg-label-inner-form"> <%= @library_purchase_details.date_of_purchase.strftime(@dateFormat)%></label>
+           <%end%>
+
+      </td>
+  </tr>
+  <tr>
+      <td class="mg-td-width-half" valign="top">
+       <label class="mg-label" for="categoryName"><%= t ('amount_paid') %></label>
+      </td>
+      <td class="mg-td-width-half" valign="top">
+        <label class="mg-label-inner-form"> <%= @library_purchase_details.Amount_paid%></label>
+      </td>
+  </tr>
+
+  </table>
+<br/>
+
+<%if @book_purchase_data.length>0%>
+<table border="1" class="batch-tbl mg-show-tbl-width" cellspacing="1" cellpadding="1">
+<tr>
+<th>Book Name</th>
+<th>Author</th>
+<th>Publisher</th>
+<th>Cost</th>
+<th class="mg-rm-text-trans">No. of Copies</th>
+<th>Total</th>
+<th>Class</th>
+
+
+</tr>
+<%@book_purchase_data.each do |data|%>
+<tr>
+  
+  <td><%=data.book_name%></td>
+  <td><%=data.author%></td>
+  <td><%=data.publisher%></td>
+  <td><%=data.cost%></td>
+  <td class="mg-align-center"><%=data.no_of_copies%></td>
+  <td><%=data.total%></td>
+  <%course_data=MgCourse.find(data.mg_course_id)%>
+  <td><%=course_data.course_name%></td>
+
+</tr>
+<%end%>
+
+
+
+  </table>
+  <%end%>
+<br/>
+  <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>

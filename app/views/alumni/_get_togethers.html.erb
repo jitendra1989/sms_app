@@ -1,0 +1,314 @@
+ 
+<%= form_for :get_togethers_type, :url=> @action=='new' ? 'create' : 
+'/alumni/'+@get_together_data.try(:id).to_s+'/update', :method=> @action=='new' ? "post" : "patch" ,:html => {:id => 'get_togethers_id'} do |f| %>
+
+<% if @action=='new'%>
+	<%=render partial: 'alumni_left'%>
+	<% navigation_add t('get_togethers'),:controller=>'alumni',:action=>'index' %>
+	<% navigation_add t('new_get_together'),:controller=>'alumni',:action=>'new' %>
+	<h4 class="mg-h4"><%=t('add_get_together')%></h4>
+
+<%end%>
+
+<%= f.hidden_field :is_deleted, :value => 0 %>
+<%= f.hidden_field :mg_school_id, :value => session[:current_user_school_id] %>
+<%= f.hidden_field :created_by, :value => session[:user_id] %>
+<%= f.hidden_field :updated_by, :value => session[:user_id] %>
+<%= f.hidden_field :mg_user_id, :value => session[:user_id] %>
+
+<%= hidden_field_tag :get_together_id,@get_together_data.try(:id) %>
+
+
+<p>
+	<%= f.label :event_name, t('event_name') ,:class=>"mg-label"%><span class="required-field"> *</span><br>
+	<% if @action=='new'%>
+		<%= f.text_field :event_name  ,:class => 'mg-text-field'%><br>	
+	<% else %>
+		<%= f.text_field :event_name  ,:class => 'mg-text-field',:value=> @get_together_data.event_name%><br>	
+	<% end%>
+</p>
+
+		
+<p>
+	<%= f.label :event_date, t('event_date') ,:class=>"mg-label"%><span class="required-field"> *</span><br>
+	<% if @action=='new'%>
+		<%= f.text_field :event_date  ,:class => 'mg-text-field event_date'%><br>
+	<% else %>
+    	<% @timeformat=MgSchool.find_by(:id=>session[:current_user_school_id])%>    
+		<%= f.text_field :event_date  ,:class => 'mg-text-field event_date',:value=> @get_together_data.event_date.strftime(@timeformat.date_format)%><br>
+	<% end%>
+
+</p>
+
+<p>
+	<%= f.label :start_time, t('start_time') ,:class=>"mg-label "%><span class="required-field"> *</span><br>
+	<% if @action=='new'%>
+    	<%= f.text_field :start_time, :class=>"mg-text-field " %>
+      <span id="start_time_errorID" class="error" style="font-weight: bold;">
+	     
+  <% else %>
+
+    	<%= f.text_field :start_time, :class=>"mg-text-field " ,:value=> @get_together_data.start_time.try(:strftime,"%l:%M%P")%>
+      <span id="start_time_errorID" class="error" style="font-weight: bold;">
+	   
+  <% end%>
+
+</p>
+
+<p>
+	<%= f.label :end_time, t('end_time') ,:class=>"mg-label "%><span class="required-field"> *</span><br>
+	<% if @action=='new'%>
+    	<%= f.text_field :end_time, :class=>"mg-text-field " %>
+      <span id="end_time_errorID" class="error" style="font-weight: bold;">
+	     
+  <% else %>
+    	<%= f.text_field :end_time, :class=>"mg-text-field ",:value=> @get_together_data.end_time.try(:strftime,"%l:%M%P") %>
+      <span id="end_time_errorID" class="error" style="font-weight: bold;">
+  <% end%>
+
+</p>
+
+<p>
+	<%= f.label :venue, t('venue') ,:class=>"mg-label"%><span class="required-field"> *</span><br>
+	<% if @action=='new'%>
+    	<%= f.text_area :venue, :class=>"mg-text-field" %>
+	<% else %>
+    	<%= f.text_area :venue, :class=>"mg-text-field" ,:value=> @get_together_data.venue%>
+	<% end%>
+
+
+</p>
+
+<p>
+<h4 class="mg-h4"><%=t("inviting_alumni")%></h4>
+<table>
+<tr>
+                  <td width="33%" valign="bottom">
+                    <label for="select_programme"  class="mg-label"><%= t('select_programme') %>
+                      <span class="required-field">*</span> 
+                    </label>
+                  </td>
+
+                  <td> </td>
+                  <td> </td>
+                  <td width="33%" valign="bottom">
+                    <label for="select_attended_year" class="mg-label"><%= t('select_passout_year') %></label>
+                  </td>
+                  <td> </td>
+                  <!-- <td width="33%" valign="bottom">
+                    <label for="select_specialization" class="mg-label"><%#= t('select_specialization') %>
+                    <span class="required-field">*</span>
+                    </label>
+                  </td> -->
+                 
+                </tr> 
+                 <tr>
+                  <td valign="top">
+                  <%wing_data=MgWing.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:wing_name,:id)%>
+                    
+            <%= select_tag "mg_wing_id[]",options_for_select(wing_data),:prompt=>"Select",:multiple => true,:size =>10,:class=>"demooo demo1 mg-text-field"%>
+                  </td>
+                  <td> </td>
+                   <td> </td>
+                  <td valign="top">
+                   <%= select_tag 'time_table_year[]', options_for_select((1994..Time.now.year).to_a), :prompt=>"Select",:multiple => true,:size =>10,:class=>"demooo demo2 mg-text-field" %>
+                  </td>
+                  <td> </td>
+                <!--   <td valign="top">
+                   <%#employee_specialization_data=MgEmployeeSpecialization.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:name,:id)%>
+            <%#= select_tag "mg_specialization_id",options_for_select(employee_specialization_data) ,:prompt=>"select",:class=>"demooo demo3 mg-text-field"%>
+                  </td> -->
+                
+                </tr>
+                </table><br/>
+                <p>
+                  <a class="mg-small-form-btn save-btn-checkup prepopulate_data_for_alumni"><%=t("search")%></a></p><br/>
+
+                <div id="prepopulated_data_alumni"></div>
+	<%#= f.label :status_data, t("status") ,:class=>"mg-label"%>
+  	<!-- <span class="required-field"> *</span><br> -->
+  	<%#= f.select :status,options_for_select(['Pending','Accepted','Rejected']),{},
+    {:disabled=>true}%>
+    <%#=f.hidden_field :status,:value=>"Pending"%>
+</p>
+
+
+<p class="mg-p-mgtop">
+    <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn save-btn-checkup"><%=t("save")%></a>
+    <%= link_to t('cancel'), {:action=>"index"}, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+</p> 
+
+<%end%>
+<%= render  partial: 'application/common_left_close' %>
+
+
+
+<script type="text/javascript">
+	$( document ).ready(function() {
+    focusCurrentTab("getTogethersAID","getTogethersliId");
+    var temp=$("#get_together_id").val();
+    if (temp=="")
+      {
+        $("#get_togethers_id").validate({
+          rules: {
+            "get_togethers_type[event_name]": {required: true},
+            "get_togethers_type[event_date]":{required: true},
+            "get_togethers_type[venue]":{required: true},
+            "select_data[]":{required: true},
+            "time_table_year[]":{required: true},
+            "get_togethers_type[end_time]":{required: true},
+            "get_togethers_type[start_time]":{required: true}
+            }
+        }); 
+      }
+      else
+      {
+          $("#get_togethers_id").validate({
+          rules: {
+            "get_togethers_type[event_name]": {required: true},
+            "get_togethers_type[event_date]":{required: true},
+            "get_togethers_type[venue]":{required: true},
+            "select_data[]":{required: true},
+            // "time_table_year[]":{required: true},
+            "get_togethers_type[end_time]":{required: true},
+            "get_togethers_type[start_time]":{required: true}
+            }
+        }); 
+      }
+
+     dateFormatStr =  getJsDateFormat();
+      $(".event_date" ).datepicker({ changeMonth: true,
+                changeYear: true,yearRange: "0:+50",dateFormat: dateFormatStr });
+
+      $("#get_togethers_type_start_time").timepicker({ 'scrollDefault': 'now' });
+      
+      $("#get_togethers_type_end_time").timepicker({ 'scrollDefault': 'now' });
+
+
+      // ==================================================================
+        var get_together_id=$("#get_together_id").val();
+        // var year=$("#year_data").val();
+        
+        if(!(get_together_id==""))
+        {
+          var urlLink = "/alumni/prepopulate_alumni_data";
+            $.ajax({
+                      url: urlLink,
+                      cache: false,
+                      data: {"get_together_id":get_together_id},
+                      success: function(html){  
+                                 $("#prepopulated_data_alumni").empty();
+                                 $("#prepopulated_data_alumni").append(html); 
+                              }
+            }); 
+        }
+
+      // =================================================================
+
+
+  });
+
+
+$(document).on("click",".prepopulate_data_for_alumni",function(e){
+var urlLink = "/alumni/prepopulate_alumni_data";
+var wing_id=$("#mg_wing_id_").val();
+var year=$("#time_table_year_").val();
+  $.ajax({
+            url: urlLink,
+            cache: false,
+            data: {"wing_id":wing_id,"year":year},
+            success: function(html){  
+                       $("#prepopulated_data_alumni").empty();
+                       $("#prepopulated_data_alumni").append(html); 
+                    }
+                }); 
+});
+
+
+
+
+// =================================================================================
+$(document).on("blur","#get_togethers_type_start_time",function(){
+    // var dateFormatStr =  getJsDateFormat();
+    // var start_date=$("#bed_assign_detail_admitted_date").val();
+    // var end_date=$("#bed_assign_detail_discharge_date").val();
+    var start_time = $('#get_togethers_type_start_time').val();
+    var end_time = $('#get_togethers_type_end_time').val();
+    var regexprsn = /^([1-9]|1[0-2]):([0-5]\d)\s?(AM|PM)?$/i;
+
+    if(start_time.match(regexprsn)){
+      $("#start_time_errorID").text("");
+
+      if(start_time && end_time){
+        //var from_date=$("#meeting_detail_start_date").val();
+        //var to_date=$("#meeting_detail_end_date").val();
+        // if (start_date==end_date){
+          var from = $('#get_togethers_type_start_time').val();
+          var to = $('#get_togethers_type_end_time').val();
+          var from_time=minFromMidnight(from);
+          var to_time=minFromMidnight(to);
+          if(from_time && to_time){
+            if(from_time > to_time){
+             alert("Start Time must be less than End Time");
+             $('#get_togethers_type_start_time').val('');
+              //document.getElementById('events_start_time').value="";
+            } 
+          }
+        // }
+      }
+    }else{      
+      $("#start_time_errorID").text("Please enter a time in the format am/pm.");
+      $('#get_togethers_type_start_time').val('');
+    }
+  });
+  
+
+  $(document).on("blur","#get_togethers_type_end_time",function(){
+    // var dateFormatStr =  getJsDateFormat();
+    // var start_date=$("#bed_assign_detail_admitted_date").val();
+    // var end_date=$("#bed_assign_detail_discharge_date").val();
+    var start_time = $('#get_togethers_type_start_time').val();
+    var end_time = $('#get_togethers_type_end_time').val();
+    var regexprsn = /^([1-9]|1[0-2]):([0-5]\d)\s?(AM|PM)?$/i;
+    
+    if(end_time.match(regexprsn)){
+      $("#end_time_errorID").text("");
+    
+      if(start_time && end_time){
+        //var from_date=$("#meeting_detail_start_date").val();
+        //var to_date=$("#meeting_detail_end_date").val();
+        // if (start_date==end_date){
+          var from = $('#get_togethers_type_start_time').val();
+          var to = $('#get_togethers_type_end_time').val();
+          var from_time=minFromMidnight(from);
+          var to_time=minFromMidnight(to);
+          if(from_time && to_time){
+            if(from_time > to_time){
+             alert("End Time must be greater than Start Time");
+             $('#get_togethers_type_end_time').val('');
+              //document.getElementById('events_start_time').value="";
+            } 
+          }
+        // }
+      }
+    }else{      
+      $("#end_time_errorID").text("Please enter a time in the format am/pm.");
+      $('#get_togethers_type_end_time').val('');
+    }
+  });
+
+
+ function minFromMidnight(tm){
+    if(tm==''){
+      return
+    }
+   var ampm= tm.substr(-2)
+   var clk = tm.substr(0, 4);
+   var m  = parseInt(clk.match(/\d+$/)[0], 10);
+   var h  = parseInt(clk.match(/^\d+/)[0], 10);
+   h += (ampm.match(/pm/i))? 12: 0;
+   return h*60+m;
+  }
+
+
+</script>

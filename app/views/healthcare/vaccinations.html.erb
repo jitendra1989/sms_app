@@ -1,0 +1,117 @@
+<%=render partial: 'healthcare_left'%>
+<%# navigation_add t('checkup_type'),:controller=>'healthcare',:action=>'index' %>
+<% navigation_add t('vaccinations'),:controller=>'healthcare',:action=>'vaccinations' %>
+
+
+<h4 class="mg-h4"><%= t('vaccinations_list') %></h4>
+
+<!-- onclick="window.location='/healthcare/new_vaccinations'"  -->
+<button id="newVaccinationsBTNID" class= 'mg-custom-form-btn'><%=t('add_vaccination')%></button>
+<%if @vaccinations.present?%>
+<div class="mg_pagination">
+<table class="batch-tbl mg-tbl-margin">   <!-- border="2" --> 
+ <tr >
+  	<th><%=t('name')%></th>
+    <th> <%=t('age_recommended')%></th>
+    <th> <%=t('description')%></th>
+     <th><%=t('actions')%></th>
+  </tr>
+  <% @vaccinations.each do |e| %>
+    <tr>
+      <td><%= e.name %></td>
+      <td><%= e.age_recommended %></td>
+      <td><%= truncate(e.description.to_s, :length => 25, :separator => ' ')  %></td>
+      <td>
+        <button title="Show" id="<%=raw e.id %>-showVaccinationsBTNID" class="show-vaccinations-btn mg-icon-btn"><i class="fa fa-eye"></i></button>
+        <button title="Edit" id="<%=raw e.id %>-editVaccinationsBTNID" class="edit-vaccinations-btn mg-icon-btn"><i class="fa fa-pencil-square-o"></i></button>
+        <button onclick="confirm('Are you sure to delete?') ? window.location='/healthcare/delete_vaccinations/<%=e.id%>' : '' " title="Delete" id="<%=raw e.id %>-deleteVaccinationsBTNID" class="delete-vaccinations-btn mg-icon-btn"><i class="fa fa-trash"></i></button>
+      </td>
+    </tr>
+  <% end %>
+</table>
+ <%= will_paginate @vaccinations, :container => false %>
+  </div>
+<%else%>
+<br>
+<p></p>
+<br>
+	<p>Please add some vaccinations details</p>
+<%end%>
+
+<div id="newVaccinationsDIVID"></div>
+<%= render  partial: 'application/common_left_close' %>
+
+<script>
+  $( document ).ready(function() {
+    focusCurrentTab("checkupVaccinationsAID","checkupVaccinationsliId");          
+  });
+
+  $(document).on("click", "#newVaccinationsBTNID", function(e){
+        var urlLink = "/healthcare/new_vaccinations";
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(html){
+                  $('#newVaccinationsDIVID').dialog({
+                    modal: true,
+                    minHeight: 'auto',
+                    title: "Add Vaccination",
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+});
+
+$(document).on("click", ".edit-vaccinations-btn", function(e){
+        var myID =$(this).attr('id');
+        var Id=myID.split("-");
+
+
+        var urlLink = "/healthcare/"+Id[0]+"/edit_vaccinations/";
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(html){
+                  $('#newVaccinationsDIVID').dialog({
+                    modal: true,
+                    minHeight: 'auto',
+                    title: "Edit Vaccination",
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+});
+
+$(document).on("click", ".show-vaccinations-btn", function(e){
+        var myID =$(this).attr('id');
+        var Id=myID.split("-");
+        var urlLink = "/healthcare/show_vaccinations/"+Id[0];
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(html){
+                  $('#newVaccinationsDIVID').dialog({
+                    modal: true,
+                    minHeight: 'auto',
+                    width: 'auto',
+                    title: "Show Vaccination",
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+});
+
+
+  </script>

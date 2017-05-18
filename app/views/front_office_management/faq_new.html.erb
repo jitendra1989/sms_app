@@ -1,0 +1,94 @@
+<% navigation_add t('faq'), front_office_management_faq_path %>
+
+<% navigation_add t('add_faq'), front_office_management_faq_create_path %>
+<%=render partial: 'front_office_management_left'%>
+<!-- <%#= render  partial: 'laboratory/laboratry_left' %> -->
+<h4 class="mg-h4"><%= t('add_faq') %></h4>
+ <div class="mg-custom-labels">
+<%= form_for :category, url: front_office_management_faq_create_path, :html => {
+                            :id => 'faqCreateID' } do |f| %>
+<%= f.hidden_field :is_deleted, :value => 0 %>
+<%= f.hidden_field :mg_school_id, :value => session[:current_user_school_id] %>
+<%= f.hidden_field :created_by, :value => session[:user_id] %>
+<%= f.hidden_field :updated_by, :value => session[:user_id] %>
+
+<p>
+    <label class="mg-label" style="width:140px"><%= t('select_category') %><span class="required-field">&nbsp;*</span></label>
+    <br/>
+
+    <%= f.collection_select(:mg_faq_category_id,MgFaqCategory.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]), :id, :category_name,{:include_blank => t("select")},:class => "mg-select-btn sub-category-as-per-category")%>
+</p>
+
+<p>
+    <label class="mg-label" style="width:140px"><%= t('select_sub_category') %><span class="required-field">&nbsp;*</span></label>
+    <br/>
+   <%#= f.text_field :sub_category_name,:class=>"mg-text-field" %>
+   <%= f.select :mg_faq_sub_category_id, [ ], {:include_blank => t('Select')} ,:class=>"mg-select-btn" %>
+</p>
+
+<p>
+    <label class="mg-label" style="width:140px"><%= t('question') %><span class="required-field">&nbsp;*</span></label>
+    <br/>
+   <%= f.cktext_area :question,:class=>"mg-text-field" %>
+</p>
+
+<p>
+    <label class="mg-label" style="width:140px"><%= t('answer') %><span class="required-field">&nbsp;*</span></label>
+    <br/>
+   <%= f.cktext_area :answer,:class=>"mg-text-field" %>
+</p>
+
+<p class="mg-p-mgtop">
+    <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("save")%></a>
+    <!-- <a class="mg-small-form-btn cancel-form-dialog"><%#=t("cancel")%></a> -->
+    <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+</p>
+<% end %>
+</div>
+
+ <%= render  partial: 'application/common_left_close' %> 
+<script>
+$( document ).ready(function() {
+            focusCurrentTab("frontOfficeManagerFaqAdminAID","frontOfficeManagerFaqAdminliId");
+          //focusStudentHeaderBox();
+});
+$("#faqCreateID").validate({
+        rules: {        
+        "category[mg_faq_category_id]": {required: true},
+        "category[mg_faq_sub_category_id]": {required: true},
+        "category[question]": {required: true},
+        "category[answer]": {required: true}
+      }
+    });
+
+
+$(".sub-category-as-per-category").change(function(){
+      var category_id = $( ".sub-category-as-per-category" ).val();
+      var apdStr = '<option value="">Choose Category</option>';
+      $("#category_mg_faq_sub_category_id").empty().append(apdStr);
+      if(category_id > 0) {
+           var urlLink = "/front_office_management/sub_category_list/"+category_id;
+           $.ajax({ 
+               url: urlLink,
+               cache: false,
+               success: function(data){
+                 // console.log();
+                  if(data.length > 0){
+                      var apdStr = '<option value="select">Select</option>';
+                     for(key in data){
+                        apdStr += '<option value="'+data[key].id+'">'+data[key].sub_category_name+'</option>'
+                      }
+                      $("#category_mg_faq_sub_category_id").empty().append(apdStr);
+                  }
+
+               }
+                  
+           });
+
+    }else{
+      var apdStr = '<option value="">Choose Category</option>';
+      $("#category_mg_faq_sub_category_id").empty().append(apdStr);
+      // alert("Please select category");
+    }
+  });
+</script>

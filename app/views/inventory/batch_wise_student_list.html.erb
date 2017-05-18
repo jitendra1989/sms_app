@@ -1,0 +1,25 @@
+<label class="mg-label mg-tt-width" style="width:185px"><%=t('select_student')%><span class="required-field"> *</span></label><br>
+<div class="mg-scroll-subjectlist-bar">
+	<table class="batch-tbl">
+		<tr>
+			<th class="mg-align-center">
+			 	<label class="mg-label"><%=t('select')%></label><br/>
+			 	<a  id="selecAllAID" class="mg-pop-link">All</a>
+				<a  id="selectNoneAID" class="mg-pop-link">None</a>
+			</th>
+			<th>
+				<%=t('name')%>
+			</th>
+		</tr>
+		<%@students.each do |student|%>
+			<tr>
+				<td class="mg-align-center">
+					<%=check_box_tag 'studentIds[]',student.id,false,:class=>"selectCheckBox"%>
+				</td>
+				<td>
+					<%=student.first_name%> <%=student.middle_name%> <%=student.last_name%>
+				</td>
+			</tr>
+		<%end%>
+	</table>
+</div>

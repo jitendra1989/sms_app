@@ -1,0 +1,68 @@
+<!-- breadcrumbs Work -->
+<% navigation_add 'Examinations', examinations_path %>
+<% navigation_add 'Grading Level', new_examination_path %>
+
+<!-- breadcrumbs Work -->
+
+
+
+<%= render  partial: 'examination_table_left' %>
+<h4 class="mg-h4">Set Grading Level</h4>
+<div>
+
+<%@value=@bachid%>
+
+ <%=hidden_field_tag :mg_batch_id, @value, :id=>"defaultId"%>
+	<table class="mg-table-spacing">
+		<tr>	
+			<td class="mg-leave-width">
+				<label class="mg-label"><%=t('select')%> <%=t('batch')%></label>
+			</td>
+			<td>
+
+				<%=select_tag :mg_batch_id, options_for_select(@course_batches,:selected=>@bachid),:prompt=>"Common",:onchange=>"myFunction(this.value)"%><br>
+			
+			</td>
+		</tr>
+		<tr>
+			<td></td>
+			<td>
+				<button  class="grades-class mg-custom-form-btn">Add Grades </button>
+			</td>
+		</tr>
+	</table>
+</div>
+
+<div id="examinationClassID">
+
+</div>
+<div id="editClassID">
+
+</div>
+<div id="examinationCommonID">
+<table id="tableID">
+</table>
+
+</div>
+
+
+<%= render  partial: 'examination_table_close' %>
+
+<script>
+
+$(document).ready(function(){
+        focusCurrentTab("viewStudentListAId","viewStudentListLiId");
+        focusExaminationHeaderBox();
+		
+	var Id=$("#defaultId").val();
+	
+	if(Id==""){
+	 	myFunction(Id);
+	 }
+	if(Id!=""){
+	 	myFunction(Id);
+	 }
+});
+
+</script>
+

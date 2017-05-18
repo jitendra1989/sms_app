@@ -1,0 +1,93 @@
+<% navigation_add 'Store Informations', :controller => 'inventory', :action => 'store_information' %>
+<%= render  partial: 'inventory/inventory_left' %>
+<h4 class="mg-h4"><%= t('store_information') %></h4>
+
+<%if @store_management.length>0%>
+  <% @user_id=session[:user_id] %>
+  <table  class="batch-tbl mg-tbl-margin">   <!-- border="2" --> 
+    <tr class="subject-table-header">
+      <th><%= t('store_name') %></th>
+      <th class="mg-desc-text-justify"><%= t('description') %></th>
+      <th><%= t('actions') %></th>
+    </tr>
+   
+    <% @store_management.each do |f| %>
+      <tr>
+        
+        <td><%= f.try(:store_name) %></td>
+        <td><%= truncate(f.try(:description), :length => 25) %></td>
+        
+        <td>
+          <button title="Change Password" id="<%=raw @user_id %>-showlabBTNID" class="change-store-manager-password-btn mg-icon-btn"><i class="fa fa-exchange"></i></button>
+          <button title="Edit" id="<%=raw @user_id %>-editlabBTNID" class="edit-store-manager-detail-btn mg-icon-btn"><i class="fa fa-pencil-square-o"></i></button>
+        </td>
+      </tr>
+    <% end %>
+  </table>
+  <br/>
+<%else%>
+  <h5 >No Proposal is created </h5>
+<%end%>
+<div id="userStoreManagerDIVID"></div>
+<div id="editUserStoreManagerDIVID"></div>
+
+
+<%= render  partial: 'application/common_left_close' %>
+
+
+<script>
+
+  $( document ).ready(function() {
+    focusCurrentTab("storeInformationID","storeInformationLidID");
+            //focusStudentHeaderBox();
+  });
+
+  $(document).on("click", ".edit-store-manager-detail-btn", function(e){
+  var myID =$(this).attr('id');
+  var Id=myID.split("-");
+  var urlLink = "/inventory/edit_store_manager/"+Id[0];
+  $.ajax({
+      url: urlLink ,
+      cache: false,
+      data: {"change_store_username":"change_username_by_user"},
+      success: function(html){
+        $('#editUserStoreManagerDIVID').dialog({
+          modal: true,
+          title: "Edit Store Manager",
+          open: function () {
+              $(this).html(html);
+          }
+        }); 
+      }
+  });
+});
+
+
+
+  $(document).on("click", ".change-store-manager-password-btn", function(e){
+  var myID =$(this).attr('id');
+  var Id=myID.split("-");
+  var urlLink = "/inventory/show_store_manager/"+Id[0];
+  $.ajax({
+      url: urlLink ,
+      cache: false,
+      data: {"change_store_password":"change_password_by_user"},
+      success: function(html){
+            $('#userStoreManagerDIVID').dialog({
+              modal: true,
+               minHeight: 'auto',
+              width: 'auto',
+              title: "Change Password",
+              open: function () {
+                  
+                  $(this).html(html);
+              }
+          }); 
+         
+      }
+  });
+});
+
+
+</script>
+

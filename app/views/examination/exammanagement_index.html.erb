@@ -1,0 +1,37 @@
+<!-- breadcrumbs Work -->
+<% navigation_add 'Examinations', examinations_path %>
+<% navigation_add 'Exam Management', examination_exammanagement_index_path %>
+<!-- breadcrumbs Work -->
+
+<%= render  partial: 'examination_table_left' %>
+
+
+<h4 class="mg-h4">Exam Management</h4>
+<div>
+<label class="mg-label mg-leave-width"><%=t('select')%> <%=t('course')%></label>
+<%=select_tag :mg_course_id, options_for_select(@course),:prompt=>t('select'),:onchange=>"myExamFunction(this.value)"%><br>
+
+
+
+	<div id="exammanagementClassesID">
+	</div>
+
+	<div id="exammanagementClassID">
+	</div>
+
+	<div id="exammanagementID">
+	</div>
+</div>
+
+
+<%= render  partial: 'examination_table_close' %>
+
+
+<script type="text/javascript">
+  $(document).ready(function() {
+        focusCurrentTab("createNewStudentAID","createNewStudentLiID");
+        focusExaminationHeaderBox();
+  });
+
+</script>
+

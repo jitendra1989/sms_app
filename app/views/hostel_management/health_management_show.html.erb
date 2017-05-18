@@ -1,0 +1,148 @@
+<% navigation_add t('health_management'), :controller=>'hostel_management', :action=>'health_management' %>
+
+<% navigation_add t('show_health_management'), :controller=>'hostel_management', :action=>'health_management_show',:id=>params[:id] %>
+
+<%= render  partial: 'hostel_management_left' %>
+ 
+<h4 class="mg-h4"><%= t('show_health_management')%></h4>
+
+  <table border="1" class="mg-showdata-bg " cellspacing="1" cellpadding="1">
+
+  <% student_data=MgStudent.find_by(:id=>@health_data.mg_student_id,:mg_school_id=>session[:current_user_school_id])%>
+ 
+      <tr>
+         <td class="mg-td-width-half" valign="top">
+          <label class="mg-label"> <%= t('student_name')%></label>
+         </td>
+         <td class="mg-td-width-half" valign="top">
+          <%="#{student_data.try(:first_name)} #{student_data.try(:last_name)}"%>
+         </td>
+      </tr>
+
+      <tr>
+         <td class="mg-td-width-half" valign="top">
+          <label class="mg-label"> <%= t('placement_student_admission_id')%></label>
+         </td>
+         <td class="mg-td-width-half" valign="top">
+            <%=student_data.try(:admission_number)%>
+         </td>
+      </tr>
+
+
+      <tr>
+         <td class="mg-td-width-half" valign="top">
+          <label class="mg-label"> <%= t('hostel_name')%></label>
+         </td>
+
+         <% hostel_name = MgHostelDetails.find_by(:id=>@health_data.mg_hostel_details_id,:mg_school_id=>session[:current_user_school_id]).name %>
+         
+         <td class="mg-td-width-half" valign="top">
+              <%=hostel_name%>
+         </td>
+      </tr>
+
+
+      <tr>
+         <td class="mg-td-width-half" valign="top">
+          <label class="mg-label"> <%= t('floor_no')%></label>
+         </td>
+         <td class="mg-td-width-half" valign="top">
+
+          <% floor_name= MgHostelFloor.find_by(:id=> @health_data.mg_hostel_floor_id,:mg_school_id=>session[:current_user_school_id]).name %>
+
+          <%=floor_name%>
+
+         </td>
+      </tr>
+
+
+      <tr>
+         <td class="mg-td-width-half" valign="top">
+          <label class="mg-label"> <%= t('room_no')%></label>
+         </td>
+         <td class="mg-td-width-half" valign="top">
+
+          <% room_name= MgHostelRoom.find_by(:id=> @health_data.mg_hostel_room_id,:mg_school_id=>session[:current_user_school_id]).name %>
+
+          <%=room_name%>
+
+         </td>
+      </tr>
+
+
+     <tr>
+         <td class="mg-td-width-half" valign="top">
+          <label class="mg-label"> <%= t('date')%></label>
+         </td>
+         <td class="mg-td-width-half" valign="top">
+          <%= @health_data.date.strftime(@timeformat.date_format) %>
+         </td>
+       </tr>
+
+
+       <% if @health_data.status.present? %>
+         <tr>
+         <td class="mg-td-width-half" valign="top">
+          <label class="mg-label"> <%= t('status')%></label>
+         </td>
+         <td class="mg-td-width-half" valign="top">
+
+          <%= @health_data.status %>
+          
+
+         </td>
+      </tr>
+
+        <% end %>
+
+   
+
+       <tr>
+           <td class="mg-td-width-half" valign="top">
+            <label class="mg-label"><%=t('reason')%></label>
+           </td>
+           <td class="mg-td-width-half " valign="top">
+              <div class="text-scroll-for-log-text-cls comments-space" style="padding: 5px 40 0 10px">
+                <%= @health_data.reason %>
+              </div>
+           </td>
+       </tr>
+
+
+
+
+</table><br/>
+
+<table>
+        <tr>
+            <td>
+               <%= link_to t('cancel'), {:controller=>'hostel_management',:action=>'health_management'}, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+            </td>
+        </tr> 
+    </table>
+
+<p>
+         
+<%=render partial: 'common_left_close'%>
+     
+ 
+<script type="text/javascript">
+$(document).ready(function () {
+//  textSeeMoreLess();
+$("#health_dataWardenFormId").validate({
+
+    rules: {
+      "status": {required: true}
+      }
+  });
+});
+
+
+
+  $( document ).ready(function() {
+      focusCurrentTab("health_manageAID","health_manageLiID");
+  });
+
+
+</script>
+  

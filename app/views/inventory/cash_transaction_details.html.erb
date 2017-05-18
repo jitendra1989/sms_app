@@ -1,0 +1,26 @@
+<table border="1" class=" mg-showdata-bg mg-show-tbl-width" cellspacing="1" cellpadding="1">
+	<tr>
+		<td><%=t("customer_name")%></td>
+		<td><%=@sales.try(:customer_name)%></td>
+ 	</tr>
+</table>
+<br>
+<table border="1" class=" mg-showdata-bg mg-show-tbl-width" cellspacing="1" cellpadding="1">
+<tr>
+	<th> <label class="mg-label"> <%= t('item_name')%></label></th>
+	<th> <label class="mg-label"> <%= t('cast_per_unit')%></label></th>
+	<th> <label class="mg-label mg-label-text-transform-none"> <%= t('no_of_units')%></label></th>
+	<th> <label class="mg-label"> <%= t('total')%></label></th>
+<%@sale_details.each do |info|%>
+	<tr>
+		<td><%=MgInventoryItem.find_by(:id=>info.try(:mg_inventory_item_id)).try(:name)%></td>
+		<td><%=info.try(:cost_per_unit)%></td>
+		<td><%=info.try(:no_of_units)%></td>
+		<td><%=info.try(:total)%></td>
+	</tr>
+ <%end%>
+</table>
+<p class="mg-p-mgtop">
+      <a class="mg-small-form-btn cancel-form-dialog"><%=t('cancel')%></a>
+</p>
+

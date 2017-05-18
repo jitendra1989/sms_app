@@ -1,0 +1,68 @@
+<!-- breadcrumbs Work -->
+<% navigation_add 'Timetable', timetable_index_path %>
+<% navigation_add 'Timetable Association', time_table_associate_index_path %>
+
+<!-- breadcrumbs Work -->
+
+
+
+
+<%= render  partial: 'timetable_left' %>
+
+ <%= form_for :createtimetableasso, url: teacher_for_subject_save_path do |f| %>
+
+<h4 class="mg-h4">Time Table Association</h4>
+<div class="mg-custom-labels">
+<label class="mg-label  mg-tt-width mg-tbl-margin">Select Academic Year</label>
+<%=select_tag :mg_time_table_id,options_for_select(@academic_name),:prompt=>"Select"%><br>
+<label class="mg-label  mg-tt-width mg-tbl-margin"><%=t('select')%> <%=t('coursebatch')%> </label>
+<%=select_tag :batch,options_from_collection_for_select(@batch,"id","course_batch_name"),:prompt=>t('select'),:onchange=>"classTimingsForBatch(this.value)"%>
+<%#=select_tag :batch,options_for_select(@batch),:prompt=>"Batch and course",:onchange=>"classTimingsForBatch(this.value)"%><br>
+<div id="selectTimeDivId"></div>
+<div id="batchwiseWeekdayTableID"></div><br>
+<div class="mg-btn-cancel">
+	<%=f.submit t('submit') ,:class=>"mg-small-form-btn "%>
+	<span style="left: 6px; position: relative; float: right ; margin-right: 6px;">
+	<%= button_to t('cancel'), time_table_associate_index_path ,:class=>"mg-small-form-btn"%>  
+	</span>
+</div>
+<%end%>
+</div>
+<%= render  partial: 'timetable_left_close' %>
+
+<script>
+$(document).ready(function () {
+        focusCurrentTab("timeTableAssociateAID","timeTableAssociateLiID");
+        focusTimeTable();
+    });
+
+
+function classTimingsForBatch(batchId){
+	var mg_time_table_id=$("#mg_time_table_id").val();
+	$.ajax({
+		url:'/timetable/batch_wise_select_class_timings_name',
+		data:{"batch_id":batchId, "mg_time_table_id": mg_time_table_id},
+		type:"GET",
+		success:function(html){
+			$("#selectTimeDivId").html(html);
+		},
+		error:function(){
+			alert("inside error");
+		}
+	});
+}
+
+function weekDayForBatch(className){
+	$.ajax({
+		url:'/timetable/batch_wise_week_day_time_table',
+		data:{"name":className},
+		type:"GET",
+		success:function(html){
+			$("#batchwiseWeekdayTableID").html(html);
+		},
+		error:function(){
+			alert("inside error");
+		}
+	});
+}
+</script>

@@ -1,0 +1,55 @@
+<!-- breadcrumbs Work -->
+<% navigation_add 'Examinations', examinations_path %>
+<% navigation_add 'Exam Report', examination_report_center_path %>
+<!-- breadcrumbs Work -->
+
+
+
+<%= render  partial: 'examination_table_left' %>
+
+<h4 class="mg-h4">Report Center</h4>
+<div>
+	<table>
+		<tr>
+			<td class="mg-exam-td-width" valign="top">
+				<%= button_to 'CCE Reports', {controller: 'cce_reports',action:'index'}, {method: :get, :class=>"mg-exam-scholastic-btn-width mg-btn-exam"} %><br>
+			</td>
+
+			<td class="mg-exam-td-width" valign="top">
+				<%= button_to 'Sections-Comparision-Report', {:controller=>'examination',:action=>'section_subjects'}, {method: :get, :class=>"mg-exam-scholastic-btn-width mg-btn-exam"} %><br>
+			</td>
+			<td class="mg-exam-td-width" valign="top">
+				<%= button_to 'Section Wise Report', {:controller=>'examination',:action=>'exam_wise_reports'}, {method: :get, :class=>"mg-exam-scholastic-btn-width mg-btn-exam"} %><br>
+			</td>
+			<!-- <td class="mg-exam-td-width" valign="top">
+				<%#= button_to 'Exam Wise Report', {:controller=>'examination',:action=>'exam_wise_reports'}, {method: :get, :class=>"mg-exam-scholastic-btn-width"} %><br>
+			</td> -->
+			<!-- <td class="mg-exam-td-width" valign="top">
+				<%#= button_to 'Subject Wise Report', {:controller=>'examination',:action=>'subject_wise_report'}, {method: :get, :class=>"mg-exam-scholastic-btn-width"} %><br>
+			</td>		 -->
+		</tr>
+		<tr>
+			<!-- <td class="mg-exam-td-width" valign="top">
+				<%#= button_to 'Grouped Exam Report', {:controller=>'examination',:action=>'grouped_exam_report'}, {method: :get, :class=>"mg-exam-scholastic-btn-width"} %><br>
+			</td> -->
+			<!-- <td class="mg-exam-td-width" valign="top">
+				<%#= button_to 'Student Ranking Per Subject', {:controller=>'examination',:action=>'subject_rank'}, {method: :get, :class=>"mg-exam-scholastic-btn-width"} %><br>
+			</td> -->
+			<!-- <td class="mg-exam-td-width" valign="top">
+				<%#= button_to 'Student Ranking Per Batch', {:controller=>'examination',:action=>'batchWise_rank'}, {method: :get, :class=>"mg-exam-scholastic-btn-width"} %><br>
+			</td> -->
+		</tr>
+	</table>
+</div>
+
+
+
+<%= render  partial: 'examination_table_close' %>
+
+<script type="text/javascript">
+  $(document).ready(function() {
+        focusCurrentTab("viewResultAID","viewResultLiID");
+        focusExaminationHeaderBox();
+  });
+
+</script>

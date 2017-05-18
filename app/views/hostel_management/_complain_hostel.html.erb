@@ -1,0 +1,155 @@
+    <%=render partial: "dashboards/student_dashboard_left"%>
+    <h4 class="mg-h4"><%= @action=='new' ? t('create_hostel_issue') : 
+    t('edit_hostel_issue')%></h4>
+
+
+  <% studentData=MgStudent.where(:mg_user_id=>session[:user_id]).pluck(:id)%>
+ <% allocate_data=MgAllocateRoomList.find_by(:mg_student_id=>studentData,:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]) %>
+
+ <% if allocate_data.present? %>
+    <%= form_for :complain_hostel, :url=>@action=='new' ? 
+    'complain_hostel_create' : '/hostel_management/'+
+    @complain_hostel.try(:id).to_s+'/complain_hostel_update', 
+     :method=> @action=='new' ? "post" : "patch", :html => 
+     {:id => 'complainHostelNewEditFormId' } do |f| %>
+
+   <%= f.hidden_field :mg_school_id, :value => session[:current_user_school_id]%>
+   <%if @action=='new'%>
+    <%= f.hidden_field :created_by, :value => session[:user_id]%> 
+   <%end%>
+   <%= f.hidden_field :updated_by, :value => session[:user_id]%> 
+   <%= f.hidden_field :is_deleted, :value => 0%>
+         
+  
+
+<label class="mg-label mg-tt-width" style="width:185px"><%= t('hostel') %></label>
+      
+      <%= f.hidden_field :mg_hostel_details_id, :value => @allocate_room_data.mg_hostel_details_id %>
+      <%hostel_details=MgHostelDetails.find_by(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id],:id=>@allocate_room_data.mg_hostel_details_id)%>
+  <%= text_field_tag :hostel_name,hostel_details.try(:name),:readonly=>true,:class =>"mg-select-btn"%><br/>
+<!-- <label class="mg-label mg-tt-width" style="width:185px"><#%= t('hostel') %><span class="required-field">&nbsp;*</span></label>
+      <#% hostel=MgHostelDetails.find_by(:id=>@hostel_name).name%>
+      <#%= f.hidden_field :mg_hostel_details_id, :value => hostel %>
+      
+      <#%= text_field_tag :hostel_name,  hostel,:readonly=>true,
+      :class =>"mg-select-btn"%><br/> -->
+
+<label class="mg-label mg-tt-width" style="width:185px"><%= t('room_no') %></label>
+      <% rooms=MgHostelRoom.find_by(:id=>@room_no).name%>
+      <%= f.hidden_field :room_no, :value => rooms %>
+      
+        <%= text_field_tag :room_number,rooms,:readonly=>true,
+      :class =>"mg-select-btn"%><br/>
+
+
+<label class="mg-label mg-tt-width" style="width:185px"><%= t('programme') %></label>
+      <%wing_data=MgWing.find_by(:id=>@allocate_room_data.mg_wing_id)%>
+      <%= f.hidden_field :programme, :value => wing_data.try(:wing_name) %>
+
+      <%= text_field_tag :mg_wing,wing_data.try(:wing_name),:readonly=>true,:class =>"mg-select-btn"%><br/>
+  
+<p class="formfield">
+<label class="mg-label mg-tt-width formfield" style="width:185px"><%= t('reason') %><span class="required-field">&nbsp;*</span></label>
+  <%= f.text_area :reason ,:class=> 'mg-text-field'%><br/>
+</p>
+  <label class="mg-label mg-tt-width" style="width:185px"><%= t('date') %></label>
+  
+<%if @action=='new'%>
+  <%= f.hidden_field :date, :value => Date.today.strftime(@timeformat.date_format) %>
+  <%= text_field_tag :date_data,Date.today.strftime(@timeformat.date_format),:readonly=>true,:class =>"mg-select-btn"%><br/>
+  <%else%>
+  <%= f.hidden_field :date, :value => @complain_hostel.date.strftime(@timeformat.date_format) %>
+  <%= text_field_tag :date_data,@complain_hostel.date.strftime(@timeformat.date_format),:readonly=>true,:class =>"mg-select-btn"%><br/>
+  <%end%>
+
+
+   <label class="mg-label mg-tt-width" style="width:185px"><%= t('status') %></label>
+    <%if @action=='new'%>
+   <%= f.hidden_field :status, :value => "Pending" %>
+
+    <%= select_tag :status_data,options_for_select([["Pending"]]),:disabled=>true,:class =>"mg-select-btn"%><br/>
+<%else%>
+   <%= hidden_field_tag :status_data_demo, @complain_hostel.status %>
+
+  <%= select_tag :status_data,options_for_select([["Pending","Pending"],["Processing","Processing"],["Resolved","Resolved"]],:selected=>@complain_hostel.status,:disabled=>["Processing","Resolved"]),:class =>"mg-select-btn demo_data_for_validation"%><br/>
+
+
+
+<%end%>
+  </p>
+ 
+ 
+  <p class="mg-p-mgtop">
+    <a onclick="$(this).closest('form').submit()" style="display:none" class="mg-small-form-btn data87">
+    <%=t("save")%></a>
+     <a style="display:none" class="mg-small-form-btn data89">
+    <%=t("save")%></a>
+    <%=link_to t("cancel"),{:controller => "hostel_management", 
+    :action => "complain_hostel_index"},:class=>"mg-small-form-btn cancel-form-dialog"%>
+  </p>
+  
+ 
+
+  <% end %>
+  <% else %>
+    Room is Not Yet Confirmed
+  <% end %>
+  <%= render  partial: 'common_left_close' %>
+  
+  <script type="text/javascript">
+
+     $(document).ready(function(){
+ 	     $("#complainHostelNewEditFormId").validate({
+           rules: {
+      	          "complain_hostel[reason]": {required: true}
+                  }
+                 });
+    var data=$("#status_data_demo").val();
+
+       if(data=="Processing"){
+        $('.demo_data_for_validation option[value="Pending"]').remove();
+        var newOption = $('<option value="Pending" disabled=true>Pending</option>');
+       newOption.insertBefore('.demo_data_for_validation option[value="Processing"]');
+         $(".data87").hide();
+         $(".data89").show();
+        }
+       else if(data=="Resolved"){
+
+        $(".data87").hide();
+        $(".data89").show();
+
+       }else{
+        
+      $(".data87").show();
+      $(".data89").hide();
+
+       }
+      });
+
+     $(document).on("change",".demo_data_for_validation",function(){
+     var data=$(this).val();
+     if(data=="Processing"){
+       $(".data87").hide();
+       $(".data89").show();
+
+       }
+       else if(data=="Resolved"){
+        $(".data87").hide();
+        $(".data89").show();
+
+       }else{
+         $(".data87").show();
+         $(".data89").hide();
+
+      }
+
+      });
+  </script>
+
+
+
+<style>
+.formfield * {
+    vertical-align: middle;
+}
+</style>

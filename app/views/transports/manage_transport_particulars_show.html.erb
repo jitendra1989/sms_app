@@ -1,0 +1,62 @@
+<!-- Sec --> 
+
+ 
+<table border="1" class="mg-showdata-bg mg-tbl-layout mg-btn-bottom-margin" cellspacing="1" cellpadding="1">
+    <!-- <tr>
+     <td class="mg-td-width-half" valign="top">
+        <label class="mg-label"> Name</label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+        <%#= @fee_particular.name %>
+     </td>
+    </tr>
+
+  <tr>
+    <td class="mg-td-width-half" valign="top">
+      <label class="mg-label">Description </label>
+    </td>
+    <td class="mg-td-width-half" valign="top">
+      <%#= @fee_particular.description %>
+    </td>
+</tr> -->
+<tr>
+    <td class="mg-td-width-half" valign="top">
+      <label class="mg-label">Category </label>
+    </td>
+    <td class="mg-td-width-half" valign="top">
+      <%@feeCategory=MgFeeCategory.select(:name).find_by_id(@fee_particular.fee_category)%>
+      <%= @feeCategory.name %>
+    </td>
+</tr>
+ 
+ <tr>
+    <td class="mg-td-width-half" valign="top">
+      <label class="mg-label">Amount </label>
+	</td>
+    <td class="mg-td-width-half" valign="top">
+      <%= @fee_particular.amount %>
+    </td>
+  </tr>
+
+  <tr>
+    <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"><%= t('course') %>-<%= t('batch') %></label>
+    </td>
+    <td class="mg-td-width-half" valign="top">
+      <%@mgBatch=MgBatch.select(:name, :mg_course_id).find_by_id(@fee_particular.mg_batch_id)%>
+      <%if@mgBatch!=nil%>
+  
+        <%@course=MgCourse.select(:course_name).find_by_id(@mgBatch.mg_course_id)%>
+            <%if@course!=nil%>
+              <%= @course.course_name %> - <%= @mgBatch.name %>
+            <%end%>
+      <%end%>
+    </td>
+  </tr>
+</table>
+
+<br/>
+
+       <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+
+ 

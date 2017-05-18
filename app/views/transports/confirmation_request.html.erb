@@ -1,0 +1,151 @@
+<%= render  partial: 'transport_left' %>
+
+<% navigation_add 'Confirmation', transports_confirmation_request_path %>
+        
+<h4 class="mg-h4"><%= t('confirm_request')%></h4>
+
+<%#= form_for :student_transport_confirmation ,  :url=>{:action=>"transport_facility_create",:controller=>"dashboards"}, :html=>{:id=>'route_form'} do |f| %>
+
+        
+      
+         <%#=hidden_field_tag :status ,"Pending"%>
+       
+        
+<table class="mg-tbl-margin mg-show-tbl-width">
+      
+    <tr>
+      <td class="mg-td-width-one-third">
+      
+        <label class="mg-label"  for="selectRoute"><%= t ('select_route') %><span class="required-field">&nbsp;*</span></label>
+
+        <%@data=MgTransport.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:route_name,:id)%><br/>
+      
+
+               <%=select_tag :mg_routes_ids ,options_for_select(@data),:prompt=>"Select",:onchange=>"select_route_requesties(this.value)"%>
+               
+      </td>
+    </tr>
+   
+    <tr>
+      <td class="mg-td-width-one-third">
+      
+        <label class="mg-label"  for="selectRoute"><%= t ('select_vehicle') %><span class="required-field">&nbsp;*</span></label>
+
+       
+                <div id="vehicle_transport_select_id">
+               <%=select_tag :mg_routes_ids ,options_for_select([]),:prompt=>"Select"%>
+               </div>
+               
+      </td>
+    </tr>
+    
+</table>
+   
+
+
+  
+<!--  <br/> <p class="mg-custom-labels">
+<%#= submit_tag t("save"),:class=>"mg-small-form-btn"%>
+ <%#= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+ </p>
+  -->
+<%#end%>
+<div id="transportss_requestss_confirmationss">
+</div>
+<div id="transports_request_confirmation">
+</div>
+
+<%=render partial: 'transport_left_close'%>
+
+<script>
+ $(document).ready(function(){
+
+   focusCurrentTab("transportmanagementAssociateAID","transportmanagementAssociateLiID");
+       });
+function select_route_requesties(data){
+	
+        var urlLink = "/transports/confirmation_request_new";
+        $.ajax({
+        url: urlLink ,
+        cache: false,
+        data: {"id" :data},
+        success: function(data)
+        {
+
+			$("#vehicle_transport_select_id").empty();
+			$("#vehicle_transport_select_id").html(data);
+	        	
+	
+        }
+                }); 
+    
+    
+    };
+function select_transport_route_requesties(data){
+  
+        var urlLink = "/transports/confirmation_vehicle_request_new";
+        $.ajax({
+        url: urlLink ,
+        cache: false,
+        data: {"id" :data},
+        success: function(data)
+        {
+
+      $("#transports_request_confirmation").empty();
+      $("#transports_request_confirmation").html(data);
+            
+  
+        }
+                }); 
+    
+    
+    };
+
+
+$(document).on("click",".confirm-transport-details-for-student-1234",function(){
+var Id=$(this).attr('id')
+var datas=$("#datas_info_confirmation").val();
+if (datas==0){
+alert("Available Seats are Zero");
+}
+      else{
+       
+ var urlLink = "/transports/confirmation_request_create";
+       // alert(urlLink);
+        $.ajax({
+            url: urlLink ,
+            
+            cache: false,
+            data:{"id":Id},
+            success: function(html){
+                 
+             $("#transports_request_confirmation").empty();
+      $("#transports_request_confirmation").html(html);
+            }
+        });
+      }
+
+
+  
+
+});
+$(document).on("click",".cancel-confirm-transport-details-for-student-1234",function(){
+var Id=$(this).attr('id')
+
+ var urlLink = "/transports/confirmation_request_create";
+       // alert(urlLink);
+        $.ajax({
+            url: urlLink ,
+            
+            cache: false,
+            data:{"id":Id,"data":"cancel"},
+            success: function(html){
+                 
+             $("#transports_request_confirmation").empty();
+      $("#transports_request_confirmation").html(html);
+            }
+        });
+
+});
+
+</script>

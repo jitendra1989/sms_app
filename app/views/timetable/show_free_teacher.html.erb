@@ -1,0 +1,96 @@
+<div>
+<%
+weekday_hash=Hash.new
+%>
+<%if @timetables.present?%>
+
+<%
+	@timetables.each do |tt|
+	weekday_hash[MgWeekday.find(tt.mg_weekday_id).weekday]=tt.mg_class_timings_id
+
+end
+
+weekday_hash.each_with_index do |key, value|
+%>
+	<% if  key[0].to_s =="0"%>
+	<label class="mg-label mg-label-top-margin"> Free Teacher on Sunday</label><br>
+	<%elsif  key[0].to_s =="1"%>
+	<label class="mg-label mg-label-top-margin"> Free Teacher on Monday</label><br>
+	<%elsif  key[0].to_s =="2"%>
+	<label class="mg-label mg-label-top-margin"> Free Teacher on Tuesday</label><br>	
+	 <%elsif key[0].to_s =="3"%>
+	<label class="mg-label mg-label-top-margin"> Free Teacher on Wednesday</label><br>
+	<%elsif  key[0].to_s =="4"%>
+	<label class="mg-label mg-label-top-margin"> Free Teacher on Thursday</label><br>	
+	<%elsif  key[0].to_s =="5"%>
+	<label class="mg-label mg-label-top-margin"> Free Teacher on Friday</label><br>	
+	<%else%>
+	<label class="mg-label mg-label-top-margin"> Free Teacher on Saturday</label><br>	
+	<%end%>
+<%
+	@occupiedTeacher=MgTimeTableEntry.where(:mg_class_timings_id=>key[1],:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:mg_employee_id)
+	 # @free_teacher = MgEmployee.where(:is_deleted=>0,:mg_employee_category_id=>1,:mg_school_id=>session[:current_user_school_id])
+
+  	emp_category=MgEmployeeCategory.find_by(:category_name=>"Teaching Staff")
+  	@free_teacher = MgEmployee.where(:is_deleted=>0,:mg_employee_category_id=>emp_category.id,:mg_school_id=>session[:current_user_school_id]).where('id not in (?)',@occupiedTeacher).order(:first_name) unless @occupiedTeacher.empty?
+  
+%>
+
+<%
+@count1 =0
+if	@free_teacher.length >0
+%>
+<div class="mg-scroll-employee-bar">
+<table class="batch-tbl mg-tbl-layout">
+	<tr>
+		<th>Sl No</th>	
+		<th>Employee Name</th>
+		<th>Employee ID</th>
+		<th><%=t('subjects')%></th>
+	</tr>
+<%	
+for i in 0...@free_teacher.size%>
+	<tr>
+		<td><%=@count1 +=1%></td>
+		<td class="mg-table-normal-whitespace"><%=@free_teacher[i].employee_name%></td>
+		<td><%=@free_teacher[i].employee_number%></td>
+		<td>
+			<%
+			subject_id_list=@free_teacher[i].mg_employee_subjects.pluck(:mg_subject_id)
+			subject_list = MgSubject.where(:id=>subject_id_list).order(:mg_course_id)
+			temp_class_id =  0
+			course_str=''
+			bracket_count=0
+			subject_list.each do |sub|
+				count=0
+					if(temp_class_id!= sub.mg_course_id)
+						temp_class_id = sub.mg_course_id
+						count +=1
+						if bracket_count!=0
+						%> 
+						) <br>
+				 		<%end%>
+					<%end%>
+				<%bracket_count +=1%>
+				<%if count>0%>
+					( <%=sub.subject_course_name%> - 
+				<%end%>
+				<%if count==0%> , <%end%> <%=sub.subject_name%> 
+			<%end%>
+			<%if bracket_count!=0%>	)<%end%>
+		</td>
+	</tr>
+<%end%>
+</table>
+</div><br>
+<%
+end
+end
+%>
+
+
+<br>	
+<%else%>
+	<h5>No data...</h5>
+<%end%>
+</div>

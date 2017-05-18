@@ -1,0 +1,108 @@
+
+<%= render  partial: 'laboratory/laboratry_left' %>
+
+<% navigation_add t('about_inventory'), "/laboratory/management/" %>
+
+<h4 class="mg-h4"><%= t('inventory_management_list') %></h4>
+
+<%= button_to 'Add Inventory', {:controller => "laboratory", :action => "management_new" } ,:class=>"mg-custom-form-btn"%>
+<p>
+<!-- =================================================================================== -->
+<%= form_for :short_lab_wise, url: laboratory_management_path, :html => {
+                            :id => 'labmanagementshortCreateID' } do |f| %>
+<%lab_short=MgLab.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:lab_name,:id)%>
+
+<%if (!(session[:user_type]=="employee"))%>
+ <%=f.select :mg_lab_id,options_for_select(lab_short,:selected=> @id   ),{:prompt=>t('select_all')},:onchange => 'this.form.submit();' %>
+ <%end%>
+
+<%= f.submit t('save') ,:class=>"mg-small-form-btn hidden-button-onchange-submit-class" , :style=>"display:none"%>
+
+<%end%>
+<!-- =================================================================================== -->
+</p>
+<div class="mg_pagination">
+<%if @lab_management.length>0%>
+<table  class="batch-tbl mg-tbl-margin">   <!-- border="2" --> 
+  <tr class="subject-table-header">
+    <!-- <th>Subject Id</th> -->
+    <th><%= t('lab_name') %></th>
+    <th><%= t('category_name') %></th>
+    <th><%= t('item_name') %></th>
+    <th class="mg-desc-text-justify"><%= t('item_description') %></th>
+    <th><%= t('quantity') %></th>
+    <th><%= t('unit_name') %></th>
+    <th><%= t('actions') %></th>
+  </tr>
+ 
+  <% @lab_management.each do |lab| %>
+    <tr>
+      <%laboratry=MgLab.find_by(:id=>lab.mg_lab_id)%>
+      <td><%= laboratry.lab_name %></td>
+      <%cat=MgLabInventory.find(lab.mg_category_id)%>
+      <td><%= cat.category_name %></td>
+      <td><%= lab.item_name %></td>
+      <td><%= lab.item_description %></td>
+      <td><%= lab.quantity %></td>
+      <%unit=MgLabUnit.find(lab.mg_unit_id)%>
+      <td><%= unit.unit_name %></td>
+      <td>
+      <span class="mg-paginatin-a-link">
+      	<button title="Show" id="<%=raw lab.id %>-showlabmanagementBTNID" class="show-inventory-management-btn mg-icon-btn"><i class="fa fa-eye"></i></button>
+        </span>
+        <span class="mg-paginatin-a-link">
+      <%= link_to "<i class=\"fa fa-pencil-square-o\"></i>".html_safe, {:controller => "laboratory", :action => "management_edit",:id =>lab.id} , :method=>'post' ,:title=>"Edit" ,:class=>"mg-icon-btn"%>
+        </span>
+        <span class="mg-paginatin-a-link" style="margin-left: 1px;">
+      <%= link_to "<i class=\"fa fa-trash\"></i>".html_safe, {:controller => "laboratory", :action => "management_delete",:id =>lab.id }, :method=>'post' ,:title=>"Delete" ,:class=>"mg-icon-btn",data: { confirm: 'Are you sure to delete?' } %>
+      </span>
+      </td>
+    </tr>
+  <% end %>
+</table>
+<br/>
+ <div class="pagination-align" style="position: relative; bottom: 10px;">
+              <%= will_paginate @lab_management, :params => { :custom_param => "paginated"+"-"+"#{@id}" } %>
+              
+           </div>
+<%else%>
+<h5 >No Inventory management is created </h5>
+<%end%>
+</div>
+<div id="showInventoryManagementDIVID"></div>
+
+
+<%= render  partial: 'application/common_left_close' %>
+
+<script>
+$( document ).ready(function() {
+            focusCurrentTab("viewLabInventryManagementIndex","viewLabInventryManagementLiID");
+          //focusStudentHeaderBox();
+});
+
+
+$(document).on("click", ".show-inventory-management-btn", function(e){
+        var myID =$(this).attr('id');
+        var Id=myID.split("-");
+        var urlLink = "/laboratory/management_show/"+Id[0];
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(html){
+                  $('#showInventoryManagementDIVID').dialog({
+                    modal: true,
+                    minHeight: 'auto',
+                    width: 'auto',
+                    title: "Inventory Management",
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+});
+
+</script>
+

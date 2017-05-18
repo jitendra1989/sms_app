@@ -1,0 +1,14 @@
+
+<% unless @students==nil  %>
+<label class="mg-label" style="font-size: 0.85em;">Student List</label>
+<ul class="mg-rep-align">
+    <% @students.each do |s| %>
+      <li class="student_names">
+        <a href="#" id="<%=raw s.id%>-<%=raw @exam_group.id%>"  class="student-link" > <%= s.first_name %></a>
+      </li>
+    <% end %>
+  </ul>
+
+  <% else %>
+  
+<% end %>

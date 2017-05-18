@@ -1,0 +1,36 @@
+<% navigation_add 'Examinations', examinations_path %>
+<% navigation_add 'Exam Report', examination_report_center_path %>
+<% navigation_add 'View Report', examination_section_subjects_path %>
+
+<%= render  partial: 'examination_table_left' %>
+<h4 class="mg-h4">Section Comparision Report</h4>
+
+
+
+
+<%= form_for :subject_wise_report, :url=>{:controller=>'examination',:action=>'generated_report6'} do |f| %>
+
+
+<div>
+<label class="mg-label mg-leave-width"><%="Select Section"%></label>
+   <%=select_tag :mg_batch_id,options_from_collection_for_select(@batches,"id","full_name"),:prompt=>"All Sections"%>
+</div>
+<br>
+
+
+<%#= f.submit "Submit", :class => "submit_button mg-small-form-btn" %>
+<a onclick="$(this).closest('form').submit()" class="submit_button mg-small-form-btn"><%=t("save")%></a>
+
+<%end%>
+
+<%= render  partial: 'examination_table_close' %>
+
+
+
+<script type="text/javascript">
+  $(document).ready(function() {
+       focusCurrentTab("viewResultAID","viewResultLiID");
+        focusExaminationHeaderBox();
+  });
+
+</script>

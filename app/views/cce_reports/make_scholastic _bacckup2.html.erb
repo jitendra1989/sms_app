@@ -1,0 +1,331 @@
+<%= render  partial: 'examination/examination_table_left' %>
+
+ 
+ <%=link_to "Download Report",{controller: 'cce_reports',action:"generate_report",:id =>params[:id]},:class=>"mg-custom-form-btn", :target=>"_blank"%><br/>
+   		
+
+<%#=text_area_tag 'display-report',@finalTable, :id=>"displayStudentCceReportId" , :style=>"display:none"%>
+
+<div>
+<%#=params.inspect%>
+
+<%
+
+	student = MgStudent.find(params[:id])
+	batch = MgBatch.find(student.mg_batch_id)
+	exam_groups = MgExamGroup.where(:mg_batch_id=>batch.id)
+	cce_category_ids = exam_groups.pluck(:cce_exam_category_id)
+	overall_year = 0
+%>
+
+
+
+<%
+ data_hash = Hash.new
+
+exam_groups.each do |eg|
+	exams_list = MgExam.where(:mg_exam_group_id=>eg.id)
+	cce_category = MgCceExamCategory.find(eg.cce_exam_category_id)
+	overall_total = 0
+	overall_marks = 0
+%>
+	<!-- <br/> -->
+	<!-- Exam Group = <%#= eg.name%> -->
+	<!-- Cce Category = <%#=cce_category.name%>
+	
+	<br/> -->
+
+<%
+exams_list.each do|el|
+	subject=MgSubject.find(el.mg_subject_id)
+	fa_group_ids = MgFaGroupsSubject.where(:mg_subject_id=>subject.id).pluck(:mg_fa_group_id)
+	fa_group_list = MgFaGroup.where(:id=>fa_group_ids,:mg_cce_exam_category_id=>cce_category.id)
+	exam_score=MgExamScore.find_by(:mg_student_id=>params[:id],:mg_exam_id=>el.id)
+	sa_score = if exam_score.present? then exam_score.marks else 0 end
+
+	score_data = Array.new
+	total_data = Array.new	
+	#fa_weightage = MgCceWeightages.find_by(:criteria_type=>"fa",:mg_cce_exam_category_id=>cce_category.id).weightages.to_f
+	#sa_weitghage = MgCceWeightages.find_by(:criteria_type=>"sa",:mg_cce_exam_category_id=>cce_category.id).weightages.to_f
+
+	#overall_total +=(el.maximum_marks*sa_weitghage)
+	#overall_marks +=(sa_score*sa_weitghage)
+%>
+	<!-- <br/> -->
+	<%
+		fa_group_list.each do |fg|
+
+		fa_criteria_list = MgFaCriteria.where(:mg_fa_group_id=>fg.id)
+		all_di = MgDescriptiveIndicator.where(:describable_type=>"FaCriteria", :mg_fa_criteria_id => fa_criteria_list.pluck(:id))
+		di_total = all_di.sum(:total_marks)
+		#overall_total +=(di_total* fa_weightage)
+		all_asmts = MgAssessmentScore.where(:mg_student_id=>params[:id],:mg_descriptive_indicator_id=> all_di.pluck(:id))
+		mk_obt = all_asmts.sum(:marks_obtained)
+		#overall_marks+=(mk_obt*fa_weightage)
+		total_data.push(di_total)
+		score_data.push(mk_obt)
+	%>
+		<!-- FA Group = <%#=fg.name%> -->
+	<!--	<br/>
+		Total = <%=di_total%>
+		<br/> -->
+		<!-- Marks Obtained = <%#=mk_obt%>
+		<br> -->
+		
+	<%end%>
+	<%
+		total_data.push(el.maximum_marks)
+		score_data.push(sa_score)
+	%>	
+	<%#=subject.subject_name%><%#=el.maximum_marks%>
+	
+	
+		<!-- SA Score = <%#=sa_score %>	
+		<br/> -->
+ 
+	<!-- Overall total = <%=overall_total%>	<br/>
+	Overall MO = <%=overall_marks%><br/> -->
+	<%
+		data_hash[subject.subject_name+"-total-"+cce_category.name]=total_data 
+		data_hash[subject.subject_name+"-"+cce_category.name]=score_data 
+	%>
+	<%#=score_data.inspect%>
+<%	
+	end	
+
+		#overall_term = ((overall_marks/overall_total)*100).to_i
+		#overall_year +=overall_term
+	%>
+	<!-- Overall(Term) = <%#=overall_term%><br/><br/> -->
+	
+	<%
+end
+%>
+<%#=data_hash.inspect%>
+<!-- 
+	<%#overall_year=overall_year/2%>
+	Overall(Year) = <%#=overall_year%>
+ -->
+</div>
+
+
+
+
+
+<br/>
+<br/>
+
+<table border="1">
+<tr>
+<td></td>
+<%
+
+  gradeLevelArray = MgGradingLevel.where(:mg_batch_id=>student.mg_batch_id,:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).order('min_score DESC')
+  
+
+
+exam_groups.each do |eg|
+	cce_category = MgCceExamCategory.find(eg.cce_exam_category_id)
+%>	
+<td colspan="5"><%=cce_category.name%></td>
+<%end%>
+<td colspan="2">Year</td>
+</tr>
+<tr>
+<td></td>
+<td>FA1</td>
+<td>FA2</td>
+<td>SA1</td>
+<td>Overall</td>
+<td>Grade</td>
+<td>FA3</td>
+<td>FA4</td>
+<td>SA2</td>
+<td>Overall</td>
+<td>Grade</td>
+<td>Overall</td>
+<td>Grade</td>
+</tr>
+
+
+<%
+	exams_list = MgExam.where(:mg_exam_group_id=>exam_groups[0].id)
+	exams_list.each do|el|
+	subject=MgSubject.find(el.mg_subject_id)
+%>	
+<tr>
+<td><%=subject.subject_name%></td>
+
+<%
+ overall_year =0
+ exam_groups.each do |eg|
+ 	cce_category = MgCceExamCategory.find(eg.cce_exam_category_id)
+ 	marks_data = data_hash[subject.subject_name+"-"+cce_category.name]
+ 	total_data = data_hash[subject.subject_name+"-total-"+cce_category.name]
+
+ 	fa_weightage = MgCceWeightages.find_by(:criteria_type=>"fa",:mg_cce_exam_category_id=>cce_category.id).weightages.to_f
+	sa_weitghage = MgCceWeightages.find_by(:criteria_type=>"sa",:mg_cce_exam_category_id=>cce_category.id).weightages.to_f
+
+
+	fa1_total = if total_data[0] then total_data[0] else 0 end
+ 	fa2_total = if total_data[1] then total_data[1] else 0 end
+ 	sa1_total = if total_data[2] then total_data[2] else 0 end
+
+ 	term_denominator = (fa1_total*fa_weightage)+(fa2_total*fa_weightage)+(sa1_total*sa_weitghage) 	
+
+ 	fa1_marks = if marks_data[0] then marks_data[0] else 0 end
+ 	fa2_marks = if marks_data[1] then marks_data[1] else 0 end
+ 	sa1_marks = if marks_data[2] then marks_data[2] else 0 end
+
+ 	term_numerator= (fa1_marks*fa_weightage)+(fa2_marks*fa_weightage)+(sa1_marks*sa_weitghage) 	
+
+ 	 term_percentage = 0
+ 	 if(term_denominator>0 && term_numerator>0)
+		 term_percentage = ((term_numerator/term_denominator)*100).to_i
+ 	 end	
+
+ 	 term_grade="z"
+ 	 
+	gradeLevelArray.each do |gradeObj|
+		term_grade = gradeObj.name
+      if term_percentage > gradeObj.min_score
+        term_grade = gradeObj.name
+        break
+      end
+  	end
+
+ 	 overall_year+=term_percentage
+%>	
+
+<td><%=fa1_marks.to_i%></td>
+<td><%=fa2_marks.to_i%></td>
+<td><%=sa1_marks.to_i%></td>
+<td><%=term_percentage%></td>
+<td><%=term_grade%></td>
+<%
+#	end
+	end
+	%>
+<!-- <td>FA3</td>
+<td>FA4</td>
+<td>SA2</td>
+<td>Overall</td>
+<td>Grade</td> -->
+<%
+	grade="z"
+	overall_year=(overall_year/2).to_i
+	gradeLevelArray.each do |gradeObj|
+		grade = gradeObj.name
+      if overall_year > gradeObj.min_score
+        grade = gradeObj.name
+        break
+      end
+  end
+
+	%>
+<td><%=overall_year%></td>
+<td><%=grade%></td>
+</tr>
+
+<%
+	end
+  #end	
+%>
+</table>
+</div>
+
+
+
+
+
+<!-- 
+<div id="displayReportDivId">
+</div> -->
+
+
+<!-- <table class="batch-tbl">
+<tr>
+<th colspan="1"><%#="Scholastic Area"%></th>
+<th colspan="4"><%#="Term1"%></th>
+<th colspan="4"><%#="Term2"%></th>
+<th colspan="4"><%#="Final Assesment"%></th>
+</tr>
+<tr>
+<th>subjects</th>
+<th>FA1</th>
+<th>FA2</th>
+<th>SA1</th>
+<th>Total</th>
+<th>FA3</th>
+<th>FA4</th>
+
+<th>SA2</th>
+<th>Total</th>
+<th>FA</th>
+<th>SA</th>
+<th>Overall</th>
+
+</tr>
+
+
+<%#@mg_subjects.each_with_index do |sub,i|%>
+
+<tr>
+
+<td><%#=sub.subject_name %></td>
+<%#subject=MgExam.where(:is_deleted=>0, :mg_subject_id=>sub.id)%>
+<td><%#=subject.inspect%></td>
+<td><%#=sub.id%></td>
+
+
+<%#mg_exam_category.each do |exam_category|%>
+<%#if @mg_exam_category[i].name=="term1"%>
+<%#@mg_exam_score.each do |exam_score|%>
+<td><%#=@mg_exam_score[i]%></td>
+<%#end%>
+<%#else%>
+<%#count =1%>
+<%#@mg_exam_score.each do |exam_score|%>
+ <%#if count / 2==0%>
+<td><%#=exam_score%></td> 
+<%#count +=1%>
+<%#end%>
+<%##end%>
+
+<%#end%>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+
+</tr>
+<%#end%>
+</table>
+ -->
+<%= render  partial: 'examination/examination_table_close' %>
+<!-- 
+<script>
+	$(document).ready(function(){
+
+		var reportData=$("#displayStudentCceReportId").val();
+		$("#displayReportDivId").append(reportData);
+	});
+
+</script>
+ -->
+<style>
+
+	.report-tbl{
+		
+		margin-top: 10px;
+		width: 100%;
+	}
+
+	.report-tbl ,.tbl-td , .tbl-tr {
+		border: 1px solid #999999;
+	}
+</style>

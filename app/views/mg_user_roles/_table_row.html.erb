@@ -1,0 +1,27 @@
+<!-- Sec --> 
+
+<!--<#%@art=MgUser.find_by_sql ["SELECT user_name FROM mg_users WHERE id = ?",mg_user_role.mg_user_id] %>
+<%#@art.inspect%>-->
+<!--<#% @art=MgUser.find_by_sql "SELECT p.user_name FROM mg_users p WHERE p.id = #{mg_user_role.mg_user_id}" %>
+  <#%= @art[0].inspect %><#%= mg_user_role.mg_user_id %>-->
+
+
+
+  <td>            
+  			<%  @tem=MgUser.find_by_id(mg_user_role.mg_user_id)%>
+  			<%= @tem.try(:user_name) %>
+  </td>
+  <td>       
+  			<%  @temp=MgRole.find_by_id(mg_user_role.mg_role_id)%>
+  			<%= @temp.try(:role_name) %>
+ </td>
+  <!-- <td><#%= @art.user_name %> -->
+  <!--<td><#%= mg_user_role.mg_role_id %></td>-->
+  <td>
+  	<button title="Edit" class="edit-mg-user-role mg-icon-btn" id="editMgUserRoleID-<%= mg_user_role.id%>"><i class="fa fa-pencil-square-o"></i></button>
+    <button title="Delete" class="delete-mg-user-role mg-icon-btn" id="deleteMgUserRoleID-<%= mg_user_role.id%>"><i class="fa fa-trash"></i></button></td>
+
+
+
+
+</tr>

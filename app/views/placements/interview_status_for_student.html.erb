@@ -1,0 +1,183 @@
+<% navigation_add t('interview_status'), :controller=>'placements', :action=>'interview_status_for_student' %>
+
+
+<%= render  partial: 'dashboards/student_dashboard_left' %>
+<h4 class="mg-h4"><%= t('interview_status')%></h4>
+<%if @job_arr.present?%>
+
+<%=label_tag 'Select Company:'%>
+
+<%=select_tag :mg_course, options_for_select(@placement_registration),:prompt=>"All",:class=>"mg-select-btn",:onchange=>"placementRegistrationReadData(this.value)"%>
+<div id="shsot_stusdent_logins_placements_datas">
+  <div id="parent" class="mg-scrl-width-bar ">
+
+<table id="fixTablePOConfirmationHistoriesTABLEID" class="batch-tbl mg-tbl-margin mg-tbl-layout"> 
+<thead>  <!-- border="2" --> 
+ <tr >
+
+<th class="mg-rm-text-trans" colspan="2"></th>
+    <!-- <th><%#=t('round')%></th>
+    <th><%#=t('next_round_date')%></th> -->
+     <% (1..10).each do |i| %>
+      
+         
+                 <%if i<=@job_arr.max%>
+                  <th colspan="2"> <%= "Round "+ i.to_s%></th>
+                  
+              <%end%>
+        <% end %>
+ 
+   
+
+<th colspan="2"></th>
+
+
+  </tr>
+  <tr>
+    
+<th class="mg-rm-text-trans"><%=t('name_of_the_company')%></th>
+<th class="mg-rm-text-trans"><%=t('job_id')%></th>
+   <% (1..10).each do |i| %>
+      
+         
+                 <%if i<=@job_arr.max%>
+                  <th> <%="Select"%></th>
+                  <th><%="date"%></th>
+                  
+              <%end%>
+        <% end %>
+ 
+
+     <th><%=t('status')%></th>
+
+    
+  </tr>
+</thead>
+
+  <% @placement_short_list_data.each do |e| %>
+    <tr>
+
+    <%#placement_data=MgPlacementShortListStudent.find_by(:id=>e.mg_placement_short_list_student_id)%>
+    
+    <%placement=MgPlacementRegistration.find_by(:id=>e.mg_placement_registration_id)%>
+      <td><%= placement.try(:name_of_the_company) %></td>
+         <%job=MgPlacementJobUpload.find_by(:id=>e.mg_job_upload_id)%>
+      <td><a  id="<%=raw job.id %>-showjobUploadBTNID" style="color:#428bca;" class="show-job-upload-fom-btn-student-login"><%= job.try(:job_id) %></a></td>
+
+
+      <% (1..10).each do |i| %>
+      <%if i<=@job_arr.max%>
+        <% if e.public_send("round#{i}_date").present? %>
+         
+                 <% round_data=MgInterviewRound.find_by(:id=>job.public_send("round#{i}"))%>
+                  <td style="color:green;"> <%=round_data.name %><%="(Selected)"%></td>
+                  <td>  <%=e.public_send("round#{i}_date").strftime(@dateFormat) %></td>
+                  
+          <%else%>
+          <% round_data=MgInterviewRound.find_by(:id=>job.public_send("round#{i}"))%>
+          <%if round_data.present?%>
+          <%if e.public_send("round#{i}_date")==nil && e.public_send("round#{i}")==nil%>
+          <td style="color:#004486;"> <%=round_data.name%><%="(Under Process)"%></td>
+                  <td>  <%="-" %></td>
+          <%else%>
+            <td style="color:red;"> <%=round_data.name%><%="(Not Selected)"%></td>
+                  <td>  <%="-" %></td>
+
+                  <%end%>
+                  <%else%>
+
+            <td> <%="-"%></td>
+                  <td>  <%="-" %></td>
+
+                  <%end%>
+        <% end %>
+        <%end%>
+            <% end %>
+        <%#round_data=MgInterviewRound.find_by(:id=>placement_data.mg_interview_round_id)%>
+        <%#if e.is_round_selected==false%>
+       
+     <!--  <td><%#= round_data.name %><%#="  (Not Selected)"%></td>
+        <td><%= "-"%></td> -->
+
+      <%#else%>
+      <!-- <td><%#= round_data.name %><%#="  (Selected)"%></td>
+        <td><%#= placement_data.next_round_date.strftime(@dateFormat)%></td>
+      <%#end%> -->
+      <%if e.job_selected==true %>
+      <td style="color:green;"><%="Selected"%></td>
+
+      <%elsif e.is_round_selected==nil %>
+      <td style="color:#004486;"><%="Under Process"%></td>
+      <%else e.is_round_selected==false %>
+      <td style="color:red;"><%=" Not Selected"%></td>
+      <%end%>
+       <!-- <td>
+       <button title="Show" id="<%#=raw job.id %>-showjobUploadBTNID" class="show-job-upload-fom-btn-student-login mg-icon-btn"><i class="fa fa-eye"></i></button> -->
+    </tr>
+  <% end %>
+</table>
+<%else%>
+<%="No Records"%>
+<%end%>
+</div>
+</div>
+<div id="shot_student_login_placement_data"></div>
+<%= render  partial: 'application/common_left_close' %>
+<script>
+  $( document ).ready(function() {
+    focusCurrentTab("InterviewStatusAID","InterviewStatusLiID");
+     $("#fixTablePOConfirmationHistoriesTABLEID").tableHeadFixer({'left' : 1, 'foot' : true, 'head' : true, 'right' : 1}); 
+  });
+
+  $(document).on("click", ".show-job-upload-fom-btn-student-login", function(e){
+        var myID =$(this).attr('id');
+        var Id=myID.split("-");
+
+
+        var urlLink = "/placements/"+Id[0]+"/job_upload_show_student/";
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(html){
+                  $('#shot_student_login_placement_data').dialog({
+                    modal: true,
+                    minHeight: 'auto',
+                    title: "Job Details",
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+});
+function placementRegistrationReadData(data){
+
+ var urlLink = "/placements/student_status_report/";
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            data:{data:data},
+            success: function(html){
+                  $('#shsot_stusdent_logins_placements_datas').empty().append(html);
+               
+            }
+        });
+
+}
+
+
+
+</script>
+
+<style type="text/css">
+  #parent {
+      max-height: 300px;
+  }
+
+ a:hover {
+  cursor:pointer;
+ }
+
+</style>

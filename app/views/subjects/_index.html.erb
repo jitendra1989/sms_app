@@ -1,0 +1,87 @@
+<!-- Sec --> 
+<h4 class="mg-h4"><%=t("subjectlist")%></h4>
+
+<% if @subjects.length > 0 %>
+<%#= column_chart @subjects.group(:subject_name).sum(:max_weekly_class) %>
+<%#= pie_chart @subjects.group(:subject_name).sum(:max_weekly_class) %>
+<div class="mg_pagination">
+<div class="mg-scroll-page-inner mg-tbl-border">
+  <table  class="batch-tbl mg-tbl-layout mg-left-align-nil">   <!-- border="2" --> 
+    <tr class="subject-table-header">
+      	<!-- <th>Batch</th> -->
+        <th><%=t('coursename')%></th>
+        <th style="width: 100%;"><%=t("subjectname")%></th>
+        <th><%=t("subjectcode")%></th>
+        <th><%=t("maxweeklyclass")%></th>
+        <th><%=t("core_subject")%></th>
+        <th><%=t("is_lab")%></th>
+        <th class="mg-rm-text-trans"><%=t("noofclasses")%></th>
+        <th><%=t("actions")%></th>
+        
+    </tr>
+    <% @subjects.each do |subject| %><!--alldata.each_with_index { |(key, value), index| -->
+       <tr>
+        <%if subject.mg_course_id.nil?%>
+            <td>---</td>
+         <%else%>
+            <%@course=MgCourse.find(subject.mg_course_id)%>
+            <td><%=@course.course_name%></td>
+         <%end%>
+         <td><%= subject.subject_name %></td>
+         <td><%= subject.subject_code %></td>
+         <td class="mg-align-center"><%= subject.max_weekly_class %></td>
+         <% if subject.is_core==true %>
+          <td class="mg-align-center">Yes</td>
+         <% else%>
+          <td class="mg-align-center">No</td>
+         <% end%>
+
+         <% if subject.is_lab==true %>
+          <td class="mg-align-center">Yes</td>
+         <% else%>
+          <td class="mg-align-center">No</td>
+         <% end%>
+
+         <td class="mg-align-center"><%= subject.no_of_classes %></td>
+
+         <td>
+            <button title="Edit" class="edit-subject mg-icon-btn" id="editSubjectID-<%= subject.id%>"><i class="fa fa-pencil-square-o"></i></button>
+            <button title="Delete" class="delete-subject mg-icon-btn" id="deleteSubjectID-<%= subject.id%>"><i class="fa fa-trash"></i></button>
+         
+         </td> 
+       
+       
+      </tr>
+    <% end %>
+  </table>
+  </div>
+  <div class="pagination-align">
+    <%= will_paginate @subjects, :container => false %>
+  </div>
+</div>
+<% else %>
+  <h4>Please add some subjects... </h4>
+
+<% end %>
+<div id="editSubjectDivID"></div>
+
+
+<script>
+
+      $(document).ready(function () {
+       
+        $("li").removeClass( "active" );
+        $("a").removeClass( "activeMenu" );
+
+        $("#viewSubjectListLiID").addClass( "active" );
+        $("#viewSubjectList").addClass( "activeMenu" );
+
+        focusSubject();
+      });
+
+
+</script>  
+              
+
+
+

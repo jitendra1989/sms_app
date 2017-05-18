@@ -1,0 +1,349 @@
+<%= render partial: 'front_office_management_left' %>
+<% navigation_add t('postal_register'), :controller=>'front_office_management', :action=>'postal_records' %>
+<% navigation_add t('add_record'), :controller=>'front_office_management', :action=>'new_postal_record' %>
+<h4 class="mg-h4"><%= t('add_record') %></h4>
+
+<div class="box">
+  <div class="box">
+    <%= form_for :postal_record, url: create_postal_record_path,:html=>{:id=>"postalRecordFormID", :multipart=>true} do |f| %>
+      <%= f.hidden_field :is_deleted, :value=>0 %>  
+      <%= f.hidden_field :mg_school_id, :value =>session[:current_user_school_id]%>
+      <%= f.hidden_field :created_by, :value =>session[:user_id] %>
+      <%= f.hidden_field :updated_by, :value =>session[:user_id] %>     
+    
+      <label class="mg-label mg-custom-labels" for="transaction_flow"><%= t('transaction_flow') %><span class="required-field"> *</span></label>
+      <div class="input-container">
+        <%= f.select :transaction_flow, options_for_select([["Select",""],["Inbound","inbound"],["Outbound","outbound"]]),{},{class: "mg-text-field mg-custom-labels"} %>
+      </div>
+
+
+      <div class="inbond-from-to-class" style="display:none;">
+      <!-- ===============================Transaction================================= -->
+      <!-- ......................From Name And Address starts here...................... -->
+      <label class="mg-label mg-custom-labels" for="recipient_name"><%= t('from') %></label><br/>
+      <label class="mg-label mg-custom-labels" for="recipient_name"><%= t('name') %><span class="required-field"> *</span></label>
+      <div class="input-container">
+        <%= text_field_tag "inbound_recipient_name",nil, :class=>"mg-text-field mg-custom-labels" %>
+      </div>
+
+      <label class="mg-label mg-custom-labels" for="address"><%= t('address') %><span class="required-field"> *</span></label>
+      <div class="input-container">
+        <%= text_area_tag "inbound_address",nil, :class=>"mg-text-field mg-custom-labels" %>
+      </div>
+      <!-- ......................From Name And Address ends here...................... -->
+      <!-- ......................To Name And Address starts here...................... -->
+
+      <label class="mg-label mg-custom-labels" for="recipient_name"><%= t('to') %></label><br/>
+      <p class="mg-custom-labels">
+        <%= f.label :user_type , t('user_type'), :class=> "mg-label"%> <span class="required-field"> *</span><br/>
+        <%= f.radio_button :user_type, 'student',:checked=>true,:class=>'checked-for-student-cls student_inbond_new_postal'%> 
+        <%= f.label :user_type , t('student'), :class=> "mg-label"%> 
+        <%= f.radio_button :user_type, 'employee',:class=>'checked-for-employee-cls'%>
+        <%= f.label :user_type , t('employee'), :class=> "mg-label"%> 
+      </p>
+
+      <div id="mgBatchListDivId" style=";" class="mg-custom-labels mgBatchListDivClass">
+        <% 
+          @batchList = MgBatch.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id])
+           @batchList.each do |batchObj|
+              @courseObj = MgCourse.find_by_id(batchObj.mg_course_id)
+              batchObj.name =  (@courseObj.course_name) +"-"+ batchObj.name
+           end 
+        %>
+        <p>
+          <label class="mg-label"><%=t('select_semester')%><span class="required-field"> *</span></label><br>
+          <%=select_tag 'mg_inbound_batch_id', options_from_collection_for_select(@batchList, 'id', 'name',:selected=>''),:prompt=>"Select",:onchange=>"studentRecord(this.value)"%>
+        </p>
+        <p>
+          <label class="mg-label"><%=t('select_student')%><span class="required-field"> *</span></label><br>
+          <%=select_tag 'mg_inbound_student_id',options_for_select([]),:prompt=>"Select",:class=>"mg_student_id_class"%>
+        </p>
+<!--         <div id="generateReportDivID">
+          <h4 class="mg-h4"><%#= t('student_detail') %></h4>
+          <div id="healthReportDivID"></div>
+        </div> -->
+      </div>
+  <div id="mgDepartmentListDivId" style="display:none;" class="mg-custom-labels mgDepartmentListDivClass">
+    <p>
+      <label class="mg-label"><%=t('employee_department')%><span class="required-field"> *</span></label><br>
+      <% employee_department = MgEmployeeDepartment.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:department_name,:id)%>
+
+      <%=select_tag :mg_inbound_employee_department_id,options_for_select(employee_department),:prompt=>"Select",:onchange=>"employeeRecord(this.value)"%>
+    </p>
+    <p>
+      <label class="mg-label"><%=t('select_employee')%><span class="required-field"> *</span></label><br>
+      <%=select_tag 'mg_inbound_employee_id',options_for_select([]),:prompt=>"Select",:class=>"mg_employee_id_class"%>
+    </p>
+    </div>
+
+      <!-- ......................To Name And Address ends here........................ -->
+      <!-- ===============================Transaction================================= -->
+      </div>
+
+
+      <div class="outbound-from-to-class" style="display:none;">
+      <!-- ===============================Transaction================================= -->
+      <!-- ......................To Name And Address starts here...................... -->
+
+      <label class="mg-label mg-custom-labels" for="recipient_name"><%= t('from') %></label><br/>
+      <p class="mg-custom-labels">
+        <%= f.label :user_type , t('user_type'), :class=> "mg-label"%> <span class="required-field"> *</span><br/>
+        <%= f.radio_button :user_type, 'student',:checked=>true,:class=>'checked-for-student-cls student_outbond_new_postal'%> 
+        <%= f.label :user_type , t('student'), :class=> "mg-label"%> 
+        <%= f.radio_button :user_type, 'employee',:class=>'checked-for-employee-cls'%>
+        <%= f.label :user_type , t('employee'), :class=> "mg-label"%> 
+      </p>
+
+      <div id="mgBatchListDivId" style=";" class="mg-custom-labels mgBatchListDivClass">
+        <% 
+          @batchList = MgBatch.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id])
+           @batchList.each do |batchObj|
+              @courseObj = MgCourse.find_by_id(batchObj.mg_course_id)
+              batchObj.name =  (@courseObj.course_name) +"-"+ batchObj.name
+           end 
+        %>
+        <p>
+          <label class="mg-label"><%=t('select_semester')%><span class="required-field"> *</span></label><br>
+          <%=select_tag 'mg_batch_id', options_from_collection_for_select(@batchList, 'id', 'name',:selected=>''),:prompt=>"Select",:onchange=>"studentRecord(this.value)"%>
+        </p>
+        <p>
+          <label class="mg-label"><%=t('select_student')%><span class="required-field"> *</span></label><br>
+          <%=select_tag 'mg_student_id',options_for_select([]),:prompt=>"Select" ,:class=>"mg_student_id_class"%>
+        </p>
+<!--         <div id="generateReportDivID">
+          <h4 class="mg-h4"><%#= t('student_detail') %></h4>
+          <div id="healthReportDivID"></div>
+        </div> -->
+
+     
+
+
+      </div>
+  <div id="mgDepartmentListDivId" style="display:none;" class="mg-custom-labels mgDepartmentListDivClass">
+    <p>
+      <label class="mg-label"><%=t('employee_department')%><span class="required-field"> *</span></label><br>
+      <% employee_department = MgEmployeeDepartment.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:department_name,:id)%>
+
+      <%=select_tag :mg_employee_department_id,options_for_select(employee_department),:prompt=>"Select",:onchange=>"employeeRecord(this.value)"%>
+    </p>
+    <p>
+      <label class="mg-label"><%=t('select_employee')%><span class="required-field"> *</span></label><br>
+      <%=select_tag 'mg_employee_id',options_for_select([]),:prompt=>"Select",:class=>"mg_employee_id_class"%>
+    </p>
+    </div>
+
+      <!-- ......................To Name And Address ends here........................ -->
+      <!-- ......................From Name And Address starts here...................... -->
+      <label class="mg-label mg-custom-labels" for="recipient_name"><%= t('to') %></label><br/>
+      <label class="mg-label mg-custom-labels" for="recipient_name"><%= t('name') %><span class="required-field"> *</span></label>
+      <div class="input-container">
+        <%= f.text_field :recipient_name, :class=>"mg-text-field mg-custom-labels" %>
+      </div>
+
+      <label class="mg-label mg-custom-labels" for="address"><%= t('address') %><span class="required-field"> *</span></label>
+      <div class="input-container">
+        <%= f.text_area :address, :class=>"mg-text-field mg-custom-labels" %>
+      </div>
+      <!-- ......................From Name And Address ends here...................... -->
+
+         <label class="mg-label mg-custom-labels" for="transaction_flow"><%= t('is_chargeable') %>&nbsp;&nbsp;&nbsp;&nbsp;<span class="required-field"> 
+            <%= check_box_tag 'is_chargeable','yes', true, disabled: true%>
+        </span></label>
+        <div class="input-container"></div>
+      <!-- ===============================Transaction================================= -->
+      </div>
+
+      <label class="mg-label mg-custom-labels" for="dispatch_number"><%= t('dispatch_number') %><span class="required-field"> *</span></label>
+      <div class="input-container">
+        <%= f.text_field :dispatch_number, :class=>"mg-text-field mg-custom-labels" %>
+      </div>
+
+
+      <label class="mg-label mg-custom-labels" for="received_date"><%= t('received_date') %><span class="required-field"> *</span></label>
+      <div class="input-container">
+        <%= f.text_field :received_date, :autocomplete => :off, :class=>"mg-text-field mg-custom-labels" %>
+      </div>
+
+      <label class="mg-label mg-custom-labels mg-label-text-transform-none" for="mode_of_dispatch"><%= t('mode_of_dispatch') %><span class="required-field"> *</span></label>
+      <div class="input-container">
+        <%= f.select :mode_of_dispatch, options_for_select([["Select",""],["Courier","courier"],["Post","post"]]),{},{class: "mg-text-field mg-custom-labels"} %>
+      </div>
+
+      <label class="mg-label mg-custom-labels" for="category"><%= t('category') %><span class="required-field"> *</span></label>
+      <div class="input-container">
+        <%= f.select :category, options_for_select([["Select",""],["Personal","personal"],["Official","official"]]),{},{class: "mg-text-field mg-custom-labels"} %>
+      </div>
+
+      <label class="mg-label mg-custom-labels" for="dispatcher"><%= t('dispatcher') %><span class="required-field"> *</span></label>
+      <div class="input-container">
+        <%= f.text_field :dispatcher, :class=>"mg-text-field mg-custom-labels" %>
+      </div>
+
+      <p class="mg-p-mgtop">
+        <a onclick="$(this).closest('form').submit()" id="" class="submit mg-small-form-btn mg-text-field mg-custom-labels"><%=t("save")%></a> 
+        <%= link_to t('cancel'), {:controller=>'front_office_management',:action=>'postal_records'}, {:class=>"mg-small-form-btn cancel-form-dialog"} %>       
+      </p>
+    <% end %>
+  </div>
+</div>
+<%= render  partial: 'application/common_left_close' %>
+
+<script>
+
+  dateFormatStr =  getJsDateFormat();
+
+  $(document).ready(function(){
+    $(".student_outbond_new_postal").prop("checked", true);
+    $(".student_inbond_new_postal").prop("checked", true);
+
+    $( "#postal_record_received_date" ).datepicker({changeMonth: true,changeYear: true,yearRange: "-50:+0",maxDate: "0",dateFormat: dateFormatStr});
+
+    focusCurrentTab("postalRecordAID","postalRecordLID");
+
+
+    $(function () {
+      $.validator.addMethod('dateFormat',
+      function (value, element) {
+        dateFormatStr =  getJsDateFormat();
+        if (this.optional(element)) {
+            return true;
+        }
+        var ok = true;
+        try {
+            $.datepicker.parseDate(dateFormatStr, value);
+        }
+        catch (err) {
+            ok = false;
+        }
+        return ok;
+      },
+        "Please enter a date in the format "+ getDateFormat(dateFormatStr) +".");
+      dateFormatStr =  getJsDateFormat();
+
+      $(".datefield").datepicker({ dateFormat: dateFormatStr, changeYear: true });
+    });
+
+   $("#postalRecordFormID").validate({
+      rules: {     
+        "postal_record[recipient_name]": {required: true},
+        "postal_record[address]": {required: true},
+        "postal_record[dispatch_number]": {required: true},
+        "postal_record[transaction_flow]": {required: true},
+        "postal_record[received_date]": {required: true, dateFormat: true},
+        "postal_record[mode_of_dispatch]": {required: true},
+        "postal_record[category]": {required: true},
+        "mg_batch_id": {required: true},
+        "mg_student_id": {required: true},
+        "mg_employee_id": {required: true},
+        "mg_employee_department_id": {required: true},
+        "postal_record[dispatcher]": {required: true},
+        "inbound_address": {required: true},
+        "inbound_recipient_name": {required: true},
+        "mg_inbound_batch_id": {required: true},
+        "mg_inbound_student_id": {required: true},
+        // "postal_record[user_type]": {required: true}
+      }
+    });
+  });
+
+  $(document).on("click",".checked-for-student-cls",function(){
+    // $(".employee-checkbox-cls").each(function(){
+    //   $(this).prop('checked', false);
+    // });
+    if($(this).is(':checked')){
+      // $("#mg_employee_id").val('');
+      $(".mg_employee_id_class").val('');
+      // $("#mgDepartmentListDivId").hide();
+      // $("#mgBatchListDivId").show();
+      $(".mgDepartmentListDivClass").hide();
+      $(".mgBatchListDivClass").show();
+    }
+  });
+
+  $(document).on("click",".checked-for-employee-cls",function(){
+    // $(".student-checkbox-cls").each(function(){
+    //   $(this).prop('checked', false);
+    // });
+
+    if($(this).is(':checked')){
+      // $("#mg_student_id").val('');
+      $(".mg_student_id_class").val();
+      $(".mgBatchListDivClass").hide();
+      // $("#mgDepartmentListDivId").show();
+      $(".mgDepartmentListDivClass").show();
+    }
+  });
+
+    function studentRecord(batch_id){
+    var urlLink = "/healthcare/student_employe_list";
+    var empty_otion = '<option value="select">Select</option>';
+
+    if(batch_id!=''){
+      $.ajax({
+        url: urlLink ,
+        cache: false,
+        data:{batch_id:batch_id},
+        success: function(data){
+          $('#healthReportDivID').empty();
+          // $('#mg_student_id').html(data)
+          $(".mg_student_id_class").html(data);
+        }
+      });
+    }else{
+      $('#healthReportDivID').empty();
+      // $('#mg_student_id').empty().append(empty_otion);
+      $('.mg_student_id_class').empty().append(empty_otion);
+    }
+  }
+
+    function employeeRecord(emp_department_id){
+    var urlLink = "/healthcare/student_employe_list";
+    var empty_otion = '<option value="select">Select</option>';
+    if(emp_department_id!=''){
+      $.ajax({
+        url: urlLink ,
+        cache: false,
+        data:{"emp_department_id":emp_department_id},
+        success: function(data){
+          $('#healthReportDivID').empty();
+          // $('#mg_employee_id').html(data)
+          $(".mg_employee_id_class").html(data);
+        }
+      });
+    }else{
+      $('#healthReportDivID').empty();
+      // $('#mg_employee_id').empty().append(empty_otion);
+      $('.mg_employee_id_class').empty().append(empty_otion);
+    }
+  }
+
+  $("#postal_record_transaction_flow").change(function(){
+    var temp=$(this).val();
+    if (temp=="inbound")
+    {
+      $(".outbound-from-to-class").hide();
+      $(".inbond-from-to-class").show();
+    }
+    else if(temp=="outbound")
+    {
+      $(".inbond-from-to-class").hide();
+      $(".outbound-from-to-class").show();
+    }
+    else
+    {
+      $(".inbond-from-to-class").hide();
+      $(".outbound-from-to-class").hide();
+    }
+  });
+
+  $("#mg_batch_id").change(function(){
+    $(".student_outbond_new_postal").prop("checked", true);
+  });
+
+    $("#mg_inbound_batch_id").change(function(){
+    $(".student_inbond_new_postal").prop("checked", true);
+  });
+
+  
+
+</script>

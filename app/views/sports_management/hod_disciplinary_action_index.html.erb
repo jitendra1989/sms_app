@@ -1,0 +1,72 @@
+<%# navigation_add t('hostel_issues'),:controller=>'hostel_management', :action=>'hostel_complaint' %>
+
+<%=render partial: 'exam_management/exam_management_left'%>
+
+<h4 class="mg-h4"><%= t('Disciplinary_reports')%></h4>
+
+<%if @discipline_data.length>0%>
+<div class="mg_pagination">
+<table  class="batch-tbl mg-tbl-margin">
+  <tr class="subject-table-header">
+    <th><%= t('programme_name') %></th>
+    <th style="text-align:center"><%= t('semester') %></th>
+    <th class="mg-rm-text-trans"><%= t('remark') %></th>
+    <th><%= t('action_taken') %></th>
+    <th><%= t('status') %></th>
+    <th><%= t('action') %></th>
+  </tr>
+ 
+  <% @discipline_data.each do |f| %>
+    <tr>
+            
+    <% wing_data=MgWing.find_by(:id=>f.mg_wing_id)
+     sem_data=MgCourse.find_by(:id=>f.mg_batches_id) %>
+      
+      
+      <td style="text-align:center"><%=(wing_data.wing_name)%></td>
+      <td style="text-align:center"><%= (sem_data.course_name) %></td>
+      <td style="text-align:center"><%= truncate(f.remark.to_s, 
+      :length=> 25,:seperator=> ' ') %></td>
+      <!-- <td style="text-align:center"><%#= truncate(f.action_taken.to_s, :length=> 25, 
+          :seperator=> ' ') %></td>
+ -->
+       
+      <%discipline_act=MgDisciplinaryAction.find_by(:id=>f.id)%>
+      
+      <%if discipline_act.present?%>
+       <td style="text-align:center">
+       <%= truncate(discipline_act.action_taken.to_s, :length=> 25, 
+          :seperator=> ' ') %></td>
+
+        <%if discipline_act.status=="Open" %>
+            <td><%="Open"%></td>
+        <%elsif discipline_act.status=="Closed"%>
+            <td><%="Closed"%></td>
+        <%end%>
+
+        <td>
+           <%= link_to "<i class=\"fa fa-eye\"></i>".html_safe, {controller: "sports_management", action: "hod_disciplinary_action_show" ,
+           	id: f.id } ,:title=>"Show" ,:class=>"mg-icon-btn" %>
+           
+        </td>
+      
+      <%end%>
+
+    </tr>
+  <% end %>
+</table>
+<br/>
+<%= will_paginate @discipline_data, :container => false %>
+</div>
+ 
+<%else%>
+<h5>No Training data is created </h5>
+<%end%>
+</div>
+
+<%= render partial: 'application/common_left_close' %>
+<script>
+  $( document ).ready(function() {
+    focusCurrentTab("hodDiscpActAID","hodDiscpActLiID");
+  });
+</script>

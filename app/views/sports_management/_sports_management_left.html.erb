@@ -1,0 +1,65 @@
+<section id="userBodyContentBox" style="margin: 0 auto;">
+    <table  border="0" cellspacing="0" cellpadding="0"  style="margin-bottom: 0px;">
+        <tr>
+            <td valign="top" class="userBodyContentBox1">
+                <aside class="userMenuBoxLeft" style="width: 210px;">
+                    <ul class="menuListHome">
+
+                     <li class="myAccountMenu">Sports & Games</li>
+                        <%if session[:user_type]=="sports_incharge"%>
+
+                                                 
+                        
+
+                       
+                        <li id="disciplinary_actionLiID">
+                                <a class="menuItemsActivities" href="/sports_management/disciplinary_action/" id="disciplinary_actionAID">
+                                    <div class="setMenu"><i class="fa fa-balance-scale">&nbsp;&nbsp;</i><label class="mg-label-text-transform-none" for="hostelcontroller"><%=t('disciplinary_action')%>
+                                   </label></div>
+                                </a>
+                            </li>
+                            <li id="generate_fineLiID">
+                                <a class="menuItemsActivities" href="/sports_management/generate_fine/" id="generate_fineAID">
+                                    <div class="setMenu"><i class="fa fa-money">&nbsp;&nbsp;</i><label class="mg-label-text-transform-none" for="hostelcontroller"><%=t('generate_fine')%>
+                                   </label></div>
+                                </a>
+                        </li>
+                        <li id="payrollDeductionLiID">
+                                <a class="menuItemsActivities" href="/sports_management/payroll_deduction_index/" id="payrollDeductionAID">
+                                    <div class="setMenu"><i class="fa fa-credit-card-alt">&nbsp;&nbsp;</i><%=t('payroll_deduction')%>
+                                   </label></div>
+                                </a>
+                        </li>
+                        <li id="sportsStockLiID">
+                            <a class="Principle-Profile" href="/sports_management/sports_stock" id="sportsStockAID">
+                                <div class="setMenu"><i class="fa fa-futbol-o">&nbsp;&nbsp;</i><%=t('sports_Equipment_stock')%>
+                                </div>
+                            </a>
+                        </li>
+
+                        <li id="itemConsumptionLiID">
+                            <a class="Principle-Profile" href="/sports_management/sports_item_consumption_index" id="itemConsumptionAID">
+                                <div class="setMenu"><i class="fa fa-shopping-basket">&nbsp;&nbsp;</i><%=t('sports_item_consumption')%>
+                                </div>
+                            </a>
+                        </li>
+                        
+
+                        <%end%>
+
+                        
+
+                        
+                    </ul>    
+
+                </aside>
+            </td>
+            <td  valign="top" id="manageEmployeeCategoryID" class="mg-table-td-main-2" style="width: 745px;">
+            
+<script>
+$( document ).ready(function() {
+    
+    // focusPlacements();
+});
+</script>
+

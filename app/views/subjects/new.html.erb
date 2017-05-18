@@ -1,0 +1,21 @@
+<!-- Sec --> 
+<% navigation_add 'Subjects', subjects_path %>
+<% navigation_add 'New', :controller=>'subjects',:action=>'new'%>
+<!-- Render subject left -->
+<%= render  partial: 'subject_left' %>
+<!-- Render subject index -->
+<%= render  partial: 'new' %>
+<!-- Render subject left close-->
+<%= render  partial: 'subject_left_close' %>
+<script type="text/javascript">
+     $(document).ready(function(){
+
+     	$("li").removeClass( "active" );
+        $("a").removeClass( "activeMenu" );
+
+     	 $("#createnNewSubjectLiId").addClass("active");
+         $("#createnNewSubject").addClass("activeMenu");
+
+         focusSubject();
+   });
+</script>

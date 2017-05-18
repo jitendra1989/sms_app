@@ -1,0 +1,40 @@
+<div class="div-border-width" style="border:1px solid;">
+  <%#= image_tag("public#{@school_logo}", :style=>"width:32px; height:32px; margin-top: 10px; float: left; margin-left: 8px;")%>
+  <center style="font-weight: bold; font-size: 23px; margin-top: 31px;"><%= @school.school_name %></center>
+  <hr class="sending-mail-hr-cls">
+  <div class="container">
+
+    <label class="send-mail-label-cls"><%= t('studentname') %></label>:
+    <%=@student_name.try(:first_name)%>&nbsp;<%=@student_name.try(:middle_name)%>&nbsp;<%=@student_name.try(:last_name)%><br/>
+    <label class="send-mail-label-cls"><%= t('dateofbirth') %></label>:
+    <%=@student_name.try(:date_of_birth).try(:strftime, @date_format)%><br/>
+    <label class="send-mail-label-cls"><%= t('coursename') %></label>:
+    <%=@course_name.try(:course_name)%><br/><br/><br/>
+    <%@school = MgSchool.where(:id=>@session_id,:is_deleted=>0)%>
+    
+    <table class="table table-bordered" border="1">  
+      <tr>
+        <th><%= t('select_exam_date')%></th>
+        <th><%= t('start_time') %></th>
+        <th><%= t('end_time') %></th>
+        <th><%= t('venue_address') %></th>
+      </tr>
+      <tr>
+        <td><%= @exam_detail.start_date.strftime(@date_format) %> </td>
+        <td><%= @exam_detail.start_time.strftime("%l:%M%P") %></td>   
+        <td><%= @exam_detail.end_time.strftime("%l:%M%P") %></td>
+        <td>
+          <%if @school[0].is_test_center==true%>
+            <% @vanue_name=MgEntranceExamVenue.where(:id=>@exam_detail.mg_entrance_exam_venue_id,:is_deleted=>0)%>
+               <%= @vanue_name[0].try(:institute_name) %><%=","%><%= @vanue_name[0].exam_venue %>
+          <%elsif @school[0].is_test_center==false%>
+            <%=@school[0].try(:school_name)%><%=","%><%= @school[0].try(:address_line1)+' '+@school[0].try(:address_line2)+' '+@school[0].try(:street)+' '+@school[0].try(:landmark)+' '+@school[0].try(:city)+' '+@school[0].try(:state)+' '+@school[0].try(:pin_code).to_s %>
+          <%end%>
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>
+
+<style>
+ </style>

@@ -1,0 +1,89 @@
+<!-- comments    -->
+<section id="userBodyContentBox" style="margin: 0 auto;">
+    <table width=100% border="0" cellspacing="0" cellpadding="0"  style="margin-bottom: 0px;">
+        <tr>
+            <td valign="top" class="userBodyContentBox1">
+                <aside class="userMenuBoxLeft" style="width: 210px;">
+                    <ul class="menuListHome">
+
+                        <li class="myAccountMenu"><%= t('about_employee') %></li>
+                        
+                        <li id="manageLiID">
+                            <a class="menuItemsActivities" href="/employees" id="viewEmployeeList">
+                                <div class="setMenu"><i class="fa fa-list">&nbsp;&nbsp;</i><%= t('employeelist') %><!-- <i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i> -->
+                                </div>
+                            </a>
+                        </li>
+
+                        <li id="managePrincipleLiID">
+                            <a class="menuItemsActivities" href="/principals" id="managePrincipleID" >
+                                <div class="setMenu"><i class="fa fa-pencil">&nbsp;&nbsp;</i><%= t('manage_principal') %><!-- <i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i> -->
+                                </div>
+                            </a>
+                        </li>
+                        
+                        <li id="createNewLiID">
+                            <a class="menuItemsActivities" href="/employees/new" id="createnNewEmployee" >
+                                <div class="setMenu"><i class="fa fa-plus-square-o">&nbsp;&nbsp;</i><%= t('createnewemployee') %><!-- <i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i> -->
+                                </div>
+                            </a>
+                        </li>
+
+                        <li id="assignClassTeacherToBatchLiID">
+                            <a class="menuItemsActivities" href="/employees/assign_class_teacher_to_batch" id="assignClassTeacherToBatch" >
+                                <div class="setMenu"><i class="fa fa-location-arrow"></i>&nbsp;&nbsp;<%= t('assign_class_teacher') %>
+                                </div>
+                            </a>
+                        </li>
+
+                         <li id="editEmployeeSalaryComponrntLiID">
+                            <a class="menuItemsActivities" href="/mg_employee_grades/edit_employee_salary" id="EmployeeSalaryComponrntAID" >
+                                <div class="setMenu"><i class="fa fa-location-arrow"></i>&nbsp;&nbsp;<%=t('edit_employee_salary')%>
+                                </div>
+                            </a>
+                        </li>
+
+                                                <!--custom fields
+                        <li>
+                            <a class="custom-fields" href="/employees/custom_new" id="manageCustomFields" >
+                                <div class="setMenu"><i class="fa fa-tachometer">&nbsp;&nbsp;</i><%#= t('managecustumfields') %><i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px;"></i>
+                                </div>
+                            </a>
+                        </li>
+                        <!--end of custom fields-->
+                        
+                                                <!--custom fields
+                        <li>
+                            <a class="custom-fields" href="/employees/custom_new" id="manageCustomFields" >
+                                <div class="setMenu"><i class="fa fa-tachometer">&nbsp;&nbsp;</i><%#= t('managecustumfields') %><i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px;"></i>
+                                </div>
+                            </a>
+                        </li>
+                        <!--end of custom fields-->
+
+                        
+                        <!-- <li class="myAccountMenu">Employee Settings</li> -->
+                        
+                        
+                        
+                         <!--  will be use in future -->
+                        <div id="employee_settings" class="employee-settings" style="display: none;">
+                        <li id="employeeHierarchyID" >
+                            <a class="menuItemsActivities" href="/mg_employee_hierarchies" id="manageEmployeeHierarchy">
+                                <div class="setMenu"><i class="fa fa-sitemap">&nbsp;&nbsp;</i><%= t('employeehierarchy') %><!-- <i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i> -->
+                                </div>
+                            </a>
+                        </li>
+                        </div>
+                    </ul>    
+
+                </aside>
+            </td>
+            <td  valign="top" id="manageEmployeeForm" class="mg-table-td-main-2">
+               <!--  <div id="manageEmployeeForm"> -->
+                       
+<script>
+$(document).ready(function(){
+    focusEmployee();
+});
+</script>

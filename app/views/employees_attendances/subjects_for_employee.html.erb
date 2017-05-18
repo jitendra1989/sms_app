@@ -1,0 +1,50 @@
+<!-- Sec --> 
+
+<% navigation_add 'subjects', subjects_for_employee_path %>
+<%= render partial: 'dashboards/employee_left' %>
+
+<% if @subjects.size > 0%>
+
+  <h4 class="mg-h4"><%= t('subjectlist')%></h4>
+  <div class="mg-scroll-employee-bar">
+  <table class="batch-tbl mg-tbl-layout mg-left-align-nil" > <!-- style="border-collapse: collapse; -->
+      <tr>
+        <th><%= t('slno')%></th>
+        <th><%= t('subjectname')%></th>
+      </tr>
+      <% sl_no=1%>
+      <%@subjects.each do |s|%>
+      <tr>
+        <td class="mg-align-center"><%= sl_no%></td>
+        <td><%=s.subject_name %></td>
+      </tr>
+      <%sl_no +=1%>
+    <%end%>
+  </table>
+</div>
+<% else %>
+
+<p><%= t('subjectisnotyetassigned')%></p>
+
+<% end %>
+
+<%= render partial: 'application/common_left_close' %>
+
+
+
+
+<script type="text/javascript">
+    
+
+ $(document).ready(function(){
+
+    // $("#viewEmployeeProfile").addClass( "activeMenu" );
+    // $("#viewEmployeeProfileLiID").addClass( "active" );
+
+    focusCurrentTab("viewEmployeeSubjects","viewEmployeeSubjectsLiID");
+    focusDashboards();
+
+});
+
+</script>
+

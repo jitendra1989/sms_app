@@ -1,0 +1,667 @@
+<%# navigation_add t('results'), :controller=>'sports_management', :action=>'results' %>
+
+<%# navigation_add t('add_results'), :controller=>'sports_management', :action=>'results_new' %>
+
+
+  <h4 class="mg-h4"><%=t('individual_sports')%></h4>
+
+<%#= form_for :library_purchase_details ,  :url=>{:controller=>'sports_management',:action=>'result_create'}, :html=>{:id=>'sports_result_data'} do |f| %>
+
+  <!-- <label class="mg-label mg-tt-width "><%#=t('select_committee') %><span class="required-field"> *</span></label>
+   <%#=select_tag :mg_committee_id ,options_for_select(@event_committees,params[:mg_event_committee_id]),:onchange=>"optionForEventInvetaion(this.value)",:prompt=>t('select') , :id=>"selectCommitteeSelectTagID" ,:class=>"mg-select-btn"%> -->
+
+<!-- <div>
+    <label class="mg-label mg-tt-width "><%#=t('select_event') %><span class="required-field"> *</span></label>
+   <%#=select_tag :mg_event_id ,options_for_select(@events,params[:mg_event_id]),:prompt=>t('select'),:onchange=>"optionForDateInventation(this.value)",:id=>"selectEventForCommitteeSelectTagIDDataId" ,:class=>"mg-select-btn"%>
+</div> -->
+<%=hidden_field_tag "data_to_be_saved","demo"%>
+
+<%=hidden_field_tag "fst_place"%>
+<%=hidden_field_tag "snd_place"%>
+<%=hidden_field_tag "trd_place"%>
+<%#(2001..Time.now.year).to_a.reverse%>
+
+<!-- <div id="">
+     <label class="mg-label mg-tt-width "><%#=t('event_date') %><span class="required-field"> *</span></label>
+   <%#=text_field_tag :date_of_event,nil,:class=>"mg-text-field"%>
+   <%#= select_tag 'date_of_event', options_for_select([]), :prompt=>"Select",:id=>"selectEventForCommitteeSelectTagIDDataValue",:class=>"mg-text-field" %> 
+</div> -->
+
+<div>
+  <%game=MgSportGame.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:name,:id)%>
+   <label class="mg-label mg-tt-width "><%=t('select_game') %><span class="required-field"> *</span></label>
+  <%=select_tag "game",options_for_select(game),:prompt=>"Select" , :class=>"results_sports_game_class"%>
+</div>
+
+<!-- =========================================================================== -->
+  <!-- <div>
+    <%#team=MgSportTeam.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:team_name,:id)%>
+    <label class="mg-label mg-tt-width "><%#=t('participant_team') %><span class="required-field"> *</span></label>
+    <%#=select_tag "mg_sport_team_id",options_for_select(team),:prompt=>"Select" , :class=>"sports_team_class results_sports_team_class"%>
+  </div> -->
+<!-- =========================================================================== -->
+<h4 class="mg-h4"><%= t('result')%></h4> 
+<!-- <a id="result_details_for_data" class="mg-label-inner-form mg-custom-form-btn" style="color: #297ACC; font-size:0.8em; position: relative;" >Add </a> <br/>
+ <div class="mg-scroll-employee-bar mg-tbl-margin">  -->  
+ <div class="mg-scroll-employee-bar mg-tbl-margin">   
+
+<table class="mg-show-tbl-width mg-table-nowrap batch-tbl mg-adjust-padding">  
+
+        <th><%=t("s_no.")%></th>
+        <th><%=t("winning_place")%><span class="required-field">&nbsp;*</span></th>
+        <th><%=t("participant_team")%><span class="required-field">&nbsp;*</span></th>
+
+        <th><%=t("player_type")%><span class="required-field">&nbsp;*</span></th>
+       <!--  <th>select Programme/Select Department<span class="required-field">&nbsp;*</span></th>
+        <th>select Semester<span class="required-field">&nbsp;*</span></th> -->
+
+        <th><%=t("select_winner")%><span class="required-field">&nbsp;*</span></th>
+       
+    <!--     <th><%#=t('actions')%></th> -->
+
+        
+        <%[1,2,3].each do |i|%>
+        <tr class="demo-div">
+
+            <div id="finalDueFineDivId">
+            <div class="due-fine-div" id="dueFineDivId">
+            <td><span class="required-incremented-field"><%=i%></span></td>
+          
+          <td id="<%=i%>" class="mg-align-center resource-category-td-class rank">
+         
+          <%if i==1%>
+          <%= "#{i}st Place"%>
+         <%elsif i==2%>
+         <%="2nd Place"%>
+         <%elsif i==3%>
+         <%="3rd Place"%>
+         <%end%>
+          </td>
+
+          <td id="<%=i%>" class="mg-align-center resource-sport-team-td-class type">
+            <%team=MgSportTeam.where(:is_deleted=>2,:mg_school_id=>session[:current_user_school_id]).pluck(:team_name,:id)%>
+
+                <%=select_tag "mg_sport_team_id[]",options_for_select(team),:prompt=>"Select",:onchange => 'onDatachange(this);', :class=>"sports_team_class results_sports_team_class"%>
+          </td>
+                  
+            
+         
+          <td id="<%=i%>" class="mg-align-center resource-type-td-class type">
+          <%#= text_field_tag 'item_name[]' ,nil,:class=>"mg-text-field-particular required-field"%>
+         <%=select_tag "team_of[]",options_for_select([["Student", "student"],["Employee", "employee"]]),:prompt=>"Select",:onchange => 'stud_emp_stud(this);',:class=>"mg-text-field data1 result_team_of_players #{i}" %>
+          </td>
+
+          <!-- <td id="<%#=i%>" class="formStudentDIVID">
+          </td> -->
+          
+         <!--  <td  id="<%#=i%>" class="selectedStudentdata">
+          </td> -->
+
+          <td id="<%=i%>" class="selectedStudents">
+          </td>
+
+        <!--   <td class="mg-align-center">
+                      <a title="Remove" class="remove-result-details mg-icon-btn" style="color: #297ACC; font-size:0.8em;"> <i class="fa fa-trash"></i></a>
+                      
+            </td>    -->
+             </div>
+             </div>
+          </tr>
+          <%end%>
+
+
+
+</table >
+
+  </div>    
+  <p>
+ <!--  <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%#=t("Submit")%></a> -->
+
+<%#= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>   </p>
+  <%#end%>       
+
+
+   <script>
+      $(document).ready(function(){
+                 focusCurrentTab("resultsAID","resultsLiID");
+                
+
+      });
+   var dateFormatStr =  getJsDateFormat();
+
+     // ====================================================================================
+  //   $(".sports_team_class").change(function(){
+  //     var teamID = $( ".sports_team_class" ).val();
+  //     var apdStr = '<option value="">Choose Team</option>';
+  //     $(".result_team_of_players").empty().append(apdStr);
+  //     if(teamID > 0) {
+  //          var urlLink = "/sports_management/team_list/"+teamID;
+  //          $.ajax({ 
+  //              url: urlLink,
+  //              cache: false,
+  //              success: function(data){
+  //                 if(data.length > 0){
+  //                     var apdStr = '<option value="select">Select</option>';
+  //                    for(key in data){
+  //                       apdStr += '<option value="'+data[key].id+'">'+data[key].name+'</option>'
+  //                     }
+  //                     $(".result_team_of_players").empty().append(apdStr);
+  //                 }
+
+  //              }
+                  
+  //          });
+
+  //   }else{
+  //     var apdStr = '<option value="">Choose Programme</option>';
+  //     $(".result_team_of_players").empty().append(apdStr);
+  //   }
+  // });
+  // ====================================================================================
+
+// results_sports_game_class
+
+
+// =======================================================================================
+    $(".results_sports_game_class").change(function(){
+      var teamID = $( ".results_sports_game_class" ).val();
+      var apdStr = '<option value="">Choose Game</option>';
+      $(".results_sports_team_class").empty().append(apdStr);
+      if(teamID > 0) {
+           var urlLink = "/sports_management/participant_team_list/"+teamID;
+           $.ajax({ 
+               url: urlLink,
+               cache: false,
+               success: function(data){
+                  if(data.length > 0){
+                      var apdStr = '<option value="select">Select</option>';
+                     for(key in data){
+                        apdStr += '<option value="'+data[key].id+'">'+data[key].team_name+'</option>'
+                      }
+                      $(".results_sports_team_class").empty().append(apdStr);
+                  }
+
+               }
+                  
+           });
+
+    }else{
+      var apdStr = '<option value="">Choose Game</option>';
+      $(".results_sports_team_class").empty().append(apdStr);
+    }
+  });
+// =======================================================================================
+
+  /* $('#date_of_event').datepicker({ changeMonth: true,
+                 changeYear: true,yearRange: "-50:+10",maxDate: "1000",dateFormat: dateFormatStr});*/
+  function optionForEventInvetaion(value){
+        $("#selectEventForCommitteeSelectTagIDDataId").html("");
+        $("#invitationNewFormDivID").html("");
+
+        var urlLink='/sports_management/event_list/'+value;
+         $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(data){
+               var str='<option value="">'+"Select"+'</option>';
+               for (var key in data) {
+                str +='<option value="'+data[key].id+'">'+data[key].title+'</option>';
+               }
+               $("#selectEventForCommitteeSelectTagIDDataId").html(str);
+            }
+        });
+    }
+    function optionForDateInventation(value){
+       // $("#selectEventForCommitteeSelectTagIDDataValue").html("");
+       // $("#invitationNewFormDivID").html("");
+
+        var urlLink='/sports_management/event_list_dates/'+value;
+         $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(data){
+               // var str='<option value="">'+"Select"+'</option>';
+               // for (var key in data) {
+               //  str +='<option value="'+data[key].id+'">'+data[key].title+'</option>';
+               // }
+               $("#Date_data").empty().html(data);
+            }
+        });
+    }
+
+$("#sports_result_data").validate({
+
+        rules: {   
+        "mg_committee_id": {required: true}, 
+        "mg_event_id": {required: true},    
+        "date_of_event": {required: true,dateFormat:true},
+     
+        "game": {required: true},
+        "team_of[]": {required: true},
+        "notSelectedstudentresult[]": {required: true},
+        
+          "notSelectedemployee[]": {required: true},
+        
+         "selectedStudentdata[]": {required: true},
+        "selectedStudents[]": {required: true},
+        "selectedemployees[]":{required: true},
+        "date_of_event_Data":{required: true},
+        "notSelectedstudentresult[]":{required: true},
+        "selectedStudentdata[]":{required: true},
+        "selectedStudents[]":{required: true},
+        "notSelectedemployee[]":{required: true},
+        "selectedemployees[]":{required: true},
+
+        
+      }
+    });
+$.validator.addClassRules("demo1", {required: true});
+
+
+ $(function () {
+    $.validator.addMethod('dateFormat',
+    function (value, element) {
+      dateFormatStr =  getJsDateFormat();
+        if (this.optional(element)) {
+            return true;
+        }
+        var ok = true;
+        try {
+            $.datepicker.parseDate(dateFormatStr, value);
+        }
+        catch (err) {
+            ok = false;
+        }
+        return ok;
+    },
+
+
+      "Please enter a date in the format "+ getDateFormat(dateFormatStr) +".");
+      dateFormatStr =  getJsDateFormat();
+
+    $(".datefield").datepicker({ dateFormat: dateFormatStr, changeYear: true });
+});
+
+function onDatachange(data){
+    $(data).parent().siblings(".type").find("#team_of_").prop("selectedIndex", 0);
+        //$(data1).prop("selectedIndex", 0);
+
+$(data).parent().siblings(".selectedStudents").find("#selectedemployees_").prop("selectedIndex", 0);
+    $(data).parent().siblings(".selectedStudents").find("#selectedStudents_").prop("selectedIndex", 0);
+}
+ 
+function stud_emp_stud(data){
+
+            var data_rank=$(data).parent().siblings(".rank").text().trim();
+       if (data_rank=="1st Place"){
+                  $("#fst_place").val("");
+
+}
+if (data_rank=="2nd Place"){
+    $("#snd_place").val("");
+
+}
+
+if (data_rank=="3rd Place"){
+    $("#trd_place").val("");
+
+}
+
+// alert($(this).val());
+
+//var team_id=$(".sports_team_class").val();
+var team_id=$(data).parent().siblings(".type").find("#mg_sport_team_id_").val();
+
+if(team_id>0)
+{
+// console.log($(data).attr("class"));
+}
+
+        var stu_emp_val = $(data).val();
+       if(stu_emp_val=="student") {
+        var team_id=$(data).parent().siblings(".type").find("#mg_sport_team_id_").val();
+           var urlLink = "/sports_management/add_student_to_result";
+           if(team_id>0){
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            type: "GET",
+            data: {"data":"wing","team_id":team_id},
+            success: function(html){
+                  $(data).parent().siblings(".selectedStudents").empty();
+                  $(data).parent().siblings(".selectedStudents").append(html);
+            }
+        });
+      }else{
+        alert("Please select the team");
+      }
+     }
+     else if(stu_emp_val=="employee"){
+      // var team_id=$(".sports_team_class").val();
+        var team_id=$(data).parent().siblings(".type").find("#mg_sport_team_id_").val();
+
+      // alert(data.val());
+      var urlLink = "/sports_management/add_employee_to_result";
+      if(team_id>0)
+      {
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            type: "GET",
+            data: {"data":"wing","team_id":team_id},
+            success: function(html){
+                  $(data).parent().siblings(".selectedStudents").empty();
+                  $(data).parent().siblings(".selectedStudents").append(html);
+            }
+        });
+      }else{
+        alert("Please select the team");
+      }
+     }
+    
+     else{
+                $(data).parent().siblings(".selectedStudents").empty();
+     }
+   }
+
+   
+  function stud_stud_result(data1){
+      var wing_id=$(data1).val();
+        $.ajax({
+                url: "/sports_management/result_sem_data",
+                type: "GET",
+                data: {"data":"wing","wing_id":wing_id},
+                success: function(data) {
+                 $(data1).parent().siblings(".selectedStudentdata").empty();
+                 $(data1).parent().siblings(".selectedStudentdata").append(data);
+                
+                },
+                error:function(){
+                  alert("Something went wrong!");
+                }
+            });
+      
+    };
+
+
+    function select_stud_result(data1){
+
+    var sec_id=$(data1).val();
+
+    jQuery.ajax({
+            url: "/sports_management/result_section_students",
+            type: "GET",
+            data: {"data":"suc","stu_id":sec_id,"data":"edit"},
+            success: function(html) {
+
+    $(data1).parent().siblings(".selectedStudents").empty();
+    $(data1).parent().siblings(".selectedStudents").append(html);
+
+
+              
+            },
+            error:function(){
+              alert("Something went wrong!");
+            } 
+      });
+    
+};
+    function select_emp_result(data1){
+
+      var wing_id=$(data1).val();
+        $.ajax({
+                url: "/sports_management/result_emp_data/",
+                type: "GET",
+                data: {"wing_id":wing_id},
+                success: function(data) {
+                  
+                  $(data1).parent().siblings(".selectedStudents").empty();
+                  $(data1).parent().siblings(".selectedStudentdata").empty();
+                 $(data1).parent().siblings(".selectedStudents").append(data);
+
+                },
+                error:function(){
+                  alert("Something went wrong!");
+                }
+            });
+    };
+//     function modify_result(data1){
+//      var data_rank=$(data1).parent().siblings(".rank").text().trim();
+//      var data_type=$(data1).parent().siblings(".type").find("select").val();
+      
+      
+//       if (data_rank=="1st Place"){
+        
+    
+//          $("#fst_place").val("");
+
+//         $("#fst_place").val($(data1).val()+","+data_type);
+// }
+// else if(data_rank=="2nd Place"){
+//  $("#snd_place").val("");
+//         $("#snd_place").val($(data1).val()+","+data_type);
+
+// }
+// else if(data_rank=="3rd Place"){
+//  $("#trd_place").val("");
+//         $("#trd_place").val($(data1).val()+","+data_type);
+// }
+
+
+
+
+
+//     };
+function modify_result(data1){
+var count=0;
+var arra1=[];
+var count1=0;
+var arra11=[];
+
+      var data_rank=$(data1).parent().siblings(".rank").text().trim();
+      var data_type=$(data1).parent().siblings(".type").find("#team_of_").val();
+      
+       if (data_rank=="1st Place"){
+       
+    
+          $("#fst_place").val("");
+
+        $("#fst_place").val($(data1).val()+","+data_type);
+
+        $(".valid2").each(function(){
+
+arra1.push($(this).val());
+
+});
+
+for(var i=0;i<arra1.length;i++){
+
+
+
+if($(data1).val()==arra1[i]){
+count=count+1;
+}
+}
+
+
+ if(count>1){
+alert("This option is already selected please select different Option")
+        $(data1).prop("selectedIndex", 0);
+          $("#fst_place").val("");
+
+    }
+    $(".valid1").each(function(){
+
+arra11.push($(this).val());
+
+});
+
+for(var i=0;i<arra11.length;i++){
+
+
+
+if($(data1).val()==arra11[i]){
+count1=count1+1;
+}
+}
+
+
+ if(count1>1){
+alert("This option is already selected please select different Option")
+        $(data1).prop("selectedIndex", 0);
+          $("#fst_place").val("");
+
+    }
+
+}
+else if(data_rank=="2nd Place"){
+  $("#snd_place").val("");
+        $("#snd_place").val($(data1).val()+","+data_type);
+
+        $(".valid2").each(function(){
+
+arra1.push($(this).val());
+
+});
+
+for(var i=0;i<arra1.length;i++){
+
+
+if($(data1).val()==arra1[i]){
+count=count+1;
+}
+}
+
+
+ if(count>1){
+alert("This option is already selected please select different Option")
+        $(data1).prop("selectedIndex", 0);
+  $("#snd_place").val("");
+
+    }
+
+ $(".valid1").each(function(){
+
+arra11.push($(this).val());
+
+});
+
+for(var i=0;i<arra11.length;i++){
+
+
+if($(data1).val()==arra11[i]){
+count1=count1+1;
+}
+}
+
+
+ if(count1>1){
+alert("This option is already selected please select different Option")
+        $(data1).prop("selectedIndex", 0);
+  $("#snd_place").val("");
+
+    }
+}
+else if(data_rank=="3rd Place"){
+  $("#trd_place").val("");
+        $("#trd_place").val($(data1).val()+","+data_type);
+
+        $(".valid2").each(function(){
+
+arra1.push($(this).val());
+
+});
+
+for(var i=0;i<arra1.length;i++){
+
+
+if($(data1).val()==arra1[i]){
+count=count+1;
+}
+}
+
+
+ if(count>1){
+alert("This option is already selected please select different Option")
+        $(data1).prop("selectedIndex", 0);
+  $("#trd_place").val("");
+
+    }
+    $(".valid1").each(function(){
+
+arra11.push($(this).val());
+
+});
+
+for(var i=0;i<arra11.length;i++){
+
+
+if($(data1).val()==arra11[i]){
+count1=count1+1;
+}
+}
+
+
+ if(count1>1){
+alert("This option is already selected please select different Option")
+        $(data1).prop("selectedIndex", 0);
+  $("#trd_place").val("");
+
+    }
+
+
+}
+
+
+    };
+
+
+    
+
+
+
+//     $(document).on("change",".valid1",function(){
+
+//     var data=$(".valid1").size();
+//     var demo=$(this);
+   
+//    for(var i=1;i<=data;i++){
+
+//    if(demo.attr('id')=="mg_sport_team_id"+i){
+//   }
+//   else{
+//     if($(this).val()==$("#mg_sport_team_id"+i).val()){
+//        alert("This option is already selected please select different Option")
+//        $(this).prop("selectedIndex", 0);
+//     }
+//     else{
+
+//     }
+// }
+
+//     }
+//   });
+//     $(document).on("change",".valid2",function(){
+
+//     var data=$(".data1").size();
+//     var demo=$(this);
+   
+//    for(var i=1;i<=data;i++){
+
+//    if(demo.attr('id')=="mg_sport_team_id"+i){
+//   }
+//   else{
+//     if($(this).val()==$("#mg_sport_team_id"+i).val()){
+//        alert("This option is already selected please select different Option")
+//        $(this).prop("selectedIndex", 0);
+//     }
+//     else{
+
+//     }
+// }
+
+//     }
+//   });
+
+
+   </script>

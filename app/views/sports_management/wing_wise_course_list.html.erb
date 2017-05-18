@@ -1,0 +1,13 @@
+<p>
+
+	<%=label_tag 'select_semester', t('select_semester'), class: 'mg-label mg-rm-text-trans' %><span class="required-field"> *</span><br>
+	<%   if params[:method]=="edit" %>
+		
+        <%=select_tag :batches_id,options_for_select(@course_data,:selected=>@batch_data.mg_batches_id),:onchange=>"semesterChangesfunction(this.value)",:prompt=>"Select"%>
+    <% else %>
+      
+       <%=select_tag :batches_id,options_for_select(@course_data),:onchange=>"semesterChangesfunction(this.value)",:prompt=>"Select"%>
+   
+    <% end %>
+
+</p>

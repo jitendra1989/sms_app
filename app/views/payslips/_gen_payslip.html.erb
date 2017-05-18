@@ -1,0 +1,370 @@
+<%if @test_joining_date=="0"%>
+	<%@deduction_total=0%>
+	<%@earnings_total=0%>
+
+
+
+			<%if @last_working_day_check.to_s=="1"%>
+			<%	date=DateTime.parse(@date.to_s)%>
+
+
+	<!--  @employee.pay_scale.to_f:<%=@employee.pay_scale.to_f%><br>
+	@salary_deduction_for_leave.to_f:<%=@salary_deduction_for_leave.to_f%><br>
+	@over_time_rs.to_f:<%=@over_time_rs.to_f%><br>
+	@joining_date_deduction.to_f:<%=@joining_date_deduction.to_f%><br>
+	@last_working_day_deduction.to_f:<%=@last_working_day_deduction.to_f%><br>
+
+	@no_days_in_month.to_f:<%=@no_days_in_month.to_f%><br>
+	@absent_day.to_f:<%=@absent_day.to_f%><br>
+	@last_working_day_count.to_f:<%=@last_working_day_count.to_f%><br>
+	@joining_date_count.to_f:<%=@joining_date_count.to_f%><br>  -->
+	<%#=@salary_components_from_controller[1].inspect%>
+	<!-- @abcd=<%#=@abcd.inspect%> -->
+
+	<%#=@salary_components_from_controller.inspect%>
+	<%= form_for :salary_components_from, url: payslips_path, method: :post, :html => {
+	                            :id =>'saveEmployeeSalaryDetailsPathFormID' } do |f| %>
+
+	<table class="mg-show-tbl-width batch-tbl" cellpadding="0" cellspacing="0">
+		<tbody>
+			<tr>
+				<th colspan="3" class="mg-fee-report-gen"><%=@school.school_name%></th>
+			</tr>
+			<tr>
+				<td colspan="3" class="mg-fee-report-gen"> <%=t('salary_slip_for')%> : <%=date.strftime("%B")%> / <%=date.year%> (<%=t('month')%>/<%=t('year')%>)
+				</td>
+			</tr>
+
+		</tbody>
+		 <tbody>
+			<tr class="mg-tbl-tr">
+				<td colspan="3"></td>
+			</tr>
+		</tbody> 
+		<tbody>
+			<tr class="mg-tbl-tr">
+				<td colspan="2">
+					<label class="mg-label"><%=t('name')%> : </label>
+					<label class="mg-label-inner-form"><%=@employee.employee_name%></label>
+				</td>
+				<td>
+					<label class="mg-label"><%=t('designation')%> : </label>
+					<label class="mg-label-inner-form"><%=@employee.mg_employee_position.position_name%></label>
+				</td>
+			</tr>
+			<tr class="mg-tbl-tr">
+				<td colspan="2">
+					<label class="mg-label"><%=t('doj')%> : </label>
+					<label class="mg-label-inner-form"><%if @joining_date.present? %><%=@joining_date.strftime(@school.date_format)%><%end%></label>
+				</td>
+				<td>
+					<label class="mg-label mg-rm-text-trans"><%=t('type_of_employee')%> : </label>
+					<label class="mg-label-inner-form"><%=@employee.mg_employee_type.employee_type%></label>
+				</td>
+			</tr>
+			<tr class="mg-tbl-tr">
+				<td colspan="2">
+					<label class="mg-label mg-rm-text-trans"><%=t('no_of_payable_days_(in_the_month)')%> : </label>
+					<label class="mg-label-inner-form"><%=@no_days_in_month.to_f-@extra_leave_taken.to_f-@last_working_day_count.to_f-@joining_date_count.to_f%></label>
+				</td>
+				<td>
+					<label class="mg-label mg-rm-text-trans"><%=t('no_of_unpaid_leaves_(in_the_month)')%> : </label>
+					<label class="mg-label-inner-form"><%=@extra_leave_taken.to_f%></label>
+				</td>
+			</tr>
+			<tr class="mg-tbl-tr">
+				<td colspan="2">
+					<label class="mg-label mg-rm-text-trans"><%=t('leaves_taken_(till_date_in_the_year)')%> : </label>
+					<label class="mg-label-inner-form"><%=@total_leave_taken_year%></label>
+				</td>
+				<td>
+					<label class="mg-label"><%=t('leave_balance')%> : </label>
+					<label class="mg-label-inner-form"><%=@total_leave_balance_year.to_f.round(2)%>  <%#= @total_leave_he_have.to_f.round(2)%></label>
+				</td>
+			</tr>
+
+			<tr class="mg-tbl-tr">
+				<td colspan="2">
+					<label class="mg-label mg-rm-text-trans"><%=t('over_time')%> : </label>
+					<label class="mg-label-inner-form"><%=@over_time.to_f.round(2)%> hours</label>
+				</td>
+				<td>
+					
+				</td>
+			</tr>
+			<tr class="mg-tbl-tr">
+				<th colspan="3"> <%=t('leave_details')%></th>
+			</tr>
+
+
+
+		</tbody>
+	</table>
+
+
+
+
+
+
+
+	<table class="mg-show-tbl-width batch-tbl" cellpadding="0" cellspacing="0">
+	<tr class="mg-tbl-tr">
+		<th class="mg-fee-report-gen"><%=t('sl_no')%></th>
+		<th class="mg-fee-report-gen"><%=t('leave_type')%></th>
+		<th class="mg-fee-report-gen"><%=t('available_leave')%></th>
+		<th class="mg-fee-report-gen"><%=t('leaves_taken')%></th>
+	</tr>
+
+	<%leave_sl_count=0%>
+	<%@leave_details.each do |leave_details|%>
+		<%if leave_details['is_showable']# && leave_details['leve_taken'].to_f>0.0%>
+			<tr class="mg-tbl-tr">
+				<td width="8%"><label class="mg-label-inner-form"><%=leave_sl_count +=1%></label></td>
+				<td><label class="mg-label-inner-form"><%=leave_details['leve_name']%></label></td>
+				<td><label class="mg-label-inner-form"><%=leave_details['available_leave'].to_f.round(2)%></label></td>
+				<td><label class="mg-label-inner-form"><%=leave_details['leve_taken'].to_f.round(2)%></label></td>
+			</tr>
+		<%elsif leave_details['leve_taken'].to_f>0.0%>
+			<tr class="mg-tbl-tr">
+				<td width="8%"><label class="mg-label-inner-form"><%=leave_sl_count +=1%></label></td>
+				<td><label class="mg-label-inner-form"><%=leave_details['leve_name']%></label></td>
+				<td><label class="mg-label-inner-form"><%=leave_details['available_leave'].to_f.round(2)%></label></td>
+				<td><label class="mg-label-inner-form"><%=leave_details['leve_taken'].to_f.round(2)%></label></td>
+			</tr>	
+		<%end%>
+	<%end%>
+		
+	</table>
+
+	<table  class="mg-show-tbl-width batch-tbl" cellpadding="0" cellspacing="0">
+		<tr class="mg-tbl-tr">
+				<th colspan="5"><%=t('salary_details')%></th>
+		</tr>
+		<tbody>
+			<tr class="mg-tbl-tr">
+				<th width="8%"><%=t('sl_no')%></th>
+				<th><%=t('details')%></th>
+				<th><%=t('Amount')%></th>
+				<th><%=t('enable_edit')%></th>
+				<th><%=t('comment')%></th>
+			</tr>
+
+
+			<%@earnings_total=0%>
+			<%sl_count=0%>
+			
+
+			<%@salary_components_from_controller[0].each do |component|%>
+				<%unless component['is_deduction']%>
+					<tr class="mg-tbl-tr">
+						<td width="8%"><%=sl_count+=1%></td>
+						<td class="mg-fee-report-gen">
+							<label class="mg-label-inner-form"><%=component['component_name'] %></label>
+						</td>
+						<td id="<%=sl_count%>" >
+							<label class="mg-label-inner-form"><%=text_field_tag "salary_component[#{component['mg_salary_component_id']}]",component['amount'].to_f.round(2), :class=>"new_salary_payslip_gen_components_validate_cls payslip-back-upcomp-cls validation-compont-in-payslip-gen-grade-new-sum-cls" ,:readonly => true, :id=>"eachComponentEditTextID-#{sl_count}"%>
+
+							<%=hidden_field_tag "salary_component_back_up[#{component['mg_salary_component_id']}]",component['amount'].to_f.round(2), :class=>"salary_component_back_up_cls"%>
+							  </label>
+						</td>
+						<td id="<%=sl_count%>" class='payslip-td-cls mg-align-center'>
+							<%= check_box_tag :is_editable, false,false, {:class=>"payslip-check-box-edit-class"} %>
+						</td>
+						<td>
+							<label class="mg-label-inner-form"><%=text_area_tag "reason_component[#{component['mg_salary_component_id']}]","", :id=>"eachComponentEditTextAreaID-#{sl_count}", :class=>"payslip_edit_reason_cls mg-disabled-a",:readonly => true%>
+							<%=hidden_field_tag :back_up_reason ,"" , :id=>"eachComponentEditTextAreaBackUPID-#{sl_count}"%>
+							</label>
+
+						</td>
+					</tr>
+				<%end%>
+
+			<%end%>
+
+
+	<!-- mg_salary_component_id -->
+
+
+			<!-- @earnings_total=<%#=@earnings_total%> -->
+	
+			<tr class="mg-tbl-tr" style="background: #e6e6e6;">
+				<td width="8%"><%#=t('sl_no')%></td>
+				<td><%=t('total_gross_salary')%></td>
+				<td colspan="2"><%=text_field_tag :total_Gross_salary,@salary_components_from_controller[1]['component_total'].to_f.round(2), :class=>"new_salary_payslip_gen_components_validate_cls validation-compont-for-payslip-grade-new-total-gross-salary-cls",:readonly => true%>
+				
+				<td></td>
+			</tr>
+			<tr class="mg-tbl-tr">
+				<th width="8%"><%#=t('sl_no')%></th>
+				<th><%=t('deduction')%></th>
+				<th><%=t('Amount')%></th>
+				<th><%=t('enable_edit')%></th>
+				<th><%=t('comment')%></th>
+			</tr>
+
+			<%@salary_components_from_controller[0].each do |component|%>
+				<%if component['is_deduction']%>
+					<tr class="mg-tbl-tr">
+						<td width="8%"><%=sl_count+=1%></td>
+						<td class="mg-fee-report-gen">
+							<label class="mg-label-inner-form"><%=component['component_name'] %></label>
+						</td>
+						<td id="<%=sl_count%>">
+							<label class="mg-label-inner-form"><%=text_field_tag "salary_component[#{component['mg_salary_component_id']}]",component['amount'].to_f.round(2), :class=>"new_salary_payslip_gen_components_validate_cls payslip-back-upcomp-cls validation-compont-grade-new-payslip-sum-cls", :readonly => true , :id=>"eachComponentEditTextID-#{sl_count}"%>
+								<%=hidden_field_tag "salary_component_back_up[#{component['mg_salary_component_id']}]",component['amount'].to_f.round(2)  , :class=>"salary_component_back_up_cls" %>
+							   </label>
+						</td>
+						<td id="<%=sl_count%>" class='payslip-td-cls mg-align-center'>
+							<%= check_box_tag :is_editable, false,false, {:class=>"payslip-check-box-edit-class"} %>
+						</td>
+						<td>
+							<label class="mg-label-inner-form"><%=text_area_tag "reason_component[#{component['mg_salary_component_id']}]","", :id=>"eachComponentEditTextAreaID-#{sl_count}", :class=>"payslip_edit_reason_cls",:readonly => true%>
+								<%=hidden_field_tag :back_up_reason ,"" , :id=>"eachComponentEditTextAreaBackUPID-#{sl_count}"%>
+							</label>
+						</td>
+					</tr>
+				<%end%>
+			<%end%>
+
+
+
+			<%#===================================================================%>
+			<%total_extra_deduction=0.0%>
+			<%if @sports_salary_details.present?%>
+      	<%@sports_salary_details.each do |sport_amount|%>
+      		<%total_extra_deduction +=sport_amount.try(:amount).to_f%>
+					<tr class="mg-tbl-tr">
+						<td width="8%"><%=sl_count+=1%></td>
+						<td class="mg-fee-report-gen">
+							<label class="mg-label-inner-form"><%=sport_amount.try(:name) %></label>
+						</td>
+						<td id="<%=sl_count%>">
+							<label class="mg-label-inner-form"><%=text_field_tag "sport_salary_component[#{sport_amount.id}]",sport_amount.try(:amount).to_f.round(2), :class=>"new_salary_payslip_gen_components_validate_cls payslip-back-upcomp-cls validation-compont-grade-new-payslip-sum-cls", :readonly => true , :id=>"eachComponentEditTextID-#{sl_count}"%>
+								<%=hidden_field_tag "sport_salary_component_deduction[#{sport_amount.id}]",sport_amount.deduction, :class=>"" %>
+							   </label>
+						</td>
+						<td>
+							<%#= check_box_tag :is_editable, false,false, {:class=>"payslip-check-box-edit-class"} %>
+						</td>
+						<td>
+							<!-- <label class="mg-label-inner-form"><%#=text_area_tag "reason_component[#{component['mg_salary_component_id']}]","", :id=>"eachComponentEditTextAreaID-#{sl_count}", :class=>"payslip_edit_reason_cls",:readonly => true%> -->
+								<%#=hidden_field_tag :back_up_reason ,"" , :id=>"eachComponentEditTextAreaBackUPID-#{sl_count}"%>
+							<!-- </label> -->
+						</td>
+					</tr>
+				<%end%>
+			<%end%>
+
+
+
+
+			<%#===================================================================%>
+
+
+
+
+			<tr class="mg-tbl-tr">
+				<td colspan="5"></td>
+			</tr>
+			<tr class="mg-tbl-tr" style="background: #e6e6e6;">
+				<td width="8%"><%#=t('sl_no')%></td>
+				<td><%=t('total_net_amount')%></td>
+				<td colspan="2"><%=text_field_tag :total_net_amount,(@salary_components_from_controller[1]['final_total'].to_f-total_extra_deduction).round(2), :class=>"new_salary_payslip_gen_components_validate_cls validation-compont-grade-new-total-net-amount-sum-cls",:readonly => true%><a class="mg-small-form-btn re-calculate-calculation-a-cls"><i class="fa fa-refresh"></i></a></td>
+				<td></td>
+				
+
+			</tr>
+			<tr class="mg-tbl-tr">
+				<td colspan="5"></td>
+			</tr>
+		</tbody>
+	</table>
+
+
+	<%=hidden_field_tag :extra_leave_taken, @extra_leave_taken.to_f.round(2)%>
+	<%=hidden_field_tag :month, @date.month%>
+	<%=hidden_field_tag :year, @date.year %>
+	<%=hidden_field_tag :mg_employee_id, @employee.id %>
+
+	<%=hidden_field_tag :no_of_payable_days_in_the_month, (@no_days_in_month.to_f-@extra_leave_taken.to_f-@last_working_day_count.to_f-@joining_date_count.to_f) %>
+	<%=hidden_field_tag :leaves_taken_till_date_in_the_year, @total_leave_taken_year %>
+	<%=hidden_field_tag :leave_balance, @total_leave_balance_year.to_f %>
+	<%=hidden_field_tag :total_leave, @total_leave_he_have.to_f %>
+	<%#=hidden_field_tag :leave_details, @leave_details %>
+	<%=hidden_field_tag :over_time, @over_time.to_f %>
+
+	
+	<%@leave_details=@leave_details%>
+	<%#=hidden_field_tag :total_Gross_salary, @salary_components_from_controller[1]['component_total'].to_f %>
+	<%#=hidden_field_tag :total_net_amount,@salary_components_from_controller[1]['final_total'].to_f %>
+
+	<!-- <p class="mg-p-mgtop">
+	<%#=t('edit')%> <%#= check_box_tag :is_editable %>
+	</p> -->
+	<!-- <p> -->
+		<!-- <div id="hideAndShowPayslipReasonDIVID" style="display:none"> -->
+			<!-- <%#=t('reason')%><span class="required-field"> *</span> -->
+			<%#=text_area_tag :reason,"", :class=>"payslip_edit_reason_cls"%>
+		<!-- </div> -->
+	<!-- </p> -->
+
+	<div id="errorMsgPaylipGenDIVID" style="color:red; display:none;">Please recalculate to submit</div>
+	
+	
+	
+	<%#=f.submit%>
+	 <p class="mg-p-mgtop">
+	    <%#= f.submit t('save') ,:class=>"mg-small-form-btn"%>
+	    <a onclick="$(this).closest('form').submit()" id="payslipGenSubmitAID" class="mg-small-form-btn"><%=t("save")%></a>
+	      <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+
+	  </p>
+
+	<%end%>
+
+
+
+
+					<!-- <p class="mg-p-mgtop">
+						<%#= link_to t('generate_pdf'), {:controller=>'payslips',:action=>"generate_payslip_pdf",:id=>"#{@mg_employee_id},#{@date}"} ,:class=>"mg-small-form-btn"%>  <%#= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+					</p> -->
+			<%else%>
+			<h5>Last working date is <%if @last_working_day.present?%><%=@last_working_day.strftime(@school.date_format)%><%end%>, Please select month and year less than Last working date</h5>
+			<%end%>
+
+	<%else%>
+	<h5>Selected month and year should be greater than joining date</h5>
+	<%end%>
+
+
+
+
+
+	<script type="text/javascript">
+	$(document).ready(function(){
+
+
+
+   $.validator.addClassRules({
+        new_salary_payslip_gen_components_validate_cls:{
+        number: true,
+        min: 0
+
+    }
+    });
+
+   $.validator.addClassRules({
+    	payslip_edit_reason_cls:{
+    		required: true
+    	}
+    });
+
+   	$("#saveEmployeeSalaryDetailsPathFormID").validate();
+  	});
+
+    
+
+
+
+// 
+	</script>

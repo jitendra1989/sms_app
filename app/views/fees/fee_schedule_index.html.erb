@@ -1,0 +1,190 @@
+<!-- Sec --> 
+<!-- breadcrumbs Work -->
+<% navigation_add 'Fees', fees_path %>
+<% navigation_add 'Fees Schedule', fees_fee_schedule_index_path %>
+<!-- breadcrumbs Work -->
+
+
+<%= render partial: 'fee_left' %>
+<h4 class="mg-h4"><%= t('fee_schedule') %></h4>
+<div>
+<!-- <a href='#' id='addNewFeeScheduleID'  >Create New Fee Schedule </a> -->
+<button id='addNewFeeScheduleID' class="mg-custom-form-btn">Create New Fee Schedule</button>
+
+  <% if @fee_collection_list.length > 0 %>
+  <div class="mg_pagination">
+
+    <table class="batch-tbl mg-tbl-margin" >   <!-- border="2" --> 
+      <tr >
+        <th>Name</th>
+        <th><%=t('semester_name')%></th>
+        <th>Start Date</th>
+        <th>End Date</th>
+        <th>Due Date</th>
+        
+        <th style="width: 9em;" align="center"><%=t('actions')%></th>
+       </tr>
+
+    <%@fee_collection_list.each_with_index do |c| %>
+        <tr>
+          <td><%= c.name %></td>
+          <%@mgBatch=MgBatch.find_by_id( c.mg_batch_id)%>
+            <%if@mgBatch!=nil%>
+
+                <%@course=MgCourse.select(:course_name).find_by_id(@mgBatch.mg_course_id)%>
+                <%if@course!=nil%>
+                  <td><%= @course.course_name %> - <%= @mgBatch.name %></td>
+                <%else%>
+                  <td><%= @mgBatch.name %></td> 
+                <%end%>
+                
+            <%else%>
+                <td></td>
+            <%end%>
+          <% @dateFormat = MgSchool.find_by(5).date_format %>  
+          <td><%= c.start_date.strftime(@dateFormat) %></td>
+          <td><%= c.end_date.strftime(@dateFormat) %></td>
+          <td><%= c.due_date.strftime(@dateFormat) %></td>
+      
+          <td>
+          
+            <button title="Show" id='<%=c.id %>' class="show-fee-schedule-class mg-icon-btn"><i class="fa fa-eye"></i></button>
+              
+            <button title="Edit" id='<%=c.id %>' class="edit-fee-schedule-class mg-icon-btn"><i class="fa fa-pencil-square-o"></i></button>
+              
+            <span style="left: -2px; position: relative; float: right; top:-2px;"> 
+              <%= link_to "<i class=\"fa fa-trash\"></i>".html_safe,{ action: "delete_fee_schedule", id: c.id },
+                                method: :delete, data: { confirm: "Are you sure?" } ,:title=> "Delete" ,:class=>"mg-icon-btn"%> 
+            </span>
+        </tr>
+
+    <% end %>
+      </table>
+
+      <%= will_paginate @fee_collection_list, :container => false %>
+  </div>
+
+  <% else %>
+    <h5>Please Create Some Fee Schedule... </h5>
+
+  <% end %>
+
+  <div id="createFeeScheduleId"></div>  
+  <div id="showFeeScheduleId"></div>  
+  <div id="editFeeScheduleId"></div>
+</div>
+<%= render partial: 'application/common_left_close' %>
+
+
+<script type="text/javascript">
+   $(document).ready(function(){
+/*      $("li").removeClass( "active" );
+      $("a").removeClass( "activeMenu" );
+
+      $("#feeScheduleLiID").addClass("active");
+      $("#feeScheduleID").addClass("activeMenu");*/
+
+      focusCurrentTab("feeScheduleID","feeScheduleLiID");
+
+      focusFees();
+   });
+  
+ $(document).on("change","#fee_schedule_start_date",function(e){
+      var end_date=$("#fee_schedule_end_date").val();
+      
+      //alert(end_date)
+
+      if(!(end_date==""))
+      {
+            var start_date=$(this).val();
+
+     // console.log("Changed dob"); 
+     // console.log(new Date(Date.parse(dob,dateFormatStr)).toString());
+     // console.log(new Date(Date.parse(admission_date,dateFormatStr)).toString());
+
+     if(getDateObj(start_date,dateFormatStr)>getDateObj(end_date,dateFormatStr)){
+        alert("Start Date should be less than End Date");
+    document.getElementById('fee_schedule_start_date').blur(); 
+        
+        document.getElementById('fee_schedule_start_date').value ="";
+      }
+
+      var temp=$("#fee_schedule_due_date").val();
+      if(!temp=="")
+      {
+      var end_date=$("#fee_schedule_end_date").val();
+      var start_date=$("#fee_schedule_start_date").val();
+      var due_date=$("#fee_schedule_due_date").val();
+
+     if(!(getDateObj(due_date,dateFormatStr)>=getDateObj(start_date,dateFormatStr)&&getDateObj(due_date,dateFormatStr)<=getDateObj(end_date,dateFormatStr))){
+        alert("Due Date should be between Start Date and End Date");
+    document.getElementById('fee_schedule_start_date').blur(); 
+
+        document.getElementById('fee_schedule_start_date').value ="";
+      }
+}
+      }
+      
+   });
+
+$(document).on("change","#fee_schedule_end_date",function(e){
+      var start_date=$("#fee_schedule_start_date").val();
+     
+      if(!(start_date==""))
+      {
+        var end_date=$(this).val();
+
+     // console.log("Changed dob"); 
+     // console.log(new Date(Date.parse(dob,dateFormatStr)).toString());
+     // console.log(new Date(Date.parse(admission_date,dateFormatStr)).toString());
+
+     if(getDateObj(start_date,dateFormatStr)>getDateObj(end_date,dateFormatStr)){
+        alert("End Date should be more than Start Date");
+    document.getElementById('fee_schedule_end_date').blur(); 
+
+        document.getElementById('fee_schedule_end_date').value ="";
+      }
+var temp=$("#fee_schedule_due_date").val();
+      if(!temp=="")
+      {
+      var end_date=$("#fee_schedule_end_date").val();
+      var start_date=$("#fee_schedule_start_date").val();
+      var due_date=$("#fee_schedule_due_date").val();
+
+     if(!(getDateObj(due_date,dateFormatStr)>=getDateObj(start_date,dateFormatStr)&&getDateObj(due_date,dateFormatStr)<=getDateObj(end_date,dateFormatStr))){
+        alert("Due Date should be between Start Date and End Date");
+    document.getElementById('fee_schedule_end_date').blur(); 
+
+        document.getElementById('fee_schedule_end_date').value ="";
+      }
+}
+      }
+      
+   });
+ 
+    
+$(document).on("change","#fee_schedule_due_date",function(e){
+
+      var end_date=$("#fee_schedule_end_date").val();
+      var start_date=$("#fee_schedule_start_date").val();
+     
+      
+      var due_date=$("#fee_schedule_due_date").val();
+if(start_date=="" || end_date=="")
+{
+  alert("Enter The Start Date And End Date");
+    document.getElementById('fee_schedule_due_date').blur(); 
+  document.getElementById('fee_schedule_due_date').value ="";
+}
+      else
+      {
+
+     if(!(getDateObj(due_date,dateFormatStr)>=getDateObj(start_date,dateFormatStr)&&getDateObj(due_date,dateFormatStr)<=getDateObj(end_date,dateFormatStr))){
+        alert("Due Date should be between Start Date and End Date");
+        document.getElementById('fee_schedule_due_date').blur(); 
+        document.getElementById('fee_schedule_due_date').value ="";
+      }
+   }
+   });
+
+</script>

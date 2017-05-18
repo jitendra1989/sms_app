@@ -1,0 +1,125 @@
+<% navigation_add 'Search Vendor', :controller => 'inventory', :action => 'search_vendor' %>
+
+
+
+<%= render  partial: 'inventory/inventory_left' %>
+
+<h4 class="mg-h4"><%= t('search_vendor') %></h4>
+<!-- ============================================================================= -->
+<!-- <h4>Provide an input to search the Vendors</h4> -->
+
+<%= form_for :inventory, :html => {
+                            :id => 'inventorySearchVendorID' } do |f| %>
+<p>
+<label class="mg-label" style="width:140px"><%= t('item_name') %><span class="required-field">&nbsp;</span></label>
+<div class="input-container">
+  <%= f.collection_select(:item_name, MgInventoryItem.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]), :id, :name, {:selected=>0,:include_blank=>t("select")}, :class=>"mg-text-field inventory-item-search-class") %>
+</div>
+<%#= f.text_field :item_name,:class=>"mg-text-field inventory-item-search-class" %>
+</p>
+
+<p>
+    <label class="mg-label" style="width:140px"><%= t('item_code') %><span class="required-field">&nbsp;</span></label>
+    <div class="input-container">
+      <%= f.collection_select(:item_identification_number, MgInventoryItem.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]), :id, :code, {:include_blank=>t("select")}, :class=>"mg-text-field inventory-code-search-class") %>
+    </div>
+    <div id="ItemCodeDivID"></div>
+    <%#= f.text_field :item_identification_number,:class=>"mg-text-field inventory-code-search-class" %>
+</p>
+
+
+<p class="mg-p-mgtop">
+    <button type="button" class="inventory-search-item-submit-class mg-small-form-btn" style="display:none"><%=t("save")%></button>
+    <a onclick="$(this).closest('form').submit()" class="laboratory-resource-new-submit-class" style="display:none"><%#=t("save")%></a>
+</p>
+<% end %>
+<div id="showVendorDIVID"></div>
+<div id="inventorySerchedResultDivID"></div>
+<!-- ================================================================================== -->
+<%= render  partial: 'application/common_left_close' %>
+
+<script>
+$(document).ready(function () {
+        focusCurrentTab("viewInventoryVendorsearchIndex","viewSearchVendorLiID");
+       // focusMasterSettings();
+
+    });
+
+
+$(".inventory-item-search-class").on("change",function(){
+  if($(this).val()!=''){
+    var val=$(this).val();
+    var urlLink = "/inventory/search_vendor_by_code";
+    $.ajax({
+      url: urlLink ,
+      cache: false,
+      data: {"value":val,"change_by_item_name":"change_by_item_name"},
+      success: function(html){
+        $("#inventory_item_identification_number").empty();
+        $("#inventory_item_identification_number").html(html);
+        $(".inventory-search-item-submit-class").click();
+      }
+    }); 
+  }
+});
+
+$(".inventory-code-search-class").on("change",function(){
+  if($(this).val()!=''){
+    var val=$(this).val();
+    var urlLink = "/inventory/search_vendor_by_code";
+    $.ajax({
+      url: urlLink ,
+      cache: false,
+      data: {"value":val,"change_by_item_code":"change_by_item_code"},
+      success: function(html){
+        $("#inventory_item_name").empty();
+        $("#inventory_item_name").html(html);
+        $(".inventory-search-item-submit-class").click();
+      }
+    }); 
+  }
+});
+
+
+$(".inventory-search-item-submit-class").click(function(e){
+  e.preventDefault();
+	var itemName=$("#inventory_item_name").val();
+	var itemCode=$("#inventory_item_identification_number").val();
+	//alert(itemName+" ---    "+itemCode);
+	var urlLink = "/inventory/inventory_search_data/";
+           $.ajax({ 
+               url: urlLink,
+               cache: false,
+               data:
+            {
+                 "itemName":itemName , "itemCode":itemCode
+             },
+               success: function(html){
+                  $("#inventorySerchedResultDivID").empty();
+                  $("#inventorySerchedResultDivID").append(html);
+               }  
+           });
+});
+
+
+function changeItemFunction(a,b){
+        $("#category_wise_item_ID").empty();
+  //$(document).on("change","#vendor_mg_category_id",function(e){
+    var vendorId=b;
+    var categoryId=a.value;
+      $.ajax({
+            url: "/inventory/category_wise_item",
+            type: "GET",
+            data: {"mg_category_id":categoryId , "vendor_id":vendorId},
+            //dataType: "html",
+            success: function(data) {
+             $("#category_wise_item_ID").empty();
+             $("#category_wise_item_ID").append(data);
+            }
+        });
+}
+
+
+
+</script>
+

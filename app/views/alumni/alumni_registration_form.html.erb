@@ -1,0 +1,147 @@
+  <!-- Sec --> 
+
+<!-- breadcrumbs Work -->
+<% #navigation_add 'Student List', students_path %>
+<!-- breadcrumbs Work -->
+
+<% navigation_add t('alumni_list'), alumni_alumni_registration_form_path %>
+
+<%=render partial: 'alumni_left' #has_attached_file :file
+%>
+
+<%= form_for :alumni_data,:url=>{:action=>"alumni_registration_form_accept"},:html=>{:id=>"alumni_registration"} do |f|%>
+  
+<h4 class="mg-h4"><%= t("alumni_list") %></h4>
+<%#= form_for :polling_option, url: {:action=>"polling_options_create"}, :html => {
+                            :id => 'alumnipollingCreateFormId', :class => 'elm_class',
+                            :style => 'elm_style' } do |f| %>
+ <div class="mg_pagination">
+
+<%=hidden_field_tag 'alumni_demo_data',nil%>
+
+        <table class="batch-tbl mg-tbl-margin">
+            <tr class="student-table-header">
+              <th><%= t("Name") %></th>
+              <th><%= t("mobile_no") %></th>
+              <th><%= t("gender") %></th>
+              <th><%= t("status") %></th>
+              <th><%= t("action") %></th>
+             <th class="mg-align-center"><label class="mg-label"><%=t('select')%></label><br/>
+             <a  id="seescheckAllCheckBoxalumniParticularId" class="mg-pop-link">All</a>
+    <a  id="seesunCheckAllCheckBoxalumniParticularId" class="mg-pop-link">None</a></th>
+            </tr>
+            <% @alumni_data.each do |student| %>
+            <tr class="even">
+              <td class="mg-capitalize-text"><%="#{student.first_name} #{student.last_name} " %></td>
+              <td><%= student.mobile_number %></td>
+           
+              <td class="mg-capitalize-text"><%= student.gender %></td>
+               <td class="mg-capitalize-text"><%= student.status %></td>
+              <td>
+              
+                 <%= link_to t('show'), {controller: "alumni", action: "alumni_registration_form_show" ,id:student.id },:class=>"new-add-polling mg-btn-bottom-margin mg-custom-form-btn"  %>
+             
+                  </td>
+               <td><%=check_box_tag 'select_data[]',student.id,false,:class=>"demo1213334",:style=>"margin-left: 18px;"%></td>
+               </tr>
+               <%end%>
+           </table>
+         
+           <br/><div class="pagination-align" style="position: relative; bottom: 10px;">
+              <%= will_paginate @alumni_data, :container => false %>
+           </div>
+
+</div>
+  
+      </div>
+
+      
+  </div>
+   
+  
+
+<p class="mg-p-mgtop">
+    <!-- <a onclick="$(this).closest('form').submit()" class="accept-class-alumni mg-small-form-btn"><%#=t("accept")%></a> -->
+   
+    <a id="accept-class-alumni" class="mg-custom-labels mg-small-form-btn"><%=t("accept")%></a>
+     <a id="reject-class-alumni" class="mg-custom-labels mg-small-form-btn"><%=t("reject")%></a>
+       
+       <%=f.submit t("save") ,:id=>"submitalumniFormBtnId" , :style=>"display:none"%>
+      
+      </p>
+   <%end%>
+
+<%= render  partial: 'application/common_left_close' %>
+
+<script>
+
+      $(document).ready(function () {
+          focusCurrentTab("alumni_registration_formIndexAID","alumni_registration_formIndexId");
+          // focusStudentHeaderBox();
+      });
+$(document).on("click", "#seescheckAllCheckBoxalumniParticularId", function(e){
+
+        $(".demo1213334").prop('checked', true);
+        e.preventDefault();
+        
+  });
+
+$(document).on("click", "#seesunCheckAllCheckBoxalumniParticularId", function(e){
+
+        $(".demo1213334").prop('checked', false);
+        e.preventDefault();
+        
+  });
+
+  $(document).on("click", "#accept-class-alumni", function(e){
+   
+ var inputElems=document.getElementsByClassName("demo1213334"),
+   count = 0;
+for (var i=0; i<inputElems.length; i++) {
+if (inputElems[i].type === "checkbox" && inputElems[i].checked === true) 
+{
+    count++;
+     
+}
+
+}
+
+ 
+
+if (count>0){
+    $("#alumni_demo_data").val("Accept");
+
+    $("#submitalumniFormBtnId").click();
+  }
+  else{
+    alert("Select any one recored")
+  }
+  });
+
+   $(document).on("click", "#reject-class-alumni", function(e){
+
+var inputElems=document.getElementsByClassName("demo1213334"),
+   count = 0;
+for (var i=0; i<inputElems.length; i++) {
+if (inputElems[i].type === "checkbox" && inputElems[i].checked === true) 
+{
+    count++;
+     
+}
+
+}
+
+ if (count>0){
+
+       $("#alumni_demo_data").val("Reject");
+    //console.log( $("#alumni_demo_data").val())
+       $("#submitalumniFormBtnId").click();
+        }
+  else{
+       alert("Select any one recored")
+  }
+  });
+
+</script>  
+            	
+

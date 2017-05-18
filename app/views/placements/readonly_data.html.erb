@@ -1,0 +1,60 @@
+ <p>
+
+    <%= label :position, t('position') ,:class=>"mg-label"%><br>
+    <%= text_field_tag :position , @job_upload_data.position ,:readonly=>true %>
+
+  </p>
+
+
+   <p>
+
+    <%= label :job_description, t('job_description') ,:class=>"mg-label"%><br>
+    <%= text_field_tag :job_description,@job_upload_data.job_description ,:readonly=>true %>
+
+  </p>
+
+   <p>
+
+    <%= label :functional_area, t('functional_area') ,:class=>"mg-label"%><br>
+    <%= text_field_tag :functional_area, @job_upload_data.functional_area ,:readonly=>true  %>
+
+  </p>
+
+   <p>
+
+    <%= label :industry, t('industry') ,:class=>"mg-label"%><br>
+    <%= text_field_tag :industry,@job_upload_data.industry ,:readonly=>true    %>
+
+  </p>
+
+   <p>
+
+    <%= label :job_location, t('job_location') ,:class=>"mg-label"%><br>
+    <%= text_field_tag :job_location,@job_upload_data.job_location ,:readonly=>true    %>
+
+  </p>
+
+  <p>
+
+    <%= label :educational_qualification, t('educational_qualification') ,:class=>"mg-label"%><br>
+    <%= text_field_tag :educational_qualification,@job_upload_data.edu_qual,:readonly=>true     %>
+
+  </p>
+  <p>
+
+    <%= label :minimum_experience, t('minimum_experience') ,:class=>"mg-label"%><br>
+    <%= text_field_tag :minimum_experience,@job_upload_data.min_exp  ,:readonly=>true   %>
+
+  </p>
+  <p>
+
+    <%= label :technical_skills, t('technical_skills') ,:class=>"mg-label"%><br>
+    <%= text_field_tag :technical_skills,@job_upload_data.technical_skills ,:readonly=>true    %>
+
+  </p>
+  <p>
+
+    <%= label :salary, t('salary') ,:class=>"mg-label"%><br>
+    <%= text_field_tag :salary,@job_upload_data.salary  ,:readonly=>true   %>
+
+  </p>

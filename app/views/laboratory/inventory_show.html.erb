@@ -1,0 +1,57 @@
+<table border="1" class="mg-showdata-bg mg-tbl-layout" cellspacing="1" cellpadding="1">
+   <tr>
+     <td class="mg-td-width-half" valign="top">
+   	 <label class="mg-label"> <%= t('laboratory_name')%></label>
+   	 </td>
+   	 <td class="mg-td-width-half" valign="top">
+  	 <%if @laboratary.mg_lab_id.present?%>
+ 	    <%temp=MgLab.find(@laboratary.mg_lab_id)%>
+     <%=temp.try(:lab_name)%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+  	 </td>
+ </tr>
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+   	 <label class="mg-label"> <%= t('category_name')%></label>
+   	 </td>
+   	 <td class="mg-td-width-half" valign="top">
+  	 <%if @laboratary.category_name.present?%>
+     <%=@laboratary.try(:category_name)%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+  	 </td>
+ </tr>
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+     <label class="mg-label"> <%= t('item_type')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+     <%if @laboratary.mg_laboratory_item_id.present?%>
+      <%temp=MgLaboratoryItem.find_by(:id=>@laboratary.mg_laboratory_item_id)%>
+     <%=temp.try(:name)%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+     </td>
+ </tr>
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+     <label class="mg-label"> <%= t('prefix')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+     <%if @laboratary.prefix.present?%>
+     <%=@laboratary.try(:prefix)%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+     </td>
+ </tr>
+
+</table>
+<br/>
+<a class="mg-small-form-btn cancel-form-dialog"><%=t("cancel")%></a>
+
+<%#= link_to 'Cancel', laboratory_inventory_path ,:style=>"font-size: 0.8em; color: #297ACC; text-decoration: none;" ,:class=>"mg-custom-form-btn"%>

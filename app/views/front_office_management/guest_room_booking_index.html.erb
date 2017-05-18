@@ -1,0 +1,114 @@
+<% navigation_add t('guest_room_review'), :controller=>'front_office_management' ,:action=> 'guest_room_booking_index' %>
+<%if session[:user_type]=="principal"%>
+  <%= render partial: 'dashboards/principle_dashboard_left' %>
+<%else%>
+  <%=render partial: 'front_office_management_left'%>
+<%end%>
+<div id="editguest_room_bookingfomdata">
+<h4 class="mg-h4"><%=t('guest_room_booking_list')%></h4>
+<%if session[:user_type]=="front_office_manager"%>
+  <%= button_to 'Add Booking', {:controller=>'front_office_management',:action=>'guest_room_booking_new'}, :class=> 'mg-custom-form-btn' %>
+<%end%>
+<% if @guest_room_booking_data.present? %>
+	<table  class="batch-tbl mg-tbl-margin">   <!-- border="2" --> 
+	  <tr class="subject-table-header">
+	    <th><%= t('room_no_name') %></th>
+	    <th><%= t('start_date') %></th>
+	    <th><%= t('end_date') %></th>
+	    <th><%= t('employee_profile') %></th>
+	    <th><%= t('employee') %></th>
+	    <th><%= t('status') %></th>
+	    <th><%= t('actions') %></th>
+	  </tr>
+
+
+	  <% @timeformat=MgSchool.find_by(:id=>session[:current_user_school_id])%> 		
+	  <% @guest_room_booking_data.each do |s| %>
+		  <tr> 	    
+     	   <%puts s.inspect%>
+     	    <%	room_data=MgMeetingRoom.find_by(:id=>s.mg_fom_room_creation_id)%>
+	   		<td class="mg-align-center"><%= room_data.try(:room_no) %></td>
+
+	   		<td><%= s.start_date.strftime(@timeformat.date_format) %></td>
+	   		<td><%= s.end_date.strftime(@timeformat.date_format) %></td>
+	   		
+	   		<% profile_data=MgEmployeePosition.find_by(:id=>s.mg_employee_position_id)%>
+	   		<td><%= profile_data.try(:position_name) %></td>
+	   		  		
+	   		<% employee_data=MgEmployee.find_by(:id=>s.mg_employee_id)%>
+	   		<td><%= employee_data.try(:first_name) %> <%=" "%><%= employee_data.try(:last_name) %></td>
+	   		<td class="mg-capitalize-text"><%= s.status %></td>
+      	<td>	
+      		<button title="Show" id="<%=raw s.id %>-showguest_room_bookingFomBTNID" class="show-guest-room-booking-fom-btn mg-icon-btn"><i class="fa fa-eye"></i></button>
+
+        	<button title="Edit" id="<%=raw s.id %>-editguest_room_bookingFomBTNID" class="edit-guest-room-booking-fom-btn mg-icon-btn"><i class="fa fa-pencil-square-o"></i></button>
+
+          <%if session[:user_type]=="front_office_manager"%>
+            <button title="Delete" onclick="confirm('Are you sure to delete?') ? window.location='/front_office_management/guest_room_booking_delete/<%=s.id%>' : ''" class="mg-icon-btn"><i class="fa fa-trash"></i></button>
+          <%end%>
+      	</td>
+    	  </tr>
+  <% end %>
+	</table>
+	<br/>
+<%else%>
+<h5>No records are created </h5>
+<%end%>
+
+
+
+<div id="showguest_room_bookingfomdata"></div>
+</div>
+
+<%= render  partial: 'application/common_left_close' %>
+
+
+<script type="text/javascript">
+	
+
+	$(document).ready(function () {
+    focusCurrentTab("guestRoomBookingAID","guestRoomBookingLiID");
+  });
+
+
+
+	$(document).on("click", ".show-guest-room-booking-fom-btn", function(e){
+        var myID =$(this).attr('id');
+        var Id=myID.split("-");
+        
+        var urlLink = "/front_office_management/guest_room_booking_show";
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            data:{"id":Id[0]},
+            success: function(html){
+                   $("#editguest_room_bookingfomdata").empty().html(html);
+               
+            }
+        });
+	});
+
+
+
+       $(document).on("click", ".edit-guest-room-booking-fom-btn", function(e){
+        var myID =$(this).attr('id');
+         var Id=myID.split("-");
+
+        var urlLink = "/front_office_management/guest_room_booking_edit";
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            data:{id:Id[0]},
+            success: function(html){
+                 
+               
+                         $("#editguest_room_bookingfomdata").empty().html(html);
+                    
+               
+            }
+        });
+});
+
+
+
+</script>

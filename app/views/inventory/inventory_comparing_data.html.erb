@@ -1,0 +1,235 @@
+
+<%if @search.present?
+@items=MgInventoryItem.where("id IN (?)",@item)
+      tempItem=""
+      @items.each do |item|
+        tempItemName=MgInventoryItem.find_by(:id=>item.id)
+        tempItem+=tempItemName.try(:name)
+        tempItem+=", "
+      end
+
+      strlength=tempItem.length
+      reqStr=tempItem.slice(0,strlength-2)
+
+%>
+
+<!-- ==================================================================================== -->
+
+<%if @code_present=="yes"
+@items_code=MgInventoryItem.where("id IN (?)",@item)
+      tempItems=""
+      @items_code.each do |item|
+        tempItemName=MgInventoryItem.find_by(:id=>item.id)
+        tempItems+=tempItemName.try(:code)
+        tempItems+=", "
+      end
+
+      strlengths=tempItems.length
+      reqStrs=tempItems.slice(0,strlengths-2)
+  end
+%>
+
+
+
+<h4 class="mg-h4">Result for Name:- <%=reqStr%></h4>
+
+<%if @code_present=="yes"%>
+  <h4 class="mg-h4">Result for Code:- <%=reqStrs%></h4>
+<%end%>
+
+
+<div class="mg-scroll-employee-bar">
+<table border="1" class="mg-showdata-bgf table-hover mg-homework-tbl" cellspacing="1" cellpadding="1">
+<tr>
+  <th>
+    <label class="mg-label mg-td-width-halfs" valign="top"> <%= t('supplier_code')%></label>    
+  </th>
+  <th>
+    <label class="mg-label mg-td-width-halfs mg-label-text-transform-none" valign="top"> <%= t('name_of_supplier')%></label>
+  </th>
+    <th>
+    <label class="mg-label mg-td-width-halfs mg-label-text-transform-none" valign="top"> <%= t('category')%></label>
+  </th>
+  <!-- ========================================================================== -->
+  <th>
+    <label class="mg-label mg-td-width-halfs mg-label-text-transform-none" valign="top"> <%= t('date')%></label>
+  </th>
+    <th>
+    <label class="mg-label mg-td-width-halfs mg-label-text-transform-none" valign="top"> <%= t('units_supplied')%></label>
+  </th><th>
+    <label class="mg-label mg-td-width-halfs mg-label-text-transform-none" valign="top"> <%= t('invoice_number')%></label>
+  </th>
+
+  <th>
+    <label class="mg-label mg-td-width-halfs mg-label-text-transform-none" valign="top"> <%= t('payment_status')%></label>
+  </th>
+  <th width="21%">
+    <label class="mg-label mg-td-width-halfs mg-label-text-transform-none" valign="top"> <%= t('remark')%></label>
+  </th>
+  <!-- ==================================================================================== -->
+
+
+  </tr>
+  <%
+  @search.each do |search|
+  %>
+  <tr>
+    <td class="mg-td-width-half" valign="top"><a id="<%=raw search.id %>-showinventoryBTNID" class="show-vendor-btns"><%=search.try(:vendor_code)%></a></td>
+    <td class="mg-td-width-half" valign="top"><%=search.try(:name)%></td>
+    <td class="mg-td-width-half" valign="top"><%=search.try(:category)%></td>
+    <%
+      inventory_proposal_accepted_ids=MgInventoryProposal.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id],:status=>"accepted").pluck(:id)
+
+      inventory_items=MgInventoryProposalItem.where("is_deleted=? and mg_school_id=? and mg_inventory_proposal_id IN (?) and mg_inventory_vendor_id=? and mg_item_id IN (?)",0,session[:current_user_school_id],inventory_proposal_accepted_ids,search.id,@item)
+
+      unit_count=0
+      %>
+      <!-- ===================================================================== -->
+      <td><table class="table-borderedxcv table"><%
+      inventory_items.each do |item|
+        #unit_count=unit_count+item.try(:no_of_unit)
+        %>
+        <tr valign="top"><td style="bor">
+        <%if item.date.present?%>
+        <%
+        @dateFormat = MgSchool.find_by(:id=>session[:current_user_school_id]).date_format
+          if @dateFormat.present?
+                %>
+                <%=item.date.present? ? item.date.strftime(@dateFormat) : "No Data"%>
+                <%else%><%=t("no_data")%>
+        <%end%>
+        <%else%><%=t("no_data")%>
+        <%end%>
+
+        </td></tr>
+      <%end
+      %>
+      </table></td>
+          <!-- ====================================================================== -->
+    <td><table class="table-borderedxcv table"><%
+      inventory_items.each do |item|
+        %>
+        <tr valign="top"><td class="mg-td-width-half" valign="top">
+        <%if item.no_of_unit.present?%>
+        <%=item.try(:no_of_unit)%>
+        <%else%>
+        <%=t("no_data")%>
+        <%end%>
+    </td></tr>
+      <%end
+      %>
+      </table></td>
+    
+    <!-- ==================================================================================== -->
+    
+    <!-- ====================================================================== -->
+      <td><table class="table-borderedxcv table"><%
+      inventory_items.each do |item|
+        %>
+        <tr valign="top"><td class="mg-td-width-half" valign="top">
+    <%if item.invoice_number.present?%>
+      <%=item.try(:invoice_number)%>
+    <%else%>
+      <%="No Data"%>
+    <%end%>
+    </td></tr>
+      <%end
+      %>
+      </table></td>
+      <!-- ====================================================================== -->
+
+
+
+
+
+      <!-- ====================================================================== -->
+      <td><table class="table-borderedxcv table"><%
+      inventory_items.each do |item|
+        %>
+        <tr valign="top"><td class="mg-td-width-half" valign="top">
+    <%if item.try(:status)=="AFP"%>
+      <%="Accepted"%>
+    <%else%>
+      <%="Awaited"%>
+    <%end%>
+    </td></tr>
+      <%end
+      %>
+      </table></td>
+      <!-- ====================================================================== -->
+      <!-- ====================================================================== -->
+      <td ><table class="table-borderedxcv table"><%
+      inventory_items.each do |item|
+        %>
+        <tr valign="top"><td class="mg-td-width-half" valign="top">
+        <%if item.remark_description.present?%>
+        <%=truncate(item.try(:remark_description).to_s, :length => 14, :separator => ' ')%>
+        <%@temp=item.try(:remark_description)%>
+
+
+        <%= tooltip '<i class="fa fa-comment-o"></i>'.html_safe, { :tooltip => "#{@temp}" }, :class => 'mytooltip mg-icon-btn' ,:style=>"font-size: 0.85em;"%><br/>
+
+
+        <%#= tooltip '<i class="fa fa-question"></i>'.html_safe, { :tooltip => 'Can enter digits only. No arbitrary symbols like -,*,#,etc are allowed. Phone Number should not be initialised with 0, eg: If your number is 06542-2651XX, then enter it like 65422651XX. No need to mention \'0\' in the beginning.' }, :class => 'mytooltip mg-icon-btn' ,:style=>"font-size: 0.85em;"%>
+
+
+
+
+        <%#=item.try(:remark_description)%><%else%><%=t("no_data")%>
+        <%end%>
+    </td></tr>
+      <%end
+      %>
+      </table></td>
+  
+</tr>
+  <%end%>
+</table>
+</div>
+<br/>
+<%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+<%else%>
+<br/>
+<h4>No Results to compare<h4>
+<%end%>
+
+<script>
+$(".show-vendor-btns").click(function(){
+        var myID =$(this).attr('id');
+        var Id=myID.split("-");
+        var urlLink = "/inventory/vendor_show/"+Id[0];
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(html){
+                  $('#showVendorDIVID').dialog({
+                    modal: true,
+                    minHeight: 'auto',
+                    minWidth: '500',
+                    title: "Vendor Detail",
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+            }
+        });
+});
+
+
+
+</script>
+<style>
+.icon-padding-label
+{
+  background: -moz-linear-gradient(center top , #DBE8F7, #92AECD) repeat scroll 0 0 rgba(0, 0, 0, 0) !important;
+    border: 1px solid #5F7A92 !important;
+    border-radius: 4px;
+    color: #1D212A !important;
+    cursor: pointer;
+    font-size: 1.1em;
+    padding: 1.2px 5px !important;
+}
+
+a { cursor: pointer; cursor: hand; }
+</style>

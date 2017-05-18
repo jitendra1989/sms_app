@@ -1,0 +1,113 @@
+
+
+<%= render  partial: 'library_left' %>
+
+<% navigation_add 'Books Inventory', books_inventory_index_path %>
+
+<%if flash[:success].present?%>
+  <div class="alert alert-info mg-success-msg">
+
+        <%=flash[:success]%>
+        </div>
+   <%end%>
+<h4 class="mg-h4"><%= t('books_inventory_list')%></h4><br/>
+
+<%= button_to 'Add Books Inventory', {:controller => "libraries", :action => "books_inventory_new"} ,:class=>"mg-custom-form-btn"%>
+	
+<%if @all_book_inventory_data.length>0%>
+<div id="books_inventoryShow">
+</div>
+<div id="books_inventoryEdit">
+</div>
+
+<div class="mg-scroll-employee-bar mg-tbl-margin ">
+    <table class="batch-tbl mg-tbl-layout" cellspacing="0" style="padding:0; border-collapse:collapse;">   <!-- border="2" --> 
+      <tr >
+        <th><%=t('book_name')%></th>
+        <th><%=t('author')%></th>
+        <th><%=t('publisher')%></th>
+        <th><%=t('edition')%></th>
+        <th><%=t('isbn_number')%></th>
+        <th><%=t('category_name')%></th>
+        <th><%=t('class')%></th>
+        <th><%=t('non_issuable')%></th>
+        <th><%=t('is_damaged')%></th>
+        <th><%=t('is_lost')%></th>
+        <th><%=t('status')%></th>
+
+        <th align="center"><%=t('actions')%></th>
+       </tr>
+
+    <%@all_book_inventory_data.each_with_index do |inventory_data| %>
+	      <tr>
+	        
+	        <td class="mg-align-center"><%=inventory_data.book_name%></td>
+	        
+	        <td class="mg-align-center"><%=inventory_data.author%></td>
+	        
+	        <td class="mg-align-center"><%=inventory_data.publisher%></td>
+	        <td class="mg-align-center"><%=inventory_data.edition%></td>
+	        <td class="mg-align-center"><%=inventory_data.book_no%></td>
+
+	        <%
+	        books_category=MgBooksCategory.find(inventory_data.mg_books_category_id)
+	        %>
+	        <td class="mg-align-center"><%=books_category.category_name%></td>
+	        <%
+	        course_data=MgCourse.find(inventory_data.mg_course_id)
+	        %>
+	        <td class="mg-align-center"><%=course_data.course_name%></td>
+	        <%data=inventory_data.non_issuable%>
+	        <%if data==true%>
+	        <td class="mg-align-center"><%="Yes"%></td>
+	        <%else%>
+	        <td class="mg-align-center"><%="No"%></td>
+	        <%end%>
+	        <%issuable_data=inventory_data.is_damaged%>
+	        <%if issuable_data==true%>
+
+	        <td class="mg-align-center"><%="Yes"%></td>
+	        <%else%>
+	        <td class="mg-align-center"><%="No"%></td>
+	        <%end%>
+	        <%lost_data=inventory_data.is_lost%>
+	        <%if lost_data==true%>
+	        <td class="mg-align-center"><%="Yes"%></td>
+	         <%else%>
+	        <td class="mg-align-center"><%="No"%></td>
+	        <%end%>
+
+	        <td class="mg-align-center"><%=inventory_data.status%></td>
+
+	      <td class="mg-align-center">
+	   
+	           <button title="Show" id='<%=inventory_data.id %>' class="show-books-inventory-class mg-icon-btn"><i class="fa fa-eye"></i></button>
+	           <%= link_to "<i class=\"fa fa-pencil-square-o\"></i>".html_safe, {:controller=>"libraries",:action => "books_inventory_edit",:id =>inventory_data.id},:title=>"Edit" ,:class=>"mg-icon-btn"%>
+	           <!-- <button title="Edit" id='<%=inventory_data.id %>' class='edit-books-inventory-class mg-icon-btn'><i class="fa fa-pencil-square-o"></i></button> -->           
+	           <span>
+	           <%= link_to "<i class=\"fa fa-trash\"></i>".html_safe ,{ action: "books_inventory_destroy", id: inventory_data.id },data: { confirm: "Are you sure to delete the selected entry?" } ,:title=>"Delete" ,:class=>"mg-icon-btn-link"  %>
+               </span>
+           </td>
+	      </tr>
+
+     <% end %>
+	</table>
+<%else%>
+<h5><%="Please Create Some Details" %></h5>
+
+<%end%>
+
+<%= render  partial: 'schools/school_left_close' %>
+
+
+
+
+
+
+<script>
+$(document).ready(function () {
+        focusCurrentTab("bookinventoryAID","bookinventoryLiID");
+        focusLibrary();
+        
+    });
+</script>

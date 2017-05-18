@@ -1,0 +1,30 @@
+<h4 class="mg-h4">Teaching Staff Details</h4>
+<table class="batch-tbl">
+	<tr>
+		<th>Employee Number</th>
+		<th>Name</th>
+		<th>Gender</th>
+		<th>Position</th>
+		<th>Category</th>
+		<th>Department</th>
+		<th>Manager Name</th>
+		
+	</tr>
+	<%@teaching_staffs.each do |teaching_staff|%>
+	<tr>
+		<td><%=teaching_staff.employee_number%></td>
+		<td><%=teaching_staff.first_name%> <%=teaching_staff.last_name%></td>
+		<td class="mg-capitalize-text"><%=teaching_staff.gender%></td>
+		<%
+			@position_name=MgEmployeePosition.where(:id=>teaching_staff.mg_employee_position_id,:is_deleted=>0).pluck(:position_name)
+			@category_name=MgEmployeeCategory.where(:id=>teaching_staff.mg_employee_category.id,:is_deleted=>0).pluck(:category_name)
+			@department_name=MgEmployeeDepartment.where(:id=>teaching_staff.mg_employee_department_id,:is_deleted=>0).pluck(:department_name)
+			@manager_name=MgEmployee.where(:id=>teaching_staff.mg_manager_id).pluck(:first_name)
+		%>
+		<td><%=@position_name.join("")%></td>
+		<td><%=@category_name[0]%></td>
+		<td><%=@department_name[0]%></td>
+		<td><%=@manager_name.join("")%></td>
+	</tr>
+	<%end%>
+</table>

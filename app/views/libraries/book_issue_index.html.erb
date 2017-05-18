@@ -1,0 +1,159 @@
+<%= render  partial: 'library_left' %>
+
+
+<% navigation_add 'Book Issue', book_issue_index_path %>
+
+<table class="mg-btn-bottom-margin">
+	<tr>
+		<td>
+			<label class="mg-label mg-leave-width">Search By</label>
+		</td>
+		<td>
+			<%= select_tag 'search_by', options_for_select([[ "Book Name","book_name"],["Publisher","publisher"],[" Author","author"]]),:prompt=>"Select",:onchange=>"selectfunction(this.value)" ,:class=>"mg-select-btn"%><br/>
+		</td>
+	</tr>
+</table>
+<div id="test" style="display:none;">
+
+<span>
+<%=text_field_tag 'search_name' ,nil,:class=>"mg-text-field"%>
+</span>
+<span>
+<button id="search_button" class="btn btn-default">Search</button>
+</span>
+</div>
+
+<div id="books_details">
+
+</div>
+<div id="book_details_pop_up_data">
+</div>
+
+<%= render  partial: 'schools/school_left_close' %>
+<script>
+
+
+
+$(document).ready(function () {
+        focusCurrentTab("bookissueAID","bookissueLiID");
+        focusLibrary();
+       
+});
+
+
+
+//// $("#sea
+// $("#search_name").autocomplete({
+//             delay: 50,
+//             minLength: 1,
+//             source: function(request, response) {
+//                 var i=0;
+//                 //var lc_oldOrderType = $("#<portlet:namespace />oldOrderTypeId").val();
+//                 //var lc_orderType = $("#search_name").val().trim();
+//                var data=$("#search_name").val();
+
+//  			var value=$("#search_by").val();
+               
+//                 //if(lc_orderType.length>=1 && (lc_orderType.toLowerCase()!=lc_oldOrderType.substring(0,3).toLowerCase())) {
+//                     //if(!(lc_orderType.trim()).length==0) {
+                          
+//                               $("#search_name").addClass('load-img');
+//                               $.ajax ({
+//                                   url : '/libraries/search',
+                                
+//                                   dataType : "JSON",
+//                                   // data:{
+//                                   //         <portlet:namespace />searchDataContent : lc_orderType,
+//                                   //         <portlet:namespace />showOrderType     : 'showOrderType'
+//                                   //  },
+//                                   data:{"Value":value,"Data":data,"demo":"jay"},
+//                                    success: function(data) {
+//                                        $("#search_name").removeClass('load-img');
+//                                        //data.sort(sortOrderTypeJsonObj);
+                                      
+//                                        response($.map(data,function(item){  i++;
+//                                        		console.log(item);
+//                                        		console.log(item.book_name);
+
+//                                              return {
+//                                                     lable:item.Name,
+
+//                                                    value: item.Name,
+                                                   
+//                                                  };
+//                                         })); 
+                                       
+//                                         console.log(response);     
+//                                    },
+//                                        error: function(errorMsg){
+//                                          alert("error");
+//                                          $("#search_name").removeClass('load-img');
+//                                     }
+//                               });
+                        
+//                     //}
+//                 //}
+//             },
+//             select: function(event, ui) {
+//             	alert(event);
+//                 event.preventDefault();
+//                 $("#search_name").val(ui.item.value);
+//                 console.log($("#search_name").val(ui.item.value));
+//                 //$("#<portlet:namespace />ordrTypeId").val(ui.item.lable);
+//                 //$("#<portlet:namespace />oldOrderTypeId").val(ui.item.value);
+//                 //$("#<portlet:namespace />transactionTypeId").val(ui.item.transaction_type_id);
+//             }
+//         });
+
+// $("#search_name").autocomplete(
+// 	{
+// 		delay: 50,
+// 		minLength:1,
+// 		source: function(request,response){
+// 		   var data=$("#search_name").val();
+
+// 			var value=$("#search_by").val();
+// 			$.ajax({
+//                         url:'/libraries/search',
+// 						cache:false,
+// 						dataType: "JSON",
+// 						data:{"Value":value,"Data":data,"demo":"jay"},
+// 						success:function(data){
+// 							console.log(data);
+// 							response( data );
+// 							//alert("lsdjk");
+// 						response($.map(data),function(item){
+// 							return{
+// 								lable:item.book_name,
+// 								 value:item.book_name
+// 							};
+
+
+
+// 						})
+
+// 		},
+// 		error: function(errorMSG){
+// 		alert("error");
+// 	}
+// });
+// 		},
+// select: function(event,ui) {
+
+// 	  log( ui.item ?
+// "Selected: " + ui.item.label :
+// "Nothing selected, input was " + this.value);
+// },
+// open: function() {
+// $( this ).removeClass( "ui-corner-all" ).addClass( "ui-corner-top" );
+// },
+// close: function() {
+// $( this ).removeClass( "ui-corner-top" ).addClass( "ui-corner-all" );
+// }
+// 			//$( "#search_name" ).val( ui.item.value);
+// 			//$( "#search_name" ).val( ui.item.label);
+
+			
+						
+// 		});
+</script>

@@ -1,0 +1,159 @@
+<!-- Sec --> 
+<%= render partial: 'principle_dashboard_left' %>
+<h4 class="mg-h4"><%= t('calendar')%></h4>
+
+<div id='calendarID' class="mg-tbl-margin"></div>
+<div id="newEventCalenderDIVID"></div>
+<div id="popup"></div>
+<%= render partial: 'application/common_left_close' %>
+
+
+
+<script type="text/javascript">
+
+
+
+// $(document).on("change","#mg_batch_calender_id",function() {
+$(document).ready(function(){
+
+       
+    
+        // $("li").removeClass( "active" );
+        // $("a").removeClass( "activeMenu" );
+
+        // $("#viewEventAdminCalendarLiID").addClass( "active" );
+        // $("#viewEventAdminCalendar").addClass( "activeMenu" );
+
+        // focusEvent();
+     
+
+
+    $('#calendarID').fullCalendar({
+        header: {
+                    left:   'today prev,next',
+                    center: 'title',
+                    right:  'year,month,agendaWeek,agendaDay',
+                },
+        // weekends:true,
+        defaultView: 'month',
+        //hiddenDays: [ 2, 4 ],        
+        businessHours:true,
+        minTime: "8:00:00",
+        maxTime: '18:00:00',
+        startParam: "10:00:00",
+        slotDuration:'00:20:00',
+        //slotMinutes: 20,
+        allDaySlot: false,
+         lazyFetching: true,
+
+ eventSources: [
+
+        // your event source
+        {
+        url: '/events/allevents',
+        error:function(){alert('Error');},
+        // color: 'yellow',
+        textColor: 'black',
+        editable: true
+        }
+
+    ],
+   
+eventClick: function(event, element, current_event_id) {
+
+        // event.title = "CLICKED!";
+        var eventID=event.id;
+        var urlLink = "/principals/event_edit/"+eventID;
+        $.ajax({
+        url: urlLink,
+        cache: false,
+        success: function(html) {
+             $('#newEventCalenderDIVID').dialog({
+                    modal: true,
+                    width: 'auto',
+                    title: "Create New Event",
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+        }
+
+    });
+
+        $('#calendar').fullCalendar('updateEvent', event);
+
+    },
+
+    
+        
+     dayClick: function(date, allDay, jsEvent, view) {
+                console.log($(this));
+                var urlLink = "/principals/event_new/";
+                var clickDate=date.format();
+                $.ajax({
+                url: urlLink,
+                cache: false,
+                data:{
+                    currentDate: clickDate, abc:"abc"
+                },
+                success: function(html) {
+                     $('#newEventCalenderDIVID').dialog({
+                            modal: true,
+                            width: 'auto',
+                            title: "Event Detail",
+                            open: function () {
+                                
+                                $(this).html(html);
+                            }
+                        }); 
+                       
+                }
+
+            });
+
+
+                // $(this).css('background-color', 'red');
+
+         },
+
+                // $(this).css('background-color', 'white');
+
+    
+          
+    });
+});
+
+
+$(document).on('click','.delete-event-BTN', function(e){
+
+    var myID =$(this).attr('id');
+                var retVal = confirm("Are you sure to delete?");
+                if(retVal){
+                     var urlLink = "/principals/event_delete/"+myID;
+
+                      $.ajax({
+                        url: urlLink ,
+                        cache: false,
+                        success: function(html){
+                           window.location.reload();
+                                       
+                        }
+                    });
+
+                }else{
+                   // alert(retVal);     
+                   return false;
+                }
+
+});
+
+ $(document).ready(function(){
+
+    focusCurrentTab("viewPrincipleEvents","viewPrincipleEventsLiID");
+    focusDashboards();
+
+});
+
+</script>

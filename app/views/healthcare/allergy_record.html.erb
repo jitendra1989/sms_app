@@ -1,0 +1,133 @@
+<p>
+  <a id="healthcare_details" onclick="" class="mg-label-inner-form mg-custom-form-btn ddddddddd" style="color: #297ACC; font-size:0.8em; position: relative;" >Add </a>
+</p><br\>
+
+<div class="mg-scroll-employee-bar">
+  <table class="mg-show-tbl-width batch-tbl mg-adjust-padding width-set-for-purchase-table">  
+    <th><%=t("sl_no")%></th>
+    <th style="width: 120px;"><label class="mg-label mg-tt-width" style="width:185px"><%= t('name') %><span class="required-field">&nbsp;*</span></label></th>
+    <th style="width: 120px;"><label class="mg-label mg-tt-width" style="width:185px"><%= t('what_happened') %><span class="required-field">&nbsp;*</span></label></th>
+    <th style="width: 120px;"><label class="mg-label mg-tt-width" style="width:185px"><%= t('how_severe') %><span class="required-field">&nbsp;*</span></label></th>
+    <th style="width: 120px;"><label class="mg-label mg-tt-width" style="width:185px"><%= t('medication_detail') %><span class="required-field">&nbsp;*</span></label></th>
+    <th><%=t("action")%></th>
+    <%count=0%>
+    <%if @allergy_record.present?%>
+      <%@allergy_record.each do |record|%>
+        <%count=count+1%>
+        <%= hidden_field_tag 'record_id[]' ,record.id,:class=>""%>
+        <tr class="demo-health-div">
+          <div id="finalDueFineDivId">
+            <div class="due-fine-div" id="dueFineDivId">
+              <td><span class="required-incremented-field"><%=count%></span></td>
+              <td class="mg-align-center">
+                <%= text_field_tag "name[#{record.id}]",record.try(:name),:class =>"mg-select-btn allergy-record-id"%><br/>
+              </td>
+              <td class="mg-align-center">
+                <%= text_area_tag "description[#{record.id}]",record.try(:description),:class =>"mg-select-btn allergy-record-id2",:style=>"height: 45px;" %><br/>
+              </td>
+              <td class="mg-align-center">
+                <%= text_field_tag "status[#{record.id}]",record.try(:status),:class =>"mg-select-btn allergy-record-id3"%><br/>
+              </td>
+              <td class="mg-align-center cost-td-class">
+                <%= text_area_tag "medication_detail[#{record.id}]",record.try(:medication_detail),:class =>"mg-select-btn allergy-record-id4",:style=>"height: 45px;"%><br/>
+              </td>
+              <td class="mg-align-center">
+                <a title="Remove" class="remove-library-details mg-icon-btn" style="color: #297ACC;"> <i class="fa fa-trash"></i></a>
+              </td>   
+            </div>
+          </div>
+        </tr>
+      <%end%>
+    <%else%>
+      <tr class="demo-health-div">
+        <div id="finalDueFineDivId">
+          <div class="due-fine-div" id="dueFineDivId">
+            <td><span class="required-incremented-field">1</span></td>
+            <td class="mg-align-center">
+              <%= text_field_tag "newname[1]",nil,:class =>"mg-select-btn allergy-record-id"%><br/>
+            </td>
+            <td class="mg-align-center">
+              <%= text_area_tag "newdescription[1]",nil,:class =>"mg-select-btn allergy-record-id2" ,:style=>"height: 45px;"%><br/>
+            </td>
+            <td class="mg-align-center">
+              <%= text_field_tag "newstatus[1]",nil,:class =>"mg-select-btn allergy-record-id3"%><br/>
+            </td>
+            <td class="mg-align-center cost-td-class">
+              <%= text_area_tag "newmedication_detail[1]",nil,:class =>"mg-select-btn allergy-record-id4" ,:style=>"height: 45px;"%><br/>
+            </td>
+            <td class="mg-align-center">
+              <a title="Remove" class="remove-library-details mg-icon-btn" style="color: #297ACC;"> <i class="fa fa-trash"></i></a>
+            </td>   
+          </div>
+        </div>
+      </tr>
+    <%end%>
+  </table>
+</div>
+
+
+
+<script type="text/javascript">
+  $(document).ready(function(){
+    $.validator.addClassRules("allergy-record-id", {required: true});
+    $.validator.addClassRules("allergy-record-id2", {required: true});
+    $.validator.addClassRules("allergy-record-id3", {required: true});
+    $.validator.addClassRules("allergy-record-id4", {required: true});
+  });
+  
+  $("#healthcare_details").click(function(){
+    var lastRepeatingGroup = $('.demo-health-div').last();
+    var cloned = lastRepeatingGroup.clone();
+    cloned.find('input').val('');
+    cloned.find('textarea').val('');
+ 
+    var last_ids= lastRepeatingGroup.find('.allergy-record-id').attr('id')
+    var data_arr= last_ids.split("_")
+    if (parseInt(data_arr[1]) % 1 === 0)
+    {
+      var data=parseInt(data_arr[1])
+    }else{
+      var data_arr= last_ids.split("_")
+      var data=parseInt(data_arr[1])
+    }
+
+
+
+
+    cloned.insertAfter( lastRepeatingGroup );
+    $(".valid_upto_purchase_new:visible").each(function(index,element){
+        $(this).text(index+1);
+        cloned.find(".valid_upto_purchase_new").attr("id","valid_upto_"+(index+1));
+    });
+
+  $(".required-incremented-field:visible").each(function(index,element){
+      $(this).text(index+1);
+      var data1=data+1
+      cloned.find('.allergy-record-id').attr('id',   "newname_" +  data1);
+      cloned.find('.allergy-record-id').attr('name',   "newname"+"["+data1+"]");
+
+      cloned.find('.allergy-record-id2').attr('id',   "newdescription_" +  data1);
+      cloned.find('.allergy-record-id2').attr('name',   "newdescription"+"["+data1+"]");
+
+      cloned.find('.allergy-record-id3').attr('id',   "newstatus_" +  data1);
+      cloned.find('.allergy-record-id3').attr('name',   "newstatus"+"["+data1+"]");
+
+      cloned.find('.allergy-record-id4').attr('id',   "newmedication_detail_" +  data1);
+      cloned.find('.allergy-record-id4').attr('name',   "newmedication_detail"+"["+data1+"]");
+    });
+  }); 
+
+
+  $(document).on("click", ".remove-library-details", function(e){
+   var total = $('.demo-health-div').length
+   if(total!=1)
+   {
+    $('.demo-health-div').parent('td').parent().remove(); 
+    }
+    $(".required-incremented-field:visible").each(function(index,element){
+          $(this).text(index+1);
+    });
+  });
+
+</script>
+    

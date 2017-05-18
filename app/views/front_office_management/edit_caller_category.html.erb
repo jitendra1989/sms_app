@@ -1,0 +1,29 @@
+<%= form_for :caller_category, :url=>{:action=>"update_caller_category",:id=>@caller_category.id}, :html => {:id => 'editCallerCategoryForm' } do |f| %>
+  <%= f.hidden_field :mg_school_id, :value => session[:current_user_school_id]%>
+  <%= f.hidden_field :updated_by, :value => session[:user_id]%> 
+  <%= f.hidden_field :is_deleted, :value => 0%> 
+
+  <p>
+    <%= f.label :name, t('name') ,:class=>"mg-label"%><span class="required-field"> *</span><br>
+    <%= f.text_field :name   %>
+  </p>
+  <p>
+    <%= f.label :description, t('description') ,:class=>"mg-label"%><br>
+    <%= f.text_area :description   %>
+  </p>
+
+  <p class="mg-p-mgtop">
+    <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("save")%></a>
+    <a class="mg-small-form-btn cancel-form-dialog"><%=t('cancel')%></a>
+  </p>
+<% end %>
+
+<script>
+  $(document).ready(function () {
+    $("#editCallerCategoryForm").validate({
+      rules: {
+        "caller_category[name]": {required: true}
+      }
+    });
+  });
+</script>

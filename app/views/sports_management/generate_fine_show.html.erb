@@ -1,0 +1,113 @@
+<% navigation_add t('generate_fine'),:controller=>'sports_management', :action=>'generate_fine' %>
+<% navigation_add t('show_generate_fine'),:controller=>'sports_management', :action=>'generate_fine_show' %>
+<%= render partial:'sports_left' %>
+
+<h4 class="mg-h4"><%=t('Desciplinary Action Details')%></h4>
+<div>
+<%if @sports_fine.present?%>
+<table border="1" class="mg-showdata-bg mg-tbl-layout" cellspacing="1" cellpadding="1">
+  
+ <% account_data=MgAccount.find_by(:id=>@sports_fine.mg_account_id)  
+     sem_data=MgCourse.find_by(:id=>@sports_fine.mg_batches_id)
+    %>
+
+ <tr>
+        <td class="mg-td-width-half" valign="top"><label class="mg-label"><%=t("account_type")%></label></td>
+        <td class="mg-td-width-half" valign="top"><%=account_data.mg_account_name%></td>
+      </tr>
+      <tr>
+        <td class="mg-td-width-half" valign="top"><label class="mg-label"><%=t("Semester")%></label></td>
+        <td class="mg-td-width-half" valign="top"><%=sem_data.course_name%></td>
+      </tr>
+
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+   		<label class="mg-label mg-rm-text-trans"> <%= t('fine_name')%></label>
+   	 </td>
+   	 <td class="mg-td-width-half" valign="top">
+  		<%= @sports_fine.fine_name %>
+  	 </td>
+ </tr>
+
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+   		<label class="mg-label mg-rm-text-trans"> <%= t('amount')%></label>
+   	 </td>
+   	 <td class="mg-td-width-half" valign="top">
+  		<%= @sports_fine.amount  %>
+  	 </td>
+ </tr>
+
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+   		<label class="mg-label mg-rm-text-trans"> <%= t('description')%></label>
+   	 </td>
+   	 <td class="mg-td-width-half" valign="top">
+  		<%= @sports_fine.description %>
+  	 </td>
+ </tr>
+
+
+
+
+
+
+
+    <table border="1" class="batch-tbl mg-scroll-result-bar" cellspacing="1" cellpadding="1">
+
+
+          
+            <tr>
+              <th> <label class="mg-label"> <%= t('student_name')%></label>
+              </th>
+              <th> <label class="mg-label"> <%= t('class_name')%></label>
+              </th>
+             </tr>
+          
+              <%@student_data.each do |item|%>
+              <%
+                student_list=MgStudent.find_by(:id=>item.mg_student_id)
+                batch=MgBatch.find_by(:id=>student_list.mg_batch_id)
+                course=MgCourse.find_by(:id=>batch.mg_course_id)
+              %>
+              <tr>
+                <td class="mg-td-width-half" valign="top">
+                  <%=student_list.try(:first_name)%> <%=student_list.try(:last_name)%>
+                </td>
+                <td class="mg-td-width-half" valign="top">
+                  <%=batch.try(:name)%>
+                </td>
+              </tr>
+           
+          <%end%>
+
+
+
+
+  </table><br/>
+
+<%=link_to t("edit"),{:controller =>
+ "sports_management", :action => "generate_fine_edit",:id =>@sports_fine.id},:class=>"mg-custom-form-btn"%>
+ <%=link_to t("cancel"),{:controller =>
+ "sports_management", :action => "generate_fine"},:class=>"mg-custom-form-btn"%><br/>
+ 
+ <%else%>
+    <%=link_to t("complain_hostel"),{:controller=>"sports_management",:action=>"generate_fine_new"},:class=>"mg-custom-form-btn"%>
+    <h5>No Complains</h5>
+  <%end%>
+ </div>
+
+ </table><br/>
+ 
+
+ 
+ 
+
+
+<%= render partial: 'application/common_left_close' %>
+
+<script>
+$(document).ready(function(){
+  focusCurrentTab("generate_fineAID","generate_fineLiID");
+});
+</script>

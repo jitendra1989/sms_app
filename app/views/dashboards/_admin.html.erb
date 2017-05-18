@@ -1,0 +1,200 @@
+
+<!-- Sec --><section id="userBodyContentBox">
+
+    <table width=100% border="0" cellspacing="0" cellpadding="0">
+        <tr>
+            <td valign="top" class="userBodyContentBox1">
+                <aside class="userMenuBoxLeft" style="width: 210px;">
+                    <ul class="menuListHome">
+                        <li class="myAccountMenu">Admin</li>
+                        <li id="viewAdminProfileLiID">
+                            <a class="menuItemsActivities" href="#" id="viewAdminProfile">
+                                <div class="setMenu"><i class="fa fa-envelope-o">
+&nbsp;</i>Dashboard<!--<i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i>-->
+                                </div>
+                            </a>
+                        </li>
+                        <li id="viewAdminEventsLiID">
+                            <a class="menuItemsActivities" href="#" id="viewAdminEvents" >
+                                <div class="setMenu"><i class="fa fa-tasks">
+&nbsp;</i><%=t('managestudentcategory')%><!--<i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i>-->
+                                </div>
+                            </a>
+                        </li>
+                        <li id="viewAdminMessagesLiID">
+                            <a class="menuItemsActivities" href="#" id="viewAdminMessages">
+                                <div class="setMenu"><i class="fa fa-envelope">&nbsp;&nbsp;</i>Messages<!--<i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i>-->
+                                </div>
+                            </a>
+                        </li>
+                        
+                        <li id="viewAdminNewsLiID">
+                            <a class="menuItemsActivities" href="#" id="viewAdminNews">
+                                <div class="setMenu"><i class="fa fa-newspaper-o">
+&nbsp;</i>News<!--<i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i> -->
+                                </div>
+                            </a>
+                        </li>
+                   <!--      <li id="viewAdminCalendarLiID">
+                            <a class="menuItemsActivities" href="#" id="viewAdminCalendar">
+                                <div class="setMenu"><i class="fa fa-calendar">&nbsp;&nbsp;</i>Calendar <i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i> -->
+                               <!--  </div>
+                            </a>
+                        </li>
+                        <li id="viewAdminEventLiID">
+                            <a class="menuItemsActivities" href="/events/index/" id="viewAdminEvent">
+                                <div class="setMenu"><i class="fa fa-calendar">&nbsp;&nbsp;</i>Events List<i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i>
+                                </div>
+                            </a>
+                        </li>
+                         <li id="viewAdminEventTypesLiID">
+                            <a class="menuItemsActivities" href="/event_types/index/" id="viewAdminEventTypes">
+                                <div class="setMenu"><i class="fa fa-calendar">&nbsp;&nbsp;</i>Event Types< <i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i>
+                                </div>
+                            </a>
+                        </li>
+                    </ul>     --> 
+                             <li id="viewReportsLiID">
+                            <a class="menuItemsActivities" href="#" id="viewReportsAID" >
+                                <div class="setMenu"><i class="fa fa-tasks">
+&nbsp;</i>Reports<!--<i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i>-->
+                                </div>
+                            </a>
+                        </li>
+                        <li id="viewManageEmployeeCategoryLiID">
+                            <a class="menuItemsActivities" href="/dashboards/manage_employee_category_index" id="viewManageEmployeeCategoryAID" >
+                                <div class="setMenu"><i class="fa fa-tasks">
+&nbsp;</i><%=t('manageemployeecategory')%><!--<i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i>-->
+                                </div>
+                            </a>
+                        </li>
+
+                </aside>
+            </td>
+            <td  valign="top" id="manageAdminCategoryID" class="mg-table-td-main-2">
+              
+            </td>
+        </tr>
+    </table>
+</section>
+<br/>
+<br/>
+
+
+<script type="text/javascript">
+    
+
+ $(document).ready(function(){
+
+        focusDashboards();
+        var urlLink = "/dashboards/admin_mail/";
+        $.ajax({
+            url: urlLink,
+            cache: false,
+            success: function(html) {
+                $("#manageAdminCategoryID").empty();
+                $("#manageAdminCategoryID").append(html);
+
+                $("#viewAdminProfileLiID").addClass("active");
+                $("#viewAdminProfile").addClass("activeMenu");
+
+            }
+        });
+
+
+});
+
+$(document).on("click", "#viewAdminEvents", function(e){
+           $("#viewAdminNewsLiID").removeClass( "active" );
+            $("#viewAdminNews").removeClass( "activeMenu" );
+            $("#viewAdminMessagesLiID").removeClass( "active" ); 
+            $("#viewAdminMessages").removeClass( "activeMenu" );
+            $("#viewAdminProfileLiID").removeClass( "active" );
+            $("#viewAdminProfile").removeClass( "activeMenu" );
+            $("#viewAdminCalendarLiID").removeClass("active");
+            $("#viewAdminCalendar").removeClass("activeMenu");
+
+           $("#viewAdminEventsLiID").addClass( "active" ); 
+           $("#viewAdminEvents").addClass( "activeMenu" );
+           focusDashboards();
+               
+        });
+
+
+
+
+
+$(document).on("click", "#viewAdminProfile", function(e){
+
+            $("#viewAdminEventsLiID").removeClass( "active" );
+            $("#viewAdminEvents").removeClass( "activeMenu" );
+            $("#viewAdminMessagesLiID").removeClass( "active" ); 
+           $("#viewAdminMessages").removeClass( "activeMenu" );
+            $("#viewAdminNewsLiID").removeClass( "active" );
+            $("#viewAdminNews").removeClass( "activeMenu" );
+            $("#viewAdminCalendarLiID").removeClass("active");
+            $("#viewAdminCalendar").removeClass("activeMenu");
+
+          $("#viewAdminProfileLiID").addClass( "active" ); 
+           $("#viewdashboards#AdminProfile").addClass( "activeMenu" );
+                      focusDashboards();
+
+               
+        });
+
+
+
+
+    $(document).on("click", "#viewAdminMessages", function(e){
+            $("#viewAdminEventsLiID").removeClass( "active" );
+            $("#viewAdminEvents").removeClass( "activeMenu" );
+           $("#viewAdminNewsLiID").removeClass( "active" );
+            $("#viewAdminNews").removeClass( "activeMenu" );
+           $("#viewAdminProfileLiID").removeClass( "active" ); 
+           $("#viewAdminProfile").removeClass( "activeMenu" );
+           $("#viewAdminCalendarLiID").removeClass("active");
+            $("#viewAdminCalendar").removeClass("activeMenu");
+
+            $("#viewAdminMessagesLiID").addClass( "active" );
+            $("#viewAdminMessages").addClass( "activeMenu" );
+           focusDashboards();
+
+          
+               
+        });
+    $(document).on("click", "#viewAdminNews", function(e){
+            $("#viewAdminEventsLiID").removeClass( "active" );
+            $("#viewAdminEvents").removeClass( "activeMenu" );
+            $("#viewAdminProfileLiID").removeClass( "active" );
+            $("#viewAdminProfile").removeClass( "activeMenu" );
+            $("#viewAdminMessagesLiID").removeClass( "active" ); 
+            $("#viewAdminMessages").removeClass( "activeMenu" );
+            $("#viewAdminCalendarLiID").removeClass("active");
+            $("#viewAdminCalendar").removeClass("activeMenu");
+
+            $("#viewAdminNewsLiID").addClass( "active" );
+            $("#viewAdminNews").addClass( "activeMenu" );
+
+                     focusDashboards();
+
+               
+        });
+    $(document).on("click", "#viewAdminCalendar", function(e){
+            $("#viewAdminEventsLiID").removeClass( "active" );
+            $("#viewAdminEvents").removeClass( "activeMenu" );
+            $("#viewAdminProfileLiID").removeClass( "active" );
+            $("#viewAdminProfile").removeClass( "activeMenu" );
+            $("#viewAdminMessagesLiID").removeClass( "active" ); 
+            $("#viewAdminMessages").removeClass( "activeMenu" );
+            $("#viewAdminNewsLiID").removeClass( "active" );
+            $("#viewAdminNews").removeClass( "activeMenu" );
+
+            $("#viewAdminCalendarLiID").addClass("active");
+            $("#viewAdminCalendar").addClass("activeMenu");
+
+                     focusDashboards();
+
+               
+        });
+
+</script>

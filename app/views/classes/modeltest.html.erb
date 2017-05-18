@@ -1,0 +1,386 @@
+<!--#<#%= render_breadcrumbs %>-->
+
+<%= render_breadcrumbs :separator => ' >> ' %>
+
+<br/>
+
+<%= button_to 'go', {:controller => "classes", :action => "check"} %>
+===================================courses/modeltest.........
+
+ <h2>Course to Batch Traversing</h2>
+
+<table>
+<!--<#%@course=MgCourse.find(1)%>-->
+<%@course=MgCourse.all%>
+<% @course.each do |course| %>
+<td><%=course.course_name%></td>
+<% course.mg_batches.each do |ba| %>
+				       <tr>
+				       <!-- <td><#%=@course.course_name%></td><br/> -->
+				       <td><%=ba.name%></td>
+				       </tr>
+			<%end%>
+<%end%>
+</table>
+============================================================
+<h2>Batch to Course Traversing</h2>
+<table>
+<%@bat=MgBatch.all%>
+<% @bat.each do |ba| %>
+	     <tr><td><%=ba.mg_course.course_name%></td></tr>
+	     <tr><td><%=ba.name%></td></tr>
+	       
+<%end%>
+</table>
+==============================================================
+<h2>Employee to Category Traversing</h2>
+<table>
+<%@emp=MgEmployee.find(51)%>
+<!--<#% @emp.each do |emp| %>-->
+	     <tr><td><%=@emp.mg_employee_category.category_name%></td></tr>
+	     <tr><td><%=@emp.first_name%></td></tr>
+	       
+
+</table>
+==============================================================
+============================================================
+
+ <h2>Category to Employee Traversing</h2>
+
+<table>
+<!--<#%@course=MgCourse.find(1)%>-->
+<%@employeecategory=MgEmployeeCategory.all%>
+<% @employeecategory.each do |employeecategory| %>
+<td><%=employeecategory.category_name%></td>
+<% employeecategory.mg_employees.each do |ba| %>
+				       <tr>
+				       <!-- <td><#%=@course.course_name%></td><br/> -->
+				       <td><%=ba.first_name%></td>
+				       </tr>
+			<%end%>
+<%end%>
+</table>
+==============================================================
+<h2>Employee to Department Traversing</h2>
+<table>
+<%@emp=MgEmployee.find(51)%>
+<!--<#% @emp.each do |emp| %>-->
+	     <tr><td><%=@emp.mg_employee_department.department_name%></td></tr>
+	     <tr><td><%=@emp.first_name%></td></tr>
+	       
+
+</table>
+============================================================
+
+ <h2>Department to Employee Traversing</h2>
+
+<table>
+<!--<#%@course=MgCourse.find(1)%>-->
+<%@employeedepartment=MgEmployeeDepartment.all%>
+<% @employeedepartment.each do |employeedepartment| %>
+<td><%=employeedepartment.department_name%></td>
+<% employeedepartment.mg_employees.each do |ba| %>
+				       <tr>
+				       <!-- <td><#%=@course.course_name%></td><br/> -->
+				       <td><%=ba.first_name%></td>
+				       </tr>
+			<%end%>
+<%end%>
+</table>
+==============================================================
+<h2>Employee to Position Traversing</h2>
+<table>
+<%@emp=MgEmployee.find(51)%>
+<!--<#% @emp.each do |emp| %>-->
+	     <tr><td><%=@emp.mg_employee_position.position_name%></td></tr>
+	     <tr><td><%=@emp.first_name%></td></tr>
+	       
+
+</table>
+==============================================================
+============================================================
+
+ <h2>Position to Employee Traversing</h2>
+
+<table>
+<!--<#%@course=MgCourse.find(1)%>-->
+<%@employeeposition=MgEmployeePosition.all%>
+<% @employeeposition.each do |employeeposition| %>
+<td><%=employeeposition.position_name%></td>
+<% employeeposition.mg_employees.each do |ba| %>
+				       <tr>
+				       <!-- <td><#%=@course.course_name%></td><br/> -->
+				       <td><%=ba.first_name%></td>
+				       </tr>
+			<%end%>
+<%end%>
+</table>
+==============================================================
+<h2>Employee to User Traversing</h2>
+<table>
+<%@emp=MgEmployee.find(51)%>
+<!--<#% @emp.each do |emp| %>-->
+	     <tr><td><%=@emp.mg_user.user_name%></td></tr>
+	     <tr><td><%=@emp.first_name%></td></tr>
+	       
+
+</table>
+============================================================
+
+ <h2>User to Employee Traversing</h2>
+
+<table>
+<!--<#%@course=MgCourse.find(1)%>-->
+<%@user=MgUser.all%>
+<% @user.each do |user| %>
+<td><%=user.user_name%></td>
+<% user.mg_employees.each do |ba| %>
+				       <tr>
+				       <!-- <td><#%=@course.course_name%></td><br/> -->
+				       <td><%=ba.first_name%></td>
+				       </tr>
+			<%end%>
+<%end%>
+</table>
+==============================================================
+<h2>Employee to School Traversing</h2>
+<table>
+<%@emp=MgEmployee.find(51)%>
+<!--<#% @emp.each do |emp| %>-->
+	     <tr><td><%=@emp.mg_school.school_name%></td></tr>
+	     <tr><td><%=@emp.first_name%></td></tr>
+	       
+
+</table>
+============================================================
+
+ <h2>School to Employee Traversing</h2>
+
+<table>
+<!--<#%@course=MgCourse.find(1)%>-->
+<%@school=MgSchool.all%>
+<% @school.each do |school| %>
+<td><%=school.school_name%></td>
+<% school.mg_employees.each do |ba| %>
+				       <tr>
+				       <!-- <td><#%=@course.course_name%></td><br/> -->
+				       <td><%=ba.first_name%></td>
+				       </tr>
+			<%end%>
+<%end%>
+</table>
+======================================================================
+<h2>Student to Batch Traversing</h2>
+<table>
+<%@stu=MgStudent.find(1)%>
+<!--<#% @emp.each do |emp| %>-->
+	     <tr><td><%=@stu.mg_batch.name%></td></tr>
+	     <tr><td><%=@stu.first_name%></td></tr>
+	       
+
+</table>
+============================================================
+
+ <h2>Batch to Student Traversing</h2>
+
+<table>
+<!--<#%@course=MgCourse.find(1)%>-->
+<%@batch=MgBatch.all%>
+<% @batch.each do |batch| %>
+<td><%=batch.name%></td>
+<% batch.mg_students.each do |ba| %>
+				       <tr>
+				       <!-- <td><#%=@course.course_name%></td><br/> -->
+				       <td><%=ba.first_name%></td>
+				       </tr>
+			<%end%>
+<%end%>
+</table>
+======================================================================
+<!--<h2>Student to StudentCategory Traversing</h2>
+<table>
+<#%@stu=MgStudent.find(1)%>
+<#% @emp.each do |emp| %>
+
+	     <tr><td><#%=@stu.mg_student_category.name%></td></tr>
+	     <tr><td><#%=@stu.first_name%></td></tr>
+	       
+
+</table>
+============================================================
+
+ <h2>StudentCategory to Student Traversing</h2>
+
+<table>
+<#%@course=MgCourse.find(1)%>
+<#%@studCat=MgStudentCatagory.all%>
+<#% @studCat.each do |studCat| %>
+<td><#%=studCat.name%></td>
+<#% studCat.mg_students.each do |ba| %>
+				       <tr>
+				       <td><#%=@course.course_name%></td><br/>
+				       <td><#%=ba.first_name%></td>
+				       </tr>
+			<#%end%>
+<#%end%>
+</table>-->
+======================================================================
+<h2>Student to User Traversing</h2>
+<table>
+<%@stu=MgStudent.find(1)%>
+<!--<#% @emp.each do |emp| %>-->
+
+	     <tr><td><%=@stu.mg_user.user_name%></td></tr>
+	     <tr><td><%=@stu.first_name%></td></tr>
+</table>
+======================================================================
+ <h2>User to Student Traversing</h2>
+<table>
+<!--<#%@course=MgCourse.find(1)%>-->
+<%@user=MgUser.all%>
+<% @user.each do |user| %>
+<td><%=user.user_name%></td>
+<% user.mg_students.each do |ba| %>
+				       <tr>
+				       <!-- <td><#%=@course.course_name%></td><br/> -->
+				       <td><%=ba.first_name%></td>
+				       </tr>
+			<%end%>
+<%end%>
+</table>
+======================================================================
+<h2>Student to School Traversing</h2>
+<table>
+<%@stu=MgStudent.find(1)%>
+<!--<#% @emp.each do |emp| %>-->
+
+	     <tr><td><%=@stu.mg_school.school_name%></td></tr>
+	     <tr><td><%=@stu.first_name%></td></tr>
+	       
+
+</table>
+======================================================================
+ <h2>School to Student Traversing</h2>
+<table>
+<!--<#%@course=MgCourse.find(1)%>-->
+<%@school=MgSchool.all%>
+<% @school.each do |school| %>
+<td><%=school.school_name%></td>
+<% school.mg_students.each do |ba| %>
+				       <tr>
+				       <!-- <td><#%=@course.course_name%></td><br/> -->
+				       <td><%=ba.first_name%></td>
+				       </tr>
+			<%end%>
+<%end%>
+</table>
+========================================================================
+<h2>Guardian to User Traversing</h2>
+<table>
+<%@guar=MgGuardian.find(1)%>
+<!--<#% @emp.each do |emp| %>-->
+			
+	     <tr><td><%=@guar.mg_user.user_name%></td></tr>
+	     <tr><td><%=@guar.first_name%></td></tr>
+	       
+
+</table>
+============================================================
+
+ <h2>User to Guardian Traversing</h2>
+
+<table>
+<!--<#%@course=MgCourse.find(1)%>-->
+<%@user=MgUser.all%>
+<% @user.each do |user| %>
+<td><%=user.user_name%></td>
+<% user.mg_guardians.each do |ba| %>
+				       <tr>
+				       <!-- <td><#%=@course.course_name%></td><br/> -->
+				       <td><%=ba.first_name%></td>
+				       </tr>
+			<%end%>
+<%end%>
+</table>
+========================================================================
+<h2>Guardian to School Traversing</h2>
+<table>
+<%@guar=MgGuardian.find(1)%>
+<!--<#% @emp.each do |emp| %>-->
+
+	     <tr><td><%=@guar.mg_school.school_name%></td></tr>
+	     <tr><td><%=@guar.first_name%></td></tr>
+	       
+
+</table>
+============================================================
+
+ <h2>School to Guardian Traversing</h2>
+
+<table>
+<!--<#%@course=MgCourse.find(1)%>-->
+<%@school=MgSchool.all%>
+<% @school.each do |school| %>
+<td><%=school.school_name%></td>
+<% school.mg_guardians.each do |ba| %>
+				       <tr>
+				       <!-- <td><#%=@course.course_name%></td><br/> -->
+				       <td><%=ba.first_name%></td>
+				       </tr>
+			<%end%>
+<%end%>
+</table>
+========================================================================
+<h2>Guardian to Student Traversing</h2>
+<table>
+<%@guar=MgGuardian.find(1)%>
+<!--<#% @emp.each do |emp| %>-->
+
+	     <tr><td><%=@guar.mg_student.first_name%></td></tr>
+	     <tr><td><%=@guar.first_name%></td></tr>
+	       
+
+</table>
+============================================================
+
+ <h2>Student to Guardian Traversing</h2>
+
+<table>
+<!--<#%@course=MgCourse.find(1)%>-->
+<%@student=MgStudent.all%>
+<% @student.each do |student| %>
+<td><%=student.first_name%></td>
+<% student.mg_guardians.each do |ba| %>
+				       <tr>
+				       <!-- <td><#%=@course.course_name%></td><br/> -->
+				       <td><%=ba.first_name%></td>
+				       </tr>
+			<%end%>
+<%end%>
+</table>
+========================================================================
+<h2>User to School Traversing</h2>
+<table>
+<%@user=MgUser.find(3)%>
+<!--<#% @emp.each do |emp| %>-->
+			
+	     <tr><td><%=@user.mg_school.school_name%></td></tr>
+	     <tr><td><%=@user.user_name%></td></tr>
+</table>
+============================================================
+
+ <h2>School to User Traversing</h2>
+
+<table>
+<!--<#%@course=MgCourse.find(1)%>-->
+<%@school=MgSchool.all%>
+<% @school.each do |school| %>
+<td><%=school.school_name%></td>
+<% school.mg_users.each do |ba| %>
+				       <tr>
+				       <!-- <td><#%=@course.course_name%></td><br/> -->
+				       <td><%=ba.user_name%></td>
+				       </tr>
+			<%end%>
+<%end%>
+</table>

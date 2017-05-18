@@ -1,0 +1,80 @@
+
+
+<%= form_for :guardian_student_transport ,  :url=>{:action=>"transport_facility_update",:controller=>"dashboards",:id=>@datas.id}, :html=>{:id=>'route_form'} do |f| %>
+
+        
+      
+         
+        
+<table class="pop-up-inner-text mg-tbl-margin mg-show-tbl-width">
+      
+    <tr>
+      <td class="mg-td-width-one-third">
+      
+        <label class="mg-label"  for="selectRoute"><%= t ('select_route') %><span class="required-field">&nbsp;*</span></label><br/>
+
+        <%@data=MgTransport.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:route_name,:id)%>
+      
+
+               <%=select_tag :mg_routes_ids ,options_for_select(@data,:selected=>@datas.mg_transport_id),:prompt=>"Select"%><br>
+               
+      </td>
+    </tr>
+    
+     <tr>
+      <td class="mg-td-width-one-third">
+      
+        <label class="mg-label"  for="selectpickupPoint"><%= t ('select_pickup_point') %><span class="required-field">&nbsp;*</span></label><br/>
+     
+        <div id="transport_demoss">
+       <% @transport_data_arry=MgTransportTimeManagement.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:bus_stop_name,:id)%>
+
+         <%=select_tag :mgs_transports_id ,options_for_select(@transport_data_arry,:selected=>@datas.mg_transport_time_management_id),:prompt=>"Select"%><br>
+         </div>
+         
+      </td>
+    </tr>
+
+      
+    
+</table>
+  
+ <br/> <p class="mg-custom-labels">
+<%= submit_tag t("save"),:class=>"mg-small-form-btn"%>
+ <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+ </p>
+ 
+<%end%>
+
+
+
+
+<script>
+// $("#students_ids").change(function(){
+//     alert("adsfhaa")
+//     $(".demooooooooooo").toggle();
+//   });
+
+ 
+// function select_pickup_point(data)
+// {
+//   var urlLink = "/dashboards/select_stop_name";
+
+// $.ajax({
+// url: urlLink,
+//              cache: false,
+//              data:{"id":data},
+//              success: function(data){
+
+
+//               $("#transport_demoss").empty();
+//               $("#transport_demoss").append(data);
+
+               
+//              }
+
+
+// });
+
+// }
+</script>

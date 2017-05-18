@@ -1,0 +1,44 @@
+
+<%= render partial: 'dashboards/cloud_admin_dashboard_left' %>
+<h4 class="mg-h4"><%= t('edit_help_document') %></h4>
+<div class="mg-custom-labels">
+<%= form_for :help_document, url: help_document_update_path(@help_document.id), :html => {
+                            :id => 'helpDocumentEditID' }, id: @help_document.id, method: :patch do |f| %>
+<%= f.hidden_field :is_deleted, :value => 0 %>
+<p>
+<label class="mg-label" style="width:140px"><%= t('select_school') %><span class="required-field">&nbsp;*</span></label>
+<br/>
+<%= f.collection_select(:mg_school_id,MgSchool.where(:is_deleted=>0), :id, :school_name,{:include_blank => t("select")},:class => "help-document-school-class")%>
+</p>
+
+<p>
+		<label class="mg-label" style="width:140px"><%= t('user_type') %><span class="required-field">&nbsp;*</span></label>
+		<br/>
+		<%= f.select :user_type, options_for_select([[t("Select"), ""], [t("principal"), "principal"], [t("admin"), "admin"], [t("employee"), "employee"], [t("student"), "student"], [t("guardian"), "guardian"]]) %>
+</p>
+<p>
+   <label class="mg-label" style="width:140px"><%= t('document_name') %><span class="required-field">&nbsp;*</span></label>
+   <br/>
+   <%= f.text_field :name,:class=>"mg-text-field" %>
+ </p>
+ <p>
+   <label class="mg-label" style="width:140px"><%= t('file') %></label><br/>
+   <%= f.file_field :document ,:class=>"mg-text-field" %>
+ </p>
+  <p>
+    <%= f.submit t('save'),:class=>"help_document-managements-form-btn mg-small-form-btn" %>
+    <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+  </p>
+<% end %>
+</div>
+<%= render partial: 'application/common_left_close' %>
+
+
+<script type="text/javascript">
+
+ $(document).ready(function() {
+     focusCurrentTab("viewCloudAdminDashboardAddHelpDocument","viewCloudAdminDashboardAddHelpDocumentLiID");
+    focusDashboards();
+ });
+
+</script>

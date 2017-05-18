@@ -1,0 +1,47 @@
+<%=form_for :student_fee_data,:url=>{:controller=>'admission_managements',:action=>'pay_fees'} do |f|%>
+  <%= hidden_field_tag :mg_batch_id, params[:batch_id] %>
+  <table class="mg-custom-labels batch-tbl mg-tbl-margin table-batchs-tbl">
+    <tr class="subject-table-header">
+      <th><%= t('fee_category') %></th>
+       <th><%= t('particular') %></th>
+      <th ><%= t('amount') %></th> 
+      </tr>  
+      <%@amounts=0%>
+      <% @particular_data.each do |f| %> 
+       <%
+
+       particular_data=MgParticularType.find_by(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id],:id=>f.mg_particular_type_id)
+      category_data=MgFeeCategory.find_by(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id],:id=>f.fee_category)
+       %>
+        <tr>          
+          <td><%= category_data.name %></td>
+            <%=hidden_field_tag 'data[]',f.fee_category%>
+          <%=hidden_field_tag 'data1[]',particular_data.particular_name%>
+          <td><%=particular_data.particular_name %></td>
+          <td><%= f.amount %></td>   
+          <%=hidden_field_tag 'data2[]',f.amount%>
+           <%#=f.hidden_field :data2[],f.amount%>
+          <%@amounts+=f.amount.to_i%>
+        </tr>        
+      <% end %> 
+        <%=hidden_field_tag 'student_addmission_id',params[:student_id]%>
+          <%=hidden_field_tag 'amount',@amounts%>
+      <tr>
+        <td></td>
+        <td>
+          <label><%=t('total_amount')%></label>
+        </td>
+        <td><b><%= @amounts %></b></td>
+      </tr> 
+  </table>    
+
+  <p class="mg-p-mgtop">
+    <%# hidden_field_tag :student_id,:value=>@student_admission_object.id %>   
+    <%#= link_to t("pay_fees"),{:controller=>'admission_managements',:action=>'pay_fees', :student_addmission_id=>params[:student_id],:amount=>@amounts}, :class=>"submit mg-small-form-btn mg-custom-labels" %>
+    <%if @amounts.to_i>0%>
+     <a onclick="$(this).closest('form').submit()" class="submit mg-small-form-btn"><%=t("pay_fee")%></a>
+     <%end%>
+    <%=link_to t('cancel'),:back,:class=>"mg-small-form-btn" %>
+  </p>  
+
+  <%end%>

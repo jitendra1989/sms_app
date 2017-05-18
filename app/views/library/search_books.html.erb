@@ -1,0 +1,589 @@
+
+<h4 class="mg-h4"><%= t('books_details')%></h4>
+
+<%if @data.length>0%>
+
+
+ <table  cellspacing="0" style="padding:0; border-collapse:collapse;"> 
+
+
+
+ <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="resource_category"><%=t('resource_category')%></label><br/>
+        <%resource_category=MgResourceCategory.find(@data[0].mg_resource_category_id)%>
+        <%= text_field_tag  :resource_category,resource_category.name,:readonly=>true,:class=>"mg-text-field"%>
+      </td>
+    </tr>
+    <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="resource_type"><%=t('resource_type')%></label><br/>
+        <%resource_type=MgResourceType.find(@data[0].mg_resource_type_id)%>
+        <%= text_field_tag  :resource_type,resource_type.name,:readonly=>true,:class=>"mg-text-field"%>
+      </td>
+    </tr>
+    <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="title"><%=t('title')%></label><br/>
+        <%= text_field_tag  :title,@data[0].name,:readonly=>true,:class=>"mg-text-field"%>
+      </td>
+    </tr>
+    <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="author"><%=t('author')%></label><br/>
+        <%= text_field_tag  :author,@data[0].author,:readonly=>true,:class=>"mg-text-field"%>
+      </td>
+    </tr>
+    <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="volume"><%=t('volume')%></label><br/>
+        <%= text_field_tag  :volume,@data[0].volume,:readonly=>true,:class=>"mg-text-field"%>
+      </td>
+    </tr>
+    <%if @value=="issue"%>
+    <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="year"><%=t('issue_date')%></label><br/>
+        <%if @data[0].issued_date.nil?%>
+        <%= text_field_tag  :issue_date,Date.today,:readonly=>true,:class=>"mg-text-field"%>
+        <%else%>
+        <%= text_field_tag  :issue_date,@data[0].issued_date,:readonly=>true,:class=>"mg-text-field"%>
+        <%end%>
+      </td>
+    </tr>
+    
+    
+<%inventory_data=MgResourceInventory.find_by(:resource_number=>@datas)%>
+<%if inventory_data.issued_to.present? && inventory_data.issued_to!=0%>
+<%if inventory_data.user_type=="employee"%>
+<%isuuable_data=MgResourceType.find(@data[0].mg_resource_type_id)%>
+<%
+max_days=isuuable_data.max_borrow_day
+today_date=Date.today
+ due_date=today_date+max_days
+     no_of_days=max_days+1
+
+
+  weekday=[0,1,2,3,4,5,6]
+     my_days = MgEmployeeWeekday.where(:mg_school_id=>session[:current_user_school_id],:is_deleted=>0).pluck(:weekday)
+     my_days=weekday-my_days
+
+        $dayCount=0
+        holiday=0
+      for i in 0...no_of_days
+                date=Date.today+i
+              
+                arr = date.to_s.split('-');
+                month= arr[1].to_i
+                year=arr[0].to_i
+                day =arr[2].to_i
+                $dayCheck= Date.new(year.to_i,month.to_i,day.to_i)+$dayCount
+                dayName=$dayCheck.strftime("%w")
+          
+                    if my_days.include?(dayName.to_i)   
+                      holiday +=1 
+                    end
+                      $dayCount +=1
+                  puts "holiday===>#{holiday}"
+
+               
+      end  
+
+%>
+<tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="publication"><%=t('issue_until')%></label><br/>
+        
+        <%total_days=Date.today+isuuable_data.max_borrow_day%>
+        <%
+       daysss=total_days+holiday
+
+       for i in 0...7
+        if my_days.include?(daysss.strftime("%w").to_i)
+        daysss +=1
+        else
+        end
+        end
+        %>
+        <%= text_field_tag  :issue_until,@data[0].due_date,:readonly=>true,:class=>"mg-text-field"%>
+      </td>
+    </tr>
+<%id_data=MgEmployee.find(inventory_data.issued_to)%>
+
+<%elsif inventory_data.user_type=="student"%>
+        <%isuuable_data=MgResourceType.find(@data[0].mg_resource_type_id)%>
+
+<%id_data=MgStudent.find(inventory_data.issued_to)%>
+
+<%
+
+     student_infor=MgStudent.find_by(:id=>id_data.id)
+     batch_infor=MgBatch.find_by(:id=>student_infor.mg_batch_id)
+     course_info=MgCourse.find_by(:id=>batch_infor.mg_course_id)
+
+
+  weekday=["0","1","2","3","4","5","6"]
+     my_days = MgWeekday.where(:mg_school_id=>session[:current_user_school_id],:is_deleted=>0,:mg_wing_id=>course_info.mg_wing_id).pluck(:weekday)
+     puts my_days.inspect
+
+     my_days=weekday-my_days
+
+     puts my_days.inspect
+
+     puts params[:working_id]
+max_days=isuuable_data.max_borrow_day
+
+     no_of_days=max_days+1
+
+
+        $dayCount=0
+        holiday=0
+      for i in 0...no_of_days
+                date=Date.today+i
+              
+                arr = date.to_s.split('-');
+                month= arr[1].to_i
+                year=arr[0].to_i
+                day =arr[2].to_i
+
+                $dayCheck= Date.new(year.to_i,month.to_i,day.to_i)+$dayCount
+                dayName=$dayCheck.strftime("%w")
+           
+                    if my_days.include?(dayName)   
+                     
+                      holiday +=1
+                      
+                    end
+                 
+                      $dayCount +=1
+
+                  puts "holiday===>#{holiday}"
+
+               
+      end  
+
+
+
+%>
+<tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="publication"><%=t('issue_until')%></label><br/>
+        <%total_days=Date.today+isuuable_data.max_borrow_day%>
+
+        <%
+       daysss=total_days+holiday
+
+       for i in 0...7
+        if my_days.include?(daysss.strftime("%w").to_i)
+        daysss +=1
+        else
+        end
+        end
+        %>
+        <%= text_field_tag  :issue_until,@data[0].due_date,:readonly=>true,:class=>"mg-text-field"%>
+      </td>
+    </tr>
+
+<%end%>
+<tr>
+<td><br/>
+<%="The Book is already issued to"+" "+inventory_data.user_type+" "+"#{id_data.first_name} #{id_data.last_name}"%>
+</td>
+</tr>
+<%else%>
+    <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="publication"><%=t('employee/student_id')%></label><br/>
+        <%= text_field_tag  :employee_student_id,nil,:class=>"mg-text-field"%>
+      </td>
+    </tr>
+        <%=hidden_field_tag :library_category_id_hidden,@data[0].mg_resource_type_id%>
+        <%=hidden_field_tag :library_id_hidden,@data[0].id%>
+
+<%end%>
+</table>
+
+ <br/>
+        <%resources_types=MgResourceType.find(@data[0].mg_resource_type_id)%>
+
+
+
+ <%if inventory_data.issued_to.present? && inventory_data.issued_to!=0%>
+<%else%>
+ 
+
+   <input type="submit" value="Submit" id="submitlibraryFormBtnId" class="mg-small-form-btn" /><br/>
+   
+   <%end%>
+
+   <%elsif @value=="renew"%>
+<%inventory_data=MgResourceInventory.find_by(:resource_number=>@datas)%>
+        <%isuuable_data=MgResourceType.find(@data[0].mg_resource_type_id)%>
+
+<tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="year"><%=t('renewal_date')%></label><br/>
+        <%= text_field_tag  :renewal_date,Date.today,:readonly=>true,:class=>"mg-text-field"%>
+      </td>
+    </tr>
+     <%if @data[0].user_type=="student"%>
+
+<%id_data=MgStudent.find(inventory_data.issued_to)%>
+
+
+<%
+
+     student_infor=MgStudent.find_by(:id=>id_data.id)
+     batch_infor=MgBatch.find_by(:id=>student_infor.mg_batch_id)
+     course_info=MgCourse.find_by(:id=>batch_infor.mg_course_id)
+
+
+  weekday=["0","1","2","3","4","5","6"]
+     my_days = MgWeekday.where(:mg_school_id=>session[:current_user_school_id],:is_deleted=>0,:mg_wing_id=>course_info.mg_wing_id).pluck(:weekday)
+     puts my_days.inspect
+
+     my_days=weekday-my_days
+
+     puts my_days.inspect
+
+     puts params[:working_id]
+max_days=isuuable_data.renewal_period
+
+%>
+       <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="publication"><%=t('renewal_until')%></label><br/>
+        <%isuuable_data=MgResourceType.find(@data[0].mg_resource_type_id)%>
+        <%total_count=Date.today+isuuable_data.renewal_period%>
+       <%
+       daysss=total_count
+
+       for i in 0...7
+        if my_days.include?(daysss.strftime("%w"))
+        daysss +=1
+        else
+        end
+        end
+        %>
+        <%#if my_days.include?()%>
+        <!-- end -->
+        <%= text_field_tag  :renewl_until,daysss,:readonly=>true,:class=>"mg-text-field"%>
+      </td>
+    </tr>
+      <%elsif @data[0].user_type=="employee" %>
+
+
+      <%
+max_days=isuuable_data.renewal_period
+today_date=Date.today
+ due_date=today_date+max_days
+     no_of_days=max_days+1
+
+
+  weekday=[0,1,2,3,4,5,6]
+     my_days = MgEmployeeWeekday.where(:mg_school_id=>session[:current_user_school_id],:is_deleted=>0).pluck(:weekday)
+     my_days=weekday-my_days
+
+        
+%>
+
+      <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="publication"><%=t('renewal_until')%></label><br/>
+        <%isuuable_data=MgResourceType.find(@data[0].mg_resource_type_id)%>
+        <%total_count=Date.today+isuuable_data.renewal_period%>
+       
+  <%
+       daysss=total_count
+
+       for i in 0...7
+        if my_days.include?(daysss.strftime("%w").to_i)
+        daysss +=1
+        else
+        end
+        end
+        %>
+
+        <%= text_field_tag  :renewl_until,daysss,:readonly=>true,:class=>"mg-text-field"%>
+      </td>
+    </tr>
+      <%end%>
+   
+    <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="publication"><%=t('renewal_count')%></label><br/>
+        
+        
+        <%= text_field_tag  :publication,@data[0].renewal_count,:readonly=>true,:class=>"mg-text-field"%>
+      </td>
+    </tr>
+    <%if @data[0].issued_to.present? && @data[0].issued_to!=0 %>
+    <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="publication"><%=t('borrowed_id')%></label><br/>
+       
+      <%if @data[0].user_type=="student"%>
+      <%student_renew_data=MgStudent.find(@data[0].issued_to)%>
+      <%user_data=MgUser.find(student_renew_data.mg_user_id)%>
+      <%elsif @data[0].user_type=="employee" %>
+      <%employee_renew_data=MgEmployee.find(@data[0].issued_to)%>
+      <%user_data=MgUser.find(employee_renew_data.mg_user_id)%>
+      <%end%>
+        <%= text_field_tag  :publication,user_data.user_name,:readonly=>true,:class=>"mg-text-field"%>
+      </td>
+    </tr>
+    <%else%>
+    <tr>
+    <td>
+    <%="The Book Is Not Issued "%>
+    </td>
+    </tr>
+    <%end%>
+    </table>
+    <%if @data[0].issued_to.present? && @data[0].issued_to!=0 %>
+    <%isuuable_datass=MgResourceType.find(@data[0].mg_resource_type_id)%>
+      <%if @data[0].renewal_count.to_i<=isuuable_datass.max_renewals_allowed.to_i-1%>
+     <input type="submit" value="Renew" id="<%=@data[0].id%>" 
+class="renewsubmitslibrarysFormBtnId mg-small-form-btn" /><br/>
+<%else%>
+
+
+<input type="submit" value="Renew" 
+class="maxRenewalsallowed mg-small-form-btn" /><br/>
+<%end%>
+<%end%>
+   <%else%>
+<tr>
+      <td class="mg-td-width-one-third">
+        
+       
+      <%if @data[0].user_type=="student"%>
+      <label class="mg-label" for="publication"><%=t('borrowed_id')%></label><br/>
+      <%student_renew_data=MgStudent.find(@data[0].issued_to)%>
+      <%user_data=MgUser.find(student_renew_data.mg_user_id)%>
+      <%= text_field_tag  :publication,user_data.user_name,:readonly=>true,:class=>"mg-text-field"%>
+      <%elsif @data[0].user_type=="employee"%>
+      <label class="mg-label" for="publication"><%=t('borrowed_id')%></label><br/>
+      <%employee_renew_data=MgEmployee.find(@data[0].issued_to)%>
+
+
+      <%user_data=MgUser.find(employee_renew_data.mg_user_id)%>
+     <%= text_field_tag  :publication,user_data.user_name,:readonly=>true,:class=>"mg-text-field"%>
+      <%else%>
+        <%="The Book Is Not Issued"%>
+      <%end%>
+        
+      </td>
+
+    </tr>
+    <%if @data[0].issued_to.present? && @data[0].issued_to!=0 %>
+     <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="year"><%=t('is_there_a_delay')%></label>
+        <%= check_box_tag  :is_there_a_delay%>
+      </td>
+    </tr>
+    <tr><td>
+       <div id="librarymanagementdata" class="library-Div-Class" style="display: none;">
+       <label class="mg-label mg-label-text-transform-none" for="repairCompletionDate"><%= t ('no_of_days_delayed') %></label><br/>
+      </div>
+      <div id="librarymanageme" class="library-Div-Class" style="display: none;">
+          <%= text_field_tag :no_of_days_delayed,nil,:class=>"mg-text-field",:onchange=>"noofdaysdelayed(this.value)"%>
+     <div id="no_of_days_delayed_error" style="color:#e9573f">
+       
+     </div>
+
+           <%isuuable_dats=MgResourceType.find(@data[0].mg_resource_type_id)%>
+          <%=hidden_field_tag :amount_per_day,isuuable_dats.fine_per_day%>
+     </div>
+     <%if @data[0].user_type=="student"%>
+ 
+
+     <div id="lirarymanagementdata" class="library-Div-Class" style="display: none;">
+       <label class="mg-label" for="repairCompletionDate"><%= t ('fine_amount') %></label><br/>
+      </div>
+      <div id="lrarymanageme" class="library-Div-Class" style="display: none;">
+          <%= text_field_tag :fine_amount_data,nil,:readonly=>true,:class=>"mg-text-field"%>
+     
+     </div>
+     <div id="lirary456managementdata" class="library-Div-Class" style="display: none;">
+       <label class="mg-label" for="repairCompletionDate"><%= t ('account') %></label><br/>
+      </div>
+      <%
+    account=Array.new
+    account.push("Central","central")
+    accounts=MgAccount.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:mg_account_name,:id)
+    accounts.insert(0,account)
+  %>
+      <div id="lrar123ymanageme" class="library-Div-Class" style="display: none;">
+          <%= select_tag :mg_account_id,options_for_select(accounts),:prompt=>"Select"%>
+     
+     </div>
+     <%end%>
+    </td></tr>
+     <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="year"><%=t('is_it_returned_in_the_as-was-taken')%></label>
+        <%= check_box_tag  :is_it_returned_in_the_as_was_taken,1  ,:checked=>true%>
+      </td>
+    </tr>
+    <tr><td>
+       <div id="librymanagementdata" class="librarys-Divs-Class" style="display: none;">
+       <label class="mg-label mg-label-text-transform-none" for="extentOfDamage"><%= t ('extent_of_damage') %></label><br/>
+      </div>
+      <div id="librarymanage" class="librarys-Divs-Class" style="display: none;">
+          <%= text_area_tag :extent_of_damage,nil,:class=>"mg-text-field"%>
+     
+     </div>
+      <%if @data[0].user_type=="student"%>
+     <div id="librymagementdata" class="librarys-Divs-Class" style="display: none;">
+       <label class="mg-label" for="extentOfDamage"><%= t ('fine_amount') %></label><br/>
+      </div>
+      <div id="librarage" class="librarys-Divs-Class" style="display: none;">
+          <%= text_field_tag :extent_of_damage_amount,nil,:class=>"mg-text-field",:onchange=>"extentofdamage(this.value)"%>
+     
+     </div>
+     <div id="damaged_amount_error" style="color:#e9573f"></div>
+     <%end%>
+    </td></tr>
+    <%if @data[0].user_type=="student"%>
+     <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="year"><%=t('is_fine_applicable')%></label>
+       <%= check_box_tag  :is_fine_applicable%>
+      </td>
+    </tr>
+    <tr><td>
+       <div id="lirymanagementata" class="librarys-Div-Classes" style="display: none;">
+       <label class="mg-label" for="fineAmount"><%= t ('fine_amount') %></label><br/>
+      </div>
+      <div id="librymnage" class="librarys-Div-Classes" style="display: none;">
+          <%= text_field_tag :fine_amount,nil,:readonly=>true,:class=>"mg-text-field"%>
+     
+     </div>
+    </td></tr>
+    <%end%>
+    <%end%>
+
+      </table>
+       <%if @data[0].issued_to.present? && @data[0].issued_to!=0 %>
+       <%if @data[0].user_type=="student"%>
+     <input type="submit" value="Submit" id="<%=@data[0].id%>" 
+class="returnsubmitlibraryFormBtnId mg-small-form-btn" /><br/>
+       <%elsif @data[0].user_type=="employee"%>
+       <input type="submit" value="Submit" id="<%=@data[0].id%>" 
+class="employeereturnsubmitlibraryFormBtnId mg-small-form-btn" /><br/>
+        <%end%>
+<%end%>
+
+   <%end%>
+<%#= will_paginate @data, :container => false %>
+<%else%>
+<%="No Records is Present"%>
+<%end%>
+<script>
+$(document).ready(function(){
+
+dateFormatStr =  getJsDateFormat();
+var issue_date =  $.datepicker.formatDate(dateFormatStr,new Date($('#issue_date').val()))
+$('#issue_date').val(issue_date);
+var issue_date =  $.datepicker.formatDate(dateFormatStr,new Date($('#issue_until').val()))
+$('#issue_until').val(issue_date);
+var renewal_date =  $.datepicker.formatDate(dateFormatStr,new Date($('#renewal_date').val()))
+$('#renewal_date').val(renewal_date);
+var renewl_until =  $.datepicker.formatDate(dateFormatStr,new Date($('#renewl_until').val()))
+$('#renewl_until').val(renewl_until);
+
+});
+dateFormatStr =  getJsDateFormat();
+var joiningDate =  $.datepicker.formatDate(dateFormatStr,new Date($('#employee_joining_date').val()))
+$('#employee_joining_date').val(joiningDate);
+$("#is_there_a_delay").change(function(){
+  $("#no_of_days_delayed_error").empty();
+   var booleans_values=$("#is_there_a_delay").val();
+if (booleans_values==1){
+          $("#is_there_a_delay").val(0);
+        }
+        else{
+
+          var amounts=$("#fine_amount_data").val();
+          var fines_amounts=$("#fine_amount").val();
+          $("#fine_amount").val(Number(fines_amounts)-Number(amounts));
+          $("#no_of_days_delayed").val("");
+          $("#fine_amount_data").val("");
+
+          $("#is_there_a_delay").val(1);
+        }
+    $(".library-Div-Class").toggle();
+     
+  });
+$("#is_it_returned_in_the_as_was_taken").change(function(){
+  $("#damaged_amount_error").empty();
+  
+ var boolea_valu=$("#is_it_returned_in_the_as_was_taken").val();
+ //alert(boolea_valu);
+if (boolea_valu==1){
+          $("#is_it_returned_in_the_as_was_taken").val(0);
+        }
+        else{
+          var amount=$("#extent_of_damage_amount").val();
+          var fine_amount=$("#fine_amount").val();
+          $("#fine_amount").val(Number(fine_amount)-Number(amount));
+          $("#extent_of_damage").val("");
+          $("#extent_of_damage_amount").val("");
+          $("#is_it_returned_in_the_as_was_taken").val(1);
+        }
+    $(".librarys-Divs-Class").toggle();
+     
+  });
+$("#is_fine_applicable").change(function(){
+        var boolean_value=$("#is_fine_applicable").val();
+        
+        if (boolean_value==1){
+          $("#is_fine_applicable").val(0);
+        }
+        else{
+          $("#is_fine_applicable").val(1);
+        }
+
+    $(".librarys-Div-Classes").toggle();
+     
+  });
+
+function noofdaysdelayed(data){
+var amount_data=$("#amount_per_day").val();
+var value=amount_data*data;
+var damage_fine=$("#extent_of_damage_amount").val();
+
+if (damage_fine==""){
+$("#fine_amount_data").val(value);
+$("#fine_amount").val(value);
+}
+else{
+$("#fine_amount_data").val(value);
+$("#fine_amount").val(Number(value)+Number(damage_fine));
+
+}
+
+
+}
+
+
+function extentofdamage(data){
+
+var fine_amount_data=$("#fine_amount_data").val();
+if(fine_amount_data==""){
+var outcome=data
+$("#fine_amount").val(outcome);
+}
+else{
+var outcome=Number(fine_amount_data)+Number(data)
+$("#fine_amount").val(outcome);
+
+}
+}
+
+
+</script>
+
+

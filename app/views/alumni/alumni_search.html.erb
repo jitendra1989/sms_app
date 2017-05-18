@@ -1,0 +1,72 @@
+<% navigation_add 'Alumni Search', alumni_alumni_search_path %>
+<%if session[:user_type]=="student"%>
+  <%= render partial: '/dashboards/student_dashboard_left' %>
+<%else%>
+  <%=render partial:"alumni_left"%>
+<%end%>
+<h4 class="mg-h4"><%= t('alumni_search') %></h4>
+
+<p style="display:false" id="search_by_order_numberID">
+  <label class="mg-label" style="width:76px"><%= t('search_by') %><span class="required-field">&nbsp;*</span></label>
+  <%= select_tag :search_by_fom, options_for_select([[t("select"), ""], ["Name", "Name"], ["Phone Number", "phone number"], [t("Email Id"), "email_id"]]) %>
+  </br>
+</p>
+<p>
+  <label class="mg-label" style="width:76px"><%=  %><span class="required-field">&nbsp;</span></label>
+  <%= text_field_tag :search_by_value,nil,:class=>"mg-text-field fom-directory-search-field  fom-keyup-search-class" %>
+</p>
+
+<p class="mg-p-mgtop">
+  <button type="button" class="Fom-directory-result-submit-btn mg-small-form-btn" style="display:none"><%=t("save")%></button>
+</p>
+
+<div id="showVendorDIVID"></div>
+<div id="submitted_alumni_result_ID"></div>
+
+<%= render  partial: 'application/common_left_close' %>
+
+
+<script>
+  $(document).ready(function(){
+      focusCurrentTab("alumniSearchAID","alumniSearchAIDLId");
+  });
+
+
+  $(".Fom-directory-result-submit-btn").click(function(e){
+    e.preventDefault();
+    var search_by=$("#search_by_fom").val();
+    var temp_val=$("#search_by_value").val();
+    if (search_by!=""){
+      if (temp_val!=""){
+        var urlLink = "/alumni/search_data/";
+        $.ajax({ 
+          url: urlLink,
+          cache: false,
+          data:{"temp_val":temp_val , "search_by":search_by},
+          success: function(html){
+            $("#submitted_alumni_result_ID").empty();
+            $("#submitted_alumni_result_ID").append(html);
+          }  
+        });
+      }
+    }else{
+      alert("Please choose Search By option.");
+    }
+  });
+
+  $(document).on("change","#search_by_fom",function(){
+    $("#submitted_alumni_result_ID").empty();
+    $("#search_by_value").val("");
+  });
+
+  $(".fom-keyup-search-class").keyup(function(){
+    text_count=$(this).val();
+    if (text_count.length>2)
+    $(".Fom-directory-result-submit-btn").click();
+  })
+
+</script>
+
+<style>
+a { cursor: pointer; cursor: hand; }
+</style>

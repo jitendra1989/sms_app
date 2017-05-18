@@ -1,0 +1,125 @@
+<%=render partial: "dashboards/student_dashboard_left"%>
+<h4 class="mg-h4"><%= @action=='new' ? t('add_job_detail') : t('edit_job_detail')%></h4>
+
+
+
+
+
+<%= form_for :student_detail, :url=>@action=='new' ? 'placement_student_detail_create' : '/placements/'+@student_detail.try(:id).to_s+'/placement_student_detail_update', :method=> @action=='new' ? "post" : "patch", :html => {:id => 'studentDetailNewEditFormId' } do |f| %>
+
+	<%= f.hidden_field :is_deleted, :value => 0 %>
+	<%= f.hidden_field :mg_school_id, :value => session[:current_user_school_id] %>
+
+  	<%if @action=='new'%>
+    	<%= f.hidden_field :created_by, :value => session[:user_id] %>
+  	<%end%>
+  	<%= f.hidden_field :updated_by, :value => session[:user_id] %>
+  	<%= f.hidden_field :mg_student_id, :value => @student_id[0] %>
+  	<%=hidden_field_tag "actions",@action%>
+
+	<label class="mg-label mg-tt-width" style="width:185px"><%= t('name') %><span class="required-field">&nbsp;*</span></label>
+	<%= f.text_field :name,:class =>"mg-select-btn"%><br/>
+
+	<label class="mg-label mg-tt-width" style="width:185px"><%= t('resume_headline') %><span class="required-field">&nbsp;*</span></label>
+	<%= f.text_field :resume_headline,:class =>"mg-select-btn"%><br/>
+
+	<label class="mg-label mg-tt-width" style="width:185px"><%= t('current_position_designation') %><span class="required-field">&nbsp;*</span></label>
+	<%= f.text_field :current_position,:class =>"mg-select-btn"%><br/>
+
+	<label class="mg-rm-text-trans mg-label mg-tt-width" style="width:185px"><%= t('dateofbirth') %><span class="required-field">&nbsp;*</span></label>
+	<%= f.text_field :date_of_birth,:class =>"mg-select-btn date_of_birth"%><br/>
+
+	<label class="mg-label mg-tt-width" style="width:185px"><%= t('last_degree') %><span class="required-field">&nbsp;*</span></label>
+	<%= f.text_field :last_degree,:class =>"mg-select-btn"%><br/>
+
+	<label class="mg-label mg-tt-width mg-rm-text-trans" style="width:185px">Year of Passing<span class="required-field">&nbsp;*</span></label>
+	<%= f.text_field :year_of_passing,:class =>"mg-select-btn"%><br/>
+
+	<label class="mg-label mg-tt-width" style="width:185px"><%= t('functional_area') %><span class="required-field">&nbsp;*</span></label>
+	<%= f.text_field :functional_area,:class =>"mg-select-btn"%><br/>
+
+	<label class="mg-label mg-tt-width" style="width:185px"><%= t('educational_qualification') %><span class="required-field">&nbsp;*</span></label>
+	<%= f.text_field :educational_qualification,:class =>"mg-select-btn"%><br/>
+
+	<label class="mg-label mg-tt-width" style="width:185px"><%= t('experience') %><span class="required-field">&nbsp;*</span></label>
+	<%= f.text_field :experience,:class =>"mg-select-btn"%><br/>
+
+	<label class="mg-label mg-tt-width" style="width:185px"><%= t('technical_skills') %><span class="required-field">&nbsp;*</span></label>
+	<%= f.text_area :technical_skills,:class =>"mg-select-btn"%><br/>
+
+	<label class="mg-label mg-tt-width" style="width:185px"><%= t('soft_skills') %><span class="required-field">&nbsp;*</span></label>
+	<%= f.text_area :soft_skills,:class =>"mg-select-btn"%><br/>
+
+	<label class="mg-label mg-tt-width" style="width:185px"><%= t('salary_expected') %><span class="required-field">&nbsp;*</span></label>
+	<%= f.text_field :salary_expected,:class =>"mg-select-btn"%><br/>
+
+	<label class="mg-label mg-tt-width" style="width:185px"><%= t('address') %><span class="required-field">&nbsp;*</span></label>
+	<%= f.text_area :address,:class =>"mg-select-btn"%><br/>
+
+	<label class="mg-label mg-tt-width" style="width:185px"><%= t('contact_number') %><span class="required-field">&nbsp;*</span></label>
+	<%= f.text_field :contact_number,:class =>"mg-select-btn"%><br/>
+
+	<label class="mg-label mg-tt-width" style="width:185px"><%= t('email_id') %><span class="required-field">&nbsp;*</span></label>
+	<%= f.text_field :email_id,:class =>"mg-select-btn"%><br/>
+
+	<label class="mg-label mg-tt-width" style="width:185px"><%= t('current_location') %><span class="required-field">&nbsp;*</span></label>
+	<%= f.text_field :current_location,:class =>"mg-select-btn"%><br/>	
+
+	<label class="mg-label mg-tt-width" style="width:185px"><%= t('preferred_location') %><span class="required-field">&nbsp;*</span></label>
+	<%= f.text_field :preferred_location,:class =>"mg-select-btn"%><br/>	
+	<p class="mg-p-mgtop">
+		<a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("save")%></a>
+	    <%= link_to t('cancel'),placement_student_detail_index_path ,{:class=>"mg-small-form-btn cancel-form-dialog"} %>
+	</p>
+<%end%>
+
+<%= render  partial: 'common_left_close' %>
+
+<script>
+	$( document ).ready(function() {
+		dateFormatStr =  getJsDateFormat();
+		var action=$("#actions").val();
+		if (action=="edit") {
+			var date_of_birth =  $.datepicker.formatDate(dateFormatStr,new Date($('#student_detail_date_of_birth').val()));
+			$('#student_detail_date_of_birth').val(date_of_birth);
+		}
+		var date = new Date();
+      	var cur_date = date.getFullYear(); 
+	  focusCurrentTab("studentPlacementsAID","studentPlacementsLiID");
+	  $("#studentDetailNewEditFormId").validate({
+			rules: {
+				"student_detail[name]": {required: true},
+				"student_detail[resume_headline]": {required: true},
+				"student_detail[current_position]": {required: true},
+				"student_detail[date_of_birth]": {required: true},
+				"student_detail[last_degree]": {required: true},
+				"student_detail[year_of_passing]": {required: true,number: true,max: cur_date-1},
+				"student_detail[functional_area]": {required: true},
+				"student_detail[educational_qualification]": {required: true},
+				"student_detail[experience]": {required: true,number: true},
+				"student_detail[technical_skills]": {required: true},
+				"student_detail[soft_skills]": {required: true},
+				"student_detail[salary_expected]": {required: true,number: true},
+				"student_detail[address]": {required: true},
+				"student_detail[contact_number]": {required: true,number: true,minlength: 10,maxlength: 10},
+				"student_detail[email_id]": {required: true,  email: "Your email must be in the format of name@domain.com"},
+				"student_detail[current_location]": {required: true},
+				"student_detail[preferred_location]": {required: true}
+			}
+		});
+		$( ".date_of_birth" ).datepicker({ 
+            changeMonth: true,
+            changeYear: true,yearRange: "-100:+0",maxDate: "0",
+            dateFormat: dateFormatStr,
+            onSelect: function(dateText, obj) {
+                var selectedDate = $(this).datepicker('getDate');
+                var currentDate=new Date();
+                var b_check=getYearDifference(selectedDate,currentDate, dateFormatStr);
+                if(b_check){
+                  $( ".date_of_birth" ).val("");
+                  alert("Please check the age.");
+                }
+            }
+	    });
+	});
+</script>

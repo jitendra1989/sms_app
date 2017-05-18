@@ -1,0 +1,84 @@
+<!-- Sec --> 
+<section id="userBodyContentBox" style="margin: 0 auto;">
+    <table width=100% border="0" cellspacing="0" cellpadding="0"  style="margin-bottom: 0px;">
+        <tr>
+            <td valign="top" class="userBodyContentBox1">
+                <aside class="userMenuBoxLeft" style="width: 210px;">
+                    <ul class="menuListHome">
+                        <li class="myAccountMenu">Manage <%=t('timetable')%></li>
+                    
+                       
+                        <li id="timeTableAssociateLiID">
+                            <a class="menuItemsActivities" href="/timetable" id="timeTableAssociateAID">
+                                <div class="setMenu"><i class="fa fa-chain">&nbsp;&nbsp;</i><%=t('timetable')%> Association
+                                </div>
+                            </a>
+                        </li>
+
+                        <li id="viewTimeTableLiID">
+                            <a class="menuItemsActivities" href="/timetable/view_time_table_index" id="viewTimeTableAID">
+                                <div class="setMenu"><i class="fa fa-table">&nbsp;&nbsp;</i>View Student <%=t('timetable')%><!-- <i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i> -->
+                                </div>
+                            </a>
+                        </li>
+                      
+                        <li id="changeTeacherLiID">
+                            <a class="menuItemsActivities" href="/timetable/change_teacher_index" id="changeTeacherAID">
+                                <div class="setMenu"><i class="fa fa-table">&nbsp;&nbsp;</i><%=t('substitute_teacher')%>
+                                </div>
+                            </a>
+                        </li> 
+                         <li id="changeTeacherPermanentLiID">
+                            <a class="menuItemsActivities" href="/timetable/change_teacher_time_table" id="changeTeacherPermanentAID">
+                                <div class="setMenu"><i class="fa fa-table">&nbsp;&nbsp;</i><%=t('change_teacher')%>
+                                </div>
+                            </a>
+                        </li> 
+                   
+
+                         <li id="viewEmployeeTimeTableLiID">
+                            <a class="menuItemsActivities" href="/timetable/view_employee_time_table_index" id="viewEmployeeTimeTableAID">
+                                <div class="setMenu"><i class="fa fa-table">&nbsp;&nbsp;</i>View Employee <%=t('timetable')%><!-- <i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i> -->
+                                </div>
+                            </a>
+                        </li>
+                         <li id="viewEmployeeSubjectTimeTableLiID">
+                            <a class="menuItemsActivities" href="/timetable/view_subject_time_table" id="viewEmployeeSubjectTimeTableAID">
+                                <div class="setMenu"><i class="fa fa-table">&nbsp;&nbsp;</i>View Subject <%=t('timetable')%><!-- <i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i> -->
+                                </div>
+                            </a>
+                        </li>
+                        <li id="viewFreeEmployeeTimeTableLiID">
+                            <a class="menuItemsActivities" href="/timetable/view_free_teachers_time_table" id="viewFreeEmployeeTimeTableAID">
+                                <div class="setMenu"><i class="fa fa-user">&nbsp;&nbsp;</i>Free Teacher<!-- <i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i> -->
+                                </div>
+                            </a>
+                        </li>
+                        <li id="viewAbsentEmployeeTimeTableLiID">
+                            <a class="menuItemsActivities" href="/timetable/absent_teachers" id="viewAbsentEmployeeTimeTableAID">
+                                <div class="setMenu"><i class="fa fa-minus-circle">&nbsp;&nbsp;</i>Absent Teacher<!-- <i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i> -->
+                                </div>
+                            </a>
+                        </li>
+                        <li id="timeTableCreationLiID">
+                            <a class="menuItemsActivities" href="/timetable/time_table_creation" id="timeTableCreationAID">
+                                <div class="setMenu"><i class="fa fa-th">&nbsp;&nbsp;</i><%=t('timetable')%> Creation</div>
+                            </a>
+                        </li>
+
+                        <li id="viewBatchWiseTimeTableLiID">
+                            <a class="menuItemsActivities" href="/timetable/show_batch_timetables" id="viewBatchWiseTimeTableAID">
+                                <div class="setMenu"><i class="fa fa-th">&nbsp;&nbsp;</i>Show Section Wise <%=t('timetable')%></div>
+                            </a>
+                        </li>
+                    </ul>    
+
+                </aside>
+            </td>
+          <td class="mg-table-td-main-2 " valign="top">
+<%=render partial: 'layouts/messages'%> 
+<script>
+$(document).ready(function(){
+    focusTimeTable();
+});
+</script>

@@ -1,0 +1,112 @@
+<%= render partial: 'canteen_management_left' %>
+<% navigation_add t('regular_menu'), :controller=>'canteen_managements', :action=>'regular_menu' %>
+<h4 class="mg-h4"><%= t('regular_menu') %></h4>
+<%if @regular_menu.present? %>
+  <button class="edit-canteen-regular-menu mg-btn-bottom-margin mg-custom-form-btn"><%= t('update_regular_menu')%></button></br>
+<%else%>
+  <button class="add-canteen-regular-menu mg-btn-bottom-margin mg-custom-form-btn"><%= t('add_regular_menu')%></button></br>
+<%end%>
+<%if @regular_menu.present? %>
+  <div class="mg_pagination">
+    <table class="batch-tbl mg-tbl-margin table-batchs-tbl">
+      <tr class="subject-table-header">
+        <th><%= t('name') %></th>
+        <th><%= t('status') %></th>
+        <th><%= t('actions') %></th>  
+      </tr>
+      <% @regular_menu.each do |f| %>
+      <%food_item=MgFoodItem.find_by(:id=>f.mg_food_item_id) %>
+
+      <tr>
+        <td class="mg-capitalize-text mg-align-center"><%= food_item.try(:item_name)%> </td>
+        <td class="mg-capitalize-text mg-align-center"><%= f.try(:status)%> </td>
+        
+        <td class="mg-align-center">
+          <!-- <button title="show" id="<%#= raw f.id %>-showexmBTNID" class="show-canteen-regular-menu mg-icon-btn"><i class="fa fa-eye"></i></button> -->
+          <!-- <button title="Edit" id="<%#= raw f.id %>-editexmBTNID" class="edit-canteen-regular-menu mg-icon-btn"><i class="fa fa-pencil-square-o"></i></button> -->
+          <button title="<%= t('delete') %>" id="<%= raw f.id %>-deleteexmBTNID" class="delete-canteen-regular-menu mg-icon-btn"><i class="fa fa-trash"></i></button>
+        </td>
+      </tr> 
+      <% end %>
+    </table>
+    <div class="pagination-align" style="position: relative; bottom: 00px;">
+      <%= will_paginate @regular_menu, :container => false %>
+    </div>
+  </div>
+<%else%>
+  <%="Regular menu not created"%>
+<%end%>
+
+<div id="newRegularMenuDivID"></div>
+<!-- <div id="showRegularMenuDivID"></div> -->
+<div id="editRegularMenuDivID"></div>
+
+<%= render  partial: 'application/common_left_close' %>
+
+
+<script>
+  $(document).ready(function(){   
+    focusCurrentTab("regularCanteenMenuAID","regularCanteenMenuLID");
+  });
+
+  $(document).on("click",".add-canteen-regular-menu",function(e){   
+    e.preventDefault();   
+    var urlLink = "/canteen_managements/new_regular_menu";
+    $.ajax({
+      url: urlLink,
+      cache: false,
+
+      success: function(data){
+        $("#newRegularMenuDivID").dialog({
+          model: true,
+          minHeight: 'auto',
+          width: 'auto',
+          // minWidth: 260,
+          title: "Add Regular Menu Item",
+          open: function(){
+            $(this).html(data);
+          }
+        })
+      }
+    })
+  });
+
+
+  $(document).on("click",".edit-canteen-regular-menu",function(e){   
+    e.preventDefault();  
+    // var showID = $(this).attr('id');
+    // var id = showID.split("-"); 
+    var urlLink = "/canteen_managements/edit_regular_menu";
+    $.ajax({
+      url: urlLink,
+      cache: false,
+
+      success: function(data){
+        $("#editRegularMenuDivID").dialog({
+          model: true,
+          minHeight: 'auto',
+          width: 'auto',
+          // minWidth: 'auto',
+          title: "Edit Regular Menu",
+          open: function(){
+            $(this).html(data);
+          }
+        })
+      }
+    })
+  });
+
+
+
+  $(document).on("click",".delete-canteen-regular-menu",function(){
+    var delteID = $(this).attr('id');
+    var id = delteID.split("-");
+    var urlLink = "/canteen_managements/delete_regular_menu/"+id[0];
+    var result=confirm("Are you sure to delete?");
+    if(result){
+      window.location = urlLink;
+    }
+  });
+
+
+</script>

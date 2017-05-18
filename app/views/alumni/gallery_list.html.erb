@@ -1,0 +1,147 @@
+<%= render partial:'alumni_left'%>
+<% navigation_add t('gallery'), :controller=> "alumni" , :action=>"gallery_list"  %>
+
+<h4 class="mg-h4"><%= t('gallery_list')%></h4>
+
+<%= form_tag gallery_list_path, :id =>'', multipart: true do %>
+  <%=hidden_field_tag "search_alumni_gallery","search_alumni_gallery"%>
+  <%= t('search_by_name')%>
+  <%if params[:search_gallery].present?%>
+    <%=text_field_tag :search_gallery,params[:search_gallery], :class=> 'mg-text-field search_all_gallery_class' %>
+  <%else%>
+    <%=text_field_tag :search_gallery,nil, :class=> 'mg-text-field search_all_gallery_class' %>
+  <%end%>
+  <%#= submit_tag t('search'), class: "submit" ,:class=>"mg-small-form-btn"%>
+<%end%>
+<%#= link_to t('clear'), :back, {:class=>"mg-small-form-btn clear-form-btn-class"} %>
+<%= link_to t('clear'), {}, {:class=>"mg-small-form-btn clear-form-btn-class"} %>
+
+
+<div id='alumni_search_all_photo_gallery'>
+<!-- ========================================================================================== -->
+<%if @gallery_list.present?%>
+<div class="mg_pagination">
+<br/><table class="batch-tbl mg-tbl-margin">   
+ <tr >
+    <th><%=t('name')%></th>
+    <th><%=t('description')%></th>
+    <th><%=t('actions')%></th>
+  </tr>
+  <% @gallery_list.each do |f| %>
+    <tr>
+      <td><%= f.name %></td>
+      <td><%=truncate(f.description.to_s, :length => 25, :separator => ' ') %></td>
+      <td>
+        <button title="Photos" id="<%=raw f.id %>-uploadPhotoAlbumsBTNID" class="upload-photo-gallery-list-btn mg-icon-btn"><i class="fa fa-upload"></i></button>
+        <button title="Videos" id="<%=raw f.id %>-uploadVideoAlbumsBTNID" class="upload-video-gallery-list-btn mg-icon-btn"><i class="fa fa-file-video-o"></i></button>
+      </td>
+    </tr>
+  <% end %>
+</table>
+ <%= will_paginate @gallery_list, :container => false %>
+  </div>
+<div id="ShowPhotoGalleryDivID"></div>
+<%else%>
+<h5><%="Photo gallery not available..."%> </h5>
+<%end%>
+<!-- ========================================================================================== -->
+
+</div>
+
+
+<%= render partial: 'application/common_left_close' %>
+
+
+
+
+
+<script>
+  $(document).ready(function () {
+    focusCurrentTab("videoGalleryListAID","videoGalleryListLID");
+  });
+
+  $(document).on("click", ".upload-photo-gallery-list-btn", function(e){
+    var myID =$(this).attr('id');
+    var Id=myID.split("-");
+    window.location="/alumni/photo_gallery_list/"+Id[0];
+  });
+
+  $(document).on("click", ".upload-video-gallery-list-btn", function(e){
+    var myID =$(this).attr('id');
+    var Id=myID.split("-");
+    window.location="/alumni/video_gallery_list/"+Id[0];
+  });
+
+  // $(document).on("click", ".edit-photo_gallery-btn", function(e){
+  //   var myID =$(this).attr('id');
+  //   var Id=myID.split("-");
+  //   var urlLink = "/alumni/edit_photo_gallery/"+Id[0];
+  //   window.location=urlLink;
+  // });
+
+  // $(document).on("click", ".show-photo_gallery-btn", function(e){
+  //   var myID =$(this).attr('id');
+  //   var Id=myID.split("-");
+  //   var urlLink = "/alumni/show_photo_gallery/"+Id[0];
+
+  //   $.ajax({
+  //     url: urlLink,
+  //     cache: false,
+  //     success: function(html){
+  //       $("#ShowPhotoGalleryDivID").dialog({
+  //         modal:true,
+  //         minHeight: 'auto',
+  //         width: 'auto',
+  //         title: 'Show Photo Gallery',
+  //         open: function(){
+  //           $(this).html(html);
+  //         }
+  //       })
+  //     }
+  //   })
+  // });
+
+  // $(document).on("click", ".delete-photo_gallery-btn", function(e){
+  //   var myID =$(this).attr('id');
+  //   var Id=myID.split("-");
+  //   var urlLink = "/alumni/delete_gallery_album/"+Id[0];
+  //   var result=confirm("Are you sure to delete?");
+  //   if (result){
+  //     window.location=urlLink;
+  //   }
+  // });
+
+
+  $(".search_all_gallery_class").keyup(function(e){
+  e.preventDefault();
+  var itemName=$(this).val();
+  // var itemCode=$("#inventory_item_identification_number").val();
+  //alert(itemName+" ---    "+itemCode);
+  if (itemName.length>2)
+  {
+        var urlLink = "/alumni/search_all_photo_gallery/";
+           $.ajax({ 
+               url: urlLink,
+               cache: false,
+               data:
+             {
+                 "search_gallery":itemName
+             },
+               success: function(html){
+                  $("#alumni_search_all_photo_gallery").empty();
+                  $("#alumni_search_all_photo_gallery").append(html);
+               }  
+           });
+  }
+});
+
+
+
+  $(".clear-form-btn-class").click(function(){
+  $(".search_gallery_class").val("");
+  // window.reload();
+  window.location.reload();
+})
+
+
+</script>

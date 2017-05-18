@@ -1,0 +1,52 @@
+
+<%#= render  partial: 'laboratory/laboratry_left' %>
+
+ <div class="mg-custom-labels">
+
+<%= form_for :laboratry, :url=>{:controller=>'laboratory',:action=>'update',:id=>@laboratry.id},:html => {:id => 'laboratryUpdateID' } do |f| %>
+<%= f.hidden_field :is_deleted, :value => 0 %>
+<%= f.hidden_field :mg_school_id, :value => session[:current_user_school_id] %>
+<%= f.hidden_field :updated_by, :value => session[:user_id] %>
+<p>
+    <label class="mg-label" style="width:140px"><%= t('lab_name') %><span class="required-field">&nbsp;*</span></label>
+    <br/>
+   <%= f.text_field :lab_name,:class=>"mg-text-field" %>
+</p>
+
+<p>
+    <label class="mg-label" style="width:140px"><%= t('select_subject') %><span class="required-field">&nbsp;*</span></label>
+    <br/>
+
+    <%= f.collection_select(:mg_laboratory_subject_id,MgLaboratorySubject.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]), :id, :name,{:include_blank => t("select")},:class => "mg-select-btn")%>
+</p>
+
+<p>
+    <label class="mg-label" style="width:140px"><%= t('room_number') %><span class="required-field">&nbsp;*</span></label>
+    <br/>
+   <%= f.text_field :room_no,:class=>"mg-text-field" %>
+</p>
+
+
+<p class="mg-p-mgtop">
+    <!-- <%#= f.submit t('save') ,:class=>"mg-small-form-btn"%> -->
+    <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("save")%></a>
+    <%#= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+<a class="mg-small-form-btn cancel-form-dialog"><%=t("cancel")%></a>
+
+</p>
+<% end %>
+</div>
+<%#= render  partial: 'application/common_left_close' %>
+
+<script>
+
+
+$("#laboratryUpdateID").validate({
+
+        rules: {        
+        "laboratry[lab_name]": {required: true},
+        "laboratry[mg_laboratory_subject_id]": {required: true},
+        "laboratry[room_no]": {required: true},
+      }
+    });
+</script>

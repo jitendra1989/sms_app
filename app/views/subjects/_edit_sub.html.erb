@@ -1,0 +1,65 @@
+<!-- Sec --> 
+
+ 
+<%= form_for :subjects, url: subject_path(@subjects), method: :patch do |f| %>
+ <% if @students != nil%>
+ <% if @students.errors.any? %>
+  <div id="error_explanation">
+    <h2><%= pluralize(@students.errors.count, "error") %> prohibited
+      this from being saved:</h2>
+    <ul>
+    <% @students.errors.full_messages.each do |msg| %>
+      <li><%= msg %></li>
+    <% end %>
+    </ul>
+  </div>
+  <% end %>
+  <% end %>
+<p>
+    
+    <%= f.label :batch %><br>  
+  <%= f.collection_select(:batch, MgBatch.all, :name, :name)%>
+ </p>
+              
+ <p>
+    <%= f.label :subject_name %><br>
+    <%= f.text_field :subject_name   %>
+  </p>
+ 
+  <p>
+    <%= f.label :subject_code %><br>
+    <%= f.text_field :subject_code %>
+  </p>
+
+  <p>
+    <%= f.label :max_weekly_class %><br>
+    <%= f.text_field :max_weekly_class %>
+  </p>
+  <p>
+  <%= f.label :is_deleted, "Is Active" %><br />
+    <%= f.label :is_deleted, "Yes", :value => "true"  %>
+    <%= f.radio_button :is_deleted, true , :checked => true%>
+    <%= f.label :is_deleted, "No", :value => "false" %>
+    <%= f.radio_button :is_deleted, false %>
+</p>
+  <p>
+    <%= f.submit %>
+  </p>
+  </p>
+<% end %>
+ 
+
+
+<script>
+$(document).ready(function () {
+$("#elm_id").validate({
+
+rules: {
+"subjects[subject_name]": {required: true},
+"subjects[subject_code]": {required: true, number: true},
+"subjects[no_of_classes]": {required: true, number: true},
+"subjects[max_weekly_class]": {required: true, number: true}
+}
+});
+});
+</script>

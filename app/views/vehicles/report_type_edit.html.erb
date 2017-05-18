@@ -1,0 +1,37 @@
+
+
+
+<div class="box">
+<%= form_for :report_type ,  :url=>{:controller=>'vehicles',:action=>'report_type_update',:id=>@report_type.id}, :html=>{:id=>'edit_vehicle_report_type'} do |f| %>
+
+        <%= f.hidden_field :is_deleted ,:value=>0%>
+        <%#= f.hidden_field :mg_school_id ,:value=>@school_id%>
+        <%#= f.text_field :vehicle_number ,:class=>"mg-text-field"%>
+        
+<table class="pop-up-inner-text mg-tbl-margin mg-show-tbl-width">
+    <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="vehicleNumber"><%= t ('report_type_name') %><span class="required-field">&nbsp;*</span></label><br/>
+        <%= f.text_field :report_type_name ,:class=>"mg-text-field"%>
+      </td>
+    </tr>
+    </table>
+    <br/> <p class="mg-custom-labels">
+<%= submit_tag t("save"),:class=>"mg-small-form-btn"%>
+ <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+ </p>
+    </div>
+    <%end%>
+<script>
+$(document).ready(function(){
+
+$("#edit_vehicle_report_type").validate({
+      rules:{
+        "report_type[report_type_name]":{required:true},
+        
+        
+      },
+  });
+    
+});
+</script>

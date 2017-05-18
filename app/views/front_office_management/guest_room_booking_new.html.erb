@@ -1,0 +1,249 @@
+<% navigation_add t('guest_room_booking'), :controller=>'front_office_management' ,:action=> 'guest_room_booking_index' %>
+
+<% navigation_add t('add_guest_room_booking'), :controller=>'front_office_management' ,:action=> 'guest_room_booking_new' %>
+
+<%=render partial: 'front_office_management_left'%>
+<h4 class="mg-h4"><%=t('add_guest_room_booking')%></h4>
+
+
+<%= form_for :guest_room_booking_type ,:url=> {:action=>'guest_room_booking_create' }, :html=> 
+			 { :id=> 'guest_room_booking_id' } do |f| %>
+
+       <table cellspacing="0" cellpadding="0" border="0" class="employee-form-cls mg-table-spacing">
+
+<%= f.hidden_field :is_deleted, :value => 0 %>
+<%= f.hidden_field :mg_school_id, :value => session[:current_user_school_id] %>
+<%= f.hidden_field :created_by, :value => session[:user_id] %>
+<%= f.hidden_field :updated_by, :value => session[:user_id] %>
+<tr><td width="33%" valign="top">
+<!-- <p> -->
+	<%= f.label :mg_fom_room_creation_id, t('room_no_name') ,:class=>"mg-label"%><span class="required-field"> *</span><br>
+    
+  <% room_number_data=MgMeetingRoom.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:room_no,:id) 
+  %> 
+  <%= f.select :mg_fom_room_creation_id,options_for_select(room_number_data),:prompt=> "Select",:id=>"room_number"%>
+
+<!-- </p> -->
+</td>
+<td width="33%" valign="top">
+
+<!-- <p> -->
+	<%= f.label :start_date, t("start_date") ,:class=>"mg-label"%><span class="required-field"> *</span><br>
+  <%= f.text_field :start_date, :class=> 'start_date mg-text-field' %>
+<!-- </p> -->
+</td></tr>
+<tr><td width="33%" valign="top">
+
+<!-- <p> -->
+	<%= f.label :end_date, t("end_date") ,:class=>"mg-label"%><span class="required-field"> *</span><br>
+  <%= f.text_field :end_date  ,:class => 'end_date mg-text-field'%><br>
+<!-- </p> -->
+</td>
+<td width="33%" valign="top">
+<!-- <p> -->
+	<%= f.label :mg_employee_category_id, t("booked_by") ,:class=>"mg-label"%><span class="required-field"> *</span><br/>
+ 
+  <%= f.collection_select(:mg_employee_category_id,MgEmployeeCategory.all, :id, :category_name,{:include_blank => t("Choose Category")},:onchange => "bookedbySelect()",:id => "bookedbySelectID")%>
+<!-- </p> -->
+</td></tr>
+<tr><td width="33%" valign="top">
+<!-- <p> -->
+  <label class="mg-label"  for="currentInsuranceDueDate"><%= t ('employee_profile') %><span class="required-field">&nbsp;*</span></label><br/>
+      <!--  <select id="employee_mg_employee_position_id" name="mg_employee_position_id" onchange="profileSelect()">
+                     <option value="">Choose Profile</option>
+       </select> -->
+      <div id="profile_id_data">
+       <%= select_tag :mg_employee_position_id_data,options_for_select([]),:prompt=>"Select"%>
+       </div>
+       <%#= f.select :mg_employee_position_id,options_for_select(["Choose Profile"]),{:include_blank=> 'Choose profile'},:onchange=> "profileSelect()" %>
+<!-- </p> -->
+</td>
+<td width="33%" valign="top">
+<!-- <p> -->
+  <label class="mg-label"  for="currentInsuranceDueDate"><%= t ('select_employee') %><span class="required-field">&nbsp;*</span></label><br/>
+      <!--  <select id="guest_room_booking_type_mg_employee_id" name="mg_employee_id">
+                     <option value="">Choose Employee</option>
+                  
+       </select>  -->
+<div id="mg_employee_data_for_fom">
+           <%= select_tag :mg_employee_id_data,options_for_select(["Choose Employee"]),{:include_blank=> 'Choose Employee'} %>
+    </div>
+
+<!-- </p> -->
+</td></tr>
+<tr><td width="33%" valign="top">
+<!-- <p> -->
+	<%= f.label :purpose, t("purpose") ,:class=>"mg-label"%><span class="required-field"> *</span><br>
+    <%= f.text_area :purpose, :class=>"mg-text-field"%>
+<!-- </p> -->
+</td>
+<td width="33%" valign="top">
+<!-- <p> -->
+	<%= f.label :status_data, t("status") ,:class=>"mg-label"%>
+  <span class="required-field"> *</span><br>
+  <%= f.select :status,options_for_select(['Pending','Accepted','Rejected']),{},
+    {:disabled=>true}%>
+    <%=f.hidden_field :status,:value=>"Pending"%>
+<!-- </p> -->
+</td></tr>
+<tr><td width="33%" valign="top">
+<!-- <p> -->
+  <%= f.label :remark, t("remark") ,:class=>"mg-label"%><span class="required-field"> </span><br>
+  <%= f.text_area :remark,:readonly=>true, :class=>"mg-text-field" %>
+<!-- </p> -->
+</td></tr>
+<tr><td width="33%" valign="top">
+
+<p class="mg-p-mgtop">
+    <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("save")%></a>
+    <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+</p>
+</td>
+</tr>
+</table>
+<% end %>
+
+<%= render  partial: 'application/common_left_close' %>
+
+
+<script type="text/javascript">
+
+room_number_value=$("#guest_room_booking_type_mg_fom_room_creation_id").val();
+      
+
+$(document).ready(function () {
+  dateFormatStr =  getJsDateFormat();
+  focusCurrentTab("guestRoomBookingAID","guestRoomBookingLiID");
+ $(function () {
+    $.validator.addMethod('dateFormat',
+    function (value, element) {
+      dateFormatStr =  getJsDateFormat();
+        if (this.optional(element)) {
+            return true;
+        }
+        var ok = true;
+        try {
+            $.datepicker.parseDate(dateFormatStr, value);
+        }
+        catch (err) {
+            ok = false;
+        }
+        return ok;
+    },
+      "Please enter a date in the format "+ getDateFormat(dateFormatStr) +".");
+      dateFormatStr =  getJsDateFormat();
+
+    $(".datefield").datepicker({ dateFormat: dateFormatStr, changeYear: true });
+});
+
+
+
+          $("#guest_room_booking_id").validate({
+
+          rules: { 
+          "guest_room_booking_type[mg_fom_room_creation_id]": {required: true},
+          "guest_room_booking_type[start_date]" : {required: true, dateFormat: true},
+          "guest_room_booking_type[end_date]": {required: true, dateFormat: true},
+          "guest_room_booking_type[mg_employee_category_id]": {required: true},
+          "mg_employee_position_id_data"     : {required: true},
+          "mg_employee_id_data": {required: true},
+          "guest_room_booking_type[purpose]": {required: true}
+            }
+        });
+  });
+
+
+
+     dateFormatStr =  getJsDateFormat();
+      $(".start_date" ).datepicker({ changeMonth: true,
+                changeYear: true,yearRange: "-50:+50",dateFormat: dateFormatStr });
+      $(".end_date" ).datepicker({ changeMonth: true,
+                changeYear: true,yearRange: "-50:+50",dateFormat: dateFormatStr });
+
+       function bookedbySelect(){
+        var empCategoryID = $( "#bookedbySelectID" ).val();
+        var book_data = $( "#guest_room_booking_type_book_id_data" ).val();
+         
+       if(empCategoryID > 0) {
+  
+           var urlLink = "/front_office_management/employee_position_list/"+empCategoryID;
+          $.ajax({
+             url: urlLink,
+             cache: false,
+             success: function(data){
+               
+                    $("#profile_id_data").empty().append(data);
+                    
+                }
+                             
+         });
+  }
+
+  }
+
+  
+
+
+
+function profileSelect(){
+  
+    //var empProfileID = $( "#guest_room_booking_type_mg_employee_position_id" ).val();
+
+
+    var empProfileID = $("#mg_employee_position_id").val();
+    //var book_data = $( "#guest_room_booking_type_book_id_data" ).val();
+
+ 
+
+
+    var urlLink = "/front_office_management/employee_list/";
+         $.ajax({
+             url: urlLink,
+             cache: false,
+             data: {"emp_profile_id": empProfileID},
+             success: function(data){
+               
+                  
+                    $("#mg_employee_data_for_fom").empty().append(data);
+
+                }
+
+             
+                
+         });
+
+
+}
+
+
+  $(document).on("change","#guest_room_booking_type_end_date",function(){
+     var dateFormatStr =  getJsDateFormat();
+    var start_date=$("#guest_room_booking_type_start_date").val();
+    var end_date=$(this).val();
+    console.log("Strat_date="+start_date);
+    console.log("end_date="+end_date);
+    if(start_date && end_date){
+      if(!(compareDate(start_date,end_date,dateFormatStr))){
+        alert("End date should be greater than start date");
+        document.getElementById('guest_room_booking_type_end_date').value="";
+      }
+    }
+  });
+
+   $(document).on("change","#guest_room_booking_type_start_date",function(){
+     var dateFormatStr =  getJsDateFormat();
+    var start_date=$(this).val();
+    var end_date=$("#guest_room_booking_type_end_date").val();
+    console.log("Strat_date="+start_date);
+    console.log("end_date="+end_date);
+    if(start_date && end_date){
+      if(!(compareDate(start_date,end_date,dateFormatStr))){
+        alert("Start date should be less than end date");
+        document.getElementById('guest_room_booking_type_start_date').value="";
+      }
+    }
+  });
+
+
+
+</script>

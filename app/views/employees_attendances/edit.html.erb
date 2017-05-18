@@ -1,0 +1,144 @@
+<!-- Sec --> 
+<%= form_for :employees_attendances , url: employees_attendance_path(@employees_attendances),  :html => {
+                            :id => 'employeeAttendancesFormID'}, method: :patch do |f| %>
+
+  <%= f.label :is_late_come, t('islatecome') ,:class=> "mg-label"%>
+  <% if @employees_attendances.is_late_come%> 
+      <script type="text/javascript">
+      $(document).ready(function () {
+
+      $("#employeeAttendenceEditID").toggle();
+
+      $("#lateVomeTimeEditID").toggle();
+
+    });
+      </script>
+
+  <%end%>
+ 
+
+        <!-- <input id="emp_attendances_latecom" type="checkbox"  > -->
+  <%= f.check_box :is_late_come,:onclick=>"toggleLateCome();" %>
+<div id="employeeAttendenceEditID">
+      <p>
+        <%= f.label :Leave_Type , t('leavetype'),:class=> "mg-label"%><span class="required-field"> *</span>  <br>
+        <%= f.collection_select(:mg_leave_type_id, MgEmployeeLeaveType.where(:is_deleted=>0), :id, :leave_name,  {:include_blank => 'Select Leave Type'} ,:class=>"mg-select-btn")  %>
+         <%= f.hidden_field :is_halfday, :value => false ,:id=>"emp_halfdayfield"%>
+      
+      </p>
+
+        <p> 
+            <%= f.label :is_halfday, t('ishalfday') ,:class=> "mg-label"%>    
+            <!-- <input id="emp_attendances_halfday" type="checkbox" onclick="toggleAll();" name="employees_attendances[is_halfday]"> -->
+            <%=f.check_box :is_halfday , :onclick=>"toggleAll();"%>
+       </p> 
+
+       <%= f.hidden_field :is_afternoon, :value => false ,:id=>"emp_afternoonfield"%>
+        <% if @employees_attendances.is_halfday%> 
+      <script type="text/javascript">
+      $(document).ready(function () {
+
+      $("#whatever").toggle();
+
+
+    });
+      </script>
+
+  <%end%>
+      <p>
+        <div id="whatever" style="display:none">
+            <%= f.label :morning , t('morning') ,:class=> "mg-label"%>
+            <%= f.radio_button :is_afternoon, false%>
+            <%= f.label :afternoon, t('afternoon'),:class=> "mg-label"%>
+            <%= f.radio_button :is_afternoon, true%>
+        </div>
+      </p>
+     
+   
+
+
+    <p>
+        <%= f.label :absent_without_notice , t('absentwithoutnotice'),:class=> "mg-label" %>
+        <%= f.check_box :abcent_without_notice %> 
+
+    </p>
+</div>
+    <%= f.hidden_field :id %> 
+    <%= f.hidden_field :mg_employee_department_id %>  
+    <%= f.hidden_field :mg_employee_id %>
+    <%= f.hidden_field :absent_date %>
+    <%= f.hidden_field :is_approved, :value=>0%>
+    <%= f.hidden_field :is_deleted, :value => 0 %>
+    
+    <%= f.hidden_field :updated_by, :value=>session[:user_id]%>
+
+  <p>
+      <%= f.label :reason , t('reason'),:class=> "mg-label"%><span class="required-field"> *</span></br>
+      <%= f.text_area :reason ,:class=>"mg-text-field"%>
+  </p>
+<div id="lateVomeTimeEditID" style="display:none">
+
+  <p>
+      <%= f.label :time , t('time'),:class=> "mg-label"%><span class="required-field"> *</span></br>
+      <%= f.text_field :time ,:class=>"mg-text-field"%>
+  </p>
+</div>
+<%@check=MgUser.where(:is_deleted=>0, :mg_school_id=>session[:current_user_school_id], :user_type=>'principal', :id=>session[:user_id])%>
+<% if @check.present?%>
+<label class="mg-label"><%= f.label :is_lock, "Unlock" %></label>
+ <%=f.check_box :is_lock%>
+<% end %>
+  
+<% end %>
+
+
+<%if @check.present? || @employees_attendances.is_lock%>
+
+  <button id="mg_employee_attendance_update_btn" class="btn btn-delete"><%=t('save')%></button>&nbsp;<button id="mg_employee_attendance_clear_btn" class="btn btn-delete"><%=t('delete')%></button>
+
+  
+
+<%else%>
+
+<%end%>
+<button class="cancel-form-dialog btn btn-delete"><%= t('cancel') %></button>
+<script type="text/javascript">
+
+$(document).on("click", "#cancelEditEmployeeAttendanceBTNID", function(e){
+  $(".ui-dialog-titlebar-close").click();
+});
+
+function toggleAll()
+{
+ //    alert("i'm in toggleAll function");
+ $("#whatever").toggle();
+ $(".no-of-days-employee-attendence").toggle();
+ 
+
+}
+function toggleLateCome(){
+  $("#employeeAttendenceEditID").toggle();
+
+  $("#lateVomeTimeEditID").toggle();
+
+}
+
+
+
+$(document).ready(function () {
+    $('#employees_attendances_time').timepicker({ 'scrollDefault': 'now' });
+    $("#employeeAttendancesFormID").validate({
+
+          rules: {
+          "employees_attendances[leave_type]": {required: true},
+          "employees_attendances[reason]": {required: true}
+          }
+      });
+
+});
+
+
+
+
+
+</script>

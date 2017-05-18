@@ -1,0 +1,180 @@
+<%= render  partial: 'library/library_left' %>
+
+<% navigation_add 'Resource Category', library_index_path %>
+
+<h4 class="mg-h4"><%= t('resource_category_list') %></h4>
+
+<button class="new-add-library mg-btn-bottom-margin mg-custom-form-btn"><%= t('add_resource_category')%></button>
+
+<!-- <%#= button_to 'Add Laboratory', {:controller => "laboratory", :action => "new" } ,:class=>"mg-custom-form-btn"%> -->
+<div class="mg_pagination">
+<%if @category.length>0%>
+<table  class="batch-tbl mg-tbl-margin">   <!-- border="2" --> 
+  <tr class="subject-table-header">
+    <!-- <th>Subject Id</th> -->
+    <th><%= t('name') %></th>
+    <th><%= t('description') %></th>
+    <th><%= t('action') %></th>
+
+  </tr>
+ 
+  <% @category.each do |category| %>
+    <tr>
+      <td><%= category.name %></td>
+
+      <td><%=truncate(category.description .to_s, :length => 25, :separator => ' ')  %></td>
+      <td>
+      	
+      <button title="Show" id="<%=raw category.id %>-showlabBTNID" class="show-library-btn mg-icon-btn"><i class="fa fa-eye"></i></button>
+
+        <button title="Edit" id="<%=raw category.id %>-editlabBTNID" class="edit-library-btn mg-icon-btn"><i class="fa fa-pencil-square-o"></i></button>
+
+        <!-- <button title="Delete" id="<%#=raw category.id %>-deletelabBTNID" class="delete-library-btn mg-icon-btn"><i class="fa fa-trash"></i></button> -->
+
+        <%#= link_to "<i class=\"fa fa-trash\"></i>".html_safe, {:controller => "laboratory", :action => "delete",:id =>lab.id }, :method=>'post' ,:title=>"Delete" ,:class=>"mg-icon-btn",data: { confirm: 'Are you sure to delete?' } %>
+
+      </td>
+
+    </tr>
+  <% end %>
+</table>
+<br/>
+ <div class="pagination-align" style="position: relative; bottom: 10px;">
+              <%= will_paginate @category, :container => false %>
+           </div>
+<%else%>
+<h5>No category is created </h5>
+<%end%>
+</div>
+<div id="newAddLibraryDIVID"></div>
+<div id="editlibraryDIVID"></div>
+
+
+<div id="showlibraryDIVID"></div>
+
+
+<%= render  partial: 'application/common_left_close' %>
+
+<script>
+$( document ).ready(function() {
+             focusCurrentTab("viewlibrary","viewlibraryLiID");
+          //focusStudentHeaderBox();
+});
+
+
+$(document).on("click", ".delete-library-btn", function(e){
+     e.preventDefault();
+                var myID =$(this).attr('id');
+            var Id=myID.split("-");
+
+
+                
+                var retVal = confirm("Are you sure to delete?");
+                if(retVal){
+                  //  alert(retVal);
+                     var urlLink = "/library/delete/"+Id[0];
+
+                      $.ajax({
+                        url: urlLink ,
+                        cache: false,
+                        success: function(html){
+                            window.location.reload();
+                                       
+                        }
+                    });
+
+                }else{
+                   // alert(retVal);     
+                   return false;
+                }
+
+        }); 
+
+
+$(document).on("click", ".show-library-btn", function(e){
+        var myID =$(this).attr('id');
+        var Id=myID.split("-");
+        var urlLink = "/library/show";
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            data: {"id":myID},
+            success: function(html){
+                  $('#showlibraryDIVID').dialog({
+                    modal: true,
+                     minHeight: 'auto',
+                    maxWidth: '600',
+                    title: "Show Resource Category",
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+});
+
+
+$(document).on("click", ".edit-library-btn", function(e){
+        var myID =$(this).attr('id');
+        var Id=myID.split("-");
+        var urlLink = "/library/edit/"+Id[0];
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(html){
+                  $('#editlibraryDIVID').dialog({
+                    modal: true,
+                     minHeight: 'auto',
+                    maxWidth: '250',
+                    title: "Edit Resource Category",
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+});
+
+$(document).on("click", ".new-add-library", function(e){
+        var urlLink = "/library/new";
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(html){
+                  $('#newAddLibraryDIVID').dialog({
+                    modal: true,
+                     minHeight: 'auto',
+                    maxWidth: '250',
+                    title: "Add Resource Category",
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+});
+</script>
+<style>
+
+
+.table-batchs-tbl {
+   /* font-family: verdana,arial,sans-serif;*/
+    font-size:13px;
+    color:#363131;
+    border-width: 1px;
+    border-color:  #363131;
+    border-collapse: collapse;
+    padding: 12px ;
+    font-size: 0.8em;
+    width: 261px !important;
+    /* margin-left: 2px; */
+}
+</style>
+
+

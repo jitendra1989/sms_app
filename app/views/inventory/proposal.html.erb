@@ -1,0 +1,150 @@
+<% navigation_add 'Manage Proposal', :controller => 'inventory', :action => 'proposal' %>
+<%= render  partial: 'inventory/inventory_left' %>
+<h4 class="mg-h4"><%= t('manage_proposal') %></h4>
+
+<%= button_to 'Add Proposal', {:controller => "inventory", :action => "proposal_new"} ,:class=>"mg-custom-form-btn"%>
+<div class="mg_pagination">
+<%if @proposal.length>0%>
+<table  class="batch-tbl mg-tbl-margin">   <!-- border="2" --> 
+  <tr class="subject-table-header">
+    <!-- <th>Subject Id</th> -->
+    <th><%= t('store_name') %></th>
+    <th><%= t('requisition_name') %></th>
+    <th><%= t('status') %></th>
+    <th class="mg-desc-text-justify"><%= t('description') %></th>
+
+
+    <th><%= t('actions') %></th>
+
+  </tr>
+ 
+  <% @proposal.each do |proposal| %>
+    <tr>
+      <td>
+      <%tempStore=MgInventoryStoreManagement.find_by(:id=>proposal.try(:mg_store_id))%>
+      <%= tempStore.try(:store_name) %></td>
+      <td><%= proposal.try(:requisition_name) %></td>
+      <td class="mg-capitalize-text"><%= proposal.try(:status) %></td>
+      <td class="mg-desc-text-justify"><%= truncate(proposal.try(:description).to_s, :length => 25, :separator => ' ') %>
+      </td>
+       <td>
+      <span class="mg-paginatin-a-link">
+      	<button title="Show" id="<%=raw proposal.id %>-showproposalBTNID" class="show-inventory-proposal-btn mg-icon-btn"><i class="fa fa-eye"></i></button>
+        </span>
+        <span class="mg-paginatin-a-link">
+      <%= link_to "<i class=\"fa fa-pencil-square-o\"></i>".html_safe, {:controller => "inventory", :action => "proposal_edit",:id =>proposal.id} , :method=>'post' ,:title=>"Edit" ,:class=>"mg-icon-btn"%>
+        </span>
+        <span class="mg-paginatin-a-link" style="margin-left: 1px;">
+      <%= link_to "<i class=\"fa fa-trash\"></i>".html_safe, {:controller => "inventory", :action => "proposal_delete",:id =>proposal.id }, :method=>'post' ,:title=>"Delete" ,:class=>"mg-icon-btn",data: { confirm: 'Are you sure to delete?' } %>
+      </span>
+      </td>
+    </tr>
+  <% end %>
+</table>
+<br/>
+ <div class="pagination-align" style="position: relative; bottom: 10px;">
+              <%= will_paginate @proposal  %>
+              
+ </div>
+ 
+
+ 
+
+
+
+
+
+
+<%else%>
+<h5 >No Proposal is created </h5>
+<%end%>
+</div>
+<div id="showInventoryProposalDIVID"></div>
+
+
+<%= render  partial: 'application/common_left_close' %>
+
+<script>
+
+
+  
+$( document ).ready(function() {
+            focusCurrentTab("viewInventoryItemProposalIndex","viewItemProposalLiID");
+          //focusStudentHeaderBox();
+});
+
+
+
+
+
+
+
+$(document).on("click", ".show-inventory-proposal-btn", function(e){
+        var myID =$(this).attr('id');
+        var Id=myID.split("-");
+        var urlLink = "/inventory/proposal_show/"+Id[0];
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(html){
+                  $('#showInventoryProposalDIVID').dialog({
+                    modal: true,
+                    minHeight: 'auto',
+                    width: 'auto',
+                    title: "Item Proposal",
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+});
+function itemListShowProposal(that, mg_inventory_proposal_id){
+
+  if(that.value){
+      $("#show_hide_gate_pass_excel").show();
+  }else{
+      $("#show_hide_gate_pass_excel").hide();
+  }
+   var urlLink = "/inventory/inventory_proposal_show_item";
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            data:{
+              mg_inventory_vendor_id: that.value,
+              mg_inventory_proposal_id: mg_inventory_proposal_id,
+              selecter: "show_proposel"
+            },
+            success: function(html){
+              // console.log(html);
+              $("#itemListDIVID").html(html);
+              
+               
+            }
+        });
+  
+
+}
+
+function genExcelVendorVice(mg_inventory_proposal_id){
+  var arr=[];
+  $('.inventory-select-check-box-cls').each(function(){
+    if ($(this).prop('checked')==true){ 
+      console.log("checked");
+        arr.push($(this).val());
+    }
+  });
+  console.log(arr);
+  if(arr.length>0){
+     var mg_inventory_vendor_id=$("#mg_inventory_vendor_id").val();
+      window.location.href='/inventory/gate_pass_excel?id='+mg_inventory_proposal_id+"&mg_inventory_vendor_id="+mg_inventory_vendor_id+"&mg_inventory_proposal_item_id="+arr;
+  }else{
+    alert("Please select Item");
+  }
+ 
+
+}
+</script>
+

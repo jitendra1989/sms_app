@@ -1,0 +1,109 @@
+ <% navigation_add t('results'), :controller=>'sports_management', :action=>'results' %>
+<% navigation_add t('results_new_data'), :controller=>'sports_management', :action=>'results_new_data' %>
+ 
+ <%= render  partial: 'sports_left' %>
+   <h4 class="mg-h4"><%=t('results')%></h4>
+<%
+
+ @events=[]
+
+    mg_school_id=session[:current_user_school_id]
+    # @events=MgEvent.where(:is_deleted=>0, :mg_school_id=>mg_school_id).pluck( :title, :id)
+    @event_committees=MgEventCommittee.where(:is_deleted=>0, :mg_school_id=>mg_school_id).pluck(:committee_name, :id )
+    params[:mg_event_id]=params[:mg_event_id]
+      if params[:mg_event_id].present?
+        events=MgEvent.find_by(:is_deleted=>0,:mg_school_id=>mg_school_id, :id=>params[:mg_event_id])
+        params[:mg_event_committee_id]=events.mg_event_committee_id
+        @events=MgEvent.where(:is_deleted=>0, :mg_school_id=>mg_school_id, :mg_event_committee_id=>events.mg_event_committee_id).pluck(:title, :id)
+    end
+
+%>
+<%= form_for :library_purchase_details ,  :url=>{:controller=>'sports_management',:action=>'result_create'}, :html=>{:id=>'sports_result_data'} do |f| %>
+
+ <p>
+  <label class="mg-label mg-tt-width "><%=t('select_sport') %><span class="required-field"> *</span></label>
+ <%=select_tag "play_group",options_for_select([["Individual Sports", "individual"],["Group Sports", "group"]]),:prompt=>"Select",:onchange => 'players_group_data(this);',:class=>"mg-text-field" %>
+
+ </p>
+<div>
+  <label class="mg-label mg-tt-width "><%=t('organizing_committee') %><span class="required-field"> *</span></label>
+   <%=select_tag :mg_committee_id ,options_for_select(@event_committees,params[:mg_event_committee_id]),:onchange=>"optionForEventInvetaion(this.value)",:prompt=>t('select') , :id=>"selectCommitteeSelectTagID" ,:class=>"mg-select-btn"%>
+   </div>
+
+<div>
+    <label class="mg-label mg-tt-width "><%=t('select_event') %><span class="required-field"> *</span></label>
+   <%=select_tag :mg_event_id ,options_for_select(@events,params[:mg_event_id]),:prompt=>t('select'),:onchange=>"optionForDateInventation(this.value)",:id=>"selectEventForCommitteeSelectTagIDDataId" ,:class=>"mg-select-btn"%>
+</div>
+<div id="Date_data">
+    <label class="mg-label mg-tt-width "><%=t('event_date') %><span class="required-field"> *</span></label>
+   <%#=text_field_tag :date_of_event,nil,:class=>"mg-text-field"%>
+   <%= select_tag 'date_of_event', options_for_select([]), :prompt=>"Select",:id=>"selectEventForCommitteeSelectTagIDDataValue",:class=>"mg-text-field" %>
+</div>
+ <div id="data_has">
+ 	
+
+
+ </div>
+
+ <p>
+  <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("Submit")%></a>
+
+<%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>   </p>
+<%end%>
+<%= render  partial: 'application/common_left_close' %>
+
+<script>
+  $(document).ready(function(){
+    focusCurrentTab("resultsAID","resultsLiID");
+
+    $("#sports_result_data").validate({
+      rules: {
+        "play_group": {required: true},
+        "mg_committee_id": {required: true},
+        "date_of_event": {required: true},
+        "team_of[]": {required: true},
+        "game": {required: true},
+
+        "mg_event_id": {required: true}
+      }
+    });
+  });//end ready function
+
+              function players_group_data(data)
+
+              {
+                $("#data_has").empty();
+              	if($(data).val()=="individual"){
+              		 var urlLink='/sports_management/results_new';
+
+              		 $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(data1){
+              
+               $("#data_has").empty().html(data1);
+            }
+        });
+              	}
+              	else if($(data).val()=="group")
+
+              	{
+              		 var urlLink='/sports_management/schedule_new';
+
+              		 $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(data1){
+              
+               $("#data_has").empty().html(data1);
+            }
+        });
+
+              	}
+
+
+
+              }
+
+	
+</script>

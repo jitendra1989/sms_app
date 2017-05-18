@@ -1,0 +1,57 @@
+ <%#= render partial: 'dashboards/employee_left' %>
+
+<h4 class="mg-h4"><%= "Editing #{@my_questions.title}" %></h4>
+
+
+<%= form_for :my_questions, url: my_question_path(@my_questions), method: :patch, :html => {
+                            :id => 'editMyQuestionFormID' } do |f| %>
+  <div>
+    <%= f.label :title ,:class=>"mg-label"%><span class="required-field"> *</span>
+  </div>
+  <div>
+    <%= f.text_field :title %>
+  </div>
+  <div>
+    <%= f.label :content ,:class=>"mg-label"%><span class="required-field"> *</span>
+  </div>
+  <div>
+    <%= f.cktext_area :content, rows: 10 %>
+  </div>
+  <%= f.hidden_field :mg_employee_id%>
+  <p>
+    <%= f.hidden_field :is_deleted, :value=>0%>
+     <%= f.hidden_field :mg_school_id, :value=>session[:current_user_school_id]%>
+    <%= f.hidden_field :updated_by, :value=>session[:user_id]%>
+ 
+</p>
+  <p class="mg-p-mgtop">
+    <%#= f.submit t('submit') ,:class=>"mg-small-form-btn"%>
+    <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("save")%></a>
+    <%= link_to t('back'), my_questions_path, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+  </p>
+<% end %>
+  
+ <%#= button_to "Cancel",my_questions_path, method: :get%>
+
+
+<%#= render partial: 'dashboards/employee_left_close' %>
+  <%#= link_to "Back",my_questions_path %>
+
+<script>
+ $(document).ready(function(){
+
+    $("#editMyQuestionFormID").validate({
+
+    rules: {
+    "my_questions[title]": {required: true},
+    "my_questions[content]": {required: true}
+    }
+    });
+
+
+    focusCurrentTab("viewQuestions","viewEmployeeQuestionsLiID");
+    focusDashboards();
+
+});
+
+</script>

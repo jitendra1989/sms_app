@@ -1,0 +1,42 @@
+<%if @training_offered.length>0%>
+<table  class="batch-tbl mg-tbl-margin">
+  <tr class="subject-table-header">
+    <th><%= t('company') %></th>
+    <th class="mg-rm-text-trans"><%= t('area_of_training') %></th>
+    <th><%= t('start_date') %></th>
+    <th><%= t('end_date') %></th>
+    <th><%= t('training_status') %></th>
+    <th><%= t('status') %></th>
+    <th><%= t('action') %></th>
+  </tr>
+ 
+  <% @training_offered.each do |f| %>
+    <tr>
+      <% company_name= MgPlacementRegistration.find_by(:id=>f.mg_placement_registration_id)%>
+      <td><%= company_name.try(:name_of_the_company)%></td>
+      <td><%= f.try(:area_of_training) %></td>
+
+      <td><%= f.start_date.strftime(@timeformat.date_format) %></td>
+      <td><%= f.end_date.strftime(@timeformat.date_format) %></td>
+      <%accept_training=MgPlacementAcceptedTrainee.find_by(:mg_placement_training_offered_id=>f.id,:mg_student_id=>@student_data.id)%>
+      <td class="mg-capitalize-text"><%=f.try(:is_active)%></td>
+      <td class="mg-capitalize-text">
+        <%if accept_training.try(:status).present?%>
+          <%=accept_training.try(:status)%>
+        <%else%>
+          <%="Pending"%>
+        <%end%>
+      </td>
+      <td>
+         <button title="Show" id="<%=raw f.id %>-<%=params[:id]%>" class="show-training-offered mg-icon-btn"><i class="fa fa-eye"></i></button>
+      </td>
+    </tr>
+  <% end %>
+</table>
+<br/>
+<%#= will_paginate @training_offered, :container => false %>
+</div>
+ 
+<%else%>
+<h5>No Training data is created </h5>
+<%end%>

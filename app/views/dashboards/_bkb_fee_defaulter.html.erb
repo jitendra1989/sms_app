@@ -1,0 +1,37 @@
+<h4 class="mg-h4">Fee Defaulter</h4> 
+<div class="mg-custom-labels">
+<%data=Hash.new%>
+<%data2=''%>
+
+  <%from_date=Date.today()-30
+to_date=Date.today()%>
+  <%defaulter_hash=Hash.new%>
+  <%mg_batch_fee_defaulter=MgBatch.where(:is_deleted=>0, :mg_school_id=>@mg_school_id)%>
+
+  <%mg_batch_fee_defaulter.each do |fee_defaulter|%>
+    <%student=MgStudent.where(:is_deleted=>0, :mg_school_id=>@mg_school_id, :mg_batch_id=>fee_defaulter.id).pluck(:id)%>
+    <%mg_finance_is_paid=MgFinanceFee.where(:is_paid=>0, :student_id=>student, :created_at=>from_date...to_date).count%>
+    <%mg_finance_not_paid=MgFinanceFee.where(:is_paid=>1, :student_id=>student, :created_at=>from_date...to_date).count%>
+    
+    <%#mg_fee_defaulter_array=Array.new%>
+    <%#mg_fee_defaulter_array.push("Paid" ,fee_defaulter.course_batch_name)%>
+    <%#defaulter_hash[mg_fee_defaulter_array]=mg_finance_not_paid%>
+    <%if mg_finance_is_paid>0%>
+      <%mg_fee_defaulter_array=Array.new%>
+      <%data[fee_defaulter.course_batch_code]=mg_finance_is_paid%>
+
+      <%#data2+="0,#{mg_finance_is_paid}"%>
+
+      <%mg_fee_defaulter_array.push("Not Paid" ,fee_defaulter.course_batch_code)%>
+      <%defaulter_hash[mg_fee_defaulter_array]=mg_finance_is_paid%>
+    <%end%>
+  <%end%>
+
+  <%=column_chart defaulter_hash, library:  {width:600,hAxis: {title: "Class & Section"}, vAxis: {title: "No. of Student"}}%>
+
+
+
+</div><br>
+
+
+

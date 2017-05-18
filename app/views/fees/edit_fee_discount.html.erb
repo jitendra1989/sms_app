@@ -1,0 +1,234 @@
+<!-- Sec --> 
+<div id="page-yield">
+ 	<div class="box">
+ 		<%= form_for :fee_discount, :url=>{:controller=>'fees',:id=>@fee_discount.id,:action=>'update_fee_discount'}, method: :patch,:html => { :id => "feeDiscountEditFormId",:class=>"feeDiscountEditFormClass",:multipart => true} do |f| %>
+
+ 			<%= f.hidden_field :mg_receiver_id ,:id=> 'receiverId'%>
+ 			<%= f.hidden_field :is_percent, :value=> 0%>
+ 			<%= f.hidden_field :is_deleted, :value=> 0%>
+ 			<%= f.hidden_field :mg_school_id, :value=> session[:current_user_school_id]%>
+
+ 		<div class="fee-discount-form-content">
+          <div class="fee-discount-form-content-inner">
+            <table width="100%" cellspacing="0" cellpadding="0" border="0" class="fee_discount-form-cls mg-table-spacing">
+              <tbody>
+               		<tr>
+	                	<td>
+	                    	<label class="mg-label mg-pop-td-width" for="select_discount_type"><%= t('Discount Type') %></label>
+	                    	<%#= f.select :discount_type, [ 'Student', 'Batch', 'Student Category' ], :prompt => ''%>
+	                  		<%= f.text_field :discount_type , :disabled=>true ,:class=>"mg-text-field"%>
+	                  	
+	                  	</td>
+                  	</tr>
+
+                  	<% 
+  
+						if (@fee_discount.discount_type=="Section")
+						    @showDivDiscountName="block"
+						    @showDivCourse="none"
+						    @showDivBatch="none"
+						    @showDivFeeCategory="block"
+						    @showDivFeeCategoryBatch="block"
+						    @showDivStudentCategory="none"
+						    @showDivAdmissionNumber="none"
+						    @showDivDiscountAmount="block"
+						elsif(@fee_discount.discount_type=="Student")   
+						    @showDivDiscountName="block"
+						    @showDivCourse="block"
+						    @showDivBatch="block"
+						    @showDivFeeCategory="block"
+						    @showDivFeeCategoryBatch="none"
+						    @showDivStudentCategory="none"
+						    @showDivAdmissionNumber="block"
+						    @showDivDiscountAmount="block"
+						elsif(@fee_discount.discount_type=="Student Category")   
+						    @showDivDiscountName="block"
+						    @showDivCourse="none"
+						    @showDivBatch="none"
+						    @showDivFeeCategory="block"
+						    @showDivFeeCategoryBatch="block"
+						    @showDivStudentCategory="block"
+						    @showDivAdmissionNumber="none"
+						    @showDivDiscountAmount="block"
+						end
+					%> 
+
+                  	<tr class="fee-discount-name-cls">
+	                  	<td>
+	                  		<label class="mg-label mg-pop-td-width" for="fee-discount-name"><%= t('Name') %><span class="required-field">&nbsp;*</span></label>
+	                    	<%= f.text_field :name,:class => 'name-cls mg-text-field'%>
+	                  	</td>
+                  	</tr>
+
+                  	<!-- style="display:<%=@showDivCourse%>;" -->
+                  	<tr class="course-cls" >
+	                  	<td>
+	                    	<label class="mg-label mg-pop-td-width" for="course"><%= t('course')%> <%= t('batch') %> </label>
+
+	                    	<%
+
+		                    	@mgBatch=MgBatch.find_by_id(@fee_discount.mg_batch_id)
+
+		                    	@course=MgCourse.select(:course_name).find_by_id(@mgBatch.mg_course_id)
+		                    	 
+		                    %>
+
+			                <%if@course!=nil%>
+
+			                	<%@course_batch=@course.course_name+'-'+ @mgBatch.name%>
+			                  	<%= f.text_field :mg_batch_id, :value=>@course_batch, :disabled=>true ,:class=>"mg-text-field"%>
+			                <%else%>
+
+			                <%end%>	
+
+	                    	<%#=f.collection_select(:course, MgCourse.all, :id, :course_name, :prompt => '') %>
+
+
+	                    	<%#@course=MgCourse.where(:is_deleted=>0).pluck(:course_name,:id)%>
+  							<%#=select :MgCourse,options_for_select(@course),:prompt=>"Select Course"%>
+  							<%#= select_tag( :fee_discount_course, options_for_select(@course)) %>
+
+
+
+	                  	</td>
+                  	</tr>
+
+                  	<!-- <tr class="batch-cls" style="display:<%#=@showDivBatch%>;">
+	                  	<td>
+	                    	<label class="mg-label mg-pop-td-width" for="batch"><%#= t('Select Batch') %></label>
+	                    	<%#= f.select :batch, [ ''], :prompt => ''%>
+	                    	<%#= select_tag( :fee_discount_batch, options_for_select('')) %>
+	                  	</td>
+                  	</tr> -->
+
+                  	<!-- style="display:<%=@showDivFeeCategory%>;" -->
+                  	<tr class="fee-category-cls" >
+	                  	<td>
+	                    	<label class="mg-label mg-pop-td-width" for="fee-category"><%= t('Fee Category') %></label>
+
+	                    	<%
+			                	@feeCategory=MgFeeCategory.find_by_id(@fee_discount.mg_fee_category_id)
+			                %>
+
+		                  	<% if @feeCategory!=nil%>
+			                  		
+			                  		<%= f.text_field :mg_fee_category_id, :value=>@feeCategory.name, :disabled=>true ,:class=>"mg-text-field"%>
+		                  	<%else%>
+		                  		<%#= text_field_tag :mg_fee_category_id, nil,:disabled=>true %>
+		                  	<%end%>
+
+
+	                    	<%#=f.collection_select(:mg_fee_category_id, MgFeeCategory.all, :id, :name, {:prompt=>'Select'}, {:id=>'feeDiscountFeeCategoryId'}) %>
+	                  	</td>
+                  	</tr>
+
+                  	<!-- <tr class="fee-category-batch-cls" style="display:<%#=@showDivFeeCategoryBatch%>;">
+	                  	<td>
+	                    	<label class="mg-label mg-pop-td-width" for="fee-category-batch"><%#= t('Select Batch') %></label>
+	                    	<div id="batchDetailInFeeDiscountId" style="margin-left:226px;"></div>
+	                  	</td>
+                  	</tr> -->
+
+                  	<tr class="student-category-cls" style="display:<%=@showDivStudentCategory%>;">
+	                  	<td>
+	                    	<label class="mg-label mg-pop-td-width" for="student-category"><%= t('Student Category') %></label>
+
+	                    	<%
+			                	if @fee_discount.discount_type=="Student Category"
+
+			                		@studentFeeCategory=MgStudentCategory.find_by_id(@fee_discount.mg_receiver_id)
+			                	end
+			                %>
+
+		                  	<% if @studentFeeCategory!=nil%>
+			                  		
+		                  			<%=text_field_tag 'student_category', @studentFeeCategory.name, disabled: true ,:class=>"mg-text-field"%>
+			                  		<%#= text_field_tag :student_category, :value=>@studentFeeCategory.name, :disabled=>true %>
+		                  	<%else%>
+		                  			<%= text_field_tag :student_category, nil, :disabled=>true ,:class=>"mg-text-field"%>
+		                  	<%end%>
+
+
+	                    	<%#=f.collection_select(:student_category, MgStudentCategory.all, :id, :name, :prompt => '') %>
+
+	                    	<%#@student_category=MgStudentCategory.where(:is_deleted=>0).pluck(:name,:id)%>
+  							<%#=select :MgCourse,options_for_select(@course),:prompt=>"Select Course"%>
+  							<%#= select_tag( :student_category, options_for_select(@student_category)) %>
+	                  	</td>
+                  	</tr>
+
+
+
+                  	<tr class="admission-number-cls" style="display:<%=@showDivAdmissionNumber%>;">
+	                  	<td>
+	                  		<label class="mg-label mg-pop-td-width" for="admission_number"><%= t('Admission Number') %></label>
+
+	                  		<%
+			                	if @fee_discount.discount_type=="Student"
+
+			                		@studentObj=MgStudent.find_by_id(@fee_discount.mg_receiver_id)
+			                	end
+			                %>
+
+		                  	<% if @studentObj!=nil%>
+			                  		
+			                  		<%=text_field_tag 'admission_number', @studentObj.admission_number, disabled: true ,:class=>"mg-text-field"%>
+			                  		<%#= text_field_tag('admission_number', {@studentObj.admission_number},{disabled='true' })%>
+		                  	<%else%>
+		                  			<%= text_field_tag :admission_number, nil, :disabled=>true ,:class=>"mg-text-field"%>
+		                  	<%end%>
+
+	                    	<%#= text_field_tag :admission_number  ,nil,:class => 'check-for-valid-admission-number-cls'%>  
+	                  	</td>
+                  	</tr>
+
+                  	<tr class="fee-discount-cls" >
+	                  	<td>
+	                  		<label class="mg-label mg-pop-td-width" for="discount"><%= t('Discount') %><span class="required-field">&nbsp;*</span></label>
+	                    	<%= f.text_field :discount  ,:class => 'discount-cls mg-text-field'%>
+	                  	</td>
+                  	</tr>
+
+                  	<tr class="mode-cls" style="display:none;">
+	                  	
+                  	</tr>
+
+                  	<tr class="save-button-cls" >
+	                  	<td>
+	                  		<%#= submit_tag 'Submit', id: "saveFeeDiscountID" ,:class=>"mg-small-form-btn", :style=>"margin-left:226px;"%>
+	                  		<a onclick="$(this).closest('form').submit()" id="saveFeeDiscountID" class="mg-small-form-btn" style="margin-left:226px;"><%=t("save")%></a>
+	                  		 <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+
+	                  	</td>
+                  	</tr>
+                  	
+                
+              </tbody>
+            </table>
+            </div>
+            </div>
+ 		<% end %>
+ 	</div>
+ </div>
+
+ <script>
+ 	$(document).ready(function(){
+ 		// alert("welcome");
+ 		$(".feeDiscountEditFormClass").validate({
+	      rules: 
+	      {
+	          "fee_discount[name]": {required: true},
+	          "fee_discount[course]": {required: true},
+	          "fee_discount[batch]": {required: true},
+	          "fee_discount[mg_fee_category_id]": {required: true},
+	          "fee_discount_course": {required: true},
+	          "admission_number": {required: true},
+	          "fee_discount[discount]": {required: true,number: true,min:1},
+	          "selected_batch[]": {required: true},
+	          "fee_discount[student_category]": {required: true}
+	      }
+	    });
+
+ 		$("#batchDetailId").val('');
+ 	});
+ </script>

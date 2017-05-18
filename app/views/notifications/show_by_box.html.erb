@@ -1,0 +1,21 @@
+<%= render  partial: 'notification_left' %>
+<% navigation_add 'Show Notifications', "/notifications/show_by_box" %>
+<%user=MgUser.find(session[:user_id])%>
+<%=hidden_field_tag 'user_type', user.user_type%>
+<%= render partial: 'show_notify' %>
+
+<%= render  partial: 'application/common_left_close' %>
+<script type="text/javascript">
+     $(document).ready(function(){
+//dd
+     	 focusCurrentTab("showAdminNotification","showAdminNotificationLiID");
+         var user_type=$("#user_type").val();
+     	 if(user_type=="superprincipal" || user_type=="principal"|| user_type=="admin"){
+     	 	focusNotification();
+     	 }
+     	 else{
+
+         	focusDashboards();
+     	 }
+   });
+</script>

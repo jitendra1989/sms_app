@@ -1,0 +1,250 @@
+<%=render partial: "healthcare_left"%>
+<h4 class="mg-h4"><%= @action=='new' ? t('new_allergy') : t('edit_allergy')%></h4>
+
+<%= form_for :allergy, :url=>@action=='new' ? 'allergy_create' : '/healthcare/'+@allergy.try(:id).to_s+'/allergy_update', :method=> @action=='new' ? "post" : "patch", :html => {:id => 'alergyNewEditFormId' } do |f| %>
+	<%= f.hidden_field :is_deleted, :value => 0 %>
+	<%= f.hidden_field :mg_school_id, :value => session[:current_user_school_id] %>
+  <%if @action=='new'%>
+    <%= f.hidden_field :created_by, :value => session[:user_id] %>
+    <%@bool_val=false%>
+  <%else%>
+    <%= hidden_field_tag :action_url, @action %>
+    <%= f.hidden_field :allergy_for, :value => @allergy.try(:allergy_for) %>
+    <%= hidden_field_tag :mg_student_batch_id, @allergy.try(:mg_batch_id) %>
+    <%= hidden_field_tag :mg_student_student_id, @allergy.try(:mg_student_id) %>
+    <%= hidden_field_tag :mg_employee_emp_department_id, @allergy.try(:mg_employee_department_id) %>
+    <%= hidden_field_tag :mg_employee_emp_id, @allergy.try(:mg_employee_id) %>
+    <%@bool_val=true%>
+  <%end%>
+  <%= f.hidden_field :updated_by, :value => session[:user_id] %>
+
+  <label class="mg-label mg-tt-width" style="width:185px"><%= t('user_type') %><span class="required-field">&nbsp;*</span></label>
+  <%if params[:allergy_for].present? && params[:allergy_for]=='employee'%>
+    <%= f.radio_button :allergy_for, 'student',:checked=>false,:class=>'allergy-student-cls'%> 
+    <%= f.label :allergy_for , t('student'), :class=> "mg-label"%> 
+    <%= f.radio_button :allergy_for, 'employee',:checked=>true,:class=>'allergy-employee-cls'%>
+    <%= f.label :allergy_for , t('employee'), :class=> "mg-label"%> 
+  <%else%>
+    <%= f.radio_button :allergy_for, 'student',:checked=>true,:class=>'allergy-student-cls'%> 
+    <%= f.label :allergy_for , t('student'), :class=> "mg-label"%> 
+    <%= f.radio_button :allergy_for, 'employee',:class=>'allergy-employee-cls'%>
+    <%= f.label :allergy_for , t('employee'), :class=> "mg-label"%> 
+  <%end%>
+
+  <div id="studentDivId" class="studentDivClass">
+	  <label class="mg-label mg-tt-width" style="width:185px"><%= t('select') %> <%= t('semester') %><span class="required-field">&nbsp;*</span></label>
+    <%if @action=="edit"%>
+      <%= f.collection_select(:mg_batch_id,MgBatch.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]), :id, :course_batch_name,{:selected=>@allergy.try(:mg_batch_id),:include_blank => t("select")},:class =>"mg-select-btn",:onchange=>"classChange(this.value)",:disabled=>@bool_val)%><br/>
+    <%else%>
+      
+
+      <%= f.collection_select(:mg_batch_id,MgBatch.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]), :id, :course_batch_name,{:selected=>params[:batch_Id],:include_blank => t("select")},:class =>"mg-select-btn",:onchange=>"classChange(this.value)",:disabled=>@bool_val)%><br/>
+    <%end%>
+
+	  <label class="mg-label mg-tt-width" style="width:185px"><%= t('select_student') %><span class="required-field">&nbsp;*</span></label>
+    <%= f.collection_select(:mg_student_id,MgStudent.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id],:mg_batch_id=>''), :id, :first_name,{:selected=>"",:include_blank => t("select")},:class =>"mg-select-btn",:onchange=>"allergyFunction(this.value)",:disabled=>@bool_val)%><br/>
+  </div>
+
+  <div id="employeeDivId" class="employeeDivClass" style="display:none;">
+    <label class="mg-label mg-tt-width" style="width:185px"><%= t('select') %> <%= t('department') %><span class="required-field">&nbsp;*</span></label>
+    <%if @action=="edit"%>
+      <%= f.collection_select(:mg_employee_department_id,MgEmployeeDepartment.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]), :id, :department_name,{:selected=>@allergy.try(:mg_employee_department_id),:include_blank => t("select")},:class =>"mg-select-btn",:onchange=>"departmentChangeAllergyForm(this.value)",:disabled=>@bool_val)%><br/>
+    <%else%>
+      <%= f.collection_select(:mg_employee_department_id,MgEmployeeDepartment.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]), :id, :department_name,{:selected=>params[:dept_Id],:include_blank => t("select")},:class =>"mg-select-btn",:onchange=>"departmentChangeAllergyForm(this.value)",:disabled=>@bool_val)%><br/>
+    <%end%>
+
+    <label class="mg-label mg-tt-width" style="width:185px"><%= t('select_employee') %><span class="required-field">&nbsp;*</span></label>
+    <%= f.collection_select(:mg_employee_id,MgEmployee.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id],:mg_employee_department_id=>''), "id", "employee_full_name_with_number",{:selected=>@allergy.try(:mg_employee_id),:include_blank => t("select")},:class =>"mg-select-btn",:onchange=>"allergyEmployeeFunction(this.value)",:disabled=>@bool_val)%><br/>
+  </div>
+
+  <div id="allergyRecordDivID"></div>
+  <p class="mg-p-mgtop">
+    <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("save")%></a>
+    <%#= f.submit t('save') ,:class=>"mg-small-form-btn allergy-new-class" , :style=>"display:none"%>
+    <!-- <a onclick="submission_criteria(); " class="input_field mg-small-form-btn"><%#=t("save")%></a> -->
+    <%= link_to t('cancel'),allergy_index_path ,{:class=>"mg-small-form-btn cancel-form-dialog"} %>
+	</p>
+<%end%>
+
+<%= render  partial: 'common_left_close' %>
+
+
+
+
+
+
+
+<script>
+	$(document).ready(function() {
+    focusCurrentTab("allergyAId","allergyLiId");
+	  $("#alergyNewEditFormId").validate({
+			rules: {
+				"allergy_for": {required: true},
+				"allergy[mg_batch_id]": {required: true},
+				"allergy[mg_student_id]": {required: true},
+				"allergy[mg_employee_department_id]": {required: true},
+				"allergy[mg_employee_id]": {required: true},
+        "name[]": {required: true},
+        "description[]": {required: true},
+        "status[]": {required: true},
+        "medication_detail[]": {required: true},
+        "newname[]": {required: true},
+        "newdescription[]": {required: true},
+        "newstatus[]": {required: true},
+        "newmedication_detail[]": {required: true}
+			}
+		});
+
+    var apdStr = '<option value="">Select</option>';
+    var employee_checked_val=$("#allergy_allergy_for_employee");
+    if(employee_checked_val.is(':checked')){
+      $("#allergy_mg_student_id").empty().append(apdStr);
+      $("#allergyRecordDivID").empty();
+      $("#studentDivId").hide();
+      $("#employeeDivId").show();
+    }else{
+      $("#allergy_mg_employee_id").empty().append(apdStr);
+      $("#allergyRecordDivID").empty();
+      $("#employeeDivId").hide();
+      $("#studentDivId").show();
+    }
+
+    var actions_url = $("#action_url").val();
+    if(actions_url=='edit'  && actions_url !== undefined){
+      var student_id = $("#mg_student_student_id").val();
+      var batch_id = $("#mg_student_batch_id").val();
+      if(batch_id!=''){
+        $("#allergy_allergy_for_student").prop("disabled", true);
+        $("#allergy_allergy_for_employee").prop("disabled", true);
+
+        $.ajax({
+          url: '/healthcare/student_list_table',
+          data:{"mg_batch_id":batch_id},
+          cache: false,
+          success: function(data){
+            if(data.length > 0){
+              var apdStr = '<option value="">Select</option>';
+              for(key in data){
+                apdStr += '<option value="'+data[key].id+'">'+data[key].admission_number+" - "+data[key].first_name.substr(0,1).toUpperCase()+data[key].first_name.substr(1)+" "+data[key].last_name.substr(0,1).toUpperCase()+data[key].last_name.substr(1)+'</option>'
+              }
+              $("#allergy_mg_student_id").empty().append(apdStr);
+              $("select#allergy_mg_student_id").val(student_id);
+            }
+            else{
+              var apdStr = '<option value="">Select</option>';
+              $("#allergy_mg_student_id").empty().append(apdStr);;
+            }
+          }
+        });
+      }
+     }else{
+      var batch_id = $("#allergy_mg_batch_id").val();
+      if(batch_id!=''  && batch_id !== undefined){
+        $.ajax({
+          url: '/healthcare/student_list_table',
+          data:{"mg_batch_id":batch_id},
+          cache: false,
+          success: function(data){
+            if(data.length > 0){
+              var apdStr = '<option value="">Select</option>';
+              for(key in data){
+                apdStr += '<option value="'+data[key].id+'">'+data[key].admission_number+" - "+data[key].first_name.substr(0,1).toUpperCase()+data[key].first_name.substr(1)+" "+data[key].last_name.substr(0,1).toUpperCase()+data[key].last_name.substr(1)+'</option>'
+              }
+              $("#allergy_mg_student_id").empty().append(apdStr);
+              $("select#allergy_mg_student_id").val(student_id);
+            }
+            else{
+              var apdStr = '<option value="">Select</option>';
+              $("#allergy_mg_student_id").empty().append(apdStr);;
+            }
+          }
+        });
+      }
+    }
+
+    var student_id = $("#mg_student_student_id").val();
+    if(student_id!='' && student_id !== undefined){
+      $('#allergyRecordDivID').empty();
+      var batch_id=$("#allergy_mg_batch_id").val();
+      var urlLink='/healthcare/allergy_record';
+      if(student_id!=''){
+        $.ajax({
+          url: urlLink ,
+          cache: false,
+          data:{mg_batch_id:batch_id,mg_student_id:student_id},
+          success: function(data){
+            $('#allergyRecordDivID').html(data)
+          }
+        });
+      }
+    }
+    if(actions_url=='edit'  && actions_url !== undefined){
+      var employee_id = $("#mg_employee_emp_id").val();
+      var department_id = $("#mg_employee_emp_department_id").val();
+      if(department_id!='' && department_id !== undefined){
+        $("#allergy_allergy_for_student").prop("disabled", true);
+        $("#allergy_allergy_for_employee").prop("disabled", true);
+        $.ajax({
+          url: '/healthcare/employee_list_table',
+          data:{"mg_employee_department_id":department_id},
+          cache: false,
+          success: function(data){
+            if(data.length > 0){
+              var apdStr = '<option value="">Select</option>';
+              for(key in data){
+                apdStr += '<option value="'+data[key].id+'">'+data[key].employee_number+" - "+data[key].first_name.substr(0,1).toUpperCase()+data[key].first_name.substr(1)+" "+data[key].last_name.substr(0,1).toUpperCase()+data[key].last_name.substr(1)+'</option>'
+              }
+              $("#allergy_mg_employee_id").empty().append(apdStr);
+              $("select#allergy_mg_employee_id").val(employee_id);
+            }
+            else{
+              var apdStr = '<option value="">Select</option>';
+              $("#allergy_mg_employee_id").empty().append(apdStr);;
+            }
+          }
+        });
+      }
+     }else{
+      var department_id = $("#allergy_mg_employee_department_id").val();
+      if(department_id!='' && department_id !== undefined){
+        $.ajax({
+          url: '/healthcare/employee_list_table',
+          data:{"mg_employee_department_id":department_id},
+          cache: false,
+          success: function(data){
+            if(data.length > 0){
+              var apdStr = '<option value="">Select</option>';
+              for(key in data){
+                apdStr += '<option value="'+data[key].id+'">'+data[key].employee_number+" - "+data[key].first_name.substr(0,1).toUpperCase()+data[key].first_name.substr(1)+" "+data[key].last_name.substr(0,1).toUpperCase()+data[key].last_name.substr(1)+'</option>'
+              }
+              $("#allergy_mg_employee_id").empty().append(apdStr);
+            }
+            else{
+              var apdStr = '<option value="">Select</option>';
+              $("#allergy_mg_employee_id").empty().append(apdStr);;
+            }
+          }
+        });
+      }
+    }
+
+    var employee_id = $("#mg_employee_emp_id").val();
+    if(employee_id!='' && employee_id !== undefined){
+      $('#allergyRecordDivID').empty();
+      var department_id=$("#allergy_mg_employee_department_id").val();
+      var urlLink='/healthcare/allergy_record';
+      $.ajax({
+        url: urlLink ,
+        cache: false,
+        data:{mg_employee_department_id:department_id,mg_employee_id:employee_id},
+        success: function(data){
+          $('#allergyRecordDivID').empty();
+          $('#allergyRecordDivID').html(data)
+        }
+      });
+    }
+  });//end of ready function
+
+
+  
+</script>

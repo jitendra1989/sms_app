@@ -1,0 +1,125 @@
+<% navigation_add t('hostel_issues'),:controller=>'hostel_management', :action=>'hostel_complaint' %>
+
+<% navigation_add t('hostel issue Details'),:controller=>'hostel_management', :action=>'hostel_complaint_show' %>
+
+<%= render  partial: 'hostel_management_left' %>
+
+<h4 class="mg-h4"><%= t('hostel issue Details')%></h4>
+
+<%= form_for :hostel_complaint_show, :url=>{:action=>"hostel_complaint_update",:id=>@hostel_complaint.id},:html => {:id => 'hostelComplainFormId' }  do |f| %>
+
+
+
+  <table border="1" class="mg-showdata-bg " cellspacing="1" cellpadding="1">
+
+  <% student_data=MgStudent.find_by(:id=>@hostel_complaint.mg_student_id)%>
+ 
+      <tr>
+         <td class="mg-td-width-half" valign="top">
+          <label class="mg-label"> <%= t('student_name')%></label>
+         </td>
+         <td class="mg-td-width-half" valign="top">
+          <%="#{student_data.try(:first_name)} #{student_data.try(:last_name)}"%>
+         </td>
+      </tr>
+
+      <tr>
+         <td class="mg-td-width-half" valign="top">
+          <label class="mg-label"> <%= t('placement_student_admission_id')%></label>
+         </td>
+         <td class="mg-td-width-half" valign="top">
+            <%=student_data.try(:admission_number)%>
+         </td>
+      </tr>
+
+
+   <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label mg-rm-text-trans"> <%= t('hostel')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+      <% student_data=MgStudent.find_by(:id=>@hostel_complaint.mg_student_id)%>
+      <% @student_form_data= MgAllocateRoomList.find_by(:mg_student_id=>student_data.id,:is_deleted=>0,:mg_school_id=>session[:current_user_school_id])
+       @allocate_room_data= MgAllocateRoom.find_by(:id=>@student_form_data.try(:mg_allocate_room_id)) %>
+      
+      <%hostel_details=MgHostelDetails.find_by(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id],:id=>@allocate_room_data.try(:mg_hostel_details_id))%>
+      <%= hostel_details.try(:name) %>
+     </td>
+ </tr>
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label mg-rm-text-trans"> <%= t('room_no')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+      <%=@hostel_complaint.room_no %>
+     </td>
+ </tr>
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label mg-rm-text-trans"> <%= t('date')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+      <%=@hostel_complaint.date.strftime(@timeformat.date_format) %>
+     </td>
+ </tr>
+
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"><%=t('reason')%></label>
+     </td>
+     <td class="mg-td-width-half " valign="top">
+        <div class="text-scroll-for-log-text-cls comments-space" style="padding: 5px 40 0 10px">
+          <%=@hostel_complaint.reason %>
+        </div>
+     </td>
+ </tr>
+ 
+   
+<tr>
+      
+        
+                        
+       <tr>
+         <td class="mg-td-width-half" valign="top">
+            <label class="mg-label"> <%= t('status')%></label>
+         </td>
+
+          <td class="mg-td-width-half " valign="top">
+            
+            <%= select_tag :status,options_for_select([["Processing","Processing"],["Resolved","Resolved"]],:selected=>@hostel_complaint.status),{:prompt=>"Select"} %><br/>
+
+         </td>
+       </tr>
+         
+
+
+
+
+</tr>
+
+</table><br/>
+<p>
+         
+     <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("save")%></a>
+
+    <%=link_to t("cancel"),{:controller => "hostel_management", 
+    :action => "hostel_complaint"},:class=>"mg-small-form-btn cancel-form-dialog"%>    
+</p>
+
+    <% end %>
+
+<%= render partial: 'application/common_left_close' %>
+ 
+ <script>
+  $( document ).ready(function() {
+    focusCurrentTab("hostel_complaintAID","hostel_complaintLiID");
+
+    $("#hostelComplainFormId").validate({
+
+    rules: {
+      "status": {required: true}
+      }
+    });
+
+  });
+</script>

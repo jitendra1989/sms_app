@@ -1,0 +1,119 @@
+<%@file_names='My Folder'%>
+<%@array=Array.new%>
+<%def folder_name(mg_employee_folder_id)
+	if mg_employee_folder_id.to_i>0
+			 @folder1=MgEmployeeFolder.find(mg_employee_folder_id)
+			 @array.push(@folder1.folder_name)
+			 if @folder1.mg_employee_chaild_folder_id.present?
+			 folder_name(@folder1.mg_employee_chaild_folder_id)
+			end
+	end
+end%>
+<%folder_name(@mg_employee_folder_id)%>
+<%@array=@array.reverse!
+for index in 0...@array.size
+  @file_names +=" > "+@array[index] 
+end%>
+<div id="breadcrumbsForFileManagement" class="mg-bold-brdcrmb">
+	<%=@file_names%>	
+</div>
+<div class="mg-text-margin">
+	<button id="<%=@mg_employee_folder_id%>-createNewChaildBTNId" class="create-new-chaild-folder-BTN mg-btn-color1 mg-custom-form-btn">Create Folder</button>
+
+	<button id="<%=@mg_employee_folder_id%>-addFileToFolderBTNID" class="add-file-to-folder-BTN mg-custom-form-btn"><i class="fa fa-upload">&nbsp;&nbsp;Upload File</i></button>
+	<button id="<%=@mg_employee_folder_id%>-deleteFileFromFolderBTNID" class="delete-file-from-folder-BTN mg-custom-form-btn"><i class="fa fa-times">&nbsp;&nbsp;Delete Folder</i></button>
+</div>
+ <table class="batch-tbl mg-text-margin">
+        <tr>
+        	<th>File Name</th>
+	        <th>file size</th>
+	        <th>Actions</th>
+        </tr>
+<tr>
+<% @document_managements.each do |e| %>
+<%file_type=e.file_file_name.split(".")%>
+<%file_type[1]%>
+<%if file_type[1]=='pdf'%>
+<%@type='<i class="fa fa-file-pdf-o"></i>'%>
+<%elsif file_type[1]=='xlsx' || file_type[1]=='xlt' || file_type[1]=='xls' ||file_type[1]=='xlm' ||file_type[1]=='xlsm' ||file_type[1]=='xltx' ||file_type[1]=='xltm' ||file_type[1]=='xlsb' ||file_type[1]=='xla' ||file_type[1]=='xlam' ||file_type[1]=='xll' ||file_type[1]=='xlw'%>
+<%@type='<i class="fa fa-file-excel-o"></i>'%>
+<%elsif file_type[1]=='jpeg' || file_type[1]=='jfif' ||file_type[1]=='exit' ||file_type[1]=='tift' ||file_type[1]=='rit' || file_type[1]=='png' || file_type[1]=='jpg'   %>
+<%@type='<i class="fa fa-file-image-o"></i>'%>
+
+<%elsif file_type[1]=='txt'%>
+<%@type='<i class="fa fa-file-text"></i>'%>
+
+<%elsif file_type[1]=='docx' || file_type[1]=='doc' ||file_type[1]=='docm' ||file_type[1]=='dotx' ||file_type[1]=='dotm' ||file_type[1]=='docb'%>
+<%@type='<i class="fa fa-file-pdf-o"></i>'%>
+
+<%elsif file_type[1]=='ppt' || file_type[1]=='pot' ||file_type[1]=='pps' ||file_type[1]=='pptx' ||file_type[1]=='pptm' ||file_type[1]=='potx' ||file_type[1]=='potm' ||file_type[1]=='ppam' ||file_type[1]=='ppsx' ||file_type[1]=='ppsm' ||file_type[1]=='sldx' ||file_type[1]=='sldm' %>
+<%@type='<i class="fa fa-file-powerpoint-o"></i>'%>
+<%elsif file_type[1]=='zip'%>
+<%@type='<i class="fa fa-file-archive-o"></i>'%>
+<%elsif file_type[1]=='pdf'%>
+<%@type='<i class="fa fa-file-pdf-o"></i>'%>
+
+<%elsif file_type[1]=='pdf'%>
+<%@type='<i class="fa fa-file-pdf-o"></i>'%>
+
+<%elsif file_type[1]=='pdf'%>
+<%@type='<i class="fa fa-file-pdf-o"></i>'%>
+
+<%elsif file_type[1]=='pdf'%>
+<%@type='<i class="fa fa-file-pdf-o"></i>'%>
+
+<%elsif file_type[1]=='pdf'%>
+<%@type='<i class="fa fa-file-pdf-o"></i>'%>
+
+<%elsif file_type[1]=='pdf'%>
+<%@type='<i class="fa fa-file-pdf-o"></i>'%>
+
+<%elsif file_type[1]=='pdf'%>
+<%@type='<i class="fa fa-file-pdf-o"></i>'%>
+
+<%elsif file_type[1]=='pdf'%>
+<%@type='<i class="fa fa-file-pdf-o"></i>'%>
+
+<%elsif file_type[1]=='pdf'%>
+<%elsif file_type[1]=='pdf'%>
+<%elsif file_type[1]=='pdf'%>
+<%elsif file_type[1]=='pdf'%>
+
+
+<%else%>
+<%@type='<i class="fa fa-file"></i>'%>
+
+<%end%>
+	<td>
+		<li class="mg-folder-list mg-label-top-margin"><label for="subfolder1"><%=@type.html_safe%>&nbsp;
+		<%= link_to_if e.file.url, e.file_file_name, e.file.url %></label>
+	</td>
+	<td>
+		<%=number_to_human_size(e.file_file_size, :precision => 2)  %>
+	</td>
+<!-- 	<td>
+	
+
+	</td> -->
+<td><%html_icon='<span class="mg-icon-btn" title="Download"><i class="fa fa-download"></i></span>'%>
+		<%= link_to_if e.file.url, html_icon.html_safe, e.file.url %>
+		 <a id="<%=e.id%>-deleteFileForEmployeeBTNID" class="delete-file-for-employee-BTNID" ><span for="subfolder1" class="mg-icon-btn" title="Delete"><i class="fa fa-trash"></i></span></a>
+		 <a id ="<%=e.id%>-shareFileForSudentAID" class="share-file-for-sudent-A-cls"><span class="mg-icon-btn" title="Share"><i class="fa fa-share-alt"></i></span></a>
+		 </td>
+          
+
+</label></a> </li>
+</tr>      
+ <% end %>
+
+
+        
+  </table>
+
+  <script>
+  
+
+
+
+
+  </script>

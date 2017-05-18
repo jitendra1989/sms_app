@@ -1,0 +1,59 @@
+<% navigation_add t('placement'), :controller=>'placements', :action=>'job_upload' %>
+<%= render  partial: 'placements_left' %>
+
+<h4 class="mg-h4"><%= t('job_list')%></h4>
+<!-- <button class="new-upload-job-btn mg-btn-bottom-margin mg-custom-form-btn"><%#= t('upload_new_job')%></button>  --> 
+<%= button_to 'New job', {:controller=>'placements',:action=>'job_upload_new'}, :class=> 'mg-custom-form-btn' %>
+<br/>
+
+<%if @job_upload.present?%>
+<table  class="batch-tbl mg-tbl-margin">   <!-- border="2" --> 
+  <tr class="subject-table-header">
+    <th><%= t('position') %></th>
+    <th><%= t('job_description') %></th>
+    <th><%= t('educational_qualification') %></th>
+    <th><%= t('interview_date') %></th>
+    <th><%= t('interview_location') %></th>
+    <th><%= t('status') %></th>
+    <th style="width: 97px;"><%= t('actions') %></th>
+  </tr>
+ 
+  <% @job_upload.each do |s| %>
+    <tr>
+      <td style="text-align:center"  class='mg-capitalize-text'><%= s.position %></td>
+      <td class="mg-desc-text-justify" style="text-align:center"><%= truncate(s.job_description.to_s, :length => 25, :separator => ' ') %></td>
+      <td style="text-align:center"><%= s.edu_qual %></td>
+      <td style="text-align:center"><%= s.interview_date.strftime(@timeformat.date_format) %></td>
+      <td style="text-align:center"><%= s.interview_location %></td>
+      <td style="text-align:center"  class='mg-capitalize-text'><%= s.status %></td>
+
+
+      <td>	
+      	<button title="Show" id="<%=raw s.id %>-showjobUploadBTNID" class="show-job-upload-fom-btn mg-icon-btn" onclick="window.location='/placements/job_upload_show/<%=s.id%>'"><i class="fa fa-eye"></i></button>
+
+        <button title="Edit" id="<%=raw s.id %>-editjobUploadBTNID" class="edit-job-upload-fom-btn mg-icon-btn" onclick="window.location='/placements/job_upload_edit/<%=s.id%>'"><i class="fa fa-pencil-square-o"></i></button>
+
+  		<button title="Delete" onclick="confirm('Are you sure to delete?') ? window.location='/placements/job_upload_delete/<%=s.id%>' : ''" class="mg-icon-btn"><i class="fa fa-trash"></i></button>    
+
+      </td>
+    </tr>
+  <% end %>
+</table>
+<br/>
+ <div class="pagination-align" style="position: relative; bottom: 10px;">
+ <%= will_paginate @job_upload, :container => false %>
+ </div>
+<%else%>
+<h5>No records are created </h5>
+<%end%>
+
+<%= render  partial: 'application/common_left_close' %>
+<script>
+  $( document ).ready(function() {
+    focusCurrentTab("placementsJobUploadAID","placementsJobUploadLiID");
+  });
+
+
+
+</script>
+

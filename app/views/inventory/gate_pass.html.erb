@@ -1,0 +1,32 @@
+<% navigation_add t('inventory'), :controller=>"inventory", :action=>'index' %>
+<% navigation_add t('gate_pass'), :controller=>"inventory", :action=>'gate_pass' %>
+
+<%= render  partial: 'inventory/inventory_left' %>
+<label class="mg-label mg-tt-width "><%=t('select_vendor')%></label>
+<%=select_tag :mg_inventory_vendor_id,options_for_select(MgInventoryVendor.where(:is_deleted=>0, :mg_school_id=>session[:current_user_school_id]).pluck(:name, :id)),:onchange=>"selectVender(this)",:prompt=>t('select'),:class=>"mg-select-btn"%>
+
+<div id="inventoryVendorGatePassDIVID"></div>
+
+<%= render  partial: 'application/common_left_close' %>
+<script type="text/javascript">
+	$( document ).ready(function() {
+            focusCurrentTab("gatePassAid","gatePassLiID");
+          //focusStudentHeaderBox();
+	});
+
+	function selectVender(that){
+		if(that.value==''){
+			$("#inventoryVendorGatePassDIVID").html("");
+		}else{
+			$.ajax({
+				url:"/inventory/gate_pass_show/"+that.value,
+				type:"get",
+				success:function(html){
+					$("#inventoryVendorGatePassDIVID").html(html)
+				}
+			});
+		
+		}
+		
+	}
+</script>

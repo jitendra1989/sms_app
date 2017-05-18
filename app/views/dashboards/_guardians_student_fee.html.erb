@@ -1,0 +1,55 @@
+<!-- Sec -->
+<h4 class="mg-h4">Fees</h4>
+<div id="guardian_student_details">
+<table class="batch-tbl" id='guardianStudentsTableID'>
+        <tr>
+          <th>First Name</th>
+          <th>Last Name</th>
+          <th>Admission Number</th>
+          <th><%=t("actions")%></th>
+        </tr>
+        
+<%@school=MgSchool.find(session[:current_user_school_id])%>
+        <% @StudentListQuery.each do |student| %>
+          <%= render partial: 'table_row_guardian_student', locals: {student: student} %>
+        <% end %>
+</table>
+</div>
+<div id="studentFeeDivID"></div>
+
+<script>
+
+     $(document).on("click",".guardian-student",function(e){
+        e.preventDefault();
+     	
+        var Id=$(this).attr("id");
+       
+        $.ajax({
+             url: "/fees/guardian__student_fee_view/",
+             data:{"id":Id},
+            
+            success: function(html){
+                   /* $("#dialogID").empty();
+                    $("#dialogID").append(html);*/
+
+                    //   $("#studentFeeDivID").dialog({
+                    //     modal: true,
+                    //     title: "Show Student",
+                    //     //top: 50px,
+                    //     minWidth: 425,
+                    //     open: function () {
+                            
+                    //         $(this).html(html);
+                    //     }
+                    // }); //end confirm dialog
+
+              $("#guardian_student_details").empty();
+              $("#guardian_student_details").append(html);
+
+                   
+                }
+            });  
+
+        });
+
+     </script>

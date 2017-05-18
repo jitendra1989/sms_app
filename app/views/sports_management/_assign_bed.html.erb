@@ -1,0 +1,520 @@
+<%=render partial: 'sports_left'%>
+<%= form_for :bed_assign_detail, :url=>@action=='new' ? 'create_assign_bed' : '/sports_management/update_assign_bed?id='+@bed_assign_detail.try(:id).to_s, :method=> @action=='new' ? "post" : "patch" , :html => {:id => 'assignBedDetailsFormID'} do |f| %>    
+  <%=hidden_field_tag "action_url",params[:action]%>
+  <%=hidden_field_tag "start_time",@bed_assign_detail.try(:admitted_time).try(:strftime,"%l:%M%P")%>
+  <%=hidden_field_tag "end_time",@bed_assign_detail.try(:discharge_time).try(:strftime,"%l:%M%P")%>
+  <%=hidden_field_tag "bed_assign_detail_id",@bed_assign_detail.try(:id)%>
+  <%if params[:action]=='new_assign_bed'%>
+    <h4 class="mg-h4"><%= t('new_bed_allocation') %></h4>
+  <%else%>
+    <h4 class="mg-h4"><%= t('edit_bed_allocation') %></h4>
+  <%end%>
+
+  <%= f.hidden_field :mg_school_id , :value=> session[:current_user_school_id]%>
+  <%= f.hidden_field :updated_by, :value => session[:user_id]%> 
+  <%= f.hidden_field :is_deleted, :value => 0%> 
+  <%= f.hidden_field :created_by, :value => session[:user_id]%>
+
+  <%if session[:user_type]=='doctor'%>
+    <%boolean_data=true%>
+    <%boolean_comments=false%>
+  <%else%>
+    <%boolean_data=false%>
+    <%boolean_comments=true%>
+  <%end%>
+  <p>
+    <%= f.label :mg_bed_details_id , t('bed_number'), :class=> "mg-label"%> <span
+      class="required-field"> *</span><br>
+    <%= f.select :mg_bed_details_id,options_from_collection_for_select(MgBedDetail.where(:status=>'usable',:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]),"id","bed_no",:selected=>@bed_assign_detail.mg_bed_details_id),{include_blank: "Select"},{:onchange=>"assignBedToSportsUser(this.value,this)",:disabled=>boolean_data}%>
+  </p>
+  <%if @action=='new'%>
+    <p>
+     <%= f.label :admitted_date , t('admitted_date'), :class=> "mg-label"%> <span class="required-field"> *</span><br>
+     <%= f.text_field :admitted_date,:class=>"mg-text-field",:disabled=>boolean_data%>
+    </p>
+    <p>
+     <%= f.label :admitted_time , t('admitted_time'), :class=> "mg-label"%> <span class="required-field"> *</span><br>
+     <%= f.text_field :admitted_time ,:class=>"mg-text-field",:readonly=>boolean_data%>
+     <span id="start_time_errorID" class="error" style="font-weight: bold;">
+    </p>
+     <!-- <p> -->
+     <!-- <%#= f.label :discharge_date , t('discharge_date'), :class=> "mg-label"%> <span class="required-field"> </span><br> -->
+     <%#= f.text_field :discharge_date,:class=>"mg-text-field" ,:disabled=>boolean_data%>
+    <!-- </p> -->
+
+    <!-- <p> -->
+     <!-- <%#= f.label :discharge_time , t('discharge_time'), :class=> "mg-label"%><span class="required-field"> </span><br> -->
+     <%#= f.text_field :discharge_time,:class=>"mg-text-field" ,:readonly=>boolean_data%>
+     <!-- <span id="end_time_errorID" class="error" style="font-weight: bold;"> -->
+    <!-- </p> -->
+
+    <%else%>
+      <p>
+        <%= f.label :admitted_date , t('admitted_date'), :class=> "mg-label"%><span class="required-field"> *</span> <br>
+        <%= f.text_field :admitted_date,:class=>"mg-text-field",:disabled=>boolean_data%>
+      </p>
+      <p>
+        <%= f.label :admitted_time , t('admitted_time'), :class=> "mg-label"%><span class="required-field"> *</span> <br>
+        <%= f.text_field :admitted_time ,:class=>"mg-text-field",:readonly=>boolean_data%>
+        <span id="start_time_errorID" class="error" style="font-weight: bold;">
+      </p>
+      <!-- <p> -->
+        <!-- <%#= f.label :discharge_date , t('discharge_date'), :class=> "mg-label"%> <br> -->
+        <%#= f.text_field :discharge_date,:class=>"mg-text-field" ,:disabled=>boolean_data%>
+      <!-- </p> -->
+
+    <!-- <p> -->
+     <!-- <%#= f.label :discharge_time , t('discharge_time'), :class=> "mg-label"%><br> -->
+     <%#= f.text_field :discharge_time,:class=>"mg-text-field" ,:readonly=>boolean_data%>
+     <!-- <span id="end_time_errorID" class="error" style="font-weight: bold;"> -->
+    <!-- </p> -->
+    <%end%>
+    <p>
+     <%= f.label :user_id , t('employee/student_id'), :class=> "mg-label"%> <span class="required-field"> *</span><br>
+     <%= f.text_field :user_id,:class=>"mg-text-field",:autocomplete=>:off,:readonly=>boolean_data%>
+     <span id="invalid_user_id_errorID" class="error" style="font-weight: bold;">
+    </p>
+    <p>
+      <div id="student_employee_information"></div>
+    </p>
+
+    <p>
+      <%= f.label :mg_doctor_id , t('doctor_incharge'), :class=> "mg-label"%> <span
+        class="required-field"> *</span><br>
+
+      <%@mg_user_obj=MgUser.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id],:user_type=>"doctor")%>
+      <%@mg_user_obj.each do |user|%>
+        <%specialization_obj=MgSpecialization.find_by(:id=>user.try(:mg_specialization_id),:is_deleted=>0,:mg_school_id=>session[:current_user_school_id])%>
+        <%if specialization_obj.present?%>
+          <%user.user_name=user.user_name+" ("+specialization_obj.name+")"%>
+        <%else%>
+          <%user.user_name=user.user_name%>
+        <%end%>
+      <%end%>
+
+
+      <%= f.select :mg_doctor_id,options_from_collection_for_select(@mg_user_obj,"id","user_name",:selected=>@bed_assign_detail.try(:mg_doctor_id)),{include_blank: "Select"},:disabled=>boolean_data%>
+
+      <%#= f.select :mg_doctor_id,options_from_collection_for_select(MgUser.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id],:user_type=>"doctor"),"id","user_name",:selected=>@bed_assign_detail.try(:mg_doctor_id)),{include_blank: "Select"},:disabled=>boolean_data%>
+    </p>
+
+    <p>
+      <%= f.label :comments , t('doctor_comment'), :class=> "mg-label"%> <span
+        class="required-field"> </span><br>
+      <%= f.text_area :comments,:class=>"mg-text-field",:readonly=>boolean_comments %>
+    </p>
+
+    <p>
+      <%= f.label :status , t('status'), :class=> "mg-label"%> <span class="required-field"> *</span><br>
+      <%if @action=='new'%>
+        <%= f.select :status, options_for_select([["Occupied","occupied"]]),{:prompt=>t("Select")},{class: "mg-text-field",:disabled=>boolean_data} %>
+      <%else%>
+        <%= f.select :status, options_for_select([["Select",""],["Occupied","occupied"],["Unoccupied","unoccupied"]],:selected=>@bed_assign_detail.try(:status)),:class=> "mg-text-field",:disabled=>boolean_data %>
+        <div id="bedAssignOccupancyStatus" style="">
+          <p>
+            <%= f.label :discharge_date , t('discharge_date'), :class=> "mg-label"%> <span class="required-field"> *</span><br>
+            <%= f.text_field :discharge_date,:class=>"mg-text-field" ,:disabled=>boolean_data%>
+          </p>
+
+          <p>
+            <%= f.label :discharge_time , t('discharge_time'), :class=> "mg-label"%><span class="required-field"> *</span><br>
+            <%= f.text_field :discharge_time,:class=>"mg-text-field" ,:readonly=>boolean_data%>
+            <span id="end_time_errorID" class="error" style="font-weight: bold;">
+          </p>
+        </div>
+      <%end%>
+    </p>
+    <%#=f.submit t('save'),:id=>"beAssignmentFormSubmit",:style=>"display:none"%>
+  <p class="mg-p-mgtop">
+    <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"> <%= t('save') %></a>
+    <!-- <a onclick="userIDValidateFunction()" class="mg-small-form-btn"> <%#= t('save') %></a> -->
+    <%= link_to t('cancel'), {:controller=>'sports_management',:action=>'assign_bed'}, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+  </p>
+  <% end %>
+
+<%= render  partial: 'application/common_left_close' %>
+
+
+
+<script>
+
+  // $(document).on("change","#bed_assign_detail_status",function(){
+  //   var url_action = $("#action_url").val();
+  //   var data_value=$(this).val();
+  //   if(url_action == 'edit_assign_bed'){
+  //     if (data_value=="unoccupied"){
+  //       $("#bed_assign_detail_admitted_date").val("");
+  //       $("#bed_assign_detail_admitted_time").val("");
+  //       $("#bed_assign_detail_discharge_date").val("");
+  //       $("#bed_assign_detail_discharge_time").val("");
+  //     }
+  //     else if(data_value=="occupied"){
+  //       var sta_date= $("#bed_assign_detail_admitted_date").val();
+  //       var start_time=$("#bed_assign_detail_admitted_time").val();
+  //       var end_date=$("#bed_assign_detail_discharge_date").val();
+  //       var end_time=$("#bed_assign_detail_discharge_time").val();
+  //       if(sta_date==""){
+  //         alert("Please enter Admitted Date");
+  //         $('#bed_assign_detail_status option:contains("Select")').prop('selected',true);      
+  //       }
+  //     else if(start_time==""){
+  //       $('#bed_assign_detail_status option:contains("Select")').prop('selected',true);      
+  //       alert("Please enter Admitted Time");
+  //     }
+  //     else if(end_date==""){
+  //       alert("Please enter Discharged Date");
+  //       $('#bed_assign_detail_status option:contains("Select")').prop('selected',true);      
+  //     }
+  //     else if(end_time==""){
+  //       alert("Please enter Discharged Time");
+  //       $('#bed_assign_detail_status option:contains("Select")').prop('selected',true);      
+  //     }
+  //   }
+  // }
+  // });
+
+  $(document).ready(function () {
+    dateFormatStr =  getJsDateFormat();
+
+    focusCurrentTab("bedAssignmentAID","bedAssignmentLiID");
+
+    $("#bed_assign_detail_admitted_date" ).datepicker({changeMonth: true,changeYear: true,yearRange: "-0:+50",minDate: "0",dateFormat: dateFormatStr});
+    $( "#bed_assign_detail_discharge_date" ).datepicker({changeMonth: true,changeYear: true,yearRange: "-50:+0",minDate: "0",dateFormat: dateFormatStr});
+    $('#bed_assign_detail_admitted_time').timepicker({ 'scrollDefault': 'now' });
+    $('#bed_assign_detail_discharge_time').timepicker({ 'scrollDefault': 'now'}); 
+
+    var url_action = $("#action_url").val();
+    var start_time = $("#start_time").val();
+    var end_time = $("#end_time").val();
+    
+    if(url_action == 'edit_assign_bed'){
+      if(start_time!=""){
+      var start_date = $('#bed_assign_detail_admitted_date').val()  
+      var end_date = $('#bed_assign_detail_discharge_date').val()
+      if(start_date!=''){
+        var start_date =  $.datepicker.formatDate(dateFormatStr,new Date(start_date));
+      };
+
+      if(end_date!=''){
+        var end_date =  $.datepicker.formatDate(dateFormatStr,new Date(end_date));
+      };  
+
+      $('#bed_assign_detail_admitted_date').val(start_date);
+      $('#bed_assign_detail_discharge_date').val(end_date);
+
+      $('#bed_assign_detail_admitted_time').val(start_time);
+      $('#bed_assign_detail_discharge_time').val(end_time);
+    }
+      var user_id =$("#bed_assign_detail_user_id").val();
+      var urlLink = "/sports_management/bed_assigned_record/";
+      if(user_id!=''){
+        $.ajax({
+          url: urlLink ,
+          cache: false,
+          data:{"user_id":user_id},
+          success: function(data){
+            console.log(data);
+            if(data=='no_data'){
+              $("#student_employee_information").empty();
+              $("#invalid_user_id_errorID").text("Invalid user id");
+            }else{
+              $("#invalid_user_id_errorID").text("");
+              $("#student_employee_information").empty();
+              $("#student_employee_information").append(data);
+            }
+          }
+        });
+      }
+    }
+   
+    var bed_status=$("#bed_assign_detail_status").val();
+    if(bed_status=="occupied"){
+      $("#bedAssignOccupancyStatus").hide();
+    }else if(bed_status=="unoccupied"){
+      $("#bedAssignOccupancyStatus").show();
+    }else{
+      $("#bedAssignOccupancyStatus").hide();
+    }
+
+    $(function () {
+      $.validator.addMethod('dateFormat',
+      function (value, element) {
+        dateFormatStr =  getJsDateFormat();
+        if (this.optional(element)) {
+            return true;
+        }
+        var ok = true;
+        try {
+            $.datepicker.parseDate(dateFormatStr, value);
+        }
+        catch (err) {
+            ok = false;
+        }
+        return ok;
+      },
+        "Please enter a date in the format "+ getDateFormat(dateFormatStr) +".");
+      dateFormatStr =  getJsDateFormat();
+
+      $(".datefield").datepicker({ dateFormat: dateFormatStr, changeYear: true });
+    });
+  if(url_action == 'edit_assign_bed'){
+    $("#assignBedDetailsFormID").validate({
+        rules: {     
+          "bed_assign_detail[mg_bed_details_id]": {required: true},
+          "bed_assign_detail[user_id]": {required: true},
+          "bed_assign_detail[status]": {required: true},
+          
+          "bed_assign_detail[admitted_date]": {required: true, dateFormat: true},
+          "bed_assign_detail[admitted_time]": {required: true},
+          "bed_assign_detail[discharge_date]": {required: true, dateFormat: true},
+          "bed_assign_detail[discharge_time]": {required: true},
+          "bed_assign_detail[mg_doctor_id]": {required: true}
+        }
+      });
+    }else{
+      $("#assignBedDetailsFormID").validate({
+          rules: {     
+            "bed_assign_detail[mg_bed_details_id]": {required: true},
+            "bed_assign_detail[admitted_date]": {required: true, dateFormat: true},
+            "bed_assign_detail[admitted_time]": {required: true},
+            "bed_assign_detail[discharge_date]": {required: true, dateFormat: true},
+            "bed_assign_detail[discharge_time]": {required: true},
+            "bed_assign_detail[user_id]": {required: true},
+            "bed_assign_detail[status]": {required: true},
+            "bed_assign_detail[mg_doctor_id]": {required: true}
+          }
+        });
+    }
+  });
+
+  $(document).on("change","#bed_assign_detail_discharge_date",function(){
+    var dateFormatStr =  getJsDateFormat();
+    var start_date=$("#bed_assign_detail_admitted_date").val();
+    var end_date=$(this).val();
+    console.log("Strat_date="+start_date);
+    console.log("end_date="+end_date);
+    if(start_date && end_date){
+      if(!(compareDate(start_date,end_date,dateFormatStr))){
+        alert("End date should be greater than start date");
+        $(this).val('');
+        //document.getElementById('events_end_date').value="";
+      }else{
+        var from_date=$("#bed_assign_detail_admitted_date").val();
+        var to_date=$("#bed_assign_detail_discharge_date").val();
+        if (from_date==to_date){
+          var from = $('#bed_assign_detail_admitted_time').val();
+          var to = $('#bed_assign_detail_discharge_time').val();
+          var from_time=minFromMidnight(from);
+          var to_time=minFromMidnight(to);
+          if(from_time && to_time){
+            if(from_time > to_time){
+             alert("Start Time must be less than End Time");
+             $('#bed_assign_detail_admitted_time').val('');
+              //document.getElementById('events_start_time').value="";
+            } 
+          }
+        }
+      }
+    }
+  });
+
+
+  $(document).on("change","#bed_assign_detail_admitted_date",function(){
+    var dateFormatStr =  getJsDateFormat();
+    var start_date=$(this).val();
+    var end_date=$("#bed_assign_detail_discharge_date").val();
+
+    console.log("Strat_date="+start_date);
+    console.log("end_date="+end_date);
+    if(start_date && end_date){
+      if(!(compareDate(start_date,end_date,dateFormatStr))){
+        alert("End date should be greater than start date");
+        $(this).val('');
+        //document.getElementById('events_end_date').value="";
+      }else{
+        var from_date=$("#bed_assign_detail_admitted_date").val();
+        var to_date=$("#bed_assign_detail_discharge_date").val();
+        if (from_date==to_date){
+          var from = $('#bed_assign_detail_admitted_time').val();
+          var to = $('#bed_assign_detail_discharge_time').val();
+          var from_time=minFromMidnight(from);
+          var to_time=minFromMidnight(to);
+          if(from_time && to_time){
+            if(from_time > to_time){
+             alert("Start Time must be less than End Time");
+             $('#bed_assign_detail_admitted_date').val('');
+              //document.getElementById('events_start_time').value="";
+            } 
+          }
+        }
+      }
+    }
+  });
+
+  $(document).on("change","#bed_assign_detail_admitted_time",function(){
+    var dateFormatStr =  getJsDateFormat();
+    var start_date=$("#bed_assign_detail_admitted_date").val();
+    var end_date=$("#bed_assign_detail_discharge_date").val();
+    var start_time = $('#bed_assign_detail_admitted_time').val();
+    var regexprsn = /^([1-9]|1[0-2]):([0-5]\d)\s?(AM|PM)?$/i;
+
+    if(start_time.match(regexprsn)){
+      $("#start_time_errorID").text("");
+
+      if(start_date && end_date){
+        //var from_date=$("#meeting_detail_start_date").val();
+        //var to_date=$("#meeting_detail_end_date").val();
+        if (start_date==end_date){
+          var from = $('#bed_assign_detail_admitted_time').val();
+          var to = $('#bed_assign_detail_discharge_time').val();
+          var from_time=minFromMidnight(from);
+          var to_time=minFromMidnight(to);
+          if(from_time && to_time){
+            if(from_time > to_time){
+             alert("Start Time must be less than End Time");
+             $('#bed_assign_detail_admitted_time').val('');
+              //document.getElementById('events_start_time').value="";
+            } 
+          }
+        }
+      }
+    }else{      
+      $("#start_time_errorID").text("Please enter a time in the format am/pm.");
+      $('#bed_assign_detail_admitted_time').val('');
+    }
+  });
+
+  $(document).on("change","#bed_assign_detail_discharge_time",function(){
+    var dateFormatStr =  getJsDateFormat();
+    var start_date=$("#bed_assign_detail_admitted_date").val();
+    var end_date=$("#bed_assign_detail_discharge_date").val();
+    var end_time = $('#bed_assign_detail_discharge_time').val();
+    var regexprsn = /^([1-9]|1[0-2]):([0-5]\d)\s?(AM|PM)?$/i;
+    
+    if(end_time.match(regexprsn)){
+      $("#end_time_errorID").text("");
+    
+      if(start_date && end_date){
+        //var from_date=$("#meeting_detail_start_date").val();
+        //var to_date=$("#meeting_detail_end_date").val();
+        if (start_date==end_date){
+          var from = $('#bed_assign_detail_admitted_time').val();
+          var to = $('#bed_assign_detail_discharge_time').val();
+          var from_time=minFromMidnight(from);
+          var to_time=minFromMidnight(to);
+          if(from_time && to_time){
+            if(from_time > to_time){
+             alert("End Time must be greater than Start Time");
+             $('#bed_assign_detail_discharge_time').val('');
+              //document.getElementById('events_start_time').value="";
+            } 
+          }
+        }
+      }
+    }else{      
+      $("#end_time_errorID").text("Please enter a time in the format am/pm.");
+      $('#bed_assign_detail_discharge_time').val('');
+    }
+  });
+
+  function minFromMidnight(tm){
+    if(tm==''){
+      return
+    }
+   var ampm= tm.substr(-2)
+   var clk = tm.substr(0, 4);
+   var m  = parseInt(clk.match(/\d+$/)[0], 10);
+   var h  = parseInt(clk.match(/^\d+/)[0], 10);
+   h += (ampm.match(/pm/i))? 12: 0;
+   return h*60+m;
+  }
+
+  $(document).keyup("#bed_assign_detail_user_id",function(){
+
+    var user_id =$("#bed_assign_detail_user_id").val();
+    var urlLink = "/sports_management/bed_assigned_record/";
+    if(user_id!=''){
+      $.ajax({
+        url: urlLink ,
+        cache: false,
+        data:{"user_id":user_id},
+        success: function(data){
+          console.log(data);
+          if(data=='no_data'){
+            $("#student_employee_information").empty();
+            $("#invalid_user_id_errorID").text("Invalid user id");
+          }else{
+            $("#invalid_user_id_errorID").text("");
+            $("#student_employee_information").empty();
+            $("#student_employee_information").append(data);
+          }
+        }
+      });
+    }
+  })
+
+  // function userIDValidateFunction(){
+  //   if($("#assignBedDetailsFormID").valid()){
+  //   var result = $("#user_data").val();
+  //   if(typeof result === 'undefined' || result === null){
+  //     alert("please Enter valid user id");
+  //   }else if(result!=''){
+  //     //$("#beAssignmentFormSubmit").click();
+  //     var bed_id=$("#bed_assign_detail_mg_sports_bed_details_id").val();
+  //     var admitted_date=$("#bed_assign_detail_admitted_date").val();
+  //     var admitted_time=$("#bed_assign_detail_admitted_time").val();
+  //     var discharge_date=$("#bed_assign_detail_discharge_date").val();
+  //     var discharge_time=$("#bed_assign_detail_discharge_time").val();
+  //     var action_url = $("#action_url").val();
+  //     var edit_action_url='';
+  //     var edit_action_id = ''
+  //     var edit_action_bed_id = ''
+  //     if(action_url=='edit_assign_bed'){
+  //       edit_action_url = action_url;
+  //       edit_action_id = $("#bed_assign_detail_id").val();   
+  //       edit_action_bed_id = $("#bed_assign_detail_mg_sports_bed_details_id").val();
+  //     }
+  //     $.ajax({
+  //       url: "/sports_management/bed_availibility",
+  //       data: {"bed_id":bed_id,"admitted_date":admitted_date,"admitted_time":admitted_time,"discharge_date":discharge_date,"discharge_time":discharge_time,"edit_action_url":edit_action_url,"edit_action_id":edit_action_id,"edit_action_bed_id":edit_action_bed_id},
+  //       success:function(data){
+  //         console.log(data["test_result"]);
+  //         if(data["test_result"]==false){
+  //           alert("This Bed No is already Booked");
+  //         }else{
+  //           $("#beAssignmentFormSubmit").click();
+  //         }
+  //       }
+  //     });
+  //     }else{
+  //       alert("please Enter valid user id");
+  //     }
+  //   }
+  // }
+
+
+
+  function assignBedToSportsUser(bed_details_id,that){
+    $.ajax({
+      url: "/sports_management/bed_availibility_details",
+      data: {"bed_details_id":bed_details_id},
+      success:function(data){
+        if(data=="not present"){
+          alert("This Bed No is already Booked");
+          $(that).select().val('');
+        }
+      }
+    });
+  }
+
+  $(document).on("change","#bed_assign_detail_status",function(){
+    var bed_status = $("#bed_assign_detail_status").val();
+    if(bed_status !='' && bed_status=="occupied"){
+      $("#bedAssignOccupancyStatus").hide();
+    }else if(bed_status !='' && bed_status=="unoccupied"){
+      $("#bedAssignOccupancyStatus").show();
+    }else{
+      $("#bedAssignOccupancyStatus").hide();
+    }
+  });
+</script>

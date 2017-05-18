@@ -1,0 +1,47 @@
+<%
+ previous_month=Date.today#.ago(1.month)
+      start_from=previous_month.beginning_of_month
+      end_to=previous_month.end_of_month
+
+      @month_start=start_from.strftime('%Y-%m-%d')
+      @month_end=end_to.strftime('%Y-%m-%d')
+%>
+
+<table class="batch-tbl" border="1">
+  <tr class="subject-table-header">
+    <th><%= t('leavename')%></th>
+      <th><%= t('min leave count')%></th>
+
+      <th class="mg-rm-text-trans"><%= t('maxleavecount')%></th>
+    <th><%= t('leavetaken')%></th>
+  
+    <th><%= t('leave balance')%></th>
+  </tr>
+      <tr>
+      <%@levee_typs.each do |s|%>
+            <td><%=s.leave_name %></td>
+            <td class="mg-align-center"><%=s.min_leave_count %></td>
+            <td class="mg-align-center"><%=s.max_leave_count%></td>
+            <% @leve_taken=MgEmployeeLeaves.where(:mg_school_id=>session[:current_user_school_id],:mg_leave_type_id=>s.id, :mg_employee_id=>@employee_id.try(:id), :leave_month_year=>@month_start...@month_end )%>
+            <%if @leve_taken.length <=0%>
+                <td class="mg-align-center">0</td>
+                <td class="mg-align-center"><%=s.max_leave_count %></td>
+            <%else%>
+                <%@leve_taken.each do |l|%>
+                    <td class="mg-align-center"><%=l.leave_taken %></td>
+                    <td class="mg-align-center"><%=s.max_leave_count-l.leave_taken %></td>
+                <%end%>
+          <%end%>
+
+         </tr>  
+
+      
+      
+   
+    <%end%>
+
+     
+</table><br>
+
+ <%#= link_to t('cancel'), :back, {:class=>"btn btn-delete cancel-form-dialog" ,:style=>"float: right;"} %>
+ <a class="btn btn-delete cancel-form-dialog"><%=t('cancel')%></a>

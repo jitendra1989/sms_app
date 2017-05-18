@@ -1,0 +1,2 @@
+module MgActionsHelper
+end

@@ -1,0 +1,7 @@
+<%#=collection_select(:item_identification_number, MgInventoryItem.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]), :id, :code, {:include_blank=>t("select")}, :class=>"mg-text-field inventory-code-search-class") %>
+
+<%if params[:change_by_item_name]=="change_by_item_name"%>
+  <%= collection_select(:item_identification_number, 0, MgInventoryItem.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]), :id, :code,{:selected=>params[:value],:include_blank => t("select")}) %>
+ <%elsif params[:change_by_item_code]=="change_by_item_code"%>
+  <%= collection_select(:item_identification_number, 0, MgInventoryItem.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]), :id, :name,{:selected=>params[:value],:include_blank => t("select")}) %>
+ <%end%>

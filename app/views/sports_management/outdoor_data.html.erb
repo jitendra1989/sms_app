@@ -1,0 +1,63 @@
+<p>
+
+	<%=label_tag 'select_team', t('select_team_1'), class: 'mg-label mg-rm-text-trans' %><span class="required-field"> *</span><br>
+	
+		<%=select_tag :mg_sport_team_id1,options_for_select(@team,:selected=>@data1),:prompt=>"Select",:class=>"onetwo"%>	
+
+</p>
+
+<p>
+
+	
+	<%=label_tag 'guest_team', t('guest_team'), class: 'mg-label mg-rm-text-trans' %><span class="required-field"> *</span><br>
+	
+		<%= text_field_tag "guest_team",@data2  ,:class=> 'mg-text-field guest-value onetwo'%>
+	
+</p>
+
+
+
+<script type="text/javascript">
+  $(document).ready(function () {
+
+
+var team1=$("#mg_sport_team_id1").val();
+var winner=$("#winner_Data").val();
+//var team2=$("#mg_sport_team_id2").val();
+
+
+
+var text1=$("#mg_sport_team_id1 option:selected").text();
+//var text2=$("#mg_sport_team_id2 option:selected").text();
+
+ var guest=$(".guest-value").val();
+          
+ 		if(team1==winner){
+       $('#schedule_winner').append(new Option("Select", ""));
+        $('#schedule_winner').append("<option value="+team1+" "+"selected=selected>"+text1+"</option>");
+         if(guest!=""){
+        $('#schedule_winner').append(new Option(guest, guest));
+ 		}
+ 	}
+ 		else{
+$('#schedule_winner').append(new Option("Select", ""));
+        $('#schedule_winner').append(new Option(text1, team1));
+         if(guest!=""){
+         	 $('#schedule_winner').append("<option value="+guest+" "+"selected=selected>"+guest+"</option>");
+       // $('#schedule_winner').append(new Option(guest, guest));
+
+ 		}
+        
+      }
+      //   if(team2!=""){
+      //   $('#schedule_winner').append(new Option(guest,guest));
+      // }
+});
+	// function team_select(){
+			
+	//     var op = $("#mg_sport_team_id1").val();
+	//     $('#mg_sport_team_id2 option[value='+op+']').prop('disabled', true);
+
+	// }
+
+</script>

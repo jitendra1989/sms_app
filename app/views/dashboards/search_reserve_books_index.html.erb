@@ -1,0 +1,269 @@
+<%= render partial: 'student_dashboard_left' %>
+<% navigation_add 'Search',dashboards_search_reserve_books_index_path %>
+
+<%=form_for :library_student_login,:url=>{:controller=>"dashboards",:action=>"search_reserve_books_index",:id=>"search"},:html=>{:id=>"library_student_login_validation"} do |f|%>
+  <table width="100%" cellspacing="0" cellpadding="0" border="0" class="employee-form-cls">
+<tr>
+                  <td width="33%" valign="bottom">
+                    <label class="mg-label" for="first_name" ><%= t('select_resource_category') %><span class="required-field">*</span>
+                     
+                    </label>
+                  </td>
+
+                  <td> </td>
+                  <td width="33%" valign="bottom">
+                    <label class="mg-label" for="middle_name"><%= t('select_resource_type') %><span class="required-field">*</span></label>
+                  </td>
+                  <td> </td>
+                  <td width="33%" valign="bottom">
+                    <label class="mg-label" for="last_name"><%= t('resource_no') %>
+                   
+                    </label>
+                  </td>
+                </tr> 
+                <tr>
+                  <td valign="top">
+                  <%category_data=MgResourceCategory.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:name,:id)%>
+                    <%= select_tag :resorce_category,options_for_select(category_data,:selected=>@category),:prompt=>"Select",:onchange=>"selectCategorydata(this.value)"%>
+                    <div id="aaa">
+                    </div>
+                  </td>
+                  <td> </td>
+                  <td valign="top">
+                  <div id="category-type-div">
+                    <%if params[:select_resource_type].present?%>
+                     <%= select_tag :select_resource_type,options_for_select(@category_type_data,:selected=>@type),:prompt=>"Select"%>
+                     <%else%>
+                     <%= select_tag :select_resource_type,options_for_select([]),:prompt=>"Select"%>
+                     <%end%>
+                    </div>
+                    <div id="demooo">
+                     </div>
+                  </td>
+                  <td> </td>
+                  <td valign="top">
+                  
+                    <%=text_field_tag :resource_no ,@number,:class=>"mg-text-field"%>
+                  </td>
+                </tr>
+                <tr>
+                  <td width="33%" valign="bottom">
+                    <label class="mg-label" for="first_name" ><%= t('name/title') %>
+                     
+                    </label>
+                  </td>
+
+                  <td> </td>
+                  <td width="33%" valign="bottom">
+                    <label class="mg-label" for="middle_name"><%= t('author') %></label>
+                  </td>
+                  <td> </td>
+                  <td width="33%" valign="bottom">
+                    <label class="mg-label" for="last_name"><%= t('volume/edition') %>
+                   
+                    </label>
+                  </td>
+                </tr> 
+                <tr>
+                  <td valign="top">
+                    <%=text_field_tag :name ,@name,:class=>"mg-text-field"%>
+                    
+                  </td>
+                  <td> </td>
+                  <td valign="top">
+                    <%=text_field_tag :author ,@author,:class=>"mg-text-field"%>
+                   
+                    
+                  </td>
+                  <td> </td>
+                  <td valign="top">
+                    <%=text_field_tag :volume ,@volume,:class=>"mg-text-field"%>
+                  </td>
+                </tr>
+                <tr>
+                  <td width="33%" valign="bottom">
+                    <label class="mg-label" for="first_name" ><%= t('year') %>
+                     
+                    </label>
+                  </td>
+
+                  <td> </td>
+                  <td width="33%" valign="bottom">
+                    <label class="mg-label" for="middle_name"><%= t('publication/company') %></label>
+                  </td>
+                  <td> </td>
+                  <td width="33%" valign="bottom">
+                    <label class="mg-label" for="last_name"><%= t('ISBN/ISSN') %>
+                   
+                    </label>
+                  </td>
+                </tr> 
+                <tr>
+                  <td valign="top">
+                    <%=text_field_tag :year ,@year,:class=>"mg-text-field"%>
+                    
+                  </td>
+                  <td> </td>
+                  <td valign="top">
+                    <%=text_field_tag :publication ,@publications,:class=>"mg-text-field"%>
+                    
+                    
+                  </td>
+                  <td> </td>
+                  <td valign="top">
+                    <%=text_field_tag :isbn ,@isbn,:class=>"mg-text-field"%>
+                  </td>
+                </tr>
+                <tr>
+                  <td width="33%" valign="bottom">
+                    <label class="mg-label" for="first_name" ><%= t('select_class') %>
+                     
+                    </label>
+                  </td>
+
+                  <td> </td>
+                  <td width="33%" valign="bottom">
+                    <label class="mg-label" for="middle_name"><%= t('subject') %></label>
+                  </td>
+                  <td> </td>
+                 
+                </tr> 
+                <tr>
+                  <td valign="top">
+                  <%class_data=MgCourse.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:course_name,:id)%>
+                   <%= select_tag :select_class,options_for_select(class_data,:selected=>@class),:prompt=>"Select"%>
+                    
+                  </td>
+                  <td> </td>
+                  <td valign="top">
+                   <%subject_data=MgManageSubject.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:name,:id)%>
+                   <%= select_tag :subject,options_for_select(subject_data,:selected=>@subject),:prompt=>"Select"%>
+                    
+                  </td>
+                  <td> </td>
+                 
+                </tr>
+</table><br/>
+
+
+
+<button id="student_login_library_search" class="btn btn-default">Search</button><br/>
+
+<%end%>
+
+<%if @object.present?%>
+
+<table class="mg-scrl-width-bar batch-tbl">
+<tr>
+<th><%=t('resource_category')%></th>
+<th><%=t('resource_type')%></th>
+<th><%=t('resource_number')%></th>
+<th><%=t('name')%></th>
+<th><%=t('author')%></th>
+<th><%=t('volume')%></th>
+<th><%=t('year')%></th>
+<th><%=t('publication')%></th>
+<th><%=t('isbn')%></th>
+<th><%=t('class')%></th>
+<th><%=t('subject')%></th>
+
+<th><%=t('stack_reference')%></th>
+<th><%=t('cost')%></th>
+
+</tr>
+<%@object.each do |data|%>
+<tr>
+<%category_data=MgResourceCategory.find_by(:id=>data.mg_resource_category_id)
+type_data=MgResourceType.find_by(:id=>data.mg_resource_type_id)
+   course_data=MgCourse.find_by(:id=>data.mg_course_id)
+   manage_subject=MgManageSubject.find_by(:id=>data.mg_subject_id)
+%>
+<td><%=category_data.name%></td>
+<td><%=type_data.name%></td>
+<td><%=data.resource_number%></td>
+<td><%=data.name%></td>
+<td><%=data.author%></td>
+<td><%=data.volume%></td>
+<td><%=data.year%></td>
+<td><%=data.publication%></td>
+<td><%=data.isbn%></td>
+<%if course_data.nil? || manage_subject.nil?%>
+<td><%="No Data"%></td>
+
+<td><%="General Reading"%></td>
+<%else%>
+<td><%=course_data.course_name%></td>
+<td><%=manage_subject.name%></td>
+<%end%>
+ <%datass=MgLibraryStackManagement.find_by(:id=>data.stack_reference)%>
+<td><%="#{datass.room_no}/#{datass.rack_no}/#{datass.first_letter_of_title}"%></td>
+<td><%=data.cost%></td>
+</tr>
+<%end%>
+
+</table>
+<%else%>
+<%if @demo.present?%>
+<%else%>
+<%="No Records Found"%>
+
+<%end%>
+<%end%>
+
+
+
+<%= render partial: 'application/common_left_close' %>
+<script>
+$(document).ready(function () {
+        focusCurrentTab("searchReservebooksAID","searchReservebooksLiID");
+        focusLibrary();
+       
+});
+function selectCategorydata(data){
+
+  $.ajax({
+
+             url:  "/dashboards/select_category_type",
+            cache: false,
+            data:{"data":data},
+            success: function(html){  
+                    $('#category-type-div').empty();
+                    $('#category-type-div').html(html);
+
+               
+            }
+  })
+
+
+
+}
+$("#library_student_login_validation").validate({
+        rules: {        
+        "resorce_category": {required: true},
+        "select_resource_type": {required: true},
+        "year": {number:true,minlength: 4,maxlength: 4}
+
+      }
+    });
+
+// $(document).on("click","#student_login_library_search",function(){
+// var data_value=$("#select_resource_type").val();
+// var datas_values=$("#resorce_category").val();
+// $("#demooo").empty();
+// $("#aaa").empty();
+// if(data_value==""){
+
+
+// $("#demooo").append("Requiered Field")
+// }
+// if(datas_values==""){
+
+
+// $("#aaa").append("Requiered Field")
+// }
+// });
+
+
+
+
+</script>

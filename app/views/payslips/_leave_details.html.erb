@@ -1,0 +1,41 @@
+
+<%@leave_details_for_payslip=@payslip_components.mg_payslip_leave_details.where(:is_deleted=>0)%>
+<%if @leave_details_for_payslip.present?%>
+
+<table class="mg-show-tbl-width batch-tbl" cellpadding="0" cellspacing="0">
+	<tr class="mg-tbl-tr">
+				<th colspan="3"> <%=t('leave_details')%></th>
+			</tr>
+</table>
+	<table class="mg-show-tbl-width batch-tbl" cellpadding="0" cellspacing="0">
+		<tr class="mg-tbl-tr">
+			<th class="mg-fee-report-gen"><%=t('sl_no')%></th>
+			<th class="mg-fee-report-gen"><%=t('leave_type')%></th>
+			<th class="mg-fee-report-gen"><%=t('available_leave')%></th>
+			<th class="mg-fee-report-gen"><%=t('leaves_taken')%></th>
+		</tr>
+	<%leave_sl_count=0%>
+	<%@leave_details_for_payslip.each do |leave_details|%>
+		<%object=MgEmployeeLeaveType.find_by(:is_deleted=>0, :mg_school_id=>session[:current_user_school_id], :id=>leave_details.mg_employee_leave_type_id)%>
+		<%if object.present?%>
+
+			<%if object.is_showable# && leave_details['leve_taken'].to_f>0.0%>
+				<tr class="mg-tbl-tr">
+					<td width="8%"><label class="mg-label-inner-form"><%=leave_sl_count +=1%></label></td>
+					<td><label class="mg-label-inner-form"><%=object.leave_name%></label></td>
+					<td><label class="mg-label-inner-form"><%=leave_details.available_leave.to_f.round(2)%></label></td>
+					<td><label class="mg-label-inner-form"><%=leave_details.leave_taken.to_f.round(2)%></label></td>
+				</tr>
+			<%elsif leave_details.leave_taken.to_f>0.0%>
+				<tr class="mg-tbl-tr">
+					<td width="8%"><label class="mg-label-inner-form"><%=leave_sl_count +=1%></label></td>
+					<td><label class="mg-label-inner-form"><%=object.leave_name%></label></td>
+					<td><label class="mg-label-inner-form"><%=leave_details.available_leave.to_f.round(2)%></label></td>
+					<td><label class="mg-label-inner-form"><%=leave_details.leave_taken.to_f.round(2)%></label></td>
+				</tr>	
+			<%end%>
+
+		<%end%>
+	<%end%>
+	</table>
+<%end%>

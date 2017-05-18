@@ -1,0 +1,70 @@
+
+<!-- breadcrumbs Work -->
+<% navigation_add 'Examinations', examinations_path %>
+<% navigation_add 'CCE', examination_cce_new_path %>
+<% navigation_add 'Co-Scholastic Settings', examination_Co_Scholastic_index_path %>
+
+<% navigation_add 'Co-Scholastic New', examination_Co_Scholastic_new_path %>
+
+<% navigation_add 'Co-Scholastic Show', Co_Scholastic_newDataShow_path(@observation.id) %>
+
+<% navigation_add 'Formative Indicator', Co_Scholastic_newIndicatorData_path(@observation.id) %>
+
+
+<!-- breadcrumbs Work -->
+
+
+<%= render  partial: 'examination_table_left' %>
+<h4 class="mg-h4">Co-Scholastic Indicator</h4>
+<div>
+			
+  <button class="coScholastic-indicator-datas mg-custom-form-btn mg-btn-bottom-margin" id='<%=@observation.id%>'>New </button><br/>
+  <label class="mg-label"><%="Name :"%></label>
+  <span class="mg-font-size"><%=@observation.name%></span><br/>
+  <label class="mg-label"><%="Description :"%></label>
+  <span class="mg-font-size"><%=@observation.description%></span><br/>
+
+  <div id="coIndicator_group_id">
+
+  </div>
+  <div id="coIndicator_group_newDatasEdit">
+
+  </div>
+
+  <table class="batch-tbl mg-tbl-margin" cellspacing="0" style="padding:0; border-collapse:collapse;">
+   
+  <%if  @indicators[0].to_s.empty? %>
+  <h5><%="No Records Found"%></h5>
+  <%else%>
+
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+      <th>Total Marks</th>
+      <th><%=t('actions')%></th>
+    </tr>
+    <% @indicators.each do |data| %>
+      <tr>
+        <td><%= data.name %></td>
+        <td style="max-width:400px"><%= data.description %></td>
+        <td><%=data.total_marks%></td>
+
+        <td>
+          <a href="#" id=<%=raw data.id%> class="coScholastics-indicator-edit-class"><button title="Edit" class="mg-text-exam mg-icon-btn"><i class="fa fa-pencil-square-o"></i></button></a>
+          <a href="#" id=<%=raw data.id%> class="coScholastics-indicator-delete-class"><button title="Delete" class="mg-text-exam mg-icon-btn"><i class="fa fa-trash"></i></button></a>
+        </td>
+      </tr>
+    <% end %>
+    <%end%>
+  </table>
+</div>
+
+<%= render  partial: 'examination_table_close' %><br/>
+
+<script type="text/javascript">
+  $(document).ready(function() {
+        focusCurrentTab("viewStudentListAId","viewStudentListLiId");
+        focusExaminationHeaderBox();
+  });
+
+</script>

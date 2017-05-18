@@ -1,0 +1,4 @@
+
+<%@topic=Topic.where(:mg_subject_id => params[:mg_subjects_id]).pluck(:name, :id)%>
+
+ <%=select_tag :mg_topic_id, options_for_select(@topic),:prompt=>"Select A Topic"%><br>

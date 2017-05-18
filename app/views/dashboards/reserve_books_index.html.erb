@@ -1,0 +1,60 @@
+<%= render partial: 'student_dashboard_left' %>
+
+
+<table class="mg-btn-bottom-margin">
+	<tr>
+		<td>
+			<label class="mg-label mg-leave-width">Search By</label>
+		</td>
+		<td>
+			<%= select_tag 'search_by', options_for_select([[ "Book Name","book_name"],["Publisher","publisher"],[" Author","author"]]),:prompt=>"Select",:onchange=>"selectstudentfunction(this.value)" ,:class=>"mg-select-btn"%><br/>
+		</td>
+	</tr>
+</table>
+<div id="test" style="display:none;">
+
+<span>
+<%=text_field_tag 'search_name' ,nil,:class=>"mg-text-field"%>
+</span>
+<span>
+<button id="search_button_for_student" class="btn btn-default">Search</button>
+</span>
+</div>
+
+<div id="books_details">
+
+</div>
+
+<%= render partial: 'application/common_left_close' %>
+
+<script>
+
+
+
+function selectstudentfunction(data){
+  
+
+if (data==""){
+ $("#test").hide();
+}
+else{
+  $('#search_name').val("");
+ $("#test").show();
+
+
+}
+
+
+}
+        
+       
+
+ $(document).ready(function(){
+
+   focusCurrentTab("ReservebooksAID","ReservebooksLiID");
+    focusDashboards();
+
+});
+
+        
+</script>

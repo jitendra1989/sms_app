@@ -1,0 +1,98 @@
+<!-- Sec --><section id="userBodyContentBox" >
+    <table width=100% border="0" cellspacing="0" cellpadding="0">
+        <tr>
+            <td valign="top" class="userBodyContentBox1">
+                <aside class="userMenuBoxLeft" style="width: 210px;">
+                    <ul class="menuListHome">
+                        <li class="myAccountMenu"><%=t('event_management')%></li>
+                    
+                        <li id="viewAdminEventTypesLiID">
+                            <a class="menuItemsActivities" href="/event_types/index/" id="viewAdminEventTypes">
+                                <div class="setMenu"><i class="fa fa-th">&nbsp;&nbsp;</i><%=t('eventtypes')%>
+                                </div>
+                            </a>
+                        </li>
+
+                         <li id="viewEventCommitteesLiID">
+                            <a class="menuItemsActivities" href="/event_committees/index" id="viewEventCommitteesAID">
+                                <div class="setMenu"><i class="fa fa-users">&nbsp;&nbsp;</i><%=t('event_committee')%>
+                                </div>
+                            </a>
+                        </li>
+
+                         <li id="viewAddCommitteeMemberLiID">
+                            <a class="menuItemsActivities" href="/event_committees/add_committee_members" id="viewAddCommitteeMemberAID">
+                                <div class="setMenu"><i class="fa fa-users">&nbsp;&nbsp;</i><%=t('committee_members')%>
+                                </div>
+                            </a>
+                        </li>
+
+                        <li id="viewEventAdminCalendarLiID">
+                            <a class="menuItemsActivities" href="/events/index/" id="viewEventAdminCalendar">
+                                <div class="setMenu"><i class="fa fa-calendar">&nbsp;&nbsp;</i><%=t('event_calendar')%>
+                                </div>
+                            </a>
+                        </li>
+
+                        <li id="viewAdminEventListLiID">
+                            <a class="menuItemsActivities" href="/events/admin_calender/" id="viewAdminEvent">
+                                <div class="setMenu"><i class="fa fa-list">&nbsp;&nbsp;</i><%=t('event_list')%>
+                                </div>
+                            </a>
+                        </li>
+                        <li id="viewAdminInvitationLiID">
+                            <a class="menuItemsActivities" href="/invitations" id="viewAdminInvitationAID">
+                                <div class="setMenu"><i class="fa fa-comment">&nbsp;&nbsp;</i><%=t('invitation')%>
+                                </div>
+                            </a>
+                        </li>
+                        
+                         
+
+                       
+                        
+                        <!--  <li id="viewEventPlannersLiID">
+                            <a class="menuItemsActivities" href="/event_planners" id="viewEventPlannersAID">
+                                <div class="setMenu"><i class="fa fa-calendar">&nbsp;&nbsp;</i><%#=t('event_planner')%>
+                                </div>
+                            </a>
+                        </li> -->
+                        <li id="viewGuestsLiID">
+                            <a class="menuItemsActivities" href="/guests" id="viewGuestsAID">
+                                <div class="setMenu"><i class="fa fa-user">&nbsp;&nbsp;</i><%=t('guests')%>
+                                </div>
+                            </a>
+                        </li>
+                        </li>
+                        <li id="viewGuestsParticipationLiID">
+                            <a class="menuItemsActivities" href="/guests/guest_participation" id="viewGuestsParticipationAID">
+                                <div class="setMenu"><i class="fa fa-user">&nbsp;&nbsp;</i><%=t('guest_participation')%>
+                                </div>
+                            </a>
+                        </li>
+
+                        <!--  <li id="viewAddPhotosLiID">
+                            <a class="menuItemsActivities" href="/document_managements/add_photos" id="viewAddPhotosAID">
+                                <div class="setMenu"><i class="fa fa-calendar">&nbsp;&nbsp;</i><%#=t('add_photos')%>
+                                </div>
+                            </a>
+                        </li> -->
+
+                         <li id="viewAlbumstosLiID">
+                            <a class="menuItemsActivities" href="/albums" id="viewAlbumsPhotosAID">
+                                <div class="setMenu"><i class="fa fa-picture-o">&nbsp;&nbsp;</i><%=t('albums')%>
+                                </div>
+                            </a>
+                        </li>
+                    </ul>    
+
+                </aside>
+            </td>
+            <td  valign="top" id="manageAdminCategoryID" class="mg-table-td-main-2">
+            
+            <%= render  partial: 'layouts/messages' %>
+<script>
+$(document).ready(function(){
+    focusEvent();
+});
+</script>

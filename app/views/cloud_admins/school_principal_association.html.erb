@@ -1,0 +1,67 @@
+<%= render partial: 'dashboards/cloud_admin_dashboard_left' %>
+<h4 class="mg-h4"><%= t('assign_school') %></h4>
+<div class="mg-custom-labels">
+<p>
+<%= form_for :attendances , url: school_principal_association_save_path, :html => {
+                            :id => 'schoolPrincipalAssociationFormID'} do |f| %>
+    <%=f.hidden_field :mg_user_id, :value=>@mg_user_id%>
+	<table  class="batch-tbl mg-tbl-margin">
+		<tr>
+			<th><%= t('school_name')%></th>
+			<th><%= t('actions')%><br><div class="mg-text-margin"><a class="select-all-school-cls mg-pop-link">All</a>&nbsp;<a class="select-none-school-cls mg-pop-link">None</a></div></th>
+		</tr>
+			<%@school.each do |school|%>
+			<tr>
+				<td><%=school.school_name%></td>
+				<% if @user_obj.mg_school_id==school.id %>
+					<td class="mg-align-center"><%= check_box_tag 'default_school_checkbox', school.id, :checked, {:id=>"defaultSchoolId", :disabled =>true}%></td>
+					<%=f.hidden_field :default_school_id, :value=>school.id%>
+				<%else%>
+	            	<td class="mg-align-center"><%= check_box_tag 'mg_school_id[]', school.id, @super_principal.include?(school.id),{:class=>"class-multi-school-class"}%></td>
+	            <%end%>
+			</tr>
+			<%end%>
+	</table></p>
+<%=f.submit t('save'),:class=>"submit mg-small-form-btn"%>
+      <%= link_to t('cancel'), :back, {:class=>"submit mg-small-form-btn cancel-form-dialog"} %>
+
+<%end%>
+</div>
+
+
+
+
+<%= render partial: 'application/common_left_close' %>
+
+
+<script type="text/javascript">
+
+ $(document).on("click", ".select-all-school-cls", function(e){
+
+    $(".class-multi-school-class").prop('checked', true);
+        e.preventDefault();
+  });
+   $(document).on("click", ".select-none-school-cls", function(e){
+    $(".class-multi-school-class").prop('checked', false);
+        e.preventDefault();
+  });
+
+    
+
+ $(document).ready(function(){
+
+    focusCurrentTab("viewCloudAdminDashboardSchoolAssociation","viewCloudAdminDashboardSchoolAssociationLiID");
+    focusDashboards();
+
+
+    $("#schoolPrincipalAssociationFormID").validate({
+      rules: 
+      {
+          "mg_school_id[]": {required: true}
+         
+      }
+    });
+
+});
+
+</script>

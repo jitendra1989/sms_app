@@ -1,0 +1,219 @@
+<% navigation_add 'Consumption', inventory_item_consumption_index_path %>
+<%#navigation_add 'Edit Item Management', item_management_edit_path %>
+
+<%#=render partial:"inventory_left"%>
+<!-- <h4 class="mg-h4"><%#=t('item_detail')%></h4> -->
+	<%if @item.present?%>
+		<%
+		 item_category=MgInventoryItemCategory.find_by(:id=>@item.mg_inventory_item_category_id)	
+		 item_name=MgInventoryItem.find_by(:id=>@item.mg_inventory_item_id)
+		 room=MgInventoryRoomManagement.find_by(:id=>@item.mg_inventory_room_id)
+		 rack=InventoryStackManagement.find_by(:id=>@item.mg_inventory_rack_id)
+		%>	
+		<table border="1" class="mg-showdata-bg mg-tbl-layout" cellspacing="1" cellpadding="1">
+			<tr>
+				<td class="mg-td-width-half" valign="top"><label class="mg-label"><%=t("item_category")%></label></td>
+				<td class="mg-td-width-half" valign="top"><%=item_category.name%></td>
+			</tr>
+			<tr>
+				<td class="mg-td-width-half" valign="top"><label class="mg-label"><%=t("item_name")%></label></td>
+				<td class="mg-td-width-half" valign="top"><%=item_name.name%></td>
+			</tr>
+			<tr>
+				<td><label class="mg-label"><%=t("room_name")%></label></td>
+				<td><%=room.room_no%></td>
+			</tr>
+			<tr>
+				<td><label class="mg-label"><%=t("rack_name")%></label></td>
+				<td><%=rack.rack_no%></td>
+			</tr>
+			<tr>
+				<td><label class="mg-label"><%=t("quantity_consumed")%></label></td>
+				<td><%=@item.quantity_consumed%></td>
+			</tr>
+			<tr>
+				<td><label class="mg-label mg-label-text-transform-none"><%=t("date_of_consumption")%></label></td>
+				<td>
+					<%school=MgSchool.find(session[:current_user_school_id])%>
+					<%=@item.consumption_date.strftime(school.date_format)%>
+				</td>
+			</tr>
+			<tr>
+				<td><label class="mg-label"><%=t("consumption_type")%></label></td>
+				<td class="mg-capitalize-text"><%=@item.consumption_type%></td>
+			</tr>
+			<%if @item.consumption_type=="lost"|| @item.consumption_type=="used"%>
+				<td><label class="mg-label"><%=t("description")%></label></td>
+				<td><%=@item.description%></td>
+			<%#elsif @item.consumption_type=="damaged"%>
+
+			<%elsif @item.consumption_type=="issued"%>
+				<tr>
+					<td><label class="mg-label"><%=t("consumer_type")%></label></td>
+					<td>
+						<p class="mg-capitalize-text"><%=@item_issued[0].mg_consumer_type%></p>
+					</td>
+				</tr> 
+				<table border="1" class="batch-tbl mg-scroll-result-bar" cellspacing="1" cellpadding="1">
+					<tr>
+						<%if @item_issued[0].mg_consumer_type=="student"%>
+							<th> <label class="mg-label"> <%= t('student_name')%></label>
+							</th>
+							<th> <label class="mg-label"> <%= t('class_name')%></label>
+							</th>
+						<%elsif  @item_issued[0].mg_consumer_type=="employee"%>
+							<th> <label class="mg-label"> <%= t('employee_name')%></label>
+							</th>
+							<th> <label class="mg-label"> <%= t('department_name')%></label>
+							</th>
+						<%end%>
+					</tr>
+					<%if @item_issued[0].mg_consumer_type=="student"%>
+						<%@item_issued.each do |item|%>
+							<%
+								student_list=MgStudent.find_by(:id=>item.mg_student_id)
+								batch=MgBatch.find_by(:id=>student_list.mg_batch_id)
+				     			course=MgCourse.find_by(:id=>batch.mg_course_id)
+							%>
+							<tr>
+								<td class="mg-td-width-half" valign="top">
+									<%=student_list.try(:first_name)%> <%=student_list.try(:last_name)%>
+								</td>
+								<td class="mg-td-width-half" valign="top">
+									<%=course.try(:course_name)%><%="-"%><%=batch.try(:name)%>
+								</td>
+							</tr>
+						<%end%>
+					<%end%>
+					<%if @item_issued[0].mg_consumer_type=="employee"%>
+						<%@item_issued.each do |item|%>
+							<%
+								employee_list=MgEmployee.find_by(:id=>item.mg_student_id)
+								if employee_list.present?
+									department=MgEmployeeDepartment.find_by(:id=>employee_list.mg_employee_department_id)
+								end
+							%>
+							<tr>
+								<td class="mg-td-width-half" valign="top">
+									<%=employee_list.try(:first_name)%> <%=employee_list.try(:last_name)%>
+								</td>
+								<td class="mg-td-width-half" valign="top">
+									<%=department.try(:department_name)%>
+								</td>
+							</tr>
+						<%end%>
+					<%end%>
+
+			<%elsif @item.consumption_type=="onshelf"%>
+				<tr>
+					<td><label class="mg-label"><%=t("consumer_type")%></label></td>
+					<td>
+						<p class="mg-capitalize-text"><%=@consumer_type%></p>
+					</td>
+				</tr> 
+				<table border="1" class="batch-tbl mg-scroll-result-bar" cellspacing="1" cellpadding="1">
+					<tr>
+						<%if @consumer_type=="student"%>
+							<th> <label class="mg-label"> <%= t('student_name')%></label>
+							</th>
+							<th> <label class="mg-label"> <%= t('class_name')%></label>
+							</th>
+						<%elsif  @consumer_type=="employee"%>
+							<th> <label class="mg-label"> <%= t('employee_name')%></label>
+							</th>
+							<th> <label class="mg-label"> <%= t('department_name')%></label>
+							</th>
+						<%end%>
+							<th> <label class="mg-label"> <%= t('status')%></label>
+							</th>
+					</tr>
+					<%if @item_damaged.present? && @consumer_type=="student"%>
+						<%@item_damaged.each do |item|%>
+							<%
+								student_list=MgStudent.find_by(:id=>item.mg_student_id)
+								batch=MgBatch.find_by(:id=>student_list.mg_batch_id)
+				     			course=MgCourse.find_by(:id=>batch.mg_course_id)
+							%>
+							<tr>
+								<td class="mg-td-width-half" valign="top">
+									<%=student_list.try(:first_name)%> <%=student_list.try(:last_name)%>
+								</td>
+								<td class="mg-td-width-half" valign="top">
+									<%=course.try(:course_name)%><%="-"%><%=batch.try(:name)%>
+								</td>
+								<td class="mg-td-width-half" valign="top">
+									<%="Damaged"%>
+								</td>
+							</tr>
+						<%end%>
+					<%end%>
+
+					<%if @item_damaged.present? && @consumer_type=="employee"%>
+						<%@item_damaged.each do |item|%>
+							<%
+								employee_list=MgEmployee.find_by(:id=>item.mg_student_id)
+								if employee_list.present?
+									department=MgEmployeeDepartment.find_by(:id=>employee_list.mg_employee_department_id)
+								end
+							%>
+							<tr>
+								<td class="mg-td-width-half" valign="top">
+									<%=employee_list.try(:first_name)%> <%=employee_list.try(:last_name)%>
+								</td>
+								<td class="mg-td-width-half" valign="top">
+									<%=department.try(:department_name)%>
+								</td>
+								<td class="mg-td-width-half" valign="top">
+									<%="Damaged"%>
+								</td>
+							</tr>
+						<%end%>
+					<%end%>
+
+					<%if @item_returned.present? && @consumer_type=="student"%>
+						<%@item_returned.each do |item|%>
+							<%
+								student_list=MgStudent.find_by(:id=>item.mg_student_id)
+								batch=MgBatch.find_by(:id=>student_list.mg_batch_id)
+				     			course=MgCourse.find_by(:id=>batch.mg_course_id)
+							%>
+							<tr>
+								<td class="mg-td-width-half" valign="top">
+									<%=student_list.try(:first_name)%> <%=student_list.try(:last_name)%>
+								</td>
+								<td class="mg-td-width-half" valign="top">
+									<%=course.try(:course_name)%><%="-"%><%=batch.try(:name)%>
+								</td>
+								<td class="mg-td-width-half" valign="top">
+									<%="Returned"%>
+								</td>
+							</tr>
+						<%end%>
+					<%end%>
+				<%if @item_returned.present? && @consumer_type=="employee"%>
+						<%@item_returned.each do |item|%>
+							<%
+								employee_list=MgEmployee.find_by(:id=>item.mg_student_id)
+								if employee_list.present?
+									department=MgEmployeeDepartment.find_by(:id=>employee_list.mg_employee_department_id)
+								end
+							%>
+							<tr>
+								<td class="mg-td-width-half" valign="top">
+									<%=employee_list.try(:first_name)%> <%=employee_list.try(:last_name)%>
+								</td>
+								<td class="mg-td-width-half" valign="top">
+									<%=department.try(:department_name)%>
+								</td>
+								<td class="mg-td-width-half" valign="top">
+									<%="Returned"%>
+								</td>
+							</tr>
+						<%end%>
+					<%end%>
+				</table>
+			<%end%>
+		</table><br>
+		<%= link_to t('cancel'), "#", {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+	<%end%>
+<%#=render partial:"common_left_close"%>

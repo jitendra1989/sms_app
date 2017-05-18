@@ -1,0 +1,23 @@
+<!-- Sec --> 
+ 
+<table border="1" class="mg-showdata-bg mg-tbl-layout mg-btn-bottom-margin" cellspacing="1" cellpadding="1">
+   	<tr>
+     <td class="mg-td-width-half" valign="top">
+ 		 <label class="mg-label"> Name</label>
+ 	 </td>
+ 	 <td class="mg-td-width-half" valign="top">
+  		<%= @feeCategory.name %>
+  	 </td>
+   	</tr>
+
+	<tr>
+		<td class="mg-td-width-half" valign="top">
+	  		<label class="mg-label">Description </label>
+	  	</td>
+	  	<td class="mg-td-width-half" valign="top">
+	  		<%= @feeCategory.description %>
+	  	</td>
+	</tr>
+</table>
+ 
+<%= link_to 'Back', fees_path ,:style=>"font-size: 0.8em; color: #297ACC; text-decoration: none;" ,:class=>"mg-custom-form-btn"%>

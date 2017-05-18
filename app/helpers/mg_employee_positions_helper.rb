@@ -1,0 +1,2 @@
+module MgEmployeePositionsHelper
+end

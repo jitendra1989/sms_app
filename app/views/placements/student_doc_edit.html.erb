@@ -1,0 +1,30 @@
+ <%= form_for :student_doc_edit, :url=>{:action=>"student_doc_name_update",:id=>@student_doc_edit.id},:html => {
+                            :id => 'edit_student_doc_edit_form_id' } do |f| %>
+
+  <p>
+    <%= f.label :name, t('name') ,:class=>"mg-label"%><span class="required-field"> *</span><br/>
+    <%= f.text_field :name, :class=>"mg-text-field", :value=>@student_doc_edit.file_file_name%>
+  </p>
+  
+  <%= f.hidden_field :mg_school_id, :value => session[:current_user_school_id]%>
+  <%= f.hidden_field :created_by, :value => session[:user_id]%> 
+  <%= f.hidden_field :updated_by, :value => session[:user_id]%> 
+  <%= f.hidden_field :is_deleted, :value => 0%> 
+
+  <p class="mg-p-mgtop">
+    <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("save")%></a>
+    <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>  
+ </p>
+<% end %>
+
+<script>
+$(document).ready(function () {
+
+$("#edit_student_doc_edit_form_id").validate({
+
+    rules: {
+        "student_doc_edit[name]": {required: true}
+    }
+  });
+});
+</script>

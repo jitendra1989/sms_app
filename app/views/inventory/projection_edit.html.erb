@@ -1,0 +1,361 @@
+
+<% navigation_add 'Manage Projection', :controller => 'inventory', :action => 'projection' %>
+<%= render  partial: 'inventory/inventory_left' %>
+
+<h4 class="mg-h4"><%= t('Projection Information')%></h4>
+<div class="box">
+<%= form_for :inventory, :url=>{:controller=>'inventory',:action=>'projection_update',:id=>@inventory.id}, :html=>{:id=>'edit_inventory_details_data'} do |f| %>
+
+        <%= f.hidden_field :is_deleted ,:value=>0%>
+        <%= f.hidden_field :mg_school_id ,:value=>session[:current_user_school_id]%>
+        <%= f.hidden_field :mg_user_id ,:value=>session[:user_id]%>
+        <%= f.hidden_field :mg_store_id ,:value=>@store_management[0].try(:id)%>
+        <%#= f.hidden_field :created_by ,:value=>session[:user_id]%>
+        <%= f.hidden_field :updated_by ,:value=>session[:user_id]%>
+        
+<table class="mg-tbl-margin mg-show-tbl-width">
+   <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="vendorName"><%= t ('store_name') %><span class="required-field">&nbsp;</span></label><br/>
+        <%= text_field_tag :mg_store_id ,@store_management[0].try(:store_name),:class=>"mg-text-field", readonly: true%>
+      </td>
+    </tr>
+    <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="vendorName"><%= t ('manager_name') %><span class="required-field">&nbsp;</span></label><br/>
+        <%user=MgUser.find_by(:id=>session[:user_id])%>
+        <%= text_field_tag :manager_name ,user.try(:user_name),:class=>"mg-text-field", readonly: true%>
+      </td>
+    </tr>
+    <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="vendorName"><%= t ('requisition_name') %><span class="required-field">&nbsp;*</span></label><br/>
+        <%= f.text_field :requisition_name ,:class=>"mg-text-field"%>
+      </td>
+    </tr>
+
+    <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label mg-label-text-transform-none" for="dateofPurchase"><%= t ('date_of_requirement') %><span class="required-field">&nbsp;*</span></label><br/>
+        <%= f.text_field :date ,:class=>"mg-text-field"%>
+      </td>
+    </tr>
+
+    <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="vendorName"><%= t ('description') %><span class="required-field">&nbsp;</span></label><br/>
+        <%= f.text_area :description ,:class=>"mg-text-field"%>
+      </td>
+    </tr>
+
+    <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="vendorName"><%= t ('status') %><span class="required-field">&nbsp;</span></label><br/>
+        <%= select_tag :status, options_for_select([[t("Select"), ""], [t("pending"), "pending"], [t("accepted"), "accepted"], [t("rejected"), "rejected"]],:selected => @inventory.status),{:disabled => true} %>
+      </td>
+    </tr>
+
+    <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="vendorName"><%= t ('remark') %><span class="required-field">&nbsp;</span></label><br/>
+        <%= f.text_area :remark ,:class=>"mg-text-field", :readonly=>true%>
+      </td>
+    </tr>
+
+
+   
+    <tr>
+    
+</table>
+<h4 class="mg-h4"><%= t('Item Information')%></h4> 
+ <div class="mg-tbl-margin"> 
+ <p>
+ <a id="inventory_details" class="mg-label-inner-form mg-custom-form-btn" style="color: #297ACC; font-size:0.8em; position: relative;" >Add </a></p><br\>
+ <div class="mg-scroll-employee-bar">
+<table class="mg-show-tbl-width mg-table-nowrap batch-tbl mg-adjust-padding width-set-for-purchase-table">  
+
+        <th><%=t("sl_no")%></th>
+        <th><%=t("select_category")%><span class="required-field">&nbsp;*</span></th>
+        <th><%=t("select_item")%><span class="required-field">&nbsp;*</span></th>
+        <th><%=t("select_unit_type")%><span class="required-field">&nbsp;*</span></th>
+        <th class="mg-label-text-transform-none"><%=t("no_of_units")%><span class="required-field mg-label-text-transform-none">&nbsp;*</span></th>
+        <!-- <th><%#=t("status")%><span class="required-field">&nbsp;*</span></th> -->
+        <th><%=t("action")%></th>
+            <%@item_information_details.each_with_index do |details,i|%>
+        
+        <tr class="demo-div">
+            <div id="finalDueFineDivId">
+            <div class="due-fine-div" id="dueFineDivId">
+            <td><span class="required-incremented-field">1</span></td>
+          
+
+            <td class="mg-align-center mg-inventory-td-class">
+            <%selected_id=MgInventoryItem.where(:id=>details.mg_item_id).pluck(:mg_category_id)%>
+            <%item_category=MgInventoryItemCategory.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:name,:id)%>
+            
+            <%=select_tag 'mginventoryitemcategory[]' , options_for_select(item_category,:selected=>selected_id),:prompt=>t('select'),:class => "mg-editinventory-item-projection-cls call-purpose-class consumption-category-class category-laboratory-class" %>
+            </td>
+          <td class="mg-align-center mg-proposal-item-class">
+          <%= hidden_field_tag 'ids[]' ,details.id,:class=>"mg-text-field-particular required-field"%>
+
+          <%category=MgInventoryItem.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:name,:id)%>
+          <%=select_tag 'mg_item_id[]' , options_for_select(category,:selected=>details.mg_item_id),:prompt=>t('select'),:class => "call-purpose-class consumption-category-class category-laboratory-class" %>
+          </td>
+
+
+          <td class="mg-align-center">
+
+            <%category=MgLabUnit.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:unit_name,:id)%>
+          <%=select_tag 'mg_unit_type_id[]' , options_for_select(category,:selected=>details.mg_unit_type_id),:prompt=>t('select'),:class => "call-purpose-class consumption-category-class category-laboratory-class" %>
+
+          <%#= f.collection_select("mg_unit_type_id[]",MgLabUnit.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]), :id, :unit_name,{:include_blank => t("select")},:class => "call-purpose-class consumption-category-class category-laboratory-class",:name=>"mg_unit_type_id[]")%>
+          </td>
+          <td class="mg-align-center">
+          <%= text_field_tag 'no_of_unit[]' ,details.no_of_unit,:class=>"mg-inside-tbl-width required-field item-name-class-purchase"%>
+          </td>
+
+          
+          <!-- </td> -->
+          <td class="mg-align-center">
+                      <a title="Remove" class="remove-inventory-details mg-icon-btn" style="color: #297ACC;"> <i class="fa fa-trash"></i></a>
+                
+            </td>   
+            <%end%>
+
+             </div>
+             </div>
+          </tr>
+</table >
+
+
+
+</div>
+  </div>    
+  <div class="checking_validation"></div>            
+  <div class="checking_validation1"></div>            
+                
+ <p class="mg-p-mgtop">                     
+  <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn laboratory-purchase-new-submit-class"><%=t("save")%></a>   
+  <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+  </p>
+<%end%>
+</div>
+<%= render  partial: 'application/common_left_close' %>
+
+
+<script>
+$(document).ready(function () {
+
+       $(".required-incremented-field:visible").each(function(index,element){
+          $(this).text(index+1);
+    });
+
+
+focusCurrentTab("viewInventoryItemProjectionIndex","viewItemProjectionLiID");
+
+ // window.dateFormatStr = getJsDateFormat();
+        dateFormatStr =  getJsDateFormat();
+    $('#inventory_date').datepicker({ changeMonth: true,
+                changeYear: true,yearRange: "-50:+0",minDate: "0",dateFormat: dateFormatStr});
+    var requiredDate =  $.datepicker.formatDate(dateFormatStr,new Date($('#inventory_date').val()));
+    $('#inventory_date').val(requiredDate);
+    });
+
+// $(document).on("click", "#inventory_details", function(e){
+//     var lastRepeatingGroup = $('.demo-div').last();
+//     var cloned = lastRepeatingGroup.clone();
+//     cloned.find('input').val('');
+//     cloned.find('label').remove();
+//     cloned.find(".call-purpose-class ").attr("class","call-purpose-class consumption-category-class category-laboratory-class");
+//     cloned.insertAfter( lastRepeatingGroup );
+//   $(".required-incremented-field:visible").each(function(index,element){
+//           $(this).text(index+1);
+//     });
+//     $(".checking_validation").click();
+//     return false;
+
+// }); 
+
+
+
+
+
+$(document).on("click", "#inventory_details", function(e){
+    var lastRepeatingGroup = $('.demo-div').last();
+    var cloned = lastRepeatingGroup.clone();
+    cloned.find('select').val('');
+    cloned.find('input').val('');
+    cloned.find('label').remove();
+    cloned.insertAfter( lastRepeatingGroup );
+    // $(".valid_upto_purchase_edit:visible").each(function(index,element){
+    // $(this).text(index+1);
+    // cloned.find(".valid_upto_purchase_edit").attr("id","valid_edit_upto_"+(index+1));
+    // });
+    //   $(".required-incremented-fields:visible").each(function(index,element){
+    //       $(this).text(index+1);
+    // });
+
+     $(".required-incremented-field:visible").each(function(index,element){
+          $(this).text(index+1);
+    });
+ 
+    $(".checking_validation_for_edit").click();
+    return false;
+}); 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+$(function() {
+   dateFormatStr =  getJsDateFormat();
+})
+    
+
+
+$(document).on("click", ".remove-inventory-details", function(e){
+   var total = $('.remove-inventory-details').length
+   var last_count = $('.remove-inventory-details').text();
+   //console.log(last_count);
+ //alert(last_count); 
+   if(total!=1)
+   {
+    $(this).parent('td').parent().remove();   
+    }
+  $(".required-incremented-field:visible").each(function(index,element){
+          $(this).text(index+1);
+    });
+});
+
+
+//=============================================================
+
+
+$(function () {
+    $.validator.addMethod('dateFormat',
+    function (value, element) {
+      dateFormatStr =  getJsDateFormat();
+        if (this.optional(element)) {
+            return true;
+        }
+        var ok = true;
+        try {
+            $.datepicker.parseDate(dateFormatStr, value);
+        }
+        catch (err) {
+            ok = false;
+        }
+        return ok;
+    },
+      "Please enter a date in the format "+ getDateFormat(dateFormatStr) +".");
+      dateFormatStr =  getJsDateFormat();
+
+    $(".datefield").datepicker({ dateFormat: dateFormatStr, changeYear: true });
+});
+
+$("#inventory_purchase").validate({
+        rules: {   
+        "inventory[requisition_name]": {required: true}, 
+        //"inventory[description]": {required: true}, 
+        "inventory[date]": {required: true,dateFormat: true},
+        "mg_item_id[]": {required: true, number: true},
+        "mg_unit_type_id[]": {required: true, number: true},
+        "no_of_unit[]": {required: true, number: true}
+      }
+    });
+
+
+
+
+// =================================================================================================
+
+
+
+
+
+
+
+
+    
+  $(function() {
+   dateFormatStr =  getJsDateFormat();
+     $("#edit_laboratory_details_data").delegate('.checking_validation_for_edit', 'click', function(){
+        $(".valid_upto_purchase_edit:visible").each(function(index,element){
+          $("#valid_edit_upto_"+(index+1)).removeClass('hasDatepicker');
+          $("#valid_edit_upto_"+(index+1)).datepicker({ changeMonth: true,
+                changeYear: true,yearRange: "0:+50",minDate: "0",dateFormat: dateFormatStr});
+        });
+
+     });
+});
+
+  $(document).on('change','.mg-editinventory-item-projection-cls',function(){
+    var category_id = $(this).val();
+    
+    var select_option = '<option value="">Select</option>';
+    var temp =$(this).parents('.mg-inventory-td-class').siblings(".mg-proposal-item-class").find("select");
+
+    temp.empty().append(select_option);
+    if(category_id > 0) {
+         
+      var urlLink = "/inventory/select_inventory_category/"+category_id;
+      $.ajax({ 
+        url: urlLink,
+        cache: false,
+        success: function(data){
+          console.log(data);
+          if(data.length > 0){
+            var select_option = '<option value="">Select</option>';
+            //console.log(data);
+            for(key in data){
+              select_option += '<option value="'+data[key].id+'">'+data[key].name+'</option>'
+            }
+            temp.empty().append(select_option);
+          }
+        }
+      });
+    }else{
+      var select_option = '<option value="">Select</option>';
+      temp.empty().append(select_option);
+    }
+  });
+
+ $("#edit_inventory_details_data").validate({
+    rules: {
+      "inventory[requisition_name]": {required: true}, 
+      "inventory[date]": {required: true,dateFormat: true},
+      "mginventoryitemcategory[]": {required: true},
+      "mg_item_id[]": {required: true},
+      "mg_unit_type_id[]": {required: true, number: true},
+      "no_of_unit[]": {required: true, number: true}
+    }
+ });
+
+</script>
+
+<style>
+
+.error {
+  float: left;
+  font-size: 10px;
+}
+
+
+</style>

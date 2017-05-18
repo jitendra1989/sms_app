@@ -1,0 +1,231 @@
+ <%= form_for :employee_biometric_attendances, url: employee_biometric_attendances_path, :html => {
+                            :id => 'newEmployeeBiometricAttendancesID' } do |f| %>
+<br>
+ <p>
+    <%= f.label :date, :class=> "mg-label"%><span class="required-field">*</span><br>
+    <%= f.text_field :date	 %>
+  </p>
+ 
+  <p>
+    <%= f.label :check_in,t('check_in'),:class=> "mg-label"%><span class="required-field">*</span><br>
+    <%= f.text_field :check_in,  :class=>"mg-starts-times-fields"%>
+  </p>
+  
+ <p>
+    <%= f.label :check_out ,t('check_out'),:class=> "mg-label"%><span class="required-field">*</span><br>
+    <%= f.text_field :check_out, :class=>"mg-ends-times-fields"%>
+  </p>
+  <p>
+  <%
+        department_data=MgEmployeeDepartment.where(:is_deleted=>0, :mg_school_id=>session[:current_user_school_id]).pluck(:department_name,:id)
+        %>
+        <%= f.label :select_department ,t('select_department'),:class=> "mg-label"%><span class="required-field">*</span> <br>
+    <%=select_tag :mg_employee_department_id, options_for_select(department_data),:prompt=>t('select'), :class=>"mg-select-btn",:onchange=>"employee_Department(this.value)"%>
+    </p>
+  <p>
+  <%= f.label :employee ,t('employee'),:class=> "mg-label"%><span class="required-field">*</span> <br>
+  <div id="select_employee_for_biometric_attendances">
+    
+  
+    <%=select_tag :mg_employee, options_for_select([[]]),:prompt=>t('select'), :class=>"mg-select-btn"%>
+    </div>
+  </p>
+<%=f.hidden_field :mg_school_id, :value=>session[:current_user_school_id]%>
+<%=f.hidden_field :is_deleted, :value=>0%>
+<%=f.hidden_field :created_by, :value=>session[:user_id]%>
+<%=f.hidden_field :updated_by, :value=>session[:user_id]%>
+
+
+
+
+    <%#= f.submit t('save')%>
+    <p>
+     <!-- <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%#=t("save")%></a> -->
+      <a  class="mg-small-form-btn employee-biometric-attendances-submit-form"><%=t("save")%></a>
+      <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+  </p>
+
+<% end %>
+
+<script>
+
+
+
+
+$(document).ready(function () {
+dateFormatStr =  getJsDateFormat();
+$('#employee_biometric_attendances_date').datepicker({ changeMonth: true,
+               changeYear: true,dateFormat: dateFormatStr});
+   // $( "#employee_biometric_attendances_date" ).datepicker({ dateFormat: 'dd-mm-yy' });
+  $('#employee_biometric_attendances_check_in').timepicker({ 'scrollDefault': 'now' });
+  $('#employee_biometric_attendances_check_out').timepicker({ 'scrollDefault': 'now' });
+
+$("#newEmployeeBiometricAttendancesID").validate({
+
+rules: {
+"employee_biometric_attendances[date]": {required: true},
+"employee_biometric_attendances[check_in]": {required: true},
+"employee_biometric_attendances[check_out]": {required: true},
+"mg_employee_department_id": {required: true},
+"mg_employee": {required: true}
+
+
+}
+});
+
+
+ 
+
+});
+
+
+ function employee_Department(data){
+  
+   
+    //alert("hiiii");
+ $.ajax({
+            url: "/employee_biometric_attendances/select_employees",
+            type: "GET",
+            data: {"dept_data":data},
+            dataType: "html",
+            success: function(data) {
+              //console.log(data);
+               // $(".fee-particular-admission-number-cls").empty();
+               // $(".fee-particular-admission-number-cls").append(data);
+             $("#select_employee_for_biometric_attendances").empty();
+
+             $("#select_employee_for_biometric_attendances").html(data);
+             
+              
+            },
+            error:function(){
+              alert("Something went wrong!");
+            }
+        });
+    
+}
+function minFromMidnight(tm){
+  if (tm){
+  var ampm= tm.substr(-2)
+   var clk = tm.substr(0, 4);
+   var m  = parseInt(clk.match(/\d+$/)[0], 10);
+   var h  = parseInt(clk.match(/^\d+/)[0], 10);
+   h += (ampm.match(/pm/i))? 12: 0;
+  }
+ 
+ return h*60+m;
+}
+
+$(document).on("change","#employee_biometric_attendances_check_in",function(){
+  // var from_date=$("#clickDateID").val();
+  // var to_date=$("#events_end_date").val();
+  // if (from_date==to_date){
+    var from = $('#employee_biometric_attendances_check_in').val();
+    var to = $('#employee_biometric_attendances_check_out').val();
+    var from_time=minFromMidnight(from);
+    var to_time=minFromMidnight(to);
+      if(from_time && to_time){
+        if(from_time > to_time){
+         alert("Check In must be less than Check Out");
+          document.getElementById('employee_biometric_attendances_check_in').value="";
+      } 
+   // }
+  }
+});
+
+  $(document).on("change","#employee_biometric_attendances_check_out",function(){
+  // var from_date=$("#clickDateID").val();
+  // var to_date=$("#events_end_date").val();
+  // if (from_date==to_date){
+    var from = $('#employee_biometric_attendances_check_in').val();
+    var to = $('#employee_biometric_attendances_check_out').val();
+    var from_time=minFromMidnight(from);
+    var to_time=minFromMidnight(to);
+      if(from_time && to_time){
+        if(from_time > to_time){
+         alert("Check Out must be greater than Check In");
+          document.getElementById('employee_biometric_attendances_check_out').value="";
+      } 
+   // }
+  }
+});
+
+
+// $(".mg-ends-times-fields").change(function(){
+//       var endtime = $(this).val();
+
+//       var starttime = $(".mg-starts-times-fields").val();
+//       //alert(starttime);
+//       //alert(endtime);
+//     st = minFromMidnight(starttime);
+// et = minFromMidnight(endtime);
+
+// if(st>=et){
+//     alert("End time must be greater than start time");
+//     $(".mg-ends-times-fields").val("");
+// }
+
+
+
+
+// function minFromMidnight(tm){
+//   //alert("came");
+//  var ampm= tm.substr(-2)
+//  var clk = tm.substr(0, 4);
+//  var m  = parseInt(clk.match(/\d+$/)[0], 10);
+//  console.log(parseInt(clk.match(/\d+$/)[0], 10));
+//  var h  = parseInt(clk.match(/^\d+/)[0], 10);
+//  h += (ampm.match(/pm/i))? 12: 0;
+//  return h*60+m;
+// }
+// });
+
+
+
+//     $(".mg-starts-times-fields").change(function(){
+//       var endtime = $(".mg-ends-times-fields").val();
+
+//       var starttime = $(".mg-starts-times-fields").val();
+//       //alert(starttime);
+//       //alert(endtime);
+//     st = minFromMidnight(starttime);
+// et = minFromMidnight(endtime);
+
+// if(st>=et){
+//     alert("Start time must be smaller than end time");
+//     $(".mg-starts-times-fields").val("");
+// }
+
+
+
+
+// function minFromMidnight(tm){
+//   //alert("came");
+//  var ampm= tm.substr(-2)
+//  var clk = tm.substr(0, 4);
+//  alert(tm);
+//  alert(clk);
+
+//  var m  = parseInt(clk.match(/\d+$/)[0], 10);
+//  alert(m);
+//  console.log(clk.match(/\d+$/)[0]);
+
+//  var h  = parseInt(clk.match(/^\d+/)[0], 10);
+//  alert(h);
+
+//  h += (ampm.match(/pm/i))? 12: 0;
+//  alert(h);
+//  return h*60+m;
+// }
+ //});
+
+
+
+
+</script>
+
+   <!--  t.date :date
+      t.time :check_in
+      t.time :check_out
+
+ -->

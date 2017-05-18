@@ -1,0 +1,75 @@
+<% navigation_add t('schedule'), :controller=>'sports_management', :action=>'schedule' %>
+<%= render  partial: 'sports_left' %>
+
+<%= button_to 'Add schedule', {:controller=>'sports_management',:action=>'schedule_new'}, :class=> 'mg-custom-form-btn' %>
+
+<h4 class="mg-h4"><%= t('schedule_list')%></h4>
+
+<%if @schedule.present?%>
+<div class="mg_pagination">
+<table class="batch-tbl mg-tbl-margin">   <!-- border="2" --> 
+ <tr >
+  	<th  class="mg-align-center"><%=t('game_type')%></th>
+    <th  class="mg-align-center"> <%=t('game_name')%></th>
+  	<th  class="mg-align-center"><%=t('team_1')%></th>
+  	<th  class="mg-align-center"><%=t('team_2')%></th>
+  	<th  class="mg-align-center"><%=t('winner')%></th>
+
+
+    <th><%=t('actions')%></th>
+  </tr>
+  <% @schedule.each do |e| %>
+    <tr>
+      <% if e.game_type=="indoor" %>
+      	<td  class="mg-align-center"><%= "Indoor" %></td>
+      <% elsif e.game_type=="outdoor" %>
+      	<td  class="mg-align-center"><%= "Outdoor" %></td>
+      <% end %>
+      	
+      <% #game_data=MgSportGame.find_by(:id=>e.mg_sport_game_id,:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).name%>
+
+      <td  class="mg-align-center"><%#= game_data  %></td>
+
+      <%# team_data=MgSportTeam.find_by(:id=>e.mg_sport_team_id1,:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).team_name%>
+      <td  class="mg-align-center"><%#= team_data  %></td>
+
+      <% if e.game_type=="indoor" %>
+      	<%# team_data2=MgSportTeam.find_by(:id=>e.try(:mg_sport_team_id2),:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).try(:team_name)%>
+      	<td  class="mg-align-center"><%#= team_data2 %></td>
+      <%# elsif e.game_type=="outdoor" %>
+      	<td  class="mg-align-center"><%#= e.guest_team %></td>
+      <% end %>
+
+
+      <% #if e.try(:guest_team)==e.try(:winner) %>
+      		<td  class="mg-align-center"><%#= e.winner %></td>
+      <% #else %>
+      	
+      		<%# winner=MgSportTeam.find_by(:id=>e.try(:winner),:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).try(:team_name)%>
+      		<td  class="mg-align-center"><%#= winner %></td>
+      <% #end%>
+
+
+      <td>
+        <button title="Show" id="<%=raw e.id %>-showjobUploadBTNID" class="show-job-upload-fom-btn mg-icon-btn" onclick="window.location='/sports_management/schedule_show/<%=e.id%>'"><i class="fa fa-eye"></i></button>
+
+        <button title="Edit" id="<%=raw e.id %>-editjobUploadBTNID" class="edit-job-upload-fom-btn mg-icon-btn" onclick="window.location='/sports_management/schedule_edit/<%=e.id%>'"><i class="fa fa-pencil-square-o"></i></button>
+
+	    <button title="Delete" onclick="confirm('Are you sure to delete?') ? window.location='/sports_management/<%=e.id%>/schedule_delete' : ''" class="mg-icon-btn"><i class="fa fa-trash"></i></button>    
+	    </td>
+    </tr>
+  <% end %>
+</table>
+<div>
+ <%= will_paginate @schedule, :container => false %>
+  </div>
+  <%else%>
+  	<p>Please create Teams</p>
+  <%end%>
+
+<%= render  partial: 'application/common_left_close' %>
+<script type="text/javascript">
+	$(document).ready(function () {
+    focusCurrentTab("scheduleAID","scheduleLiID");
+  });
+</script>

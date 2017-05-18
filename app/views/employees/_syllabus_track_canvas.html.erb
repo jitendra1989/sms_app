@@ -1,0 +1,559 @@
+<%#= render partial: 'dashboards/employee_left' %>
+
+<h4 class="mg-h4"><%= t('syllabus_progress') %></h4>
+<div class="mg-custom-labels">
+<%
+
+
+@empId=MgEmployee.where(:mg_user_id=>session[:user_id]).pluck(:id)
+
+	@syllabuscheck=MgSyllabusTracker.where(:is_deleted=>0,:mg_employee_id=>@empId).pluck(:mg_syllabus_id).uniq
+%>
+
+
+<%if  @syllabuscheck[0].to_s.empty?%>
+
+
+<div style="color:#C52F24"><h5>No tracks found for this employee...</h5></div>
+
+<%else%>
+
+<%@empId=MgEmployee.where(:mg_user_id=>session[:user_id],:is_deleted=>0).pluck(:id)%>
+<%
+@syllabus=MgSyllabusTracker.where(:is_deleted=>0,:mg_employee_id=>@empId).pluck(:mg_syllabus_id).uniq
+%>
+<%@dataHash=Hash.new%>
+<%@dataHashs=Hash.new%>
+<%@array=Array.new%>
+<%@arrayy=Array.new%>
+
+<%@total_array=Array.new%>
+<%subject=''%>
+<%size_string=''%>
+<%@syllabus.each do |sys|%>
+<%@ss=MgSyllabus.find(sys)%>
+<%#=@ss.name%> 
+<%subject +=@ss.name+','%>
+<%@unit=MgSyllabusTracker.where(:mg_syllabus_id=>sys,:mg_employee_id=>@empId).pluck(:mg_unit_id).uniq%>
+<%
+@Obj1=Hash.new
+@unit.each do |unit|%>
+<%@ss=MgUnit.find(unit)%>
+<%@ss.unit_name%>
+
+<!--=================================div===================================================-->
+<%
+@emptimetaken=MgSyllabusTracker.where(:mg_unit_id=>@ss ,:mg_employee_id=>@empId[0], :mg_syllabus_id=>sys,:is_deleted=>0).count
+@emp_expectedtime=MgSyllabusTracker.where(:mg_unit_id=>@ss ,:mg_employee_id=>@empId[0], :mg_syllabus_id=>sys,:is_deleted=>0).order(:date).last
+%>
+<%@emp_expectedtime.inspect%>
+<%@emp_expectedtime.expected_class%>
+<%
+@emptimealloted=MgUnit.where(:id=>unit).pluck(:time)
+@array=Array.new
+@array.push("Taken",@ss.unit_name)
+@dataHash[@array]=@emptimetaken
+@array=Array.new
+@array.push("Allotted",@ss.unit_name)
+@dataHash[@array]=@emptimealloted[0]
+@array=Array.new
+@array.push("Expected",@ss.unit_name)
+@dataHash[@array]=@emp_expectedtime.expected_class+@emptimetaken
+@array=Array.new
+%>
+<%
+@obj2=Hash.new
+@obj3=Array.new
+@obj4=Array.new
+@obj2["Taken"]=@emptimetaken
+@obj2["Allotted"]=@emptimealloted[0]
+@obj2["Expected"]=@emp_expectedtime.expected_class+@emptimetaken
+@obj3.push(@obj2)
+@Obj1[@ss.unit_name]=@obj3
+%>
+<%end%>
+<%@total_array.push(@Obj1)%>
+<%size_string +=@Obj1.length.to_s+','%>
+<%@dataHash=Hash.new%>
+<%@dataHashs=Hash.new%>
+<%@array=Array.new%>
+<%@arrayy=Array.new%>
+<%end%>
+<%end%>
+</div>
+<div id="canvasDivID" style="overflow: scroll;"></div>
+</canvas>
+<!-- var tipid='canvas_'+d; -->
+<div id="canvasTipDivID"></div>
+</canvas>
+<%= render partial: 'application/emp_section_close' %>
+<script>
+$(document).ready(function () {
+
+focusCurrentTab("viewEmployeeSyllabus","viewEmployeesyllabusLiID");
+        
+      });
+
+</script>
+
+  
+  <title>Bar Graph</title>
+<style>
+
+
+  .canvas{background: #ffffff;
+        box-shadow:5px 5px 5px #ccc;
+    border:5px solid #eee;
+    margin-bottom:10px;}
+
+  
+  .tipSyllabusID {
+    background-color:white;
+    border:1px solid blue;
+    position:absolute;
+    left:-20000000px;
+    top:100px;
+    padding: 0px;
+
+
+}
+
+.mg-scroll-height {
+    border: 1px solid #bcbcbc;
+    overflow-y: scroll;
+    max-height: 400px;
+}
+
+  </style>  
+<script type="text/javascript">
+var Data="<%=@total_array.to_json%>"
+	var data=[]
+	//console.log(Data)
+ var data=Data.replace(/&quot;=&gt;/g,'"');
+ var data=Data.replace(/&quot;/g,'"')
+
+ var Demo=JSON.parse(data);
+
+
+
+var subject_name_array='<%=subject%>'.split(',');
+var size_string='<%=size_string%>'.split(',');
+
+
+  
+for(var d=0;d<Demo.length;d++)
+{
+	var canvasSize=size_string[d]*350;
+  var constWidth=700;
+	var id='canvas'+d;
+  var tipid='canvas_'+d;
+	var subject_name='<h4>'+subject_name_array[d]+'</h4>';
+	$("#canvasDivID").append(subject_name);
+  if(canvasSize>600)
+  {
+      var canvasID='<div class="mg-scroll-page-inner"><canvas id="'+id+'" height="350" width="'+canvasSize+'" class="canvas" style="overflow: scroll;"></div>'
+  }
+  else
+  {
+      var canvasID='<canvas id="'+id+'" height="350" width="'+constWidth+'" class="canvas " style="overflow: scroll;">'
+  }
+console.log(canvasID);
+	
+
+     var CanvasTip='<canvas id="'+tipid+'" width="160" height="45" class="tipSyllabusID">'
+     console.log(CanvasTip);
+
+
+	$("#canvasDivID").append(canvasID);
+  $("#canvasTipDivID").append(CanvasTip);
+
+
+
+	var chages=Demo[d];
+	fee_collection_graph(chages,id,tipid);
+
+}
+
+function fee_collection_graph(chages, id) {
+ var colour=['#29708b','#deacba','#6ab0b1','#e95c60','#479b9c','#663D99','#b16a8d','#a295f0','#308c5d','e9e2a6'];
+  var greater=[];
+  var colour_array=[];
+ for (var prop in chages) {
+        for (var d in chages[prop]) {
+          var big=0;
+            for (var k in chages[prop][d]) {
+               big=big+chages[prop][d][k];
+               
+             colour_array.push(k);
+            }
+         greater.push(big)
+      }
+   }
+
+  var dd;
+ function uniqueArray( ar ) {
+  var j = {};
+  ar.forEach( function(v) {
+    j[v+ '::' + typeof v] = v;
+  });
+  return Object.keys(j).map(function(v){
+    return j[v];
+  });
+} 
+  
+  var array=uniqueArray(colour_array);
+  var colour_with_data = {};
+  
+  for(dd=0;dd<array.length;dd++){
+   colour_with_data[array[dd]]=colour[dd];
+  } 
+
+  
+var Val_amount = Math.max.apply(Math, greater);
+  var bar_width=0.55;
+  var canvas ;
+  var context ;
+  var Val_Max=3;
+  var Val_Min;
+  var sections;
+  var xScale;
+  var yScale;
+  var y;
+    // intialize values for each variables
+  sections = chages.length;
+    Val_amount=Val_amount+Val_amount*30/100;
+  if(Val_amount>5){
+    Val_Max =Math.round(Val_amount); //Math.max.apply(Math, itemValue)+2;;
+  }
+  var stepSize =Val_Max*30/100 ;
+  var columnSize = 50;
+  var rowSize = 60;
+  var margin = 30;
+  var header = "No. of Period" ;
+    
+    
+  canvas = document.getElementById(id);
+  console.log(canvas);
+  context = canvas.getContext("2d");
+  var tipCanvas = document.getElementById(tipid);
+
+  //console.log(tipCanvas);
+  var tipCtx = tipCanvas.getContext("2d");
+ // var canvasOffset = $("#canvasSyllabusID").offset();
+
+
+  context.fillStyle = "#8B8B8B"
+    var graph_hight=canvas.height*80/100;
+
+  var graph_width=canvas.width*80/100;
+  yScale = (graph_hight - columnSize - margin) / (Val_Max);
+  //xScale = (graph_width - rowSize) / (sections + 1);
+    xScale=100;
+  
+  context.strokeStyle="#8B8B8B"; // background black lines
+  context.beginPath();
+    // column names 
+  context.font = "19 pt Calibri;"
+  context.fillText(header, 0,columnSize - margin);
+    // draw lines in the background
+  context.font = "18 pt Calibri"
+  var count =  0;
+  for (scale=Val_Max;scale>=0;scale = scale - stepSize) {
+    y = columnSize + (yScale * count * stepSize); 
+       context.fillText(Math.round(scale), margin,y + margin-30);
+    count++;
+  }
+  //var fee_defaulter_hash={"LKG":4, "UKG":6, "1st STD":4, "2nd":8};
+function getMousePos(canvas, evt) {
+
+        var rect = canvas.getBoundingClientRect();
+  
+
+        return {
+          x: evt.clientX - rect.left,
+          y: evt.clientY - rect.top
+        };
+  }
+  
+
+      var canvas = document.getElementById(id);
+
+      var context = canvas.getContext('2d');
+
+      canvas.addEventListener('mousemove', function(evt) {
+        var mousePos = getMousePos(canvas, evt);
+        var message = 'Mouse position: ' + mousePos.x + ',' + mousePos.y;
+        //console.log(mousePos);
+        // console.log(mousePos);
+        var rect = canvas.getBoundingClientRect();
+        //console.log(canvas);
+        //console.log(canvas.offsetTop);
+        //console.log(rect.top);
+        handleMouseMove(mousePos,canvas.offsetTop);
+        
+        //alert(message);
+        // writeMessage(canvas, message);
+      }, false); 
+  
+ 
+  
+function handleMouseMove(e,offsetTop) {
+  //alert("jiosdf")
+  mouseX = parseInt(e.x);
+  mouseY = parseInt(e.y);
+  //console.log(mouseX);
+  //console.log(mouseY);
+  var hit = false;
+  var position=0;
+
+
+  if(e.x>(canvas.width*80/100)-20 )
+  {
+    var temp_colour_pos=1;
+      var temp_colour=0;
+      for (var prop in colour_with_data) {
+          var x_pos1=(canvas.width*80/100)-20;
+          var x_pos2=(canvas.width*80/100)-5;
+          var y_pos1=(canvas.height*3/100)-5+temp_colour;
+          
+          var y_pos2= (canvas.height*3/100)-5+temp_colour+15;
+          //e.y>y_pos1
+          if(e.x>x_pos1 && e.x<x_pos2 &&  e.y>y_pos1 && e.y<y_pos2){
+          var tip_tool=canvas.width*80/100;
+           tipCanvas.style.left = (mouseX) + "px";
+          tipCanvas.style.top = (mouseY) +offsetTop+ "px";
+          tipCtx.clearRect(0, 0, tipCanvas.width, tipCanvas.height);
+          tipCtx.fillStyle = 'Green';
+          tipCtx.fill();
+          tipCtx.fillText(prop, 5, 15);
+         hit = true;
+          }
+      temp_colour+=30;
+      }
+  }
+  else
+  {
+      for (var prop in chages) {
+    for (var d in chages[prop]) {
+       for (var k in chages[prop][d]) {
+         // console.log(chages[prop][d][k][m]);
+                  y =computeHeight_fee_collection(chages[prop][d][k],graph_hight,yScale);
+         //console.log("jayanth");
+         //console.log(y);
+                  var x_pos1=position+rowSize*1.115+xScale-margin*2;
+                  var x_pos2=x_pos1+30;
+                  var y_pos1=graph_hight-margin+7;
+                   var y_pos2=y - margin;
+                  if(e.x>x_pos1 && e.x<x_pos2+10 && e.y<y_pos1 && e.y>y_pos2+7){
+                  tipCanvas.style.left = (mouseX)+50 + "px";
+                  tipCanvas.style.top = (mouseY) +offsetTop+ "px";
+                  tipCtx.clearRect(0, 0, tipCanvas.width, tipCanvas.height);
+                      tipCtx.fillStyle = 'Green';
+                tipCtx.fill();
+      //           ------------------------------------------------------------------------------------------
+      // var canvas = document.getElementById('myCanvas');
+      // var context = canvas.getContext('2d');
+      // var maxWidth = 400;
+      // var lineHeight = 25;
+      // var x = (canvas.width - maxWidth) / 2;
+      // var y = 60;
+      // var text = 'All the world \'s a stage, and all the men and women merely players. They have their exits and their entrances; And one man in his time plays many parts.';
+
+      // context.font = '16pt Calibri';
+      // context.fillStyle = '#333';
+
+      // wrapText(context, text, x, y, maxWidth, lineHeight);
+      //           ------------------------------------------------------------------------------------------
+                        //tipCtx.fillText(first, 5, 15);
+var maxWidth = 50;
+      var lineHeight = 15;   
+                     // tipCtx.fillText('Name :'+prop, 5, 15);
+          tipCtx.fillText(k+' : '+chages[prop][d][k], 7, 30);
+          wrapText(tipCtx,'Name :'+prop, 7, 4, maxWidth, lineHeight);
+                      
+                      
+                    //tipCtx.fillText('Subject'+' : '+m+'('+d+')', 5, 45);
+                        //tipCtx.fillText("x-Pos :"+e.x, 5, 90);
+                       // tipCtx.fillText("y-Pos :"+e.y, 5, 105);
+                    //tipCtx.fillText("y :"+y, 5, 60);
+                      // alert(e.x);
+                    //position=position+.55;
+                        hit = true;
+                  }
+          position=position+30;
+                 }
+                //position=position+110;
+         //position=position+55; 
+      //position=position+55;
+      }
+    position=position+65;
+  }
+  }
+  
+    if (!hit) {
+        tipCanvas.style.top = "-1000px";
+    }
+}
+
+
+
+function wrapText(context, text, x, y, maxWidth, lineHeight) {
+    
+     // var words = text.split('');
+     	var letter = text.length;
+     
+    
+        var line = '';
+     // alert(text.length);
+     	
+
+        for(var n = 0; n < letter; n++) {
+          //alert(n+"          ");
+          //alert(text.charAt(n));
+          // var res = str.charAt(0);
+          var testLine = line + text.charAt(n) + '';
+          // alert(testline);
+          
+          var metrics = context.measureText(testLine);
+          var testWidth = metrics.width;
+          //  alert(n);
+          if ( n%21==0) {
+            // alert(x +"             "+y)
+            context.fillText(line, x, y);
+            line = text.charAt(n) + '';
+            y += lineHeight;
+          }
+          else {
+            line = testLine;
+          }
+        }
+        context.fillText(line, x, y);
+      }
+  // context.stroke();
+  // context.stroke();
+  
+  var count_zero =  0;
+  for (scale=Val_Max;scale>=0;scale = scale - 1) {
+    y = columnSize + (yScale * count_zero * 1); 
+      if(scale==0){
+      context.beginPath();
+      context.moveTo(xScale-20,20);
+      context.lineTo(xScale-20,graph_hight);
+        context.stroke();
+      context.beginPath();
+        var x_position,y_positon;
+        x_position=graph_hight*20/100;
+        
+           y_positon=graph_hight*90/100;
+        y_positon=canvas.height*100/100;
+         context.moveTo(rowSize,y)
+         //x axis line can be increased by increasing below graph_width size.
+         context.lineTo(graph_width+80,y)
+         context.fillText(Math.round(scale), margin,y + margin-30);
+      	 context.stroke();
+        // }
+      }
+        
+    count_zero++;
+  }
+  context.stroke();
+  
+  
+  
+    // print names of each data entry
+  context.font = "20 pt Calibri";
+    context.textBaseline="bottom";
+  //for (i=0;i<chages.length;i++) {
+  var textwidth=112;
+  var textheight=-40;
+  var temp=-1;
+  var position=0;
+      for (var prop in chages) {
+        console.log("Step1");
+        console.log (chages[prop]);
+        console.log("Step2");
+
+         for (var d in chages[prop]) {
+          console.log("Step3");
+        console.log (chages[prop][d]);
+        console.log("Step4");
+           var count1=0
+            for (var k in chages[prop][d]) {
+               	context.beginPath();
+                 console.log("Step5");
+                 console.log (chages[prop][d][k]);
+                 console.log("Step6");
+                context.fillStyle = 'blue';
+
+               	y =computeHeight_fee_collection(chages[prop][d][k],graph_hight,yScale);
+                console.log(y);
+              	//context.fillText(k+':'+chages[prop][d][k], xScale * (position+1),y - margin);//hover text
+                
+                context.stroke();
+              temp=temp+.42; 
+              position=position+.42; 
+            }
+           temp=temp+.42;
+           position=position+.42; 
+         }
+         context.rotate(0.2);
+        context.fillText(prop, xScale*temp+textwidth,graph_hight+textheight);//down text
+         context.rotate(-0.2);
+
+        temp=temp+.42;
+        position=position+.42; 
+
+          textheight=textheight-35;
+          textwidth=textwidth-52;
+
+
+  }
+
+
+  	var position_text=0;
+    var temp_colour=0;
+      for (var prop in colour_with_data) {
+        context.beginPath();
+        context.fillStyle=colour_with_data[prop];
+        context.font = '10pt Calibri';
+        var tip_tool=canvas.width*80/100;
+        context.fillText(prop, tip_tool,(canvas.height*temp_colour*3/100)+25);//legend  
+      	context.rect(tip_tool-20,(canvas.height*temp_colour*3/100)+10, 15, 15);
+      	context.fillStyle = colour_with_data[prop];
+       	context.fill();
+        context.stroke();
+        temp_colour+=2;
+        position_text++;
+  }
+
+    // translate to bottom of graph  inorder to match the data 
+  context.translate(0,graph_hight - margin);
+  context.scale(xScale,-1 * yScale);
+ 
+    // draw each graph bars 
+  
+   var position=0;
+  //var count=0;
+ for (var prop in chages) {
+        for (var d in chages[prop]) {
+           var count1=0
+            for (var k in chages[prop][d]) {
+            context.fillStyle=colour_with_data[k];
+        	context.fillRect(position+1, 0, 0.32, chages[prop][d][k]);
+            position=position+.32;
+              //  count1++;
+            }
+            position=position+.32;
+      }
+   		position=position+.32;
+   // count++;
+   }
+}
+function computeHeight_fee_collection(value,height,yScale) {
+  y = height - value * yScale ; 
+    return y;
+}
+
+
+</script>
+

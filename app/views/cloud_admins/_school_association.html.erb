@@ -1,0 +1,24 @@
+<%#=@super_principal.inspect%>
+
+
+<h4 class="mg-h4"><%=t("school_association")%></h4>
+<table class="batch-tbl mg-tbl-margin">
+	<tr>
+		<th><%=t('name')%></th>
+		<th><%=t('default_school')%></th>
+
+		<th><%=t('actions')%></th>
+	</tr>
+	<%@super_principal.each do |user|%>
+	<tr>
+		<td><%=user.first_name%> <%=user.last_name%></td>
+		<% if user.mg_school.present? %>
+			<td><%=user.mg_school.school_name%></td>
+		<% else %>
+			<td>--</td>
+		<% end %>
+
+		<td class="mg-align-center"><%= link_to "<i class=\"fa fa-share\"></i>".html_safe, {controller: "cloud_admins", action: "school_principal_association" ,id:user.id } ,:title=>"Assign School" ,:class=>"mg-icon-btn" %></td>
+	</tr>
+	<%end%>
+</table>

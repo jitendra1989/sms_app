@@ -1,0 +1,190 @@
+
+<% navigation_add t('albums'), albums_path %>
+<%= render  partial: '/events/events_left' %>
+<p class="mg-p-mgtop">
+ <%= link_to t('create_new_album'), new_album_path, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+</p>
+<h4 class="mg-h4"><%= t('albums_list')%></h4>
+<%if @albums.present?%>
+<div class="mg_pagination">
+<table class="batch-tbl mg-tbl-margin">   <!-- border="2" --> 
+ <tr >
+    <th><%=t('name')%></th>
+    <th> <%=t('event')%></th>
+    <th><%=t('description')%></th>
+    <th><%=t('actions')%></th>
+  </tr>
+  <% @albums.each do |e| %>
+    <tr>
+      <td><%= e.name %></td>
+      <td>
+      <%event=MgEvent.find_by(:id=>e.mg_event_id)%>
+      <%= event.present? ? event.title : ""%>
+      </td>
+      <td><%=truncate(e.description.to_s, :length => 25, :separator => ' ') %></td>
+      <td>
+        <button title="Show" id="<%=raw e.id %>-showAlbumsBTNID" class="show-albums-btn mg-icon-btn"><i class="fa fa-eye"></i></button>
+        <button title="Edit" id="<%=raw e.id %>-editAlbumsBTNID" class="edit-albums-btn mg-icon-btn"><i class="fa fa-pencil-square-o"></i></button>
+        <button title="upload photos" id="<%=raw e.id %>-uploadPhotoAlbumsBTNID" class="upload-albums-btn mg-icon-btn"><i class="fa fa-upload"></i></button>
+        <button title="Delete" id="<%=raw e.id %>-deleteAlbumsBTNID" class="delete-albums-btn mg-icon-btn"><i class="fa fa-trash"></i></button>
+       
+
+         <%#=button_to "abc" upload_photos_path(e)%>
+      </td>
+    </tr>
+  <% end %>
+</table>
+ <%= will_paginate @albums, :container => false %>
+  </div>
+
+<%else%>
+<h5><%=t('please_create_some_album...')%> </h5>
+<%end%>
+
+
+<div id="editAlbumsDIVID"></div>
+<div id="showAlbumsDIVID"></div>
+<div id="deleteAlbumsDIVID"></div>
+<div id="newAlbumsDIVID"></div>
+
+
+
+
+
+
+<%= render partial: 'application/common_left_close' %>
+
+<script>
+
+
+
+$(document).ready(function () {
+
+ focusCurrentTab("viewAlbumsPhotosAID","viewAlbumstosLiID");
+    //  focusDashboards();
+ 
+// $("#albumsFormID").validate({
+
+// rules: {
+// "event_types[name]": {required: true},
+// "event_types[event_color]": {required: true}
+// }
+// });
+
+    // var 
+});
+
+
+$(document).on("click", ".new-event-type-btn1", function(e){
+        // var myID =$(this).attr('id');
+        // var Id=myID.split("-");
+
+        var urlLink = "/event_types/new";
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(html){
+                  $('#newAlbumsDIVID').dialog({
+                    modal: true,
+                    minHeight: 'auto',
+                    title: "Edit Albums",
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+});
+
+
+$(document).on("click", ".upload-albums-btn", function(e){
+        var myID =$(this).attr('id');
+        var Id=myID.split("-");
+        window.location="/albums/upload_photos/"+Id[0];
+        
+});
+
+
+$(document).on("click", ".edit-albums-btn", function(e){
+        var myID =$(this).attr('id');
+        var Id=myID.split("-");
+
+
+        var urlLink = "/albums/"+Id[0]+"/edit/";
+        window.location=urlLink;
+        
+        // $.ajax({
+        //     url: urlLink ,
+        //     cache: false,
+        //     success: function(html){
+        //           $('#editAlbumsDIVID').dialog({
+        //             modal: true,
+        //              height: 500,
+        //             width: '600',
+        //             title: "Edit Albums",
+        //             open: function () {
+                        
+        //                 $(this).html(html);
+        //             }
+        //         }); 
+               
+        //     }
+        // });
+});
+
+$(document).on("click", ".show-albums-btn", function(e){
+        var myID =$(this).attr('id');
+        var Id=myID.split("-");
+
+
+
+        var urlLink = "/albums/"+Id[0];
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(html){
+                  $('#showAlbumsDIVID').dialog({
+                    modal: true,
+                    height: 500,
+                    width: '600',
+                    title: "Show Album Details",
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+});
+
+
+$(document).on("click", ".delete-albums-btn", function(e){
+     
+                var myID =$(this).attr('id');
+                    var Id=myID.split("-");
+
+
+                
+                var retVal = confirm("Are you sure to delete?");
+                if(retVal){
+                  //  alert(retVal);
+                     var urlLink = "/albums/delete/"+Id[0];
+
+                      $.ajax({
+                        url: urlLink ,
+                        cache: false,
+                        success: function(html){
+                           window.location.reload();
+                                       
+                        }
+                    });
+
+                }else{   
+                   return false;
+                }
+
+        }); 
+</script>

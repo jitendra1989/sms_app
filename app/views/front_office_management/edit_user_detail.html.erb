@@ -1,0 +1,47 @@
+<%= form_for :front_office_pass, url: update_user_detail_path, :html => {
+                            :id => 'frontOfficeChangePasswordForm' } do |f| %>
+   <%= f.hidden_field :user_id, :value => @user_id.id %>
+   <%#= hidden_field_tag "change_store_password", params[:change_store_password] %>
+ <p>
+    <%= f.label :New_Password ,:class=> "mg-label"%><span class="required-field">&nbsp;*</span><br>
+   <%= f.password_field :password,:class=>"mg-text-field",:id=>"newEmployeePassword" %>
+ </p>
+ <div id="employeefeedbackdivId" style="color:#ff0000"></div>
+ <p>
+    <%= f.label :Retype_Password ,:class=> "mg-label"%><span class="required-field">&nbsp;*</span><br>
+   <%= f.password_field :hashed_password ,:class=>"mg-text-field",:id=>"reEmployeePassword" %>
+ </p>
+ 
+<p class="mg-p-mgtop">
+       <a onclick="$(this).closest('form').submit()" id="submitbutton" class="submit mg-change-password-form-btn mg-small-form-btn"><%=t("save")%></a>
+     
+      <a class="mg-small-form-btn cancel-form-dialog"><%=t("cancel")%></a>
+        
+    
+</p>
+<% end %>
+
+
+
+<script>
+  $(document).ready(function(){
+    $("#reEmployeePassword").focusout(function(){
+      var temp=$("#newEmployeePassword").val();
+      var tempo=$(this).val();
+      if(temp==tempo){
+        $("#employeefeedbackdivId").text("");
+      }else{
+        $("#employeefeedbackdivId").text("Password doesn't matches..");
+        $("#reEmployeePassword").val('');
+      }
+    });
+
+    $("#frontOfficeChangePasswordForm").validate({
+      rules: {
+        "front_office_pass[password]": {required: true},
+        "front_office_pass[hashed_password]": {required: true}
+      }
+    });
+  });
+</script>
+

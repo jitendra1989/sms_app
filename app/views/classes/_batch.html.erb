@@ -1,0 +1,20 @@
+<!-- Sec 2-->
+      <h4><%= t('initial_batch') %></h4>
+      
+          <%= fields_for :batches do |batch_form| %>
+            <label class="mg-label" for="name"><%= t('name') %></label>
+                <div class="input-container">
+                    <%= batch_form.text_field :name %>
+                </div>
+
+            <label class="mg-label" for="Start date"><%= t('Start date') %></label>
+                <div class="input-container">
+                    <%= batch_form.text_field :Start_date ,:class => 'Start_date' %>
+                </div> 
+
+             <label class="mg-label" for="End date"><%= t('End date') %></label>
+                <div class="input-container">
+                    <%= batch_form.text_field :End_date ,:id => 'End_date' %>
+                </div>      
+            </div>
+          <% end %>

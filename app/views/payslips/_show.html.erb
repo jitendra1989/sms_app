@@ -1,0 +1,202 @@
+<table class="mg-show-tbl-width batch-tbl" cellpadding="0" cellspacing="0">
+		<tbody>
+			<tr>
+				<th colspan="3" class="mg-fee-report-gen"><%=@school.school_name%></th>
+			</tr>
+			<tr>
+				<td colspan="3" class="mg-fee-report-gen"> <%=t('salary_slip_for')%> : <%=@date.strftime("%B")%> / <%=@date.year%> (<%=t('month')%>/<%=t('year')%>)
+				</td>
+			</tr>
+
+		</tbody>
+		 <tbody>
+			<tr class="mg-tbl-tr">
+				<td colspan="3"></td>
+			</tr>
+		</tbody> 
+		<tbody>
+			<tr class="mg-tbl-tr">
+				<td colspan="2">
+					<label class="mg-label"><%=t('name')%> : </label>
+					<label class="mg-label-inner-form"><%=@employee.employee_name%></label>
+				</td>
+				<td>
+					<label class="mg-label"><%=t('designation')%> : </label>
+					<label class="mg-label-inner-form"><%=@employee.mg_employee_position.position_name%></label>
+				</td>
+			</tr>
+			<tr class="mg-tbl-tr">
+				<td colspan="2">
+					<label class="mg-label"><%=t('doj')%> : </label>
+					<label class="mg-label-inner-form"><%if @employee.joining_date.present? %><%=@employee.joining_date.strftime(@school.date_format)%><%end%></label>
+				</td>
+				<td>
+					<label class="mg-label mg-rm-text-trans"><%=t('type_of_employee')%> : </label>
+					<label class="mg-label-inner-form"><%=@employee.mg_employee_type.employee_type%></label>
+				</td>
+			</tr>
+			<tr class="mg-tbl-tr">
+				<td colspan="2">
+					<label class="mg-label mg-rm-text-trans"><%=t('no_of_payable_days_(in_the_month)')%> : </label>
+					<label class="mg-label-inner-form"><%=@payslip_components.no_of_payable_days_in_the_month.to_f.round(2)%></label>
+				</td>
+				<td>
+					<label class="mg-label mg-rm-text-trans"><%=t('no_of_unpaid_leaves_(in_the_month)')%> : </label>
+					<label class="mg-label-inner-form"><%=@payslip_components.extra_leave_taken.to_f.round(2)%></label>
+				</td>
+			</tr>
+			<tr class="mg-tbl-tr">
+				<td colspan="2">
+					<label class="mg-label mg-rm-text-trans"><%=t('leaves_taken_(till_date_in_the_year)')%> : </label>
+					<label class="mg-label-inner-form"><%=@payslip_components.leaves_taken_till_date_in_the_year.to_f.round(2)%></label>
+				</td>
+				<td>
+					<label class="mg-label"><%=t('leave_balance')%> : </label>
+					<label class="mg-label-inner-form"><%=@payslip_components.leave_balance.to_f.round(2)%><%#=@payslip_components.total_leave.to_f.round(2)%></label>
+				</td>
+			</tr>
+
+			<tr class="mg-tbl-tr">
+				<td colspan="2">
+					<label class="mg-label mg-rm-text-trans"><%=t('over_time')%> : </label>
+					<label class="mg-label-inner-form"><%=@payslip_components.over_time.to_f.round(2)%> hours</label>
+				</td>
+				<td>
+					
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<%=render partial: 'leave_details'%>
+
+
+
+	<table  class="mg-show-tbl-width batch-tbl" cellpadding="0" cellspacing="0">
+		<tr class="mg-tbl-tr">
+				<th colspan="4"><%=t('salary_details')%></th>
+		</tr>
+		<tbody>
+			<tr class="mg-tbl-tr">
+				<th width="8%"><%=t('sl_no')%></th>
+				<th><%=t('deduction')%></th>
+				<th><%=t('Amount')%></th>
+				<!-- <th><%#=t('edit_enable')%></th> -->
+				<%if session[:user_type] !="employee"%>
+
+				<th><%=t('comment')%></th>
+				<%end%>
+			</tr>
+
+
+			<%@earnings_total=0%>
+			<%sl_count=0%>
+			<%#@component_object=@payslip_components.mg_employee_payslip_components.where(:is_deleted=>0, :mg_school_id=>@school.id)%>
+
+			<%@component_object.each do |component|%>
+				<%unless component.mg_salary_component.is_deduction%>
+					<tr class="mg-tbl-tr">
+						<td width="8%"><%=sl_count+=1%></td>
+						<td class="mg-fee-report-gen">
+							<label class="mg-label-inner-form"><%=component.mg_salary_component.name %></label>
+						</td>
+						<td>
+							<label class="mg-label-inner-form"><%=component.amount.to_f.round(2)%>  </label>
+						</td>
+						<%if session[:user_type] !="employee"%>
+						<td><%=component.try(:reason)%></td>
+						<%end%>
+					</tr>
+				<%end%>
+
+			<%end%>
+      
+
+	<!-- mg_salary_component_id -->
+
+
+			<!-- @earnings_total=<%#=@earnings_total%> -->
+			
+			<tr class="mg-tbl-tr" style="background: #e6e6e6;">
+				<td width="8%"><%#=t('sl_no')%></td>
+				<td><%=t('total_gross_salary')%></td>
+				<td><%=@payslip_components.total_Gross_salary.to_f%>
+			</tr>
+			<tr class="mg-tbl-tr">
+				<th width="8%"><%#=t('sl_no')%></th>
+				<th><%=t('deduction')%></th>
+				<th><%=t('Amount')%></th>
+				<!-- <th><%#=t('edit_enable')%></th> -->
+				<!-- <th><%#=t('edit_enable')%></th> -->
+				<%if session[:user_type] !="employee"%>
+				<th><%=t('comment')%></th>
+				<%end%>
+			</tr>
+
+			<%@component_object.each do |component|%>
+				<%if component.mg_salary_component.is_deduction%>
+					<tr class="mg-tbl-tr">
+						<td width="8%"><%=sl_count+=1%></td>
+						<td class="mg-fee-report-gen">
+							<label class="mg-label-inner-form"><%=component.mg_salary_component.name %></label>
+						</td>
+
+						<td>
+							<label class="mg-label-inner-form"><%=component.amount.to_f.round(2)%>   </label>
+						</td>
+						<%if session[:user_type] !="employee"%>
+						<td><%=component.try(:reason)%></td>
+						<%end%>
+					</tr>
+				<%end%>
+
+			<%end%>
+
+			<%#=============================================================%>
+			
+			<%if @sport_components_obj.present?%>
+      	<%@sport_components_obj.each do |sport_amount|%>
+      		<%#total_extra_deduction +=sport_amount.try(:amount).to_f%>
+      		<%deduction_name = MgSportsPayDeduction.find_by(:id=>sport_amount.mg_sports_pay_deduction_id,:is_deleted=>0,:mg_school_id=>session[:current_user_school_id])%>
+					<tr class="mg-tbl-tr">
+						<td width="8%"><%=sl_count+=1%></td>
+						<td class="mg-fee-report-gen">
+							<label class="mg-label-inner-form"><%=deduction_name.name %></label>
+						</td>
+						<td>
+							<label class="mg-label-inner-form"><%=sport_amount.amount.to_f.round(2)%>  </label>
+						</td>
+					</tr>
+				<%end%>
+
+			<%end%>
+			<%#=============================================================%>
+
+			<tr class="mg-tbl-tr">
+				<td colspan="5"></td>
+			</tr>
+			<tr class="mg-tbl-tr" style="background: #e6e6e6;">
+				<td width="8%"><%#=t('sl_no')%></td>
+				<td><%=t('total_net_amount')%></td>
+				<td><%=@payslip_components.total_net_amount.to_f.round(2)%></td>
+			</tr>
+			<tr class="mg-tbl-tr">
+				<td colspan="4"></td>
+			</tr>
+
+			<%if @user.user_type=="principal"%>
+			<tr class="mg-tbl-tr"  style="background: #999999;">
+				<td  class="mg-font-bold mg-align-center"><%=t('status')%></td>
+				<td ><%=@payslip_components.is_approved%></td>
+				<td><%=t('reason')%></td>
+				<td>
+					<%if @payslip_components.is_approved=="Reject"%>
+						<%=@payslip_components.try(:reason)%>
+					<%end%>
+				</td>
+
+			</tr>
+			<%end%>
+			
+		</tbody>
+	</table>

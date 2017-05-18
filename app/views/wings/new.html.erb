@@ -1,0 +1,63 @@
+<% navigation_add 'Wings', :controller => 'wings', :action => 'index' %>
+<% navigation_add 'New', :controller => 'wings', :action => 'new' %>
+
+
+<!-- Sec --> 
+
+<%= render  partial: 'master_settings/master_settings_left' %>
+<h4 class="mg-h4"><%= t('wings') %></h4>
+<div>
+  <%= form_for :wings, url: wings_path, :html => {
+                              :id => 'wingStudentID' } do |f| %>
+
+  <%= f.hidden_field :is_deleted, :value => 0 %>
+  <%= f.hidden_field :mg_school_id, :value => session[:current_user_school_id] %>
+  <%= f.hidden_field :created_by, :value => session[:user_id] %>
+  <%= f.hidden_field :updated_by, :value => session[:user_id] %>
+
+
+      <p>
+       <%= f.label :Wing_Name,:class=>"mg-label"%><span class="required-field"> *</span><br>
+      <%= f.text_field :wing_name ,:class=>"mg-text-field"%>
+      </p>
+         <!-- <p>
+      <#%= f.label :Department_Code ,:class=>"mg-label"%><span class="required-field"> *</span><br>
+      <#%= f.text_field :department_code ,:class=>"mg-text-field"%>
+    </p>-->
+      <!-- <p>
+     
+        <#%= f.label :Status ,:class=>"mg-label"%>       <br />
+        <#%= f.label :status, t("active"), :value => "true" ,:class=>"mg-label-inner-form"  %>
+        <#%= f.radio_button :status, false , :checked => true%>
+        <#%= f.label :status, t("inactive"), :value => "false" ,:class=>"mg-label-inner-form" %>
+        <#%= f.radio_button :status, true %> <br />
+      </p>  -->
+
+
+
+    <p class="mg-p-mgtop">
+      <%#= f.submit "Submit" ,:id => "WingFormID" ,:class=>"mg-small-form-btn"%>
+      <a onclick="$(this).closest('form').submit()" id="WingFormID" class="mg-small-form-btn"><%=t("save")%></a>
+       <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+    </p>
+    
+  <% end %>
+<!-- <button class="cancel-form-dialog"><#%= t('cancel') %></button> -->
+</div>
+
+<%= render partial: 'schools/school_left_close' %>
+
+<script>
+  $(document).ready(function(){
+    focusCurrentTab("wingListAID","schoolWingLiID");
+        focusMasterSettings();
+    $("#wingStudentID").validate({
+                      rules: {
+                "wings[wing_name]": {required: true}
+                
+                }
+    });
+  });
+
+
+</script>

@@ -1,0 +1,224 @@
+<% navigation_add 'Transport', transports_path %>
+<% navigation_add  'New', transports_new_path %>
+
+
+   <%if flash[:error].present?%>
+  <div class="alert alert-info mg-success-msg">
+
+        <%=flash[:error]%>
+  <div class="alert alert-info mg-success-msg">
+        
+   <%end%>
+<h4 class="mg-h4"><%= t('route_details')%></h4>
+<div class="box">
+<%= form_for :vehicle_route ,  url:transports_path, :html=>{:id=>'route_form'} do |f| %>
+
+        <%= f.hidden_field :is_deleted ,:value=>0%>
+        <%= f.hidden_field :mg_school_id ,:value=>@school_id%>
+        <%#= f.text_field :vehicle_number ,:class=>"mg-text-field"%>
+        
+<table class="mg-tbl-margin mg-show-tbl-width">
+    <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="routeName"><%= t ('route_name') %><span class="required-field">&nbsp;*</span></label><br/>
+        <%= f.text_field :route_name ,:class=>"mg-text-field"%>
+      </td>
+    </tr>
+    <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label"  for="description"><%= t ('description') %></label><br/>
+        <%= f.text_area :description ,:class=>"mg-text-field"%>
+      </td>
+    </tr>
+    <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label"  for="vehicleNumber"><%= t ('initial_vehicle') %><span class="required-field">&nbsp;*</span></label><br/>
+         <%=f.select :mg_vehicle_id ,options_for_select(@add_report_index),:prompt=>"Select"%><br>
+      </td>
+    </tr>
+    
+    <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label"  for="noofSeats"><%= t ('employee_category') %><span class="required-field">&nbsp;*</span></label><br/>
+       <%= f.collection_select(:mg_employee_category_id,MgEmployeeCategory.all, :id, :category_name,{:include_blank => t("select")},:onchange => "employeeCategorySelect()",:id => "employeeCategorySelectID")%>
+
+      </td>
+    </tr>
+    <tr>
+      
+      <td class="mg-td-width-one-third">
+        <label class="mg-label"  for="currentInsuranceDueDate"><%= t ('employee_profile') %><span class="required-field">&nbsp;*</span></label><br/>
+       <select id="employee_mg_employee_position_id" name="employee[mg_employee_position_id]" onchange="employeeSelect()">
+                     <option value="">Choose Category</option>
+                      
+                    </select> 
+      </td>
+    </tr>
+    <tr>
+      
+      <td class="mg-td-width-one-third">
+        <label class="mg-label"  for="currentInsuranceDueDate"><%= t ('select_driver') %><span class="required-field">&nbsp;*</span></label><br/>
+       <select id="employee_mg_employee_id" name="employee[mg_employee_id]">
+                     <option value="">Choose Employee</option>
+                  
+                    </select> 
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        <label class="mg-label" for="LastServiceDate"><%= t ('drop_start_time') %><span class="required-field">&nbsp;*</span></label><br/>
+     <%=time_select 'drop_start_time','game_time',{ampm: true} ,:class=>"mg-select-time-width"%><br>
+      </td>
+    </tr>
+    
+</table>
+  
+<p class="mg-p-mgtop">
+<%= submit_tag t("save"),:class=>"mg-small-form-btn",:id=>"transport_submit_button"%>
+  
+
+ <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+ </p>
+  </div>
+<%end%>
+ 
+<script>
+    $(document).ready(function(){
+
+         
+          focusCurrentTab("transport_route_managementAssociateAID","transport_route_managementAssociateLiID");
+          
+
+          
+    
+   
+    $("#route_form").validate({
+      rules:{
+        "vehicle_route[route_name]":{required:true},
+        "vehicle_route[mg_vehicle_id]":{required:true},
+        "employee[mg_employee_id]":{required:true},
+        "drop_start_time[game_time(4i)]":{required:true},
+        "drop_start_time[game_time(5i)]":{required:true},
+        "vehicle_route[mg_employee_category_id]":{required:true},
+        "employee[mg_employee_position_id]":{required:true}
+
+        
+      },
+     });
+     });
+
+    
+
+function employeeCategorySelect(){
+    var empCategoryID = $( "#employeeCategorySelectID" ).val();
+
+   
+    
+
+    if(empCategoryID > 0) {
+  
+
+           //       alert(empCategoryID); 
+   // 'employees/employee_position_list/:id' 
+
+         var urlLink = "/employees/employee_position_list/"+empCategoryID;
+         $.ajax({
+         //    data : {'mg_employee_category_id':empCategoryID}, 
+             url: urlLink,
+             cache: false,
+             success: function(data){
+               // console.log();
+                if(data.length > 0){
+                    var apdStr = '<option value="select">Select</option>';
+                   // employeePositionSelectID
+                   for(key in data){
+                      apdStr += '<option value="'+data[key].id+'">'+data[key].position_name+'</option>'
+                    }
+                  // console.log(apdStr);
+                    $("#employee_mg_employee_position_id").empty().append(apdStr);
+
+                }
+
+             }
+                
+         });
+
+  }else{
+    var apdStr = '<option value="">Choose Category</option>';
+    $("#employee_mg_employee_position_id").empty().append(apdStr);
+    // alert("Please select category");
+  }
+
+    //employeeCategorySelectID
+}
+
+//$("#transport_submit_button").click(function(){
+//     alert("sdfs");
+//  var start_time_hour=$("#drop_start_time_game_time_4i").val();
+//     var start_time_min=$("#drop_start_time_game_time_5i").val();
+//     var start_time=start_time_hour+":"+start_time_min+":00";
+
+//     var emp_id=$("#employee_mg_employee_id").val();
+    
+
+//  var urlLink = "/transports/validation_params_transport";
+//          $.ajax({
+//          //    data : {'mg_employee_category_id':empCategoryID}, 
+//              url: urlLink,
+//              cache: false,
+//              data: {"time":start_time,"emp_id":emp_id},
+//              success: function(data){
+//                 console.log(data);
+               
+//                if (data.name=="validates"){
+//                 alert("Assaign Different Timings For the Driver");
+//               }
+
+//               else{
+//                 alert("submitted");
+//                 //$("#transport_submit_button").click();
+              
+
+//               }
+
+//              }
+            
+
+                
+//          });
+    
+// });
+
+function employeeSelect(){
+    var empProfileID = $( "#employee_mg_employee_position_id" ).val();
+
+  console.log(empProfileID);
+ 
+  var urlLink = "/transports/employee_list/";
+         $.ajax({
+         //    data : {'mg_employee_category_id':empCategoryID}, 
+             url: urlLink,
+             cache: false,
+             data: {emp_profile_id: empProfileID},
+             success: function(data){
+                console.log(data);
+                if(data.length > 0){
+                    var apdStr = '<option value="select">Select</option>';
+                   // employeePositionSelectID
+                   for(key in data){
+                      apdStr += '<option value="'+data[key].id+'">'+data[key].first_name+'</option>'
+                    }
+                  // console.log(apdStr);
+                    $("#employee_mg_employee_id").empty().append(apdStr);
+
+                }
+
+             }
+                
+         });
+
+}
+
+</script>
+

@@ -1,0 +1,179 @@
+<% navigation_add 'Event List', admin_calender_path %>
+
+<%= render  partial: 'events_left' %>
+
+<%= form_for :eventsss, :controller=> 'admin_calender', :html => {
+                            :id => 'adminCalenderSortFormID' } do |f| %>
+
+<table class="mg-btn-bottom-margin ">
+  <tr>
+    <td valign="top">
+      <label class="mg-label"><%=t('select_committee') %></label>
+    </td>
+    <td valign="top">
+       <%=select_tag :mg_committee_id ,options_for_select(@event_committees, :selected=>params[:mg_committee_id]),:prompt=>t('All')  ,:class=>"mg-select-btn mg-text-field"%>
+    </td>
+    <td valign="top">
+      <label class="mg-label"><%=t('select_date')%></label>
+    </td>
+    <td style="width:90px;" valign="top">
+      <%=text_field_tag :date_for_sort, params[:date_for_sort].present? ? params[:date_for_sort] : '', :class=>'mg-text-field' %>
+    </td>
+    <td valign="top" style="top: 3px; position: relative;">
+      &nbsp;
+      <a onclick="clearFunction()" class="mg-small-form-btn"><i class="fa fa-refresh"></i></a>
+    </td>
+    <td valign="top" style="top: 3px; position: relative; left: 3px;">
+      <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn" id="searchEventAID"><%=t("save")%></a>
+    </td>
+  </tr>
+</table>
+
+  
+
+   
+                         
+
+   
+<%#=hidden_field_tag :date_month_approve_date, "#{@month}-#{@year}"%>
+
+
+
+
+
+<%end%>
+
+
+
+<h4 class="mg-h4"><%=t('event_list')%></h4>
+<%school=MgSchool.find(session[:current_user_school_id])%>
+<%if @events.present?%>
+<div class="mg_pagination">
+<div class="mg-scroll-employee-bar">
+<table class="batch-tbl mg-tbl-layout">   <!-- border="2" --> 
+ <tr >
+    <th><%=t('title')%></th>
+    <th><%=t('eventtype')%></th>
+    <!-- <th><%#=t('eventprivacy')%></th> -->
+    <th><%=t('eventdescription')%></th>
+    <th><%=t('startdate')%></th>
+    <th><%=t('starttime')%></th>
+    <th><%=t('enddate')%></th>
+    <th><%=t('endtime')%></th>
+    <th><%=t('actions')%></th>
+  </tr>
+  <% @events.each do |e| %>
+    <tr> 
+      <td><%= e.title %></td>
+      <% @name=MgEventType.where(:id=>e.mg_event_type_id, :is_deleted=>0)%>
+      <td><%= @name[0].present? ? @name[0].name : " " %></td>
+      <!-- <td><%#= e.event_privacy %></td> -->
+      <td><%=truncate(e.event_description.to_s, :length => 25, :separator => ' ')  %></td>
+      <td> 
+
+        <%if  e.event_date.present?%>
+            <%= e.event_date.strftime(school.date_format) %>
+        <%end%>
+      </td>
+      <td><%= e.start_time.strftime('%I:%M%p') %></td>
+      <td>
+        <%if  e.end_date.present?%>
+          <%= e.end_date.strftime(school.date_format) %>
+        <%end%>
+      </td>
+      <td><%= e.end_time.strftime('%I:%M%p') %></td>
+
+      <!-- <td>
+      <button title="Show" id="<%=raw e.id %>-showEventBTNID" class="show-event-btn mg-icon-btn"><i class="fa fa-eye"></i></button>
+      <button title="Edit" id="<%=raw e.id %>-editEventBTNID" class="edit-event-btn mg-icon-btn"><i class="fa fa-pencil-square-o"></i></button>
+      <button title="Delete" id="<%=raw e.id %>-deleteEventBTNID" class="delete-event-btn mg-icon-btn"><i class="fa fa-trash"></i></button></td> -->
+
+      <td>
+        <button title="Show" id="<%=raw e.id %>-showEventBTNID" class="show-event-btn mg-icon-btn"><i class="fa fa-eye"></i></button>
+        <button title="Edit" id="<%=raw e.id %>-editUpdateEventBTNID" class="edit-event-update-btn mg-icon-btn"><i class="fa fa-pencil-square-o"></i></button>
+        <button title="Delete" id="<%=raw e.id %>-deleteEventBTNID" class="delete-event-btn mg-icon-btn"><i class="fa fa-trash"></i></button>
+      </td>
+
+    </tr>
+  <% end %>
+</table>
+</div>
+ <%= will_paginate @employees, :container => false %>
+  </div>
+<%else%>
+
+<h5>Please create some events... </h5>
+<%end%>
+<div id="editEventDIVID"></div>
+<div id="showEventDIVID"></div>
+<div id="deleteEventDIVID"></div>
+<div id="newEventDIVID"></div>
+<%= render  partial: 'events_close' %>
+<script>
+
+function clearFunction(){
+  $("#date_for_sort").val('');
+  // $("#mg_committee_id").val('');
+  $("#searchEventAID").click();
+}
+
+      $(document).ready(function () {
+       
+        $("li").removeClass( "active" );
+        $("a").removeClass( "activeMenu" );
+
+        $("#viewAdminEventListLiID").addClass( "active" );
+        $("#viewAdminEvent").addClass( "activeMenu" );
+
+        $(function () {
+            $.validator.addMethod('dateFormat',
+            function (value, element) {
+              dateFormatStr =  getJsDateFormat();
+                if (this.optional(element)) {
+                    return true;
+                }
+                var ok = true;
+                try {
+                    $.datepicker.parseDate(dateFormatStr, value);
+                }
+                catch (err) {
+                    ok = false;
+                }
+                return ok;
+            },
+              "Please enter a date in the format "+ getDateFormat(dateFormatStr) +".");
+              dateFormatStr =  getJsDateFormat();
+
+            $(".datefield").datepicker({ dateFormat: dateFormatStr, changeYear: true });
+        });
+
+
+
+
+
+        $("#adminCalenderSortFormID").validate({
+        rules: {  
+            "date_for_sort": {dateFormat: true}
+          }
+        });
+
+        focusEvent();
+          var dateFormatStr =  getJsDateFormat();
+          $("#date_for_sort").datepicker({ changeMonth: true,changeYear: true,yearRange: "-100:+0", dateFormat: dateFormatStr});
+
+      });
+
+
+        
+
+
+$(document).on("change", "#date_for_sort", function(e){
+  $("#adminCalenderIndexSubmitFormID").click();
+});
+
+
+
+
+
+
+</script> 

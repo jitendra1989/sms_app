@@ -1,0 +1,32 @@
+ <h4 class="mg-h4">Employee Attendance For Current Month</h4>
+                          
+    <%department_name_data='a'
+      present_number_data='1'
+      absent_number_data='1'
+
+    @departmentList=MgEmployeeDepartment.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id])
+
+     @chart_dataHash=Hash.new
+     @current_month=Date.today.strftime("%m")
+     @current_Year=Date.today.strftime("%Y")
+     @days = Time.days_in_month(@current_month.to_i,@current_Year.to_i)
+      
+      @departmentList.each do |department|
+      @absent_student_count=MgEmployeeAttendance.where(:mg_employee_department_id=>department.id,:is_approved=>1,:mg_school_id=>session[:current_user_school_id],:is_deleted=>0).where('extract(MONTH from absent_date )=MONTH(now())').count
+      @present_day_count=@days-@absent_student_count
+          array=Array.new
+         array.push("Present",department.department_name)
+         department_name_data +=",#{department.department_name}"
+           @chart_dataHash[array]=@present_day_count
+          present_number_data +=",#{@present_day_count}"
+          array=Array.new
+          array.push("Absent",department.department_name)
+          @chart_dataHash[array]=-@absent_student_count
+          absent_number_data +=",#{@absent_student_count}"
+         
+      end
+    %>
+    <%= column_chart(@chart_dataHash)%>
+  
+                        
+

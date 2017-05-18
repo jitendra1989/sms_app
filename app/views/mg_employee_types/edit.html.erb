@@ -1,0 +1,39 @@
+
+<%= form_for :employee_types, :url=>{:controller=>'mg_employee_types',:action=>'type_update',:id=>@employee_types.id},:html => {
+                                :id => 'employeeTypess', :class => 'elm_class',
+                                :style => 'elm_style' } do |f| %>
+        <p>                        
+
+         <label class="mg-label" for="exam_name"> <%="Employee Type" %></label><br/>
+            <%= f.text_field :employee_type ,:class=>"mg-text-field"%>
+            </p>
+<div id="isdelete" class="is_deleted" style="display: none;">
+            <p>
+        <label for="is_deleted" class="mg-label "><%=t('status')%></label><br />
+        <label for="is_deleted" class="mg-label-inner-form "><%=t('active')%></label>
+        <%= f.radio_button :is_deleted, false , :checked => true%>
+        <label for="is_deleted" class="mg-label-inner-form "><%=t('inactive')%></label>
+        <%= f.radio_button :is_deleted, true %>
+      </p>
+       </div>
+<%= f.hidden_field :mg_school_id, :value => session[:current_user_school_id] %>
+
+
+<%= f.submit "submit",:class=>"mg-text-field"%>
+
+
+<%end%>
+<script>
+$(document).ready(function () {
+
+
+    $("#employeeTypess").validate({
+
+
+        rules: {
+        "employee_types[employee_type]": {required: true}
+    }
+});
+});
+
+</script>

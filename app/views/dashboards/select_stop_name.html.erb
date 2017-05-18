@@ -1,0 +1,4 @@
+
+<% @transport_data_arry=MgTransportTimeManagement.where(:mg_transport_id=>params[:id]).pluck(:bus_stop_name,:id)%>
+
+<%=select_tag :mg_route_ids ,options_for_select(@transport_data_arry),:prompt=>"Select"%><br>

@@ -1,0 +1,141 @@
+<% navigation_add t('results'), :controller=>'sports_management', :action=>'results' %>
+<%# navigation_add  t('show_schedule_details'), :controller=>'sports_management', :action=>'schedule_show',:id=>params[:id] %>
+
+<%= render  partial: 'sports_left' %>
+
+<h4 class="mg-h4"><%= t('show_results')%></h4>
+
+<table border="1" class="mg-showdata-bg " cellspacing="1" cellpadding="1">
+   
+<tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('event_committee')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+     <%event_committee=MgEventCommittee.find_by(:id=>@schedule.mg_event_committee_id)%>
+      <%= event_committee.committee_name %>
+     </td>
+   </tr>
+   <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('event')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+     <%event=MgEvent.find_by(:id=>@schedule.mg_event_id)%>
+      <%= event.title %>
+     </td>
+   </tr>
+   <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('event_date')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+  
+      <%= @schedule.date_of_event.strftime(@timeformat.date_format) %>
+     </td>
+   </tr>
+  <tr>
+
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('game_type')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+        <% if @schedule.game_type=="indoor" %>
+          <%= "Indoor" %>
+        <% elsif @schedule.game_type=="outdoor" %>
+          <%= "Outdoor" %>
+        <% end %>
+     </td>
+   </tr>
+
+   <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('game_name')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+        <% game_data=MgSportGame.find_by(:id=>@schedule.mg_sport_game_id,:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).name%>
+      
+        <%= game_data  %>
+     </td>
+   </tr>
+
+
+   <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('team_1')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+        <% team_data=MgSportTeam.find_by(:id=>@schedule.mg_sport_team_id1,:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).team_name%>
+       <%= team_data  %>
+     </td>
+   </tr>
+
+
+   <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('team_2')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+        <% if @schedule.game_type=="indoor" %>
+          <% team_data2=MgSportTeam.find_by(:id=>@schedule.try(:mg_sport_team_id2),:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).try(:team_name)%>
+          <%= team_data2 %>
+        <% elsif @schedule.game_type=="outdoor" %>
+          <%= @schedule.guest_team %>
+      <% end %>
+     </td>
+   </tr>
+
+
+
+
+   <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('venue')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+        <%= @schedule.venue%>
+     </td>
+   </tr>
+
+
+  <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('winner')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+      <% if @schedule.try(:guest_team)==@schedule.try(:winner) %>
+          <%= @schedule.winner %>
+      <% else %>
+        
+          <% winner=MgSportTeam.find_by(:id=>@schedule.try(:winner),:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).try(:team_name)%>
+          <%= winner %>
+      <% end%>
+      
+     </td>
+   </tr>
+      
+
+</table>
+
+
+
+
+
+<br>
+
+ 
+ <table>
+        <tr>
+            <td>
+               <%= link_to t('cancel'), {:controller=>'sports_management',:action=>'results'}, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+            </td>
+        </tr> 
+    </table>
+
+ <%= render  partial: 'application/common_left_close' %>
+
+<script type="text/javascript">
+	 $(document).ready(function () {
+                 focusCurrentTab("resultsAID","resultsLiID");
+  });
+</script>

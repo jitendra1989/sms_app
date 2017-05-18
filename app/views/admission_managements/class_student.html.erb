@@ -1,0 +1,54 @@
+<% if @class_student.length>0 %>
+  
+  <table class="batch-tbl mg-tbl-margin table-batchs-tbl">
+    <tr class="subject-table-header">
+      <th><%= t('student_id') %></th>
+      <th><%= t('name') %></th>
+      <th class="mg-rm-text-trans"><%= t('dateofbirth') %></th> 
+      <th><%= t('status') %></th> 
+      <th><%= t('action') %>         
+    </tr>  
+      <% @class_student.each do |f| %>
+        <tr> 
+          <td class="mg-align-center"><%= f.try(:student_temporary_id) %></td> 
+          <td class="mg-capitalize-text"><%= f.try(:first_name) %>&nbsp;<%= f.try(:middle_name) %>&nbsp;<%= f.try(:last_name) %></td>
+          <% @dateFormat = MgSchool.find_by(:id=>session[:current_user_school_id]).date_format %>
+          <td class="mg-align-center"><%= f.try(:date_of_birth).try(:strftime,@dateFormat) %></td> 
+          <% @fee_paid = MgStudentAdmission.find_by(:id=>f.id).has_paid %> 
+          <% if @fee_paid.present? %>
+            <td><span class="label label-success"><%=t('fee_paid')%></span></td> 
+            <td class="mg-align-center">
+              <%student_data=MgStudent.find_by(:mg_student_admission_id=>f.id)%>
+              <% @finance_transaction_data=MgFinanceTransaction.where(:is_deleted=>0, :mg_school_id=>session[:current_user_school_id], :mg_student_id=>student_data.id,:fees_from=>'mg_student_admission')%>          
+              <span style="font-size: 13px;">
+                <% if @finance_transaction_data.present? %>
+                  <%= link_to "<i class=\"fa fa-file-pdf-o\"></i>".html_safe,generate_fee_pdf_path(@finance_transaction_data[0].id),:title=>"Generate pdf", :target=>"_blank",:class=>"mg-icon-btn hall_ticket_pdf" %>
+                <%end%>
+              </span>                  
+            </td>            
+          <% else %>
+            <td><strong><%=t('fee_unpaid')%></strong></td>
+            <td class="mg-align-center">
+              <span>
+                <button title="<%=t('view_fees')%>" id="<%= raw f.id %>-<%=@mg_course_id%>-viewFeeDetailID" class="viewstudent-fee mg-icon-btn" style="width: 24px;"><i class="fa fa-eye"></i></button>
+              </span>                  
+            </td>            
+          <% end %>
+        </tr>        
+      <% end %>  
+  </table>    
+  </div>
+<% else %>
+    <h5><%=t('no_student_display')%></h5>
+<% end %>
+
+
+<script>
+  $(document).on("click",".viewstudent-fee",function(){
+    var my_id = $(this).attr('id');
+    var id = my_id.split("-");
+    
+     window.location="/admission_managements/show/"+id[0]+"-"+id[1];
+  })
+
+</script>

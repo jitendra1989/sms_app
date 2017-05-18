@@ -1,0 +1,72 @@
+<%= form_for :createTimeTable,:url=>{:controller=>'timetable',:action=>'create_time_table'},:html => { :id => "newAcadamicFormID" ,:multipart => true } do |f| %>
+<label class="mg-label mg-leave-width"><%=t('name')%><span class="required-field"> *</span></label>
+<%=f.text_field :name,:class=>"mg-text-field"%><br>
+<label class="mg-label mg-leave-width mg-tbl-margin"><%=t('startdate')%><span class="required-field"> *</span></label>
+<%= f.text_field :start_date  ,:class => 'start_date mg-text-field'%><br>
+<label class="mg-label mg-leave-width mg-tbl-margin"><%=t('enddate')%><span class="required-field"> *</span></label>
+<%= f.text_field :end_date  ,:class => 'end_date mg-text-field'%><br>
+<p>
+ <%=f.hidden_field :is_deleted,:value=>0 %>
+ <%=f.hidden_field :mg_school_id,:value=>session[:current_user_school_id] %>
+</p>
+<p>
+ <%#=f.submit t('save') ,:class=>"mg-small-form-btn"%>
+ <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("save")%></a>
+ <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+ </p>
+<%end%>
+ 
+<script>
+ $(document).ready(function () {
+ 	dateFormatStr =  getJsDateFormat();
+      $( ".start_date" ).datepicker({ changeMonth: true,
+                changeYear: true,yearRange: "-50:+50",dateFormat: dateFormatStr });
+      $( ".end_date" ).datepicker({ changeMonth: true,
+                changeYear: true,yearRange: "-50:+50",dateFormat: dateFormatStr });
+
+    $("#newAcadamicFormID").validate({
+      rules:{
+        "createTimeTable[name]":{required:true},
+        "createTimeTable[start_date]":{required:true},
+        "createTimeTable[end_date]":{required:true}
+      }
+    });
+
+  });
+
+
+
+
+   $(document).on("change","#createTimeTable_end_date",function(e){
+      e.preventDefault();
+      var start_date=$("#createTimeTable_start_date").val();
+      var end_date=$(this).val();
+
+      if(start_date && end_date){
+      
+      //if(Date.parse(end_date)< Date.parse(start_date)){
+      if(compareDate(start_date,end_date,dateFormatStr) == false){  
+        alert("End Date should be greater than Start Date.");
+        document.getElementById('createTimeTable_end_date').value ="";
+      }
+    }
+
+   });
+
+   $(document).on("change","#createTimeTable_start_date",function(e){
+      e.preventDefault();
+      var end_date=$("#createTimeTable_end_date").val();
+      var start_date=$(this).val();
+      if(start_date && end_date){
+      
+      //if(Date.parse(end_date)< Date.parse(start_date)){
+      if(compareDate(start_date,end_date,dateFormatStr) == false){  
+        alert("End Date should be greater than Start Date.");
+        document.getElementById('createTimeTable_start_date').value ="";
+      }
+    }
+
+   });
+
+
+</script>

@@ -1,0 +1,129 @@
+<% navigation_add 'Generate Fine', inventory_generate_fine_path %>
+<%=render :partial=>"inventory_left"%>
+<h4 class="mg-h4"><%=t("fine_particular_list")%></h4>
+<div>
+  <button id='create_inventory_particulars'  class="mg-custom-form-btn mg-btn-bottom-margin">Create New Fine Particular</button>
+</div>
+<div id="new_particular_div_id"></div>
+<% if @fines.length > 0 %>
+	<div class="mg_pagination">
+   		<table class="batch-tbl mg-tbl-margin" > 
+      		<tr>
+       			<th>Fine Name</th>
+       			<th> Description </th>
+       			<th>Amount</th>
+       			<th style="width: 9em;"><%=t('actions')%></th>
+    		</tr>
+    		<% @fines.each do |fine| %>
+	      		<tr>
+	          		<td><%= fine.fine_name %></td>
+	        		<td><%= fine.description %></td>
+	        		<td><%= fine.amount%></td>
+	      			<td>  
+	      				<button title="Show" id='<%=raw fine.id %>' class="show-inventory-fine-new-class mg-icon-btn"><i class="fa fa-eye"></i></button>
+
+	            		<button title="Edit" id='<%=raw fine.id %>' class="edit-inventory-fine-fee-class mg-icon-btn"><i class="fa fa-pencil-square-o"></i></button>
+	          
+	            		<span style="left: -2px; position: relative; float: right; top: -2px;">
+	            			 <%= link_to "<i class=\"fa fa-trash\"></i>".html_safe, { action: "destroy_fee_fine_particular", id: fine.id },
+	                                      method: :get, data: { confirm: "Are you sure?" } ,:title=>"Delete" ,:class=>"mg-icon-btn" %>
+	            		</span>    
+	     			</td> 
+	      		</tr>
+ 			<% end %>
+  		</table><br/>
+      	<%= will_paginate @fines, :container => false %>
+	</div>
+<% else %>
+  <h5>Please create some Fine Particular... </h5>
+<% end %>  
+<div id="editlaboratoryfineFeesParticularDivId"></div>
+<div id="showlaboratoryfineFeesParticularDivId"></div>
+<%=render :partial=>"common_left_close"%>
+
+<script>
+	$(document).ready(function(){
+		focusCurrentTab("generateFineAID","generateFineLiID");
+	});
+
+
+
+$(document).on("click", ".show-inventory-fine-new-class", function(e){
+        var ID1 =$(this).attr('id');
+       //  alert(ID1);
+        //var urlLink = "/student_categories/"+studentCategoryID+"/edit";
+        var urlLink = "/inventory/show_fine_fee_particular";
+      //  alert(urlLink);
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            data: {"id":ID1},
+            success: function(html){  
+                   //$('<div class="fancybox-outer" style="padding: 15px; width: auto; height: auto;"></div>').dialog({
+                   $('#showlaboratoryfineFeesParticularDivId').dialog({
+                  
+                    modal: true,
+                    title: "Show Fine Fee Particular ",
+                    width: 'auto',
+                    minWidth: 500,
+                    height: 500,
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+});
+
+
+
+
+
+	$(document).on("click","#create_inventory_particulars",function(){
+		$.ajax({
+			url:"/inventory/inventory_fine_particular_new",
+			success:function(html){
+				$('#new_particular_div_id').dialog({
+                    modal: true,
+                    title: "New Fine Particular",
+                    width:800,
+                    open: function () {
+                        $(this).html(html);
+                    },
+                    close: function (e) {
+                        $(this).empty();
+                    }
+                });
+			}
+		});
+	});
+
+
+	$(document).on("click", ".edit-inventory-fine-fee-class", function(e){
+        var ID1 =$(this).attr('id');
+      //   alert(ID1);
+        //var urlLink = "/student_categories/"+studentCategoryID+"/edit";
+        var urlLink = "/inventory/inventory_fine_particular_edit";
+      //  alert(urlLink);
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            data: {"id":ID1},
+            success: function(html){
+                    $('#editlaboratoryfineFeesParticularDivId').dialog({
+                    modal: true,
+                    title: "Edit Fine Particular",
+                    minWidth: 500,
+                    height: 500,
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+});
+</script>

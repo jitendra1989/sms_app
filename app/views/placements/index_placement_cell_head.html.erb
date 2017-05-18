@@ -1,0 +1,38 @@
+<% navigation_add t('placement_cell_head'), :controller => 'placements', :action => 'index_placement_cell_head' %>
+<%= render  partial: 'master_settings/master_settings_left' %>
+<h4 class="mg-h4"><%= t('about_placement_cell_head') %></h4>
+<%if @users.length<1%>
+<button class="add-placement-cell-head mg-btn-bottom-margin mg-custom-form-btn"><%= t('add_placement_cell_head')%></button>
+<%end%>
+<%if @users.length>0%>
+  <%= render  partial: 'login_index' %>
+<%else%>
+  <h5>No Placement Cell Head created</h5>
+<%end%>
+<%= render  partial: 'application/common_left_close' %>
+<div id="newPlacementCellHeadDivId"></div>
+
+<script>
+  $( document ).ready(function() {
+    focusCurrentTab("placementCellHeadLoginAID","placementCellHeadLID");
+  });
+
+  $(document).on("click", ".add-placement-cell-head", function(e){
+    var urlLink = "/placements/new_user";
+    $.ajax({
+      url: urlLink ,
+      cache: false,
+      success: function(html){
+        $('#newPlacementCellHeadDivId').dialog({
+          modal: true,
+          minHeight: 'auto',
+          minWidth: '250px',
+          title: "New Placement Cell Head",
+          open: function () {
+          $(this).html(html);
+          }
+        }); 
+      }
+    });
+  });
+</script>

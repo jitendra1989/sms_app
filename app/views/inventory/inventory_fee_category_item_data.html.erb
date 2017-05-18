@@ -1,0 +1,76 @@
+
+<%="Select Particulars:"%>
+<table class="mg-tbl-margin mg-tbl-layout">
+<tr>
+<%if params[:data1]=="data2"%>
+<td class="mg-td-width-one-third" valign="top">
+ <span id="selected_students">
+
+    <%=select_tag :selectedParticulars, options_for_select(@it_da),:multiple => true,:size =>10 ,:class=>"mg-add-library-particular"%>
+</span>
+
+    <a  id="AddTransportFees" class="mg-custom-form-btn mg-add-rem-btn">Add</a> 
+</td>
+<%else%>
+<td class="mg-td-width-one-third" valign="top">
+ <span id="selected_students">
+
+    <%=select_tag :selectedParticulars, options_for_select(@item_data),:multiple => true,:size =>10 ,:class=>"mg-add-library-particular"%>
+</span>
+
+    <a  id="AddTransportFees" class="mg-custom-form-btn mg-add-rem-btn">Add</a> 
+</td>
+<%end%>
+<%if params[:data1]=="data2"%>
+<td class="mg-td-width-one-third" valign="top">
+    <span id="removing_employees">
+
+<%=select_tag :inventorySelectedParticulars,options_for_select(@item_data),:multiple => true,:size =>10 ,:class=>"mg-add-library-particular"%>
+</span>
+
+<a  id="RemoveTransportFees" class="mg-custom-form-btn mg-add-rem-btn">Remove</a>
+</td>
+<%else%>
+<td class="mg-td-width-one-third" valign="top">
+    <span id="removing_employees">
+
+<%=select_tag :inventorySelectedParticulars,options_for_select([]),:multiple => true,:size =>10 ,:class=>"mg-add-library-particular"%>
+</span>
+
+<a  id="RemoveTransportFees" class="mg-custom-form-btn mg-add-rem-btn">Remove</a>
+</td>
+<%end%>
+</tr>
+</table><br/>
+<script>
+$(document).on("click","#AddTransportFees",function(e){
+
+
+
+ var selectedOptions=$("#selectedParticulars option:selected").remove();
+
+
+$("#inventorySelectedParticulars").append(selectedOptions);
+$("#inventorySelectedParticulars option").prop('selected',true)
+
+
+  });
+$(document).on("click","#RemoveTransportFees",function(e){
+
+var selectedOption=$("#inventorySelectedParticulars option:selected").remove();
+$("#inventorySelectedParticulars option").prop('selected',true)
+
+$("#selectedParticulars").append(selectedOption);
+
+  });
+</script>
+
+<style>
+
+.mg-add-rem-btn {
+    position: relative;
+    top: -7em;
+    margin-right: 5px;
+}
+
+</style>

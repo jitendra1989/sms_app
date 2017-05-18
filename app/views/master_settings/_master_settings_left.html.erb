@@ -1,0 +1,317 @@
+<!-- Sec --> 
+<section id="userBodyContentBox" style="margin: 0 auto;">
+    <table width=100% border="0" cellspacing="0" cellpadding="0"  style="margin-bottom: 0px;">
+        <tr>
+            <td valign="top" class="userBodyContentBox1">
+                <div class="userMenuBoxLeft" style="width: 210px;">
+                    <ul class="menuListHome">
+                        <li class="myAccountMenu mg-toggle-plus"><%=t("school_settings")%></li>
+
+                        <div class="mg-left-sub-menu-title">
+                            <li id="schoolInformationLiID">
+                                <a class="menuItemsActivities" href="/master_settings" id="createNewSchool" >
+                                    <div class="setMenu"><i class="fa fa-file-text-o">&nbsp;&nbsp;</i><%=t("school_information")%>
+                                    </div>
+                                </a>
+                            </li>
+
+                            <li id="schoolWingLiID">
+                                <a class="school-wing" href="/wings" id="wingListAID" >
+                                    <div class="setMenu"><i class="fa fa-th-large">&nbsp;&nbsp;</i><%=t("school_wings")%>
+                                    </div>
+                                </a>
+                            </li>
+
+                             <li id="schoolCustomFieldLiID">
+                                <a class="custom-fields" href="/schools/custom_fields" id="manageCustomFields" >
+                                    <div class="setMenu"><i class="fa fa-pencil">&nbsp;&nbsp;</i><%=t("school_custom_fields")%><!-- <i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i> -->
+
+                                    </div>
+                                </a>
+                            </li>
+
+							 <li id="HostelDetailsLiID">
+                            <a class="Principle-Profile" href="/hostel_management/hostel_details" id="HostelDetailsAID">
+                                <div class="setMenu"><i class="fa fa-building-o">&nbsp;&nbsp;</i><%=t('hostel')%>
+                                </div>
+                            </a>
+                            </li>
+
+                        </div>
+                        
+                        <!-- Shravan Added -->
+                        <li class="myAccountMenu mg-toggle-plus">Student Settings</li>
+                        <div class="mg-left-sub-menu-title">
+                            <li id="createNewStudentCategoryLiID">
+                                <a class="menuItemsActivities" href="/student_categories" id="createNewStudentCategoryAID">
+                                    <div class="setMenu"><i class="fa fa-sitemap">&nbsp;&nbsp;</i><%= t('managestudentcategory') %><!-- <i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i> -->
+                                    </div>
+                                </a>
+                            </li>
+
+                            <li id="viewStudentCustomFieldLiID">
+                                <a class="menuItemsActivities" href="/students/custom_new" id="viewStudentCustomFieldAID">
+                                    <div class="setMenu"><i class="fa fa-pencil">&nbsp;&nbsp;</i>Student Custom Fields<!-- <i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i> -->
+                                    </div>
+                                </a>
+                            </li>
+
+                            <li id="viewGuardianCustomFieldiId">
+                                <a class="menuItemsActivities" href="/guardians/custom_new" id="viewGuardianCustomFieldAId">
+                                    <div class="setMenu"><i class="fa fa-pencil">&nbsp;&nbsp;</i>Guardian Custom Fields<!-- <i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i> -->
+                                    </div>
+                                </a>
+                            </li>
+                        </div>
+
+                        <li class="myAccountMenu mg-toggle-plus">Employee Settings</li>
+                         <div class="mg-left-sub-menu-title">
+                            <li id="createManDeptLiID">
+                                <a class="menuItemsActivities" href="/mg_employee_departments" id="manageEmployeeDepartment">
+                                    <div class="setMenu"><i class="fa fa-sitemap">&nbsp;&nbsp;</i><%= t('manageemployeedepartment') %><!-- <i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(-33%);"></i> -->
+                                    </div>
+                                </a>
+                            </li>
+                            
+                            
+                            <li id="createManPosLiID">
+                                <a class="menuItemsActivities" href="/mg_employee_positions" id="manageEmployeePosition">
+                                    <div class="setMenu"><i class="fa fa-sitemap">&nbsp;&nbsp;</i><%= t('manageemployeeposition') %><!-- <i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i> -->
+                                    </div>
+                                </a>
+                            </li>
+
+                      <!--   <li id="createManDeptLiID">
+                            <a class="menuItemsActivities" href="/mg_employee_departments" id="manageEmployeeDepartment">
+                                <div class="setMenu"><i class="fa fa-sitemap">&nbsp;&nbsp;</i><%#= t('manageemployeedepartment') %><!-- <i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(-33%);"></i> 
+                                </div>
+                            </a>
+                        </li> -->
+
+                        <!-- <li id="createManCatLiID">
+                            <a class="menuItemsActivities" href="/mg_employee_categories" id="manageEmployeeCategory">
+                                <div class="setMenu"><i class="fa fa-sitemap">&nbsp;&nbsp;</i><%#= t('manageemployeecategory') %> <i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i>
+                                </div>
+                            </a>
+                        </li> -->
+                            
+
+                            <li id="manageCustomFieldsiID">
+                                <a class="custom-fields" href="/employees/custom_new" id="manageCustomFieldsAID" >
+                                    <div class="setMenu"><i class="fa fa-pencil">&nbsp;&nbsp;</i>Employee Custom Fields<!-- <i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i> -->
+                                    </div>
+                                </a>
+                            </li>
+                        </div>
+
+                      
+
+                        <li class="myAccountMenu mg-toggle-plus"><%=t('payroll_settings')%></li>
+                         <div class="mg-left-sub-menu-title">
+                            <li id="createEmployeeWeekdaysLiID">
+                                <a class="menuItemsActivities" href="/employee_weekdays" id="manageEmployeeWeekdaysAID">
+                                    <div class="setMenu"><i class="fa fa-sitemap">&nbsp;&nbsp;</i><%= t('week_day') %><!-- <i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(-33%);"></i> -->
+                                    </div>
+                                </a>
+                            </li>
+                            <li id="createSalaryComponentsLiID" >
+                                <a class="menuItemsActivities" href="/employees/salary_components" id="manageSalaryComponentsAID">
+                                    <div class="setMenu"><i class="fa fa-sitemap">&nbsp;&nbsp;</i><%= t('salary_components') %><i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i>
+                                    </div>
+                                </a>
+                            </li>
+
+                            <li id="createManGradLiID" >
+                                <a class="menuItemsActivities" href="/mg_employee_grades" id="manageEmployeeGrade">
+                                    <div class="setMenu"><i class="fa fa-sitemap">&nbsp;&nbsp;</i><%= t('manageemployeegrade') %><i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i>
+                                    </div>
+                                </a>
+                            </li>
+                        </div>
+                         
+                        <li class="myAccountMenu mg-toggle-plus">Timetable Settings</li>
+                         <div class="mg-left-sub-menu-title">
+                            <li id="createTimeTableLiID">
+                                <a class="menuItemsActivities" href="/timetable/time_table_index" id="createTimeTableAID">
+                                    <div class="setMenu"><i class="fa fa-table">&nbsp;&nbsp;</i>Academic year<!-- <i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i> -->
+                                    </div>
+                                </a>
+                            </li>
+
+                             <li id="viewWeekDayLiId">
+                                <a class="menuItemsActivities " href="/timetable/weekday_index" id="viewWeekDayAId">
+                                    <div class="setMenu"><i class="fa fa-list">&nbsp;&nbsp;</i><%= t('week_day') %><!-- <i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i> -->
+                                    </div>
+                                </a>
+                            </li>
+
+                            <li id="createClassTimingsLiID">
+                                <a class="menuItemsActivities" href="/timetable/class_timing_index" id="createClassTimingsAID" >
+                                    <div class="setMenu"><i class="fa fa-plus-square-o">&nbsp;&nbsp;</i>Create Class Timings<!-- <i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px; transform: translateY(33%);"></i> -->
+                                    </div>
+                                </a>
+                            </li>
+                        </div>
+
+
+                        <li class="myAccountMenu mg-toggle-plus">Homework Settings</li>
+                        <div class="mg-left-sub-menu-title">
+                            <li id="homeworkcategorytypeLiID">
+                                <a class="menuItemsActivities" href="/homework/category" id="homeworkcategorytypeAID">
+                                    <div class="setMenu"><i class="fa fa-table">&nbsp;&nbsp;</i>Homework Category
+                                    </div>
+                                </a>
+                            </li>
+                        </div>
+
+
+                        <li class="myAccountMenu mg-toggle-plus"><%=t('admission_settings')%></li>
+                        <div class="mg-left-sub-menu-title">
+                            <li id="aboutEntranceTestLiID">
+                                <a class="menuItemsActivities" href="/entrance_exam_details/exam_test_center" id="aboutEntranceTestAID">
+                                    <div class="setMenu"><i class="fa fa-wrench">&nbsp;&nbsp;</i><%=t('entrance_test_setting')%>
+                                    </div>
+                                </a>
+                            </li>
+                        </div>
+
+
+						 <!-- =================FOM===================== -->
+                        <li class="myAccountMenu mg-toggle-plus">Front Office Settings
+                        </li>
+                        <div class="mg-left-sub-menu-title">
+                          <li id="caller_categoryLiID">
+                                  <a class="menuItemsActivities" href="/front_office_management/caller_category_index" id="caller_categoryAID">
+                                      <div class="setMenu"><i class="fa fa-external-link">&nbsp;&nbsp;</i><%=t('request_mode')%>
+                                      </div>
+                                  </a>
+                              </li>
+
+                              <li id="callerCategoryLiID">
+                                  <a class="menuItemsActivities" href="/front_office_management/caller_category" id="callerCategoryAID">
+                                      <div class="setMenu"><i class="fa fa-phone">&nbsp;&nbsp;</i><%=t("caller_category")%>
+                                      </div>
+                                  </a>
+                              </li>
+
+                              <li id="type_of_queryLiID">
+                                  <a class="menuItemsActivities" href="/front_office_management/type_of_query_index" id="type_of_queryAID">
+                                      <div class="setMenu"><i class="fa fa-question-circle">&nbsp;&nbsp;</i><%=t("query_type")%>
+                                      </div>
+                                  </a>
+                              </li>
+
+                              <li id="room_creationLiID">
+                                  <a class="menuItemsActivities" href="/front_office_management/room_creation_index" id="room_creationAID">
+                                      <div class="setMenu"><i class="fa fa-object-group">&nbsp;&nbsp;</i><%=t('room_creation')%>
+                                      </div>
+                                  </a>
+                              </li>
+                              <li id="actionRequiredLiID">
+                                  <a class="menuItemsActivities" href="/front_office_management/action_required_index" id="room_requiredAID">
+                                      <div class="setMenu"><i class="fa fa-hand-pointer-o">&nbsp;&nbsp;</i><%=t('action_required')%>
+                                      </div>
+                                  </a>
+                              </li>
+                            </div>
+						<li class="myAccountMenu mg-toggle-plus"><%=t('specialization')%></li>
+                        <div class="mg-left-sub-menu-title">
+                            <li id="doctorSpecializationLiID">
+                                <a class="menuItemsActivities" href="/healthcare/specialization/" id="doctorSpecializationAID">
+                                    <div class="setMenu"><i class="fa fa-medkit">&nbsp;&nbsp;</i><label class="mg-label-text-transform-none" for="specialization"><%=t('specialization')%>
+                                   </label></div>
+                                </a>
+                            </li>
+                        </div>
+                        <li class="myAccountMenu mg-toggle-plus"><%=t('school_logins')%></li>
+                         <div class="mg-left-sub-menu-title">
+                            <li id="laboratorycategorytypeLiID">
+                                <a class="menuItemsActivities" href="/laboratory/laboratory_settings_show" id="laboratorycategorytypeAID">
+                                    <div class="setMenu"><i class="fa fa-wrench">&nbsp;&nbsp;</i><%=t('laboratory_incharge')%>
+                                    </div>
+                                </a>
+                            </li>
+
+                            <li id="librarygeneratekioskLiID">
+                                <a class="menuItemsActivities" href="/library/kiosk" id="librarygeneratekioskAID">
+                                    <div class="setMenu"><i class="fa fa-table">&nbsp;&nbsp;</i><%=t('kiosk')%>
+                                    </div>
+                                </a>
+                            </li>
+                            <li id="libraryinchargegeneratekioskLiID">
+                                <a class="menuItemsActivities" href="/library/library_incharge_index" id="libraryinchargegeneratekioskAID">
+                                    <div class="setMenu"><i class="fa fa-table">&nbsp;&nbsp;</i><%=t('library_incharge')%>
+                                    </div>
+                                </a>
+                            </li>
+
+                            <li id="vassign_store_managerLiID">
+                                <a class="menuItemsActivities" href="/inventory/index_store_manager/" id="assign_store_managerAid">
+                                    <div class="setMenu"><i class="fa fa-sitemap">&nbsp;&nbsp;</i><%=t('store_manager')%>
+                                    </div>
+                                </a>
+                            </li>
+	                      
+                            <li id="healthCareAdminLoginLID">                   
+                                <a class="menuItemsActivities" href="/healthcare/healthcare_admin" id="healthCareAdminLoginAID">
+                                    <div class="setMenu"><i class="fa fa-stethoscope">&nbsp;&nbsp;</i><%=t('healthcare_admin')%>
+                                    </div>
+                                </a>
+                            </li>
+
+                            <li id="doctorLoginLID">                   
+                                <a class="menuItemsActivities" href="/healthcare/index_doctor_login" id="doctorLoginAID">
+                                    <div class="setMenu"><i class="fa fa-stethoscope">&nbsp;&nbsp;</i><%=t('doctor')%>
+                                    </div>
+                                </a>
+                            </li>
+					        <li id="CanteenManagerLoginLID">                   
+                                <a class="menuItemsActivities" href="/canteen_managements/canteen_manager" id="canteenManagerLoginAID">
+                                    <div class="setMenu"><i class="fa fa-user">&nbsp;&nbsp;</i><%=t('canteen_manager')%>
+                                    </div>
+                                </a>
+                            </li>
+
+							<li id="sportsInchargeLID">                   
+                                <a class="menuItemsActivities" href="/sports_management/sports_incharge_login_index" id="sportsInchargeAID">
+                                    <div class="setMenu"><i class="fa fa-users">&nbsp;&nbsp;</i><%=t('sports_incharge')%>
+                                    </div>
+                                </a>
+                            </li> 
+			
+							<li id="hostelAdminHeadLID">                   
+                                <a class="menuItemsActivities" href="/hostel_management/hostel_admin_login_index" id="hostelAdminLoginAID">
+                                    <div class="setMenu"><i class="fa fa-user">&nbsp;&nbsp;</i><%=t('hostel_admin')%>
+                                    </div>
+                                </a>
+                            </li> 
+                             <li id="hostel_wardenLID">                   
+                                <a class="menuItemsActivities" href="/hostel_management/hostel_warden_login_index" id="hostel_wardenAID">
+                                    <div class="setMenu"><i class="fa fa-users">&nbsp;&nbsp;</i><%=t('hostel_warden')%>
+                                    </div>
+                                </a>
+                            </li>
+                        </div>
+                        <!-- Added By Bindhu for School login ends -->
+                       
+
+                      
+
+
+
+
+                    </ul>  
+                </div>
+            </td>
+            <td valign="top" id="manageSchools" class="mg-table-td-main-2">
+             <%= render 'layouts/messages' %>     
+
+
+
+
+<script>
+    $(document).ready(function() {
+      collapseLeftMenu();
+      focusMasterSettings();
+    });
+</script>

@@ -1,0 +1,70 @@
+<%@school = MgSchool.where(:id=>session[:current_user_school_id],:is_deleted=>0)%>
+<table border="1" class="mg-showdata-bg" cellspacing="1" cellpadding="1">
+   <tr>
+     <td class="mg-td-width-half" valign="top">
+   	 <label class="mg-label"> <%= t('semester_name')%></label>
+   	 </td>
+   	 <td class="mg-td-width-half" valign="top">
+	  	 <% exm_detail_id = @exam_details.mg_course_id %>
+		<% @course = MgCourse.find(exm_detail_id) %>
+		<% if @course.present? %>
+	    	<%= @course.course_name %>
+		<% end %>
+  	 </td>
+   </tr>
+   <tr>
+     <td class="mg-td-width-half" valign="top">
+   	 <label class="mg-label"> <%= t('select_exam_date')%></label>
+   	 </td>
+   	 <td id="entrance_examID",class="mg-td-width-half" valign="top">
+      <% @dateFormat = MgSchool.find_by(:id=>session[:current_user_school_id]).date_format %>
+	  	<%= @exam_details.start_date.strftime(@dateFormat) %>
+  	 </td>
+   </tr>
+   <tr>
+     <td class="mg-td-width-half" valign="top">
+   	 <label class="mg-label"> <%= t('start_time')%></label>
+   	 </td>
+   	 <td class="mg-td-width-half" valign="top">
+	  	<%= @exam_details.start_time.strftime("%l:%M%P") %>
+  	 </td>
+   </tr>
+   <tr>
+     <td class="mg-td-width-half" valign="top">
+   	 <label class="mg-label"> <%= t('end_time')%></label>
+   	 </td>
+   	 <td class="mg-td-width-half" valign="top">
+	  	<%= @exam_details.end_time.strftime("%l:%M%P") %>
+  	 </td>
+   </tr>
+   <tr>
+     <td class="mg-td-width-half" valign="top">
+   	 <label class="mg-label"> <%= t('venue_address')%></label>
+   	 </td>
+   	 <td class="mg-td-width-half" valign="top">
+       <div class="text-scroll-for-log-text-cls comments-space">
+         <%if @school[0].is_test_center==true%>
+           <% @vanue_name=MgEntranceExamVenue.where(:id=>@exam_details.mg_entrance_exam_venue_id,:is_deleted=>0)%>
+           <%if @vanue_name.present?%>
+             <%vanue_full_name=@vanue_name[0].try(:institute_name).to_s+','+@vanue_name[0].try(:exam_venue).to_s%>
+            <%= vanue_full_name%>
+           <%else%>
+             <%=@exam_details.try(:exam_venue)%>
+           <%end%>
+         <%elsif @school[0].is_test_center==false%>
+           <%vanue_full_name=@school[0].try(:address_line1).to_s+','+@school[0].try(:address_line2).to_s+','+@school[0].try(:street).to_s+','+@school[0].try(:landmark).to_s+','+@school[0].try(:city).to_s+','+@school[0].try(:state).to_s+','+@school[0].try(:pin_code).to_s%>
+           <%= vanue_full_name%>
+         <%end%>
+        </div>
+  	 </td>
+   </tr>
+</table>
+<p class="mg-p-mgtop">
+  <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+</p>
+
+<script>
+  $(document).ready(function () {
+    textSeeMoreLess();
+  });
+</script>

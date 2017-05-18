@@ -1,0 +1,74 @@
+
+<table border="1" class="mg-showdata-bg mg-tbl-layout" cellspacing="1" cellpadding="1">
+   <tr>
+     <td class="mg-td-width-half" valign="top">
+   		<label class="mg-label mg-rm-text-trans"> <%= t('hostel')%></label>
+   	 </td>
+   	 <td class="mg-td-width-half" valign="top">
+     <%hostel_details=MgHostelDetails.find_by(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id],:id=>@allocate_room_data.mg_hostel_details_id)%>
+  		<%= hostel_details.try(:name) %>
+  	 </td>
+ </tr>
+
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+   		<label class="mg-label"> <%= t('room_no')%></label>
+   	 </td>
+   	 <td class="mg-td-width-half" valign="top">
+  		<%= @complain_hostel.room_no %>
+  	 </td>
+ </tr>
+
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+   		<label class="mg-label"> <%= t('programme')%></label>
+   	 </td>
+   	 <td class="mg-td-width-half" valign="top">
+  		<%= @complain_hostel.programme %>
+  	 </td>
+ </tr>
+
+ 
+
+ <tr>
+     
+  
+       <td class="mg-td-width-half" valign="top">
+          <label class="mg-label"><%=t('reason')%></label>
+       </td>
+       <td class="mg-td-width-half" valign="top">
+         <div class="text-scroll-for-log-text-cls comments-space">
+            <%= @complain_hostel.try(:reason) %>
+          </div>
+       </td>
+
+
+ </tr>
+
+
+
+
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+   		<label class="mg-label mg-rm-text-trans"> <%= t('date')%></label>
+   	 </td>
+   	 <td class="mg-td-width-half" valign="top">
+  		<%= @complain_hostel.date.strftime(@timeformat.date_format) %>
+  	 </td>
+ </tr>
+
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+   		<label class="mg-label mg-rm-text-trans"> <%= t('status')%></label>
+   	 </td>
+   	 <td class="mg-td-width-half" valign="top">
+  		<%= @complain_hostel.status %>
+  	 </td>
+ </tr>
+ </table><br/>
+ <%=link_to t("cancel"),:back,:class=>"mg-small-form-btn cancel-form-dialog"%>
+<script>
+  $( document ).ready(function() {
+        focusCurrentTab("hostel_issues_listAID","hostel_issues_listLiID");
+  });
+</script>

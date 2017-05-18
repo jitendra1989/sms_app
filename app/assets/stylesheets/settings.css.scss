@@ -1,0 +1,19 @@
+/* comm */
+// Place all the styles related to the settings controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+    .role-dash {
+        box-shadow: -2px -2px 7px 0px #b2b2b2 inset;
+        border: 1px solid #B2B2B2;
+        display: inline-block;
+        padding: 7px 10px;
+        margin: 10px;
+        background-color: #D5D8D9;
+    }
+
+    .role-dash:hover{
+       background-color: #363131;
+       box-shadow: none;
+       color : white;
+       font-weight: bold;
+    }

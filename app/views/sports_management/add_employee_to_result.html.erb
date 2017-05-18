@@ -1,0 +1,3 @@
+  <%#=select_tag "notSelectedemployee[]", options_for_select(@departments),:prompt=>"Select",:onchange => 'select_emp_result(this);',:class=>"mg-select-btn data1"%>
+   
+   <%=select_tag "selectedemployees[]",options_for_select(@object),:prompt=>"Select",:onchange=>'modify_result(this);',:class=>"mg-add-library-particular valid2"%>

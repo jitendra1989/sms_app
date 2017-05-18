@@ -1,0 +1,111 @@
+<%= render  partial: 'examination_table_left'%>
+
+<%#if @grade_type.to_i !=1%>
+<h4 class="mg-h4">Exam Scores</h4>
+<div>
+<a href="/examination/exammanagement_resultEntryDataIndex/<%=@sub_id%>-<%=@examId%>-<%=raw @category_id %>" class="exammanagement-resultEntry-newLink-class"><button class="mg-text-exam mg-custom-form-btn mg-btn-bottom-margin">FA Scores</button></a>
+
+<%#end%>
+<%= form_for :exam_result_entry, :url=>{:controller=>'examination',:action=>'exam_result_entry_create'}, method: :post do |f| %>
+
+<%= f.hidden_field :mg_batch_id, :value=>@batchId, :id=>"examResultEntryBatchId"%>
+<%= hidden_field_tag 'exam_id',@examId%>
+<%= hidden_field_tag 'category_id',@category_id%>
+<%= hidden_field_tag 'sub_id',@sub_id%>
+
+
+
+<% if @studentObj.length > 0 %>
+  <div>
+<!-- class="batch-tbl mg-tbl-margin" -->
+    <table class="batch-tbl">     
+      <tr >
+        <th>Name</th>
+        <th>Admission Number </th>
+        <th>Marks</th>
+        <th>Remarks</th>
+        <th>Grade</th>
+      </tr>
+   <%@studentObj.each_with_index do |std,i| %>
+   		<tr>
+	        <td><%= std.first_name %></td>
+	        <td><%= std.admission_number %></td>
+	        <td>
+	        	<%= text_field_tag 'marks[]' ,@marks[i], :class=>"mg-marks-width" ,:onchange=>"setGradeFromMarks(this)"%>
+			</td>
+	        <td>
+	        	<%= text_field_tag 'remarks[]' ,@remarks[i], :class=>"mg-marks-width"%>
+	        </td>
+	        <td>
+	        	<%= text_field_tag 'grades[]' ,@grades[i], :class=>"mg-marks-width"%>
+	        	<%= hidden_field_tag 'graging_level_id[]' ,nil, :class=>"mg-marks-width" %>
+	        </td>
+
+	        <%= hidden_field_tag 'studentIds[]' ,std.id, :class=>"mg-marks-width"%>
+
+
+	        
+	        
+	   </tr>
+
+
+   <%end%>
+ 
+
+     </table>
+	<p class="mg-p-mgtop">
+    <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("save")%></a>
+    <%= link_to t('back'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+  </p>
+  </div>
+<%end%>
+
+<%end%>
+</div>
+
+
+
+
+
+<%= render  partial: 'examination_table_close'%>
+<script>
+$(document).ready(function(){
+	focusCurrentTab("createNewStudentAID","createNewStudentLiID");
+        focusExaminationHeaderBox();
+});
+
+// function setGradeFromMarks(marksObj){
+//     var marks = marksObj.value;
+//     if(marks!=""){
+
+//        var batchId=$("#examResultEntryBatchId").val(); 
+//        //alert("Shr "+batchId);
+
+//        var urlLink="/examination/setGradeFromMarks/";
+
+//        $.ajax({
+//             url: urlLink ,
+//             //type:json
+//             cache: false,
+//             data:
+//             {
+//                  marks:marks,
+//                  batchId:batchId
+
+//              },
+//             success: function(data){  
+//                      console.log(data.gradeLevelId);
+//                //$(this).parent().next().next().firstChild().val(data.gradeLevel);
+//                //console.log($(this).parent().next().next().html());
+//                $(marksObj).parent().next().next().children()[0].value =data.gradeLevel;
+//                $(marksObj).parent().next().next().children()[1].value =data.gradeLevelId;
+//                //$(marksObj).parent().next().next().next().children()[0].value =data.gradeLevelId;
+//                 //console.log($(this).parent().next().next().next().children().html());
+
+//             }
+//         });
+//     }
+    
+// }
+
+</script>

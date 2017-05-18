@@ -1,0 +1,144 @@
+<%= render partial: 'dashboards/student_dashboard_left' %>
+
+
+<% navigation_add t('room_reallotment_request'), :controller=>'hostel_management', :action=>'room_reallotment_request' %>
+
+<h4 class="mg-h4"><%=t('room_reallotment_request')%></h4>
+  
+
+<%=link_to t("room_reallotment_form"),{:controller=>"hostel_management",:action=>"room_reallotment_form"},:class=>"mg-custom-form-btn"%>
+
+<%#= button_to 'Add Reallotment Request', {:controller=>'hostel_management',:action=>'hostel_rooms_new'}, :class=> 'mg-custom-form-btn mg-tbl-margin' %><!-- <br/>
+ -->
+
+<!-- <h4 class="mg-h4"><%#= t('rooms_list')%></h4> -->
+
+<%if @student_details_data.present?%>
+<div class="mg_pagination">
+<table class="batch-tbl mg-tbl-margin">   <!-- border="2" --> 
+ <tr >
+    <th> <%=t('hostel')%></th>
+    <th> <%=t('floor')%></th>
+    <th> <%=t('room_type')%></th>
+    <th > <%=t('programme')%></th>
+    <th > <%=t('room_no')%></th>
+    <th > <%=t('realloted_room_no')%></th>
+    <th > <%=t('status')%></th>
+    <th><%=t('actions')%></th>
+  </tr>
+  <% @student_details_data.each do |e| %>
+    <tr>
+      <td style="text-align:center">
+          <%hostel_details=MgHostelDetails.find_by(:id=>e.mg_hostel_details_id)%>
+          <%= hostel_details.try(:name) %>
+      </td>
+
+      <td style="text-align:center">
+          <%hostel_floor=MgHostelFloor.find_by(:id=>e.mg_hostel_floor_id)%>
+          <%= hostel_floor.try(:name) %>
+      </td>
+
+      <td style="text-align:center">
+          <%room_type=MgHostelRoomType.find_by(:id=>e.mg_hostel_room_type_id)%>
+          <%= room_type.try(:name) %>
+      </td>
+
+      <td style="text-align:center">
+          <%programme=MgWing.find_by(:id=>e.mg_wing_id)%>
+          <%= programme.try(:wing_name) %>
+      </td>
+
+      <td style="text-align:center">
+          <%if e.mg_hostel_room_id==0%>
+              <%" -- "%>
+          <%else%>
+              <%room_data=MgHostelRoom.find_by(:id=>e.mg_hostel_room_id)%>
+              <%= room_data.try(:name) %>
+          <%end%>
+      </td>
+
+      <td style="text-align:center">
+              <%realloted_room_data=MgHostelRoom.find_by(:id=>e.try(:reallocated_room__number))%>
+              <%= realloted_room_data.try(:name) %>                  
+      </td>
+
+      <td style="text-align:center">
+          <%= e.try(:status) %>
+      </td>
+
+
+      <%#=link_to t("edit_room_reallotment_form"),{:controller => "hostel_management", :action => "room_reallotment_form",:id =>@student_details_data.id},:class=>"mg-custom-form-btn"%>
+
+
+
+      <td>
+        <button title="Show" id="<%=raw e.id %>-showHostelRoomBTNID" class="show-job-upload-fom-btn mg-icon-btn" onclick="window.location='/hostel_management/room_reallotment_form_show/<%=e.id%>'"><i class="fa fa-eye"></i></button>
+
+        <button title="Edit" id="<%=raw e.id %>-editReallotmentRequestBTNID" class="edit-reallotment-request-btn mg-icon-btn" onclick="window.location='/hostel_management/room_reallotment_form/<%=e.id%>'"><i class="fa fa-pencil-square-o"></i></button>
+
+      <button title="Delete" onclick="confirm('Are you sure to delete?') ? window.location='/hostel_management/room_reallotment_form_delete/<%=e.id%>' : ''" class="mg-icon-btn"><i class="fa fa-trash"></i></button>
+    </tr>
+  <% end %>
+</table>
+<div>
+ <%= will_paginate @student_details_data, :container => false %>
+  </div>
+  <%else%>
+    <p>Please create some Room Data</p>
+  <%end%>
+
+<%= render  partial: 'application/common_left_close' %>
+
+<script type="text/javascript">
+$( document ).ready(function() {
+      focusCurrentTab("room_reallotment_requestAID","room_reallotment_requestLiID");
+  });
+
+// $(document).on("click", ".show-homework-btn", function(e){
+//         var myID =$(this).attr('id');
+//         var Id=myID.split("-");
+//         var urlLink = "/homework/category_show/"+Id[0];
+//         $.ajax({
+//             url: urlLink ,
+//             cache: false,
+//             success: function(html){
+//                   $('#showHomeworkDIVID').dialog({
+//                     modal: true,
+//                      minHeight: 'auto',
+//                     width: 'auto',
+//                     title: "Show Category",
+//                     open: function () {
+                        
+//                         $(this).html(html);
+//                     }
+//                 }); 
+               
+//             }
+//         });
+// });
+
+
+// $(document).on("click", ".edit-homework-btn", function(e){
+//         var myID =$(this).attr('id');
+//         var Id=myID.split("-");
+//         var urlLink = "/homework/category_edit/"+Id[0];
+//         $.ajax({
+//             url: urlLink ,
+//             cache: false,
+//             success: function(html){
+//                   $('#editHomeworkDIVID').dialog({
+//                     modal: true,
+//                      minHeight: 'auto',
+//                     width: '290',
+//                     title: "Edit Category",
+//                     open: function () {
+                        
+//                         $(this).html(html);
+//                     }
+//                 }); 
+               
+//             }
+//         });
+// });
+
+</script>

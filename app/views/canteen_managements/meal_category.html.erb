@@ -1,0 +1,127 @@
+<%= render partial: 'canteen_management_left' %>
+<% navigation_add t('meal_category'), :controller=>'canteen_managements', :action=>'meal_category' %>
+<h4 class="mg-h4"><%= t('meal_category_list') %></h4>
+<button class="add-meal-category-cls mg-btn-bottom-margin mg-custom-form-btn"><%= t('add_meal_category')%></button></br>
+<%if @meal_category.present? %>
+  <div class="mg_pagination">
+    <table class="batch-tbl mg-tbl-margin table-batchs-tbl">
+      <tr class="subject-table-header">
+        <th><%= t('name') %></th>
+        <th class="mg-label-text-transform-none"><%= t('meal_sequence_of_the_day') %></th>
+        <th><%= t('description') %></th>
+        <th><%= t('actions') %></th>  
+      </tr>
+      <% @meal_category.each do |f| %>  
+      <tr>
+        <td class="mg-capitalize-text mg-align-center"><%= f.try(:name)%> </td>
+        <td class="mg-align-center"><%= f.try(:priority) %></td>   
+        <td class="mg-desc-text-justify"><%= truncate(f.description.to_s, :length => 25, :separator => ' ') %></td>
+        
+        <td style="width: ;">
+          <button title="show" id="<%= raw f.id %>-showexmBTNID" class="show-meal-category mg-icon-btn"><i class="fa fa-eye"></i></button>
+          <button title="Edit" id="<%= raw f.id %>-editexmBTNID" class="edit-meal-category mg-icon-btn"><i class="fa fa-pencil-square-o"></i></button>
+          <button title="<%= t('delete') %>" id="<%= raw f.id %>-deleteexmBTNID" class="delete-meal-category mg-icon-btn"><i class="fa fa-trash"></i></button>
+        </td>
+      </tr> 
+      <% end %>
+    </table>
+    <div class="pagination-align" style="position: relative; bottom: 00px;">
+      <%= will_paginate @meal_category, :container => false %>
+    </div>
+  </div>
+<%else%>
+  <%="No meal category is created please create some meal category"%>
+<%end%>
+
+<div id="newMealCategoryDivID"></div>
+<div id="showMealCategoryDivID"></div>
+<div id="editMealCategoryDivID"></div>
+
+<%= render  partial: 'application/common_left_close' %>
+
+
+<script>
+  $(document).ready(function(){   
+    focusCurrentTab("mealCategoryAID","mealCategoryLID");
+  });
+
+  $(document).on("click",".add-meal-category-cls",function(e){   
+    e.preventDefault();   
+    var urlLink = "/canteen_managements/new_meal_category";
+    $.ajax({
+      url: urlLink,
+      cache: false,
+
+      success: function(data){
+        $("#newMealCategoryDivID").dialog({
+          model: true,
+          minHeight: 'auto',
+          minWidth: 260,
+          title: "Add Meal Category Item",
+          open: function(){
+            $(this).html(data);
+          }
+        })
+      }
+    })
+  });
+
+
+  $(document).on("click",".show-meal-category",function(e){   
+    e.preventDefault();  
+    var showID = $(this).attr('id');
+    var id = showID.split("-"); 
+    var urlLink = "/canteen_managements/show_meal_category/"+id[0];
+    $.ajax({
+      url: urlLink,
+      cache: false,
+
+      success: function(data){
+        $("#showMealCategoryDivID").dialog({
+          model: true,
+          height: 'auto',
+          width: 'auto',
+          title: "Show Meal Category",
+          open: function(){
+            $(this).html(data);
+          }
+        })
+      }
+    })
+  });
+
+  $(document).on("click",".edit-meal-category",function(e){   
+    e.preventDefault();  
+    var showID = $(this).attr('id');
+    var id = showID.split("-"); 
+    var urlLink = "/canteen_managements/"+id[0]+"/edit_meal_category";
+    $.ajax({
+      url: urlLink,
+      cache: false,
+
+      success: function(data){
+        $("#editMealCategoryDivID").dialog({
+          model: true,
+          minHeight: 'auto',
+          minWidth: 'auto',
+          title: "Edit Meal Category",
+          open: function(){
+            $(this).html(data);
+          }
+        })
+      }
+    })
+  });
+
+
+
+  $(document).on("click",".delete-meal-category",function(){
+    var delteID = $(this).attr('id');
+    var id = delteID.split("-");
+    var urlLink = "/canteen_managements/delete_meal_category/"+id[0];
+    var result=confirm("Are you sure to delete?");
+    if(result){
+      window.location = urlLink;
+    }
+  }); 
+</script>

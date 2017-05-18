@@ -1,0 +1,9 @@
+<h4 class="mg-h4"><%=t('payslip_list')%></h4>
+<%if @payslip!="not_generated"%>
+	<%=render partial: 'show'%><br>
+	<p class="mg-p-mgtop">
+						<%= link_to t('save_pdf'), {:controller=>'payslips',:action=>"generate_payslip_pdf",:id=>"#{@payslip_components.mg_employee_id},#{@payslip_components.year}-#{@payslip_components.month}-01,#{@payslip_components.id}"} ,:class=>"mg-small-form-btn"%>  <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+					</p>
+<%else%>
+<h5>Payslip Not yet generated</h5>
+<%end%>

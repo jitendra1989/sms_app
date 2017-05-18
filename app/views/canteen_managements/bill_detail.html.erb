@@ -1,0 +1,85 @@
+<%= render partial: 'canteen_management_left' %>
+<% navigation_add t('bill_detail'), :controller=>'canteen_managements', :action=>'bill_detail' %>
+<h4 class="mg-h4"><%= t('bill_detail') %></h4>
+<%= link_to t('add_bill_detail'), {:controller=>'canteen_managements',:action=>'new_bill_genereate'}, {:class=>"mg-small-form-btn"} %>
+<%if @bill_detail.present? %>
+  <div class="mg_pagination">
+    <table class="batch-tbl mg-tbl-margin table-batchs-tbl">
+      <tr class="subject-table-header">
+        <th><%= t('Student/Employee Name') %></th>
+        <th><%= t('Admission/Employee No.') %></th>
+        <th><%= t('Programme/Department Name') %></th>
+        <th><%= t('actions') %></th>  
+      </tr>
+      <% @bill_detail.each do |f| %>
+        <%if f.user_type=="student"%>
+          <%student_detail=MgStudent.find_by(:id=>f.mg_student_id)%>
+          <%student_or_employee_name=student_detail.try(:first_name) +" "+student_detail.try(:last_name)%>
+          <%student_or_employee_number=student_detail.try(:admission_number)%>
+          <%betch_obj=MgBatch.find_by(:id=>f.mg_batch_id)%>
+          <%programme_or_department_name=betch_obj.try(:course_batch_name)%>
+        <%else%>
+          <%employee_detail=MgEmployee.find_by(:id=>f.mg_employee_id)%>
+          <%student_or_employee_name=employee_detail.try(:first_name) +" "+employee_detail.try(:last_name)%>
+          <%student_or_employee_number=employee_detail.try(:employee_number)%>
+          <%dept_object=MgEmployeeDepartment.find_by(:id=>f.mg_employee_department_id)%>
+          <%programme_or_department_name=dept_object.try(:department_name)%>
+        <%end%>
+      <tr>
+        <td class="mg-capitalize-text mg-align-center"><%=student_or_employee_name%> </td>
+        <td class="mg-capitalize-text mg-align-center"><%=student_or_employee_number%> </td>
+        <td class="mg-capitalize-text mg-align-center"><%=programme_or_department_name%> </td>
+        
+        <td class="mg-align-center">
+          <button title="show" id="<%= raw f.id %>-showexmBTNID" class="show-canteen-bill-details-btn mg-icon-btn"><i class="fa fa-eye"></i></button>
+          <button title="Edit" id="<%= raw f.id %>-editexmBTNID" class="edit-canteen-bill-details-btn mg-icon-btn"><i class="fa fa-pencil-square-o"></i></button>
+          <button title="<%= t('delete') %>" id="<%= raw f.id %>-deleteexmBTNID" class="delete-canteen-bill-details-btn mg-icon-btn"><i class="fa fa-trash"></i></button>
+          <button title="Generate Bill" id="<%= raw f.id %>-showexmBTNID" class="generate-canteen-bill-details-pdf mg-icon-btn"><i class="fa fa-file-pdf-o"></i></button>
+        </td>
+      </tr> 
+      <% end %>
+    </table>
+    <div class="pagination-align" style="position: relative; bottom: 00px;">
+      <%= will_paginate @bill_detail, :container => false %>
+    </div>
+  </div>
+<%else%>
+  <%="Bill details not created"%>
+<%end%>
+
+<div id="newBillDetailsDivID"></div>
+<div id="showBillDetailsDivID"></div>
+<div id="editBillDetailsDivID"></div>
+
+<%= render  partial: 'application/common_left_close' %>
+
+
+<script>
+  $(document).ready(function(){   
+    focusCurrentTab("canteenBillGenerateAID","canteenBillGenerateLID");
+  });
+
+  $(document).on("click",".delete-canteen-bill-details-btn",function(){
+    var delteID = $(this).attr('id');
+    var id = delteID.split("-");
+    var urlLink = "/canteen_managements/delete_bill_detail/"+id[0];
+    var result=confirm("Are you sure to delete?");
+    if(result){
+      window.location = urlLink;
+    }
+  }); 
+
+  $(document).on("click",".edit-canteen-bill-details-btn",function(){
+    var editID = $(this).attr('id');
+    var id = editID.split("-");
+    var urlLink = "/canteen_managements/edit_bill_detail/"+id[0];
+    window.location = urlLink;
+  }); 
+
+  $(document).on("click",".show-canteen-bill-details-btn",function(){
+    var editID = $(this).attr('id');
+    var id = editID.split("-");
+    var urlLink = "/canteen_managements/show_bill_detail/"+id[0];
+    window.location = urlLink;
+  }); 
+</script>

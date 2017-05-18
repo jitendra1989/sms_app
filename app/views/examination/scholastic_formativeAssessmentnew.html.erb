@@ -1,0 +1,72 @@
+<!-- breadcrumbs Work -->
+<!-- comments -->
+<% navigation_add 'Examinations', examinations_path %>
+<% navigation_add 'CCE', examination_cce_new_path %>
+<% navigation_add 'Scholastic Settings', examination_scholastic_index_path %>
+<% navigation_add 'Assessment', examination_scholastic_formativeAssessmentnew_path %>
+<!-- breadcrumbs Work -->
+
+
+<%= render  partial: 'examination_table_left' %>
+<h4 class="mg-h4">Assessment Groups</h4>
+<div>
+	<table>
+		<tr>
+			<td class="mg-exam-td-width" valign="top">
+				<button class="scholastics-settings-data mg-custom-form-btn">New</button>
+			</td>
+
+
+			<td id="assessment_group_id">
+
+            </td>
+           <td id="assessment_group_newDatasEdit">
+
+           </td>
+
+			</table>
+
+
+
+<table class="batch-tbl mg-tbl-margin" cellspacing="0" style="padding:0; border-collapse:collapse;">
+
+ 
+<%if  @observation[0].to_s.empty? %>
+<h5><%="No Records Found"%></h5>
+<%else%>
+
+  <tr>
+    <th>Grade</th>
+    <th>Exam Category</th>
+   
+    <th><%=t('actions')%></th>
+  </tr>
+  <% @observation.each do |data| %>
+  
+
+ 
+<%@dataa=MgCceExamCategory.find(data.mg_cce_exam_category_id)%>
+
+    <tr>
+      <td><a href="/examination/scholastic_formativeCriteriaIndex/<%=raw data.id%>" class="scholastic-show-class"><%= data.name %></a></td>
+      <td><a href="/examination/scholastic_formativeCriteriaIndex/<%=raw data.id%>" class="scholastic-show-class"><%= @dataa.name %></a></td>  
+
+      <td>
+        <a title="Edit" href="#" id=<%=raw data.id%> class="scholastic-edit-class"><button class="mg-text-exam mg-icon-btn"><i class="fa fa-pencil-square-o"></i></button></a>
+        <a title="Delete" href="#" id=<%=raw data.id%> class="scholastic-delete-class"><button class="mg-text-exam mg-icon-btn"><i class="fa fa-trash"></i></button></a>
+      </td>
+    </tr>
+  <% end %>
+  <%end%>
+</table>
+</div>
+<%= render  partial: 'examination_table_close' %><br/>
+
+
+<script type="text/javascript">
+  $(document).ready(function() {
+        focusCurrentTab("viewStudentListAId","viewStudentListLiId");
+        focusExaminationHeaderBox();
+  });
+
+</script>

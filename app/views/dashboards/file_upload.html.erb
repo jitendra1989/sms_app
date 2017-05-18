@@ -1,0 +1,332 @@
+
+
+<%= render partial: 'dashboards/employee_left' %>
+<button id="newFileUploadID">New file</button><br>
+<button id="creatFolderForFileUPloadID" >Creat Folder</button><br>
+
+<div>
+<!-- <ul class="tree" role="tree" id="myTree">
+  <li class="tree-branch hide" data-template="treebranch" role="treeitem" aria-expanded="false">
+    <div class="tree-branch-header">
+      <button class="tree-branch-name">
+        <span class="glyphicon icon-caret glyphicon-play"></span>
+        <span class="glyphicon icon-folder glyphicon-folder-close"></span>
+        <span class="tree-label"></span>
+      </button>
+    </div>
+    <ul class="tree-branch-children" role="group"></ul>
+    <div class="tree-loader" role="alert">Loading...</div>
+  </li>
+  <li class="tree-item hide" data-template="treeitem" role="treeitem">
+    <button class="tree-item-name">
+      <span class="glyphicon icon-item fueluxicon-bullet"></span>
+      <span class="tree-label"></span>
+    </button>
+  </li>
+</ul>
+</div> -->
+
+
+<!-- <ul id="myTree" role="tree" class="tree">
+        <li aria-expanded="false" role="treeitem" data-template="treebranch" class="tree-branch hide">
+          <div class="tree-branch-header">
+            <button class="tree-branch-name">
+              <span class="glyphicon icon-caret glyphicon-play"></span>
+              <span class="glyphicon icon-folder glyphicon-folder-close"></span>
+              <span class="tree-label"></span>
+            </button>
+          </div>
+          <ul role="group" class="tree-branch-children"></ul>
+          <div role="alert" class="tree-loader hide">Loading...</div>
+        </li>
+        <li role="treeitem" data-template="treeitem" class="tree-item hide">
+          <button class="tree-item-name">
+            <span class="glyphicon icon-item fueluxicon-bullet"></span>
+            <span class="tree-label"></span>
+          </button>
+        </li>
+      <li aria-expanded="true" role="treeitem" class="tree-branch tree-open" id="folder1" aria-labelledby="folder1-label">
+          <div class="tree-branch-header">
+            <button class="tree-branch-name">
+              <span class="glyphicon icon-caret glyphicon-play"></span>
+              <span class="glyphicon icon-folder glyphicon-folder-open"></span>
+              <span class="tree-label" id="folder1-label">Ascending and Descending</span>
+            </button>
+          </div>
+          <ul role="group" class="tree-branch-children"><li aria-expanded="false" role="treeitem" class="tree-branch" id="folder1" aria-labelledby="folder1-label">
+          <div class="tree-branch-header">
+            <button class="tree-branch-name">
+              <span class="glyphicon icon-caret glyphicon-play"></span>
+              <span class="glyphicon icon-folder glyphicon-folder-close"></span>
+              <span class="tree-label" id="folder1-label">Ascending and Descending</span>
+            </button>
+          </div>
+          <ul role="group" class="tree-branch-children"></ul>
+          <div role="alert" class="tree-loader hide">Loading...</div>
+        </li><li role="treeitem" class="tree-item tree-selected" id="item1" aria-labelledby="item1-label" data-icon="glyphicon glyphicon-file">
+          <button class="tree-item-name">
+            <span class="icon-item glyphicon glyphicon-file"></span>
+            <span class="tree-label">Sky and Water I (with custom icon)</span>
+          </button>
+        </li><li aria-expanded="false" role="treeitem" class="tree-branch" id="folder2" aria-labelledby="folder2-label">
+          <div class="tree-branch-header">
+            <button class="tree-branch-name">
+              <span class="glyphicon icon-caret glyphicon-play"></span>
+              <span class="glyphicon icon-folder glyphicon-folder-close"></span>
+              <span class="tree-label" id="folder2-label">Drawing Hands</span>
+            </button>
+          </div>
+          <ul role="group" class="tree-branch-children"></ul>
+          <div role="alert" class="tree-loader hide">Loading...</div>
+        </li><li role="treeitem" class="tree-item" id="item2" aria-labelledby="item2-label">
+          <button class="tree-item-name">
+            <span class="glyphicon icon-item fueluxicon-bullet"></span>
+            <span class="tree-label">Waterfall</span>
+          </button>
+        </li><li aria-expanded="false" role="treeitem" class="tree-branch" id="folder3" aria-labelledby="folder3-label">
+          <div class="tree-branch-header">
+            <button class="tree-branch-name">
+              <span class="glyphicon icon-caret glyphicon-play"></span>
+              <span class="glyphicon icon-folder glyphicon-folder-close"></span>
+              <span class="tree-label" id="folder3-label">Belvedere</span>
+            </button>
+          </div>
+          <ul role="group" class="tree-branch-children"></ul>
+          <div role="alert" class="tree-loader hide">Loading...</div>
+        </li><li role="treeitem" class="tree-item" id="item3" aria-labelledby="item3-label" data-icon="glyphicon glyphicon-picture">
+          <button class="tree-item-name">
+            <span class="icon-item glyphicon glyphicon-picture"></span>
+            <span class="tree-label">Relativity (with custom icon)</span>
+          </button>
+        </li><li aria-expanded="false" role="treeitem" class="tree-branch" id="folder4" aria-labelledby="folder4-label">
+          <div class="tree-branch-header">
+            <button class="tree-branch-name">
+              <span class="glyphicon icon-caret glyphicon-play"></span>
+              <span class="glyphicon icon-folder glyphicon-folder-close"></span>
+              <span class="tree-label" id="folder4-label">House of Stairs</span>
+            </button>
+          </div>
+          <ul role="group" class="tree-branch-children"></ul>
+          <div role="alert" class="tree-loader hide">Loading...</div>
+        </li><li role="treeitem" class="tree-item" id="item4" aria-labelledby="item4-label">
+          <button class="tree-item-name">
+            <span class="glyphicon icon-item fueluxicon-bullet"></span>
+            <span class="tree-label">Convex and Concave</span>
+          </button>
+        </li></ul>
+          <div role="alert" class="tree-loader hide">Loading...</div>
+        </li><li role="treeitem" class="tree-item" id="item1" aria-labelledby="item1-label" data-icon="glyphicon glyphicon-file">
+          <button class="tree-item-name">
+            <span class="icon-item glyphicon glyphicon-file"></span>
+            <span class="tree-label">Sky and Water I (with custom icon)</span>
+          </button>
+        </li><li aria-expanded="false" role="treeitem" class="tree-branch" id="folder2" aria-labelledby="folder2-label">
+          <div class="tree-branch-header">
+            <button class="tree-branch-name">
+              <span class="glyphicon icon-caret glyphicon-play"></span>
+              <span class="glyphicon icon-folder glyphicon-folder-close"></span>
+              <span class="tree-label" id="folder2-label">Drawing Hands</span>
+            </button>
+          </div>
+          <ul role="group" class="tree-branch-children"></ul>
+          <div role="alert" class="tree-loader hide">Loading...</div>
+        </li><li role="treeitem" class="tree-item" id="item2" aria-labelledby="item2-label">
+          <button class="tree-item-name">
+            <span class="glyphicon icon-item fueluxicon-bullet"></span>
+            <span class="tree-label">Waterfall</span>
+          </button>
+        </li><li aria-expanded="false" role="treeitem" class="tree-branch" id="folder3" aria-labelledby="folder3-label">
+          <div class="tree-branch-header">
+            <button class="tree-branch-name">
+              <span class="glyphicon icon-caret glyphicon-play"></span>
+              <span class="glyphicon icon-folder glyphicon-folder-close"></span>
+              <span class="tree-label" id="folder3-label">Belvedere</span>
+            </button>
+          </div>
+          <ul role="group" class="tree-branch-children"></ul>
+          <div role="alert" class="tree-loader hide">Loading...</div>
+        </li><li role="treeitem" class="tree-item" id="item3" aria-labelledby="item3-label" data-icon="glyphicon glyphicon-picture">
+          <button class="tree-item-name">
+            <span class="icon-item glyphicon glyphicon-picture"></span>
+            <span class="tree-label">Relativity (with custom icon)</span>
+          </button>
+        </li><li aria-expanded="false" role="treeitem" class="tree-branch" id="folder4" aria-labelledby="folder4-label">
+          <div class="tree-branch-header">
+            <button class="tree-branch-name">
+              <span class="glyphicon icon-caret glyphicon-play"></span>
+              <span class="glyphicon icon-folder glyphicon-folder-close"></span>
+              <span class="tree-label" id="folder4-label">House of Stairs</span>
+            </button>
+          </div>
+          <ul role="group" class="tree-branch-children"></ul>
+          <div role="alert" class="tree-loader hide">Loading...</div>
+        </li><li role="treeitem" class="tree-item tree-selected" id="item4" aria-labelledby="item4-label">
+          <button class="tree-item-name">
+            <span class="glyphicon icon-item glyphicon-ok"></span>
+            <span class="tree-label">Convex and Concave</span>
+          </button>
+        </li></ul> -->
+
+ 
+<h1>Listing Files</h1>
+ <table  class="batch-tbl">   <!-- border="2" --> 
+    <tr class="subject-table-header">
+      <th>file Name</th>
+      <!-- <th>Employee Name</th> -->
+      <th>File Name</th>
+      <th>Action</th>
+      <!-- <th>Action</th> -->
+      <!-- <th>Action</th> -->
+
+    </tr>
+ 
+
+  <tbody>
+	<% @document_managements.each do |user| %>
+      <tr>
+        <td><%= user.name %></td>
+        <!-- <td><%#= user.mg_employee_id%></td> -->
+		<!-- display the avatar in both the original size and the thumbnail size -->
+		<!-- <td><%#= image_tag user.avatar.url %></td> -->
+		<!-- <td><%#= image_tag user.avatar.url(:thumb) %></td> -->
+    <!-- <td><%#= link_to_if user.resume.url, 'download image', user.avatar.url %></td> -->
+
+		
+		<!-- show the filename for the resume -->
+        <td><%= user.file_file_name %></td>
+        <!-- <td><%#=  user.resume.url %></td> -->
+        <!-- <td><%#=open(user.resume.url).read%></td> -->
+        <td><%= link_to_if user.file.url, 'download', user.file.url %>
+        <button id="<%=user.id%>-deleteFileUploadID" class="delete-folder-for-file-UPloadID">delete</button></td>
+       <!--  <th><%#=link_to image_tag(user.avatar.url(:thumb)), user.resume.url(:original), :popup=>['original_file', 'height=700,width=900'] %></th> -->
+       <!-- <th><%#=link_to image_tag(user.avatar.url(:thumb)), user.avatar.url(:original), :popup=>['original_image', 'height=700,width=900'] %></th>
+ -->
+		
+
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+<!--  -->
+
+
+<div id="newFileUploadDivID"> </div>
+<%= render partial: 'application/common_left_close' %>
+
+<script type="text/javascript">
+$(document).on("click", "#newFileUploadID", function(e){
+
+        var urlLink = "/dashboards/file_upload_new";
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(html){
+                  $('#newFileUploadDivID').dialog({
+                    modal: true,
+                    minHeight: 'auto',
+                    title: "Edit Event Types",
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+});
+
+$(document).on("click", "#creatFolderForFileUPloadID", function(e){
+
+        var urlLink = "/dashboards/new_folder";
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(html){
+                  $('#newFileUploadDivID').dialog({
+                    modal: true,
+                    minHeight: 'auto',
+                    title: "Create New Folder",
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+});
+
+$(document).on("click", ".edit-event-type-btn", function(e){
+        var myID =$(this).attr('id');
+
+        var urlLink = "/event_types/"+myID+"/edit/";
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(html){
+                  $('#editEventTypeDIVID').dialog({
+                    modal: true,
+                    minHeight: 'auto',
+                    title: "Create New Folder",
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+});
+
+$(document).on("click", ".show-event-type-btn", function(e){
+        var myID =$(this).attr('id');
+
+        var urlLink = "/event_types/"+myID;
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(html){
+                  $('#showEventTypeDIVID').dialog({
+                    modal: true,
+                    minHeight: 'auto',
+                    title: "Show Event Types",
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+});
+
+
+$(document).on("click", ".delete-folder-for-file-UPloadID", function(e){
+     
+                var myID =$(this).attr('id');
+                var splString = myID.split("-");
+                var retVal = confirm("Are you sure to delete?");
+                if(retVal){
+                  //  alert(retVal);
+                     var urlLink = "/dashboards/file_upload_delete/"+splString[0];
+
+                      $.ajax({
+                        url: urlLink ,
+                        cache: false,
+                        success: function(html){
+                           window.location.reload();
+                                       
+                        }
+                    });
+
+                }else{
+                   // alert(retVal);     
+                   return false;
+                }
+
+        }); 
+</script>
+
+<style type="text/css">
+
+</style>

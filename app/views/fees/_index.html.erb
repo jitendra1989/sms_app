@@ -1,0 +1,69 @@
+<!-- Sec --> 
+<h4 class="mg-h4"><%= t('fee_category') %></h4>
+<div>
+
+<button id='createNewFeeCategoryID'  class="mg-custom-form-btn">Create Fee Category </button>
+<% if @subjects.length > 0 %>
+
+    <table class="batch-tbl mg-tbl-margin mg-tbl-layout" >   <!-- border="2" --> 
+      <tr >
+        <th>Name</th>
+        <th>Description</th>
+            
+        <th align="center"><%=t("actions")%></th>
+
+      </tr>
+      <% @subjects.each_with_index do |sub| %>
+      <tr>
+        <td><%= sub.name %></td>
+        <td><%= sub.description %></td>
+                   
+
+        <td>
+            <button title="Show" id='<%=sub.id %>' class="show_class mg-icon-btn"><i class="fa fa-eye"></i></button> 
+            <button title="Edit" id='<%=sub.id %>' class="edit_class mg-icon-btn"><i class="fa fa-pencil-square-o"></i></button>
+            
+            <span >
+            <%= link_to "<i class=\"fa fa-trash\"></i>".html_safe,{ action: "delete_fee_category", id: sub.id },
+                method: :delete, data: { confirm: "Are you sure?" } ,:title=>"Delete" ,:class=>"mg-icon-btn-link"%> 
+            </span>
+            <span >
+            <%= link_to "<i class=\"fa fa-wrench\"></i>".html_safe, financeFee_path(sub) ,:title=>"Manage Particulars" ,:class=>"mg-icon-btn-link"%>                     
+            </span>
+        </td>
+            
+
+                    
+      </tr>
+      <% end %>
+    </table>
+
+<% else %>
+  <h5>Please create some Fee Category... </h5>
+
+<% end %>
+<div id="createFeeCategoryDivID"></div>
+<div id="editFeeCaregoryDivID"></div>
+</div>
+<script type="text/javascript">
+      
+
+      $(document).ready(function () {
+          $(".content-tab").tabs();
+
+
+            // Removing class from Li
+        $("li").removeClass( "active" );
+        $("a").removeClass( "activeMenu" );
+
+            // Adding class 
+        $("#viewFeeListLiID").addClass( "active" );
+        $("#viewFeeList").addClass( "activeMenu" );
+
+        focusFees();
+
+
+    });
+
+</script>
+

@@ -1,0 +1,158 @@
+<!-- Sec --> 
+<%= form_for :student_attendances,:url=>{:controller=>'hostel_management',:action=>"update"},:html=>{:id=>"studentAttendanceFormId"}, method: :patch do |f|%>
+<%#= form_for :employees_attendances , url: employees_attendance_path(@employees_attendances),  :html => {:id => 'employeeAttendancesFormID'}, method: :patch do |f| %>
+  <%=hidden_field_tag "update_attendance", @update_attendance%>
+
+  <%= f.label :is_late_come, t('islatecome') ,:class=> "mg-label"%>
+  <%if @update_attendance=="morning_attendance"%>
+    <%=puts"000000000000000000000000000000"%>
+    <%=puts @update_attendance%>
+    <%=puts"000000000000000000000000000000"%>
+    <% if @student_attendances.is_late_come%> 
+      <script type="text/javascript">
+        $(document).ready(function () {
+          $("#employeeAttendenceEditID").toggle();
+          $("#lateVomeTimeEditID").toggle();
+        });
+      </script>
+    <%end%>
+  <%else%>
+    <% if @student_attendances.is_evening_late_come%> 
+      <%=puts"11111111111111111111111111"%>
+      <%=puts @update_attendance%>
+      <%=puts"11111111111111111111111111"%>
+      <script type="text/javascript">
+        $(document).ready(function () {
+          $("#employeeAttendenceEditID").toggle();
+          $("#lateVomeTimeEditID").toggle();
+        });
+      </script>
+    <%end%>
+  <%end%>
+        <!-- <input id="emp_attendances_latecom" type="checkbox"  > -->
+  <%if @update_attendance=="morning_attendance"%>
+    <%= f.check_box :is_late_come,:onclick=>"toggleLateCome();" %>
+  <%else%>
+    <%= f.check_box :is_evening_late_come,:onclick=>"toggleLateCome();" %>
+  <%end%>
+  <div id="employeeAttendenceEditID">
+    <p>
+      <!-- <%#= f.label :Leave_Type , t('leavetype'),:class=> "mg-label"%><span class="required-field"> *</span>  <br> -->
+      <%#= f.collection_select(:mg_leave_type_id, @leave_types, :id, :leave_name,  {:include_blank => t('select')} ,:class=>"mg-select-btn")  %>
+      <%#= f.hidden_field :is_halfday, :value => false ,:id=>"emp_halfdayfield"%>
+    </p>
+    <p> 
+      <%#= f.label :is_halfday, t('ishalfday') ,:class=> "mg-label"%>    
+      <%#=f.check_box :is_halfday , :onclick=>"toggleAll();"%>
+    </p> 
+      <%#= f.hidden_field :is_afternoon, :value => false ,:id=>"emp_afternoonfield"%>
+      <%# if @employees_attendances.is_halfday%> 
+        <script type="text/javascript">
+          // $(document).ready(function () {
+            // $("#whatever").toggle();
+          // });
+        </script>
+      <%#end%>
+    <p>
+      <div id="whatever" style="display:none">
+        <%#= f.label :morning , t('morning') ,:class=> "mg-label"%>
+        <%#= f.radio_button :is_afternoon, false%>
+        <%#= f.label :afternoon, t('afternoon'),:class=> "mg-label"%>
+        <%#= f.radio_button :is_afternoon, true%>
+      </div>
+    </p>
+
+    <p>
+      <%= f.label :absent_without_notice , t('absentwithoutnotice'),:class=> "mg-label" %>
+      <%= f.check_box :absent_without_notice %>
+    </p>
+    <p>
+      <%= f.label :morning_reason , t('reason'),:class=> "mg-label"%><span class="required-field"> *</span></br>
+      <%if @update_attendance=="morning_attendance"%>
+        <%= f.text_area :morning_reason ,:class=>"mg-text-field"%>
+      <%else%>
+        <%= f.text_area :evening_reason ,:class=>"mg-text-field"%>
+      <%end%>
+    </p>
+  </div>
+  <%= f.hidden_field :id %> 
+  <%= f.hidden_field :mg_hostel_detail_id %>  
+  <%#= f.hidden_field :mg_employee_department_id %>  
+  <%= f.hidden_field :mg_wing_id %>  
+  <%= f.hidden_field :mg_student_id %>
+  <%= f.hidden_field :absent_date %>
+  <%#= f.hidden_field :is_approved, :value=>0%>
+  <%= f.hidden_field :is_deleted, :value => 0 %>
+  
+  <%= f.hidden_field :updated_by, :value=>session[:user_id]%>
+
+  
+  <div id="lateVomeTimeEditID" style="display:none">
+    <p>
+      <%= f.label :morning_late_reason , t('reason'),:class=> "mg-label"%><span class="required-field"> *</span></br>
+      <%if @update_attendance=="morning_attendance"%>
+        <%= f.text_area :morning_late_reason ,:class=>"mg-text-field"%>
+      <%else%>
+        <%= f.text_area :evening_late_reason ,:class=>"mg-text-field"%>
+      <%end%>
+    </p>
+    <p>
+      <%= f.label :time , t('time'),:class=> "mg-label"%><span class="required-field"> *</span></br>
+      <%if @update_attendance=="morning_attendance"%>
+        <%= f.text_field :time ,:class=>"mg-text-field"%>
+      <%else%>
+        <%= f.text_field :evening_late_time ,:class=>"mg-text-field"%>
+      <%end%>
+    </p>
+  </div>
+  <%#@check=MgUser.where(:is_deleted=>0, :mg_school_id=>session[:current_user_school_id], :user_type=>'principal', :id=>session[:user_id])%>
+  <%# if @check.present?%>
+    <!-- <label class="mg-label"><%#= f.label :is_lock, "Unlock" %></label> -->
+    <%#=f.check_box :is_lock%>
+  <%# end %>
+<% end %>
+
+
+<%#if @check.present? || @employees_attendances.is_lock%>
+  <button id="mg_student_attendance_update_btn" class="btn btn-delete"><%=t('save')%></button>&nbsp;
+  <!-- <button id="mg_employee_attendance_update_btn" class="btn btn-delete"><%=t('save')%></button>&nbsp; -->
+  <button id="mg_student_attendance_clear_btn" class="btn btn-delete"><%=t('delete')%></button>
+  <button class="cancel-form-dialog btn btn-delete"><%= t('cancel') %></button>
+<%#else%>
+<%#end%>
+
+
+
+
+
+<script type="text/javascript">
+
+  $(document).on("click", "#cancelEditEmployeeAttendanceBTNID", function(e){
+    $(".ui-dialog-titlebar-close").click();
+  });
+
+  function toggleAll(){
+   //    alert("i'm in toggleAll function");
+    $("#whatever").toggle();
+    $(".no-of-days-employee-attendence").toggle();
+  }
+
+  function toggleLateCome(){
+    $("#employeeAttendenceEditID").toggle();
+    $("#lateVomeTimeEditID").toggle();
+  }
+
+
+  $(document).ready(function () {
+    $('#student_attendances_time').timepicker({ 'scrollDefault': 'now' });
+    $('#student_attendances_evening_late_time').timepicker({ 'scrollDefault': 'now' });
+
+    $("#employeeAttendancesFormID").validate({
+      rules: {
+      // "employees_attendances[leave_type]": {required: true},
+      "student_attendances[reason]": {required: true}
+      }
+    });
+  });
+
+</script>

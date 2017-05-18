@@ -1,0 +1,22 @@
+<%= form_for(@user) do |f| %>
+
+
+
+  <div class="field">
+    <%= f.label :name %><br>
+    <%= f.text_field :name %>
+  </div>
+  <!-- Upload your attachments via a simple file_fields in the form -->
+  <div class="field">
+    <%= f.label :file %><br>
+    <%= f.file_field :file %>
+  </div>
+
+
+
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>
+
+<button class="cancel-form-dialog mg-small-form-btn"><%= t('cancel') %></button>

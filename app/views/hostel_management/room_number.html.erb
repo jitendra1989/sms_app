@@ -1,0 +1,20 @@
+ <%# if @action=='new'%>
+<%#=select_tag :mg_hostel_room_id,options_for_select(@room),{include_blank: false,:prompt=>"Select",:onchange => 'student();',:class=> 'mg-text-field'}%>
+
+<%# else %>
+<%#=select_tag :mg_hostel_room_id,options_for_select(@room),{include_blank: false,:prompt=>"Select",:onchange => 'student();',:class=> 'mg-text-field'}%>
+
+
+<%#end%>
+
+
+<p>
+
+	<%#=label_tag 'select_floor_id', t('select_floor_id'), class: 'mg-label mg-rm-text-trans' %><!-- <span class="required-field"> *</span><br> -->
+	<% if params[:room_id].present?%>
+		<%=select_tag :mg_hostel_room_id,options_for_select(@room,:selected=>@room_data.id),:prompt=>"Select",:onchange=>"student()"%>
+	<%else%>
+		<%=select_tag :mg_hostel_room_id,options_for_select(@room),{include_blank: false,:prompt=>"Select",:onchange => 'student();',:class=> 'mg-text-field'}%>
+	<%end%>
+
+</p>

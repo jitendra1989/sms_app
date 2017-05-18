@@ -1,0 +1,211 @@
+<% navigation_add t('query_record'), :controller=>'front_office_management' ,:action=> 'query_record_index' %>
+<% navigation_add t('add_query'), :controller=>'front_office_management' ,:action=> 'query_record_new' %>
+<%if session[:user_type]=="principal"%>
+  <%= render partial: 'dashboards/principle_dashboard_left' %>
+<%else%>
+  <%=render partial: 'front_office_management_left'%>
+<%end%>
+<h4 class="mg-h4"><%=t('add_query')%></h4>
+
+<%= form_for :query_record_type ,:url=> {:action=>'query_record_create' }, :html=>{:id=>"query_record_new_id"} do |f| %>
+<table cellspacing="0" cellpadding="0" border="0" class="employee-form-cls mg-table-spacing">
+  <%= f.hidden_field :is_deleted, :value => 0 %>
+  <%= f.hidden_field :mg_school_id, :value => session[:current_user_school_id] %>
+  <%= f.hidden_field :created_by, :value => session[:user_id] %>
+  <%= f.hidden_field :updated_by, :value => session[:user_id] %>
+  <%=hidden_field_tag :submit_button, :value => "" %>
+<tr><td width="33%" valign="top">
+  <!-- <p> -->
+  	<%= f.label :query_number, t('query_number') ,:class=>"mg-label"%><span class="required-field"> *</span><br>
+      <%= f.text_field :query_number ,:value=>"#{Date.today
+      }_#{@data}",:readonly=>true, :class=>'query-number-joining-date-picker', :class=>"mg-text-field"%>
+      <%=f.hidden_field :date_of_query,:value=>Date.today%>
+  <!-- </p> -->
+</td>
+<td width="33%" valign="top">
+  <!-- <p> -->
+  	<%= f.label :caller_name, t("name") ,:class=>"mg-label"%><span class="required-field"> *</span><br>
+      <%= f.text_field :caller_name, :class=>"mg-text-field"%>
+  <!-- </p> -->
+</td></tr>
+<tr><td width="33%" valign="top">
+  <!-- <p> -->
+  	<%= f.label :phone_number, t("phone_number") ,:class=>"mg-label"%><span class="required-field"> *</span>&nbsp;<%= tooltip '<i class="fa fa-question"></i>'.html_safe, { :tooltip => 'Can enter digits only. No arbitrary symbols like -,*,#,etc are allowed. Phone Number should not be initialised with 0, eg: If your number is 06542-2651XX, then enter it like 65422651XX. No need to mention \'0\' in the beginning.' }, :class => 'mytooltip mg-icon-btn' ,:style=>"font-size: 0.85em;"%><br/>
+      <%= f.text_field :phone_number, :class=>"mg-text-field"%>
+  <!-- </p> -->
+  </td>
+  <td width="33%" valign="top">
+
+  <!-- <p > -->
+  	<%= f.label :mg_caller_category_fom_id, t("request_type") ,:class=>"mg-label"%><span class="required-field"> *</span><br/>
+
+    <% request_type_data=MgCallerCategoryFom.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:name,:id) 
+    %> 
+    <%= f.select :mg_caller_category_fom_id,options_for_select(request_type_data),:prompt=> "Select"%>
+  <!-- </p> -->
+  </td>
+  </tr>
+  <tr><td width="33%" valign="top">
+   <!-- <p> -->
+    <%= f.label :mg_fom_query_record_id, t("query_type") ,:class=>"mg-label mg-rm-text-trans"%><span class="required-field"> *</span><br>
+    <% type_of_query_data = MgFomQueryRecord.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:name,:id) %>
+    <%= f.select :mg_fom_query_record_id, options_for_select(type_of_query_data) , :prompt=>"Select"%>
+  <!-- </p> -->
+
+  
+  </td>
+  <td width="33%" valign="top">
+  <!-- <p> -->
+    <%= f.label :mg_caller_category_id, t("caller_category") ,:class=>"mg-label mg-rm-text-trans"%><span class="required-field"> *</span><br>
+    <% caller_category = MgCallerCategory.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:name,:id) %>
+    <%= f.select :mg_caller_category_id, options_for_select(caller_category) , :prompt=>"Select"%>
+  <!-- </p> -->
+  </td>
+  </tr>
+  <tr><td width="33%" valign="top">
+
+<!-- <p> -->
+    <%= f.label :query, t("query") ,:class=>"mg-label"%><span class="required-field"> *</span><br>
+      <%= f.text_area :query, :class=>"mg-text-field"%>
+  <!-- </p> -->
+  </td><td width="33%" valign="top">
+
+  <!-- <p> -->
+  	<%= f.label :response_given, t("response_given") ,:class=>"mg-label"%><span class="required-field"> *</span><br>
+      <%= f.text_area :response_given, :class=>"mg-text-field" %>
+  <!-- </p> -->
+  </td></tr>
+  <tr><td width="33%" valign="top">
+
+  <!-- <p> -->
+  	<%= f.label :follow_up_action, t("follow-up_action") ,:class=>"mg-label"%><br>
+      <%= f.text_area :follow_up_action, :class=>"mg-text-field"%>
+  <!-- </p> -->
+  </td>
+  <td width="33%" valign="top">
+
+  <!-- <p> -->
+  	<%= f.label :action_required, t("action_required") ,:id=> "action_id",:class=>"mg-label" ,disabled: true%><br>
+
+
+    <%=f.collection_select(:action_required, MgActionRequired.where(:is_deleted=>0, :mg_school_id=>session[:current_user_school_id]), :id, :action_required, {:include_blank => 'Select'} ,:class=>"mg-select-btn", disabled: true) %>
+
+
+      <%#= f.text_area :action_required,:readonly=>true, :class=>"mg-text-field"%>
+  <!-- </p> -->
+  </td>
+  </tr>
+
+<tr>
+<td width="33%" valign="top">
+
+  <p class="mg-p-mgtop">
+
+    <%= f.submit t('save') ,:class=>"mg-small-form-btn query_record_submit_btn" , :style=>"display:none"%>
+
+
+    <a onclick="submission_criteria_for_save(); " class="input_field mg-small-form-btn "><%=t("Save")%></a>
+
+    <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+    <!-- <a onclick="submission_criteria_for_submit(); " class="input_field mg-small-form-btn "><%#=t("submit")%></a> -->
+
+    <!-- 
+    <a onclick="$(this).closest('form').submit()" value="submitting form" class="mg-small-form-btn cancel-form-dialog"><%#='Save'%></a>
+
+    <a  class="mg-small-form-btn"> <%#= t('save') %></a> -->
+
+    <%#= f.button  :submit , name: "subaction",value: "update"%>
+  </p>
+  </td></tr>
+  </table>
+<% end %>
+
+
+<%= render  partial: 'application/common_left_close' %>
+
+
+
+<script>
+$(document).ready(function () {
+	focusCurrentTab("query_recordAID","query_recordLiID");
+
+	dateFormatStr =  getJsDateFormat();
+  // if (query_date){
+  var query_date=$('#query_record_type_query_number').val();
+
+  // }
+	// console.log(query_date);
+
+	data=query_date.split("_");
+
+	// console.log(data);
+
+	var query_number =  $.datepicker.formatDate(dateFormatStr,new Date(data[0]));
+	// console.log(query_number);
+	
+	$('#query_record_type_query_number').val(query_number+"_"+data[1]);
+
+
+
+   $(function () {
+    $.validator.addMethod('dateFormat',
+    function (value, element) {
+      dateFormatStr =  getJsDateFormat();
+        if (this.optional(element)) {
+            return true;
+        }
+        var ok = true;
+        try {
+            $.datepicker.parseDate(dateFormatStr, value);
+        }
+        catch (err) {
+            ok = false;
+        }
+        return ok;
+    },
+      "Please enter a date in the format "+ getDateFormat(dateFormatStr) +".");
+      dateFormatStr =  getJsDateFormat();
+
+    $(".datefield").datepicker({ dateFormat: dateFormatStr, changeYear: true });
+});
+
+
+//alert("jyy");
+
+  $("#query_record_new_id").validate({
+
+    rules: { 
+      "query_record_type[caller_name]" : {required: true},
+      "query_record_type[phone_number]": {required: true, number: true, minlength: 10,maxlength: 10},
+      "query_record_type[mg_caller_category_fom_id]": {required: true},
+      "query_record_type[query]"     : {required: true},
+      "query_record_type[mg_fom_query_record_id]": {required: true},
+      "query_record_type[response_given]": {required: true},
+     // "query_record_type[follow_up_action]": {required: true},
+      "query_record_type[action_required]": {required: true},
+      "query_record_type[mg_caller_category_id]": {required: true}
+     },
+       messages: {
+        "query_record_type[phone_number]": {maxlength: "Please enter only  10 digits"}
+          }
+  });
+});
+
+
+
+
+
+
+function submission_criteria_for_save(){
+	$("#submit_button").attr("value" , "save");
+	$(".query_record_submit_btn").click();
+}
+
+function submission_criteria_for_submit(){
+	$("#submit_button").attr("value" , "submit");
+	$(".query_record_submit_btn").click();
+
+
+}
+
+</script>

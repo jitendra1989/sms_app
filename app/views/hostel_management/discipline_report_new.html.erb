@@ -1,0 +1,300 @@
+<% navigation_add t('discipline_report'), :controller=>'hostel_management', :action=>'discipline_report' %>
+<% navigation_add t('new_discipline_report'), :controller=>'hostel_management', :action=>'discipline_report_new' %>
+
+
+<%= render  partial: 'hostel_management_left' %>
+
+
+
+<h4 class="mg-h4"><%= t('discipline_report')%></h4>
+<%= form_for :discipline_report ,  :url=>{:controller=>'hostel_management',:action=>'discipline_report_create'}, :html=>{:id=>'hostel_rooms_data'} do |f| %>
+
+<table class="mg-tbl-margin mg-show-tbl-width">
+    <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="hostel_name"><%= t ('hostel_name') %></label><br/>
+        <%@hostel_warden=MgHostelWarden.find_by(:mg_user_id=>session[:user_id],:is_deleted=>0,:mg_school_id=>session[:current_user_school_id])%>
+        <%
+        hostel_details=MgHostelDetails.find_by(:id=>@hostel_warden.mg_hostel_details_id)
+
+        %>
+        <%= f.hidden_field :hostel_id ,:value=>@hostel_warden.mg_hostel_details_id%>
+
+        <%= text_field_tag :hostel_name ,hostel_details.try(:name),:readonly=>true,:class=>"mg-text-field"%>
+      </td>
+    </tr>
+<tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="date"><%= t ('date') %></label><br/>
+        
+        <%= f.hidden_field :date_of_report ,:value=>Date.today%>
+          <%@dateFormat = MgSchool.find_by(:id=>session[:current_user_school_id]).date_format %>
+        <%= text_field_tag :date_of_app ,Date.today.strftime(@dateFormat),:readonly=>true,:class=>"mg-text-field"%>
+      </td>
+    </tr>
+
+    <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="date"><%= t ('reason') %><span class="required-field">&nbsp;*</span></label><br/>
+        
+
+        <%= f.text_area :reason,:class=>"mg-text-field"%>
+      </td>
+    </tr>
+    <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="date"><%= t ('action_to_be_taken') %></label><br/>
+        
+
+        <%= f.text_area :action_to_be_taken,:readonly=>true,:class=>"mg-text-field"%>
+      </td>
+    </tr>
+    </table>
+<h4 class="mg-h4"><%= t('discipline_report')%></h4>
+<div id="attendanceCalendarScroll">
+
+  <table class="mg-tbl-margin mg-show-tbl-width mg-inner-table-align">
+    <tr>
+      <th>Select Floor</th>
+      <th></th>
+      <th></th>
+      <th>Select Room</th>
+      <th></th>
+      <th></th>
+      <th>Select Student</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th>Selected Student</th>
+      <th></th>
+    </tr>
+    <tr>
+      <td>
+        <%
+          hostel_data=MgHostelRoom.where(:is_deleted=>0, :mg_school_id=>session[:current_user_school_id],:mg_hostel_details_id=>@hostel_warden.mg_hostel_details_id).pluck(:mg_hostel_floor_id).uniq
+
+          floor_data=MgHostelFloor.where(:id=>hostel_data).pluck(:name,:id)
+        %>
+        <%=select_tag :notSelected, options_for_select(floor_data),:multiple => true,:size =>10, :class=>"mg-add-library-particular"%>
+      </td>
+      <td></td>
+      <td></td>
+      <td>
+        <!--  <a  id="addingdatas" class="mg-custom-form-btn mg-fee-btn">Select Dept</a>  -->
+        <%=select_tag :selectedEmployeesdata,options_for_select([]),:multiple => true,:size =>10 ,:class=>"mg-add-library-particular"%>
+      </td>
+      <td></td>
+      <td></td>
+      <td>
+        <%=select_tag :selectedEmployees,options_for_select([]),:multiple => true,:size =>10 ,:class=>"mg-add-library-particular"%>
+      </td>
+      <td style="padding-top: 124px;"><a  id="editaddingemployeedatas" class="mg-custom-form-btn mg-add-rem-btn" style="margin-left: 10px; margin-right: 10px;">Add</a> 
+      </td>
+      <td></td>
+      <td></td>
+      <td>
+        <%=select_tag :selected_employees,options_for_select([]),:multiple => true,:size =>10 ,:class=>"mg-add-library-particular"%>
+      </td>
+      <td style="padding-top: 124px;"><a  id="removingdata" class="mg-custom-form-btn mg-add-rem-btn" style="margin-left: 10px; margin-right: 10px;">Remove</a>
+      </td>
+    </tr>
+  </table>
+</div>
+<br/>
+<!-- <div id="attendanceCalendarScroll"> -->
+  <div id="attendanceTanleAppendDIVID">
+  </div>
+<!-- </div> -->
+<p>
+	
+<label class="mg-label" for="status"><%= t ('status') %></label><br/>
+        
+
+        <%=select_tag :status,options_for_select([["Open","Open"]]),:class=>"mg-text-field"%>
+
+</p>
+
+    <br/>
+    <p class="mg-p-mgtop">
+ <%#= f.submit t('save'), class: "submit mg-small-form-btn mg-custom-labels",:id=>"inputs_fields"%>
+ <a onclick="$(this).closest('form').submit()" class="inputsss_fieldsss mg-small-form-btn"><%=t("save")%></a>
+      <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+      </p>
+
+
+<%end%>
+
+
+<%= render  partial: 'application/common_left_close' %>
+
+
+
+
+
+
+
+<script>
+$(document).ready(function () {
+
+        focusCurrentTab("disciplane_listAID","disciplane_listLiID");
+        $("#hostel_rooms_data").validate({
+          rules: {     
+            "discipline_report[reason]": {required: true},
+            "selected_employees": {required: true}
+          }
+        });
+            
+    });
+
+$(document).on("click","#editaddingemployeedatas",function(e){
+
+
+ var demo=$("#selectedEmployees").val();
+ 
+ var texts=$("#selectedEmployees :selected").text();
+var text=texts.split("  ")
+ 
+ var array=[];
+
+$("#selected_employees option").each(
+
+function() {
+array.push(this.value);
+
+}
+
+);
+
+
+ for(var i=0;i<demo.length;i++)
+ {
+var a =false;
+
+for(var j=0;j<array.length;j++){
+  
+ if (demo[i]==array[j]){
+ a=true;
+  
+}
+
+}
+
+if (a){
+
+  }
+else{
+
+ var addselectedOption=$("#selectedEmployees option:selected")
+ 
+var str="<option value="+demo[i]+">"+text[i]+"</option>"
+
+  $("#selected_employees").append(str);
+ $("#selected_employees option").prop('selected',true);
+
+}
+
+}
+
+
+ });
+
+
+
+
+$(document).on("click","#removingdata",function(e){
+
+var selectedOption=$("#selected_employees option:selected").remove();
+$("#selected_employees option").prop('selected',true)
+
+//$("#selectedEmployees").append(selectedOption);
+
+  });
+
+
+
+
+ $(document).on("click","#notSelected",function(e){
+    
+    var dept_values=$("#notSelected").val();
+    var hostel_id=$("#discipline_report_hostel_id").val();
+
+   
+ $.ajax({
+            url: "/hostel_management/discipline_report_ajax",
+            type: "GET",
+            data: {"floor_data":dept_values,hostel_id:hostel_id,"floor":"floor"},
+            success: function(data) {
+               // $(".fee-particular-admission-number-cls").empty();
+               // $(".fee-particular-admission-number-cls").append(data);
+             $("#selectedEmployeesdata").empty();
+
+             $("#selectedEmployeesdata").html(data.main);
+             
+              
+            },
+            error:function(){
+              alert("Something went wrong!");
+            }
+        });
+    
+});
+ $(document).on("click","#selectedEmployeesdata",function(e){
+    
+    var dept_values=$("#notSelected").val();
+    var hostel_id=$("#discipline_report_hostel_id").val();
+    var room_id=$("#selectedEmployeesdata").val();
+
+
+   
+ $.ajax({
+            url: "/hostel_management/discipline_report_ajax",
+            type: "GET",
+            data: {floor_data:dept_values,hostel_id:hostel_id,room:"room",room_id:room_id},
+            success: function(data) {
+               // $(".fee-particular-admission-number-cls").empty();
+               // $(".fee-particular-admission-number-cls").append(data);
+             $("#selectedEmployees").empty();
+
+             $("#selectedEmployees").html(data.main);
+             console.log(data.main);
+              
+            },
+            error:function(){
+              alert("Something went wrong!");
+            }
+        });
+    
+});
+
+
+</script>
+
+<style>
+
+.error {
+  display: block;
+  font-size: 12px;
+}
+
+.mg-add-rem-btn {
+  cursor: pointer;
+  position: relative;
+  top: -6em;
+  vertical-align: middle;
+}
+
+
+
+</style>
+
+<style type="text/css">
+  #attendanceCalendarScroll{
+    border: 1px solid #bcbcbc;
+    overflow-x: scroll;
+    max-width: 719px;
+  }
+
+  .ui-datepicker-calendar {
+   display: none;
+  }
+</style>

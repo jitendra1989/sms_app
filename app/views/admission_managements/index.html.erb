@@ -1,0 +1,60 @@
+<%=render :partial=>'entrance_exam_details/entrance_exam_left' %>
+<% navigation_add t('manage_admission'), :controller=>'admission_managements',:action=>'index' %>
+
+<h4 class="mg-h4"><%=t('classlist')%></h4>  
+<label class="mg-label mg-label-width"><%=t('select_class')%><span class="required-field"> *</label>
+
+<% if @mgcours_id.present? %>
+  <%= select_tag :course_list, options_for_select(@classes,@mgcours_id), :prompt=>t("select"), :onchange=>"courseList(this.value)", :class=>"mg-text-field" %>
+<% else %>
+  <%= select_tag :course_list, options_for_select(@classes), :prompt=>t("select"), :onchange=>"courseList(this.value)", :class=>"mg-text-field" %>
+<% end %>
+<div id="selectstudentID"></div>
+
+<% if @mgcours_id.present? %>
+  <% @mgcours_id = @mgcours_id %>
+<% else %>
+  <% @mgcours_id = 0 %>
+<% end %>
+
+<%= render  partial: 'application/common_left_close' %>
+
+<script>
+  $(document).ready(function(){
+    var mgcours_id = <%= @mgcours_id %>;
+    
+    if(mgcours_id!=0)
+    {
+      $.ajax({
+        url: "/admission_managements/class_student",
+        data: {"mg_course_id" :mgcours_id},
+        cache: false,
+        success: function(data){
+          $("#selectstudentID").html(data);
+        },
+        error: function(){
+          alert("Inside error");
+        }
+      });
+    }   
+
+    focusCurrentTab("admissionManagementLID","admissionManagementID");     
+  });
+
+  function courseList(course_id){
+
+    urlLink = "/admission_managements/class_student";
+    $.ajax({
+      url: urlLink,
+      data: {"mg_course_id" :course_id},
+      cache: false,
+      success: function(data){
+        $("#selectstudentID").html(data);
+      },
+      error: function(){
+        alert("Inside error");
+      }
+    });
+  }
+  
+</script>

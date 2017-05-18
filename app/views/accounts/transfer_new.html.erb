@@ -1,0 +1,87 @@
+
+<%= form_for :account, url: accounts_transfer_create_path, :html => {
+                            :id => 'accountsTransferNewAssistantCreateID' } do |f| %>
+<%= f.hidden_field :is_deleted, :value => 0 %>
+<%= f.hidden_field :mg_school_id, :value => session[:current_user_school_id] %>
+<%= f.hidden_field :created_by, :value => session[:user_id] %>
+<%= f.hidden_field :updated_by, :value => session[:user_id] %>
+<p>
+    <label class="mg-label" style="width:140px"><%= t('select_account') %><span class="required-field">&nbsp;*</span></label>
+    <br/>
+
+   <%= f.collection_select(:mg_to_account_id,MgAccount.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]), :id, :mg_account_name,{:include_blank => t("select")},:class => "mg-select-btn")%>
+</p>
+
+<p>
+    <label class="mg-label" style="width:140px"><%= t('amount') %><span class="required-field">&nbsp;*</span></label>
+    <br/>
+      <%= f.text_field :amount,:class=>"mg-text-field" %>
+</p>
+
+<p>
+    <label class="mg-label" style="width:140px"><%= t('purpose') %><span class="required-field">&nbsp;</span></label>
+    <br/>
+      <%= f.text_area :purpose,:class=>"mg-text-field" %>
+</p>
+
+<p>
+    <label class="mg-label" style="width:140px"><%= t('status') %><span class="required-field">&nbsp;</span></label>
+    <br/>
+    <%#=f.select :status,options_for_select([["Accepted", "accepted"], ["Rejected", "rejected"]],{:class=>"mg-select-btn"}),:prompt=> t('select'), :readonly=>true%>
+
+    <%=f.select :status, [["Pending", "pending"],["Accepted", "accepted"], ["Rejected", "rejected"]], {}, {:class=> "mg-select-btn", :disabled=>true}%>
+
+</p>
+
+<p>
+    <label class="mg-label" style="width:140px"><%= t('reason') %><span class="required-field">&nbsp;</span></label>
+    <br/>
+      <%= f.text_area :Reason,:class=>"mg-text-field", :readonly=>true%>
+</p>
+
+<p class="mg-p-mgtop">
+    <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("save")%></a>
+<a class="mg-small-form-btn cancel-form-dialog"><%=t("cancel")%></a>
+</p>
+<% end %>
+</div>
+<script>
+
+
+$("#accountsTransferNewAssistantCreateID").validate({
+        rules: {        
+        "account[mg_to_account_id]": {required: true},
+        "account[amount]": {required: true}
+      }
+    });
+
+
+
+$(".department-wise-employee-class").change(function(){
+      var departmentId = $(this).val();
+      var apdStr = '<option value="">Choose Department</option>';
+      $("#mg_employee_id").empty().append(apdStr);
+      if(departmentId > 0) {
+           var urlLink = "/accounts/employee_list/"+departmentId;
+           $.ajax({ 
+               url: urlLink,
+               cache: false,
+               success: function(data){
+                 // console.log();
+                  if(data.length > 0){
+                      var apdStr = '<option value="">Select</option>';
+                     for(key in data){
+                        apdStr += '<option value="'+data[key].id+'">'+data[key].first_name+" "+data[key].last_name+'</option>'
+                      }
+                      $("#mg_employee_id").empty().append(apdStr);
+                  }
+               }
+           });
+    }else{
+      var apdStr = '<option value="">Choose Department</option>';
+      $("#mg_employee_id").empty().append(apdStr);
+      // alert("Please select category");
+    }
+  });
+
+</script>

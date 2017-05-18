@@ -1,0 +1,39 @@
+<table border="1" class="mg-showdata-bg mg-tbl-layout" cellspacing="1" cellpadding="1">
+   <tr>
+     <td class="mg-td-width-half" valign="top">
+        <label class="mg-label"> <%= t('store_name')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+        
+     <%store_data=MgInventoryStoreManagement.find_by(:id=>@show_manager_data.mg_inventory_store_management_id)%>
+    <%=store_data.try(:store_name)%>
+   
+     </td>
+ </tr>
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+        <label class="mg-label"> <%= t('department_name')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+        
+     <%dept_data=MgEmployeeDepartment.find_by(:id=>@show_manager_data.mg_employee_department_id)%>
+    <%=dept_data.try(:department_name)%>
+   
+     </td>
+ </tr>
+ <tr>
+     <td valign="top">
+        <label class="mg-label"> <%= t('employee_name')%></label>
+     </td>
+     <td valign="top" style="width: 100%;">
+     <%emp_data=MgEmployee.find_by(:id=>@show_manager_data.mg_employee_id)%>
+   
+  <%="#{emp_data.first_name} #{emp_data.last_name}"%>
+     
+     
+     </td>
+ </tr>
+
+</table>
+<br/>
+ <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>

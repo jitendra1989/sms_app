@@ -1,0 +1,42 @@
+
+<%= render  partial: 'examination_table_left' %>
+
+
+<div class="box">
+    <h4><%= @batch.mg_course.course_name %> <%= @batch.name %> | <%= @exam_group.name %></h4>
+
+    <div class="students-table">
+      <table id="listing" align="center" width="100%" cellpadding="1" cellspacing="1">
+      <tr class="tr-head">
+          <td><%= "name" %></td>
+          <% @exam_group.mg_exams.each do |exam| %>
+              <td><%= exam.mg_subject.subject_code %></td>
+              <%end%>
+              <td><%= "percentage" %>(%)</td>
+              </tr>
+               <% @exam_group.mg_batch.mg_students.each do |student|%>
+          <tr class="tr-<%= cycle('odd', 'even') %>">
+            <td class="col-2"><%= student.first_name %></td>
+            <% total_credits = 0 %>
+              <% total_credit_points=0 %>
+              <% @exam_group.mg_exams.each do |exam| %>
+                <% exam_score = MgExamScore.find_by(:mg_student_id=>student.id,:mg_exam_id=>exam.id) %>
+                <% unless exam_score.nil? %>
+                  <td class="col-3"><%= exam_score.mg_grading_level.present? ? exam_score.mg_grading_level.credit_points : "-" %></td>
+                  <% #total_credits = total_credits + exam.subject.credit_hours.to_f unless exam.subject.credit_hours.nil? %>
+                  <%# total_credit_points = total_credit_points + (exam_score.mg_grading_level.credit_points.to_f * exam.mg_subject.credit_hours.to_f) unless exam_score.grading_level.nil? %>
+                  <%end%>
+                  <%end%>
+                  
+                  <% @exam_group.mg_exams.each do |exam| %>
+                <% exam_score = MgExamScore.find_by(:mg_student_id=>student.id,:mg_exam_id=>exam.id) %>
+                
+                
+
+                 <%end%>
+                  <%end%>
+                  </tr>
+                  </table>
+                  </div>
+                  </div>
+<%= render  partial: 'examination_table_close' %>

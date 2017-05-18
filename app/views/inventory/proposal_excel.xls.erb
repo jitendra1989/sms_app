@@ -1,0 +1,87 @@
+<?xml version="1.0"?>
+<ss:Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
+  xmlns:o="urn:schemas-microsoft-com:office:office"
+  xmlns:x="urn:schemas-microsoft-com:office:excel"
+  xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"
+  xmlns:html="http://www.w3.org/TR/REC-html40">
+  <ss:Worksheet ss:Name="Sheet1">
+    <ss:Table>
+    <%for i in 0...20%>
+          <ss:Column ss:Width="150"/>  
+    <%end%>
+      <ss:Row >
+        <ss:Cell ss:MergeAcross="25" ><ss:Data ss:Type="String" xml:space="preserve">                                                                                     <b><%=t('item_proposal')%></b></ss:Data></ss:Cell>
+      </ss:Row>
+       <!-- <ss:Row>
+        <ss:Cell ss:MergeAcross="4" ><ss:Data ss:Type="String"><%#=t('employee_details')%></ss:Data></ss:Cell>
+        <ss:Cell  ss:MergeAcross="10"><ss:Data ss:Type="String"><%#=t('deduction')%></ss:Data></ss:Cell>
+      </ss:Row> -->
+
+      <ss:Row>
+        <!-- <ss:Cell ><ss:Data ss:Type="String"><%#=t('requisition_name')%></ss:Data></ss:Cell> -->
+        <ss:Cell ><ss:Data ss:Type="String"><%=t('item_category')%></ss:Data></ss:Cell>
+        <ss:Cell ><ss:Data ss:Type="String"><%=t('item_name')%></ss:Data></ss:Cell>
+        <ss:Cell ><ss:Data ss:Type="String"> <%=t('unit_type')%></ss:Data></ss:Cell>
+        <ss:Cell ><ss:Data ss:Type="String"> <%=t('units')%></ss:Data></ss:Cell>
+       
+      </ss:Row>
+
+
+
+       <%@inventory_proposals.each do |proposal|%>
+
+<%@inventory_proposal_item=MgInventoryProposalItem.where(:is_deleted=>0,:mg_school_id=>@school,:id=>proposal.id)%>
+          <%@inventory_proposal_item.each do |proposal_item|%>
+<%puts "55555555555555555555555555555555555555555555555555555555555555555"%>
+<%puts proposal.try(:requisition_name)%>
+<%puts "55555555555555555555555555555555555555555555555555555555555555555"%>
+
+
+
+          <ss:Row>
+       <!-- <ss:Cell ><ss:Data ss:Type="String"><%#=proposal.try(:requisition_name).capitalize%></ss:Data></ss:Cell> -->
+
+           <% category_id=MgInventoryItem.where(:id=>proposal_item.mg_item_id).pluck(:mg_category_id)
+             item_category=MgInventoryItemCategory.find_by(:id=>category_id[0])
+           %>
+            <%if item_category.present? %>
+              <ss:Cell ><ss:Data ss:Type="String"><%=item_category.try(:name)%></ss:Data></ss:Cell>
+            <%else%>
+              <ss:Cell ><ss:Data ss:Type="String"><%="  "%></ss:Data></ss:Cell>
+            <%end%>
+
+
+           <%if proposal_item.mg_item_id.present?
+              item=MgInventoryItem.find_by(:id=>proposal_item.mg_item_id)
+              %>
+                  <ss:Cell ><ss:Data ss:Type="String"><%=item.try(:name)%></ss:Data></ss:Cell>
+            <%else%>
+                  <ss:Cell ><ss:Data ss:Type="String"><%="  "%></ss:Data></ss:Cell>
+            <%end%>
+
+
+            <%if proposal_item.mg_unit_type_id.present?
+              unit_item=MgLabUnit.find_by(:id=>proposal_item.mg_unit_type_id)
+              %>
+                  <ss:Cell ><ss:Data ss:Type="String"><%=unit_item.try(:unit_name)%></ss:Data></ss:Cell>
+            <%else%>
+                  <ss:Cell ><ss:Data ss:Type="String"><%="  "%></ss:Data></ss:Cell>
+            <%end%>
+
+
+
+        <ss:Cell ><ss:Data ss:Type="String"><%=proposal_item.try(:no_of_unit)%></ss:Data></ss:Cell>
+
+
+        </ss:Row>
+      
+          <%end%>
+      <%end%>
+     
+
+
+    
+    </ss:Table>
+  </ss:Worksheet>
+</ss:Workbook>
+

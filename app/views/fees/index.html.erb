@@ -1,0 +1,31 @@
+<!-- Sec --> 
+<!-- breadcrumbs Work -->
+<% navigation_add 'Fees', fees_path %>
+
+<!-- breadcrumbs Work -->
+
+
+<!-- Partial left content -->
+<%= render partial: 'fee_left' %>
+<!-- Partial Index -->
+<%= render partial: 'index' %>
+<!-- Partial Section close-->
+<%= render partial: 'application/common_left_close' %>
+
+<script type="text/javascript">
+     $(document).ready(function(){
+
+/*     	$("li").removeClass( "active" );
+        $("a").removeClass( "activeMenu" );
+
+     	 $("#viewFeeCategoryListLiID").addClass("active");
+         $("#viewFeeCategoryListID").addClass("activeMenu");*/
+
+         
+               focusCurrentTab("viewFeeCategoryListID","viewFeeCategoryListLiID");
+
+      focusFees();
+   });
+</script>
+
+

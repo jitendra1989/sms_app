@@ -1,0 +1,34 @@
+<% navigation_add t('event_committees'), event_committees_path %>
+
+<button class="new-event-committees-btn mg-btn-bottom-margin mg-custom-form-btn"><%#= t('delete') %><%= t('create_new_event_committee')%></button>  
+<h4 class="mg-h4"><%= t('event_committee_list')%></h4>
+
+<%if @event_committees.present?%>
+<div class="mg_pagination">
+<table class="batch-tbl mg-tbl-margin">   <!-- border="2" --> 
+ <tr >
+  	<th><%=t('committee_name')%></th>
+    <th><%=t('actions')%></th>
+  </tr>
+  <% @event_committees.each do |e| %>
+    <tr>
+      <td><%= e.committee_name %></td>
+      <td>
+      <!--   <button title="Show" id="<%=raw e.id %>-showEventCommitteesBTNID" class="show-event-committees-btn mg-icon-btn"><i class="fa fa-users"> </i></button> -->
+        <button title="Edit" id="<%=raw e.id %>-editEventCommitteesBTNID" class="edit-event-committees-btn mg-icon-btn"><i class="fa fa-pencil-square-o"></i></button>
+        <button title="Delete" id="<%=raw e.id %>-deleteEventCommitteesBTNID" class="delete-event-committees-btn mg-icon-btn"><i class="fa fa-trash"></i></button>
+
+      </td>
+    </tr>
+  <% end %>
+</table>
+ <%= will_paginate @event_committees, :container => false %>
+  </div>
+
+<%else%>
+<h5>Please add some Event Committees</h5>
+<%end%>
+<div id="newEventCommitteesDIVID" ></div>
+<div id="editEventCommitteesDIVID" ></div>
+<div id="showEventCommitteesDIVID" ></div>
+

@@ -1,0 +1,672 @@
+
+<% if !params[:notice].blank? %>
+  <div class="alert alert-info mg-success-msg">
+  <%= params[:notice] %>
+  </div>
+<% end %>
+
+
+<div id="studentAdmissionFormID"  class="student-form-cls">
+  <div class="box">
+    <%= form_for @admission,:html => { :id => "studentFormID" ,:multipart => true } do |f| %>
+      <%= f.hidden_field :mg_school_id, :value =>session[:current_user_school_id]%>
+      <%= f.hidden_field :created_by, :value =>session[:user_id]%>
+      <%= f.hidden_field :updated_by, :value =>session[:user_id]%>
+      <%= f.hidden_field :is_deleted, :value =>0%>
+      <div class="form-content" style=" width:100%; border:0px #fac94a solid; color:#000; ">
+        <div class="form-content-inner" style="padding:5px;">
+          <table width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-left: 7px;">
+            <tbody>
+              <tr align="right">
+              <tr>
+                <td width="33%" valign="bottom">
+                  <label for="Temporary Student Id" class="mg-label"><%= t('student_temporary_id') %></label>
+                </td>
+                <td>
+                  <%= f.text_field :student_temporary_id, :readonly => "readonly", :class=>"textboxwidth mg-text-field"%>
+                  <%= tooltip '<i class="fa fa-question"></i>'.html_safe, { :tooltip => 'Temporary Student Id is auto generated. ' }, :class => 'mytooltip mg-icon-btn' ,:style=>"font-size: 0.85em;"%>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+       <div class="form-content">
+          <div class="form-content-inner">
+            <h4 class="mg-h4"><%= t('personaldetails') %></h4>
+            <table width="100%" cellspacing="0" cellpadding="0" border="0" class="student-form-cls mg-inner-table-form">
+              <tbody>
+                <tr>
+                  <td width="33%" valign="bottom">
+                    <label for="first_name"  class="mg-label"><%= t('firstname') %>
+                      <span class="required-field">*</span> 
+                    </label>
+                  </td>
+
+                  <td> </td>
+                  <td width="33%" valign="bottom">
+                    <label for="middle_name" class="mg-label"><%= t('middlename') %></label>
+                  </td>
+                  <td> </td>
+                  <td width="33%" valign="bottom">
+                    <label for="last_name" class="mg-label"><%= t('lastname') %>
+                    <span class="required-field">*</span>
+                    </label>
+                  </td>
+                </tr> 
+                <tr>
+                  <td valign="top">
+                    <%= f.text_field :first_name  ,:class=>"mg-text-field"%>
+                  </td>
+                  <td> </td>
+                  <td valign="top">
+                    <%= f.text_field :middle_name ,:class=>"mg-text-field"%>
+                  </td>
+                  <td> </td>
+                  <td valign="top">
+                    <%= f.text_field :last_name ,:class=>"mg-text-field"%>
+                  </td>
+                </tr>
+               <tr>
+                  <td width="33%" valign="bottom">
+                    <label for="batch_name" class="mg-label"> <%= t('select_semester') %>
+                      <span class="required-field">*</span>
+                    </label>
+                  </td>
+                  <td> </td>
+                  <td width="33%" valign="bottom">
+                    <label for="date_of_birth" class="mg-label mg-label-text-transform-none" ><%= t('dateofbirth')%>
+                      <span class="required-field">*</span>
+                    </label>
+                  </td>
+                  <td> </td>
+                  <td width="33%" valign="bottom">
+                    <label for="gender" class="mg-label"><%= t('gender') %></label>
+                  </td>
+                </tr>
+                <tr> 
+                  <td valign="top">
+
+                    <%# @batchList = MgBatch.where(:is_deleted => 0,:mg_school_id=>session[:current_user_school_id]).order(:mg_course_id) %>
+                    <%= f.collection_select(:mg_course_id, MgCourse.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]), :id, :course_name, {:include_blank=>t("select")}, :class=>"mg-text-field") %>
+
+
+                     <%#=f.collection_select(:mg_batch_id, @batchList , "id", "course_batch_name", {:include_blank => 'Select'} ,:class=>"mg-select-btn") %>
+
+                  </td>
+                  <td> </td>
+                  <td valign="top">
+                    <%= f.text_field :date_of_birth, :autocomplete=>'off', :class => 'date_of_birth mg-text-field'%>
+                  </td>
+                  <td> </td>
+                  <td valign="top">
+                    <%= f.select :gender, [ 'Male', 'Female' ], {:include_blank => 'Select'} ,:class=>"mg-select-btn"%>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td width="33%" valign="bottom">
+                    <label for="blood_group" class="mg-label"><%= t('bloodgroup') %></label>
+                  </td>
+
+                  <td> </td>
+                  <td width="33%" valign="bottom">
+                    <label for="birth_place" class="mg-label"><%= t('birthplace') %></label>
+                  </td>
+                  <td> </td>
+                  <td width="33%" valign="bottom">
+                    <label for="nationality" class="mg-label"><%= t('nationality') %>
+                      <span class="required-field">*</span>
+                    </label>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top">
+                     <%= f.select :blood_group, [ 'A+' ,'A-','B+','B-','O+','O-','AB+','AB-'], {:include_blank => 'Select'},:disabled=>'disabled' ,:class=>"mg-select-btn" %>
+                  </td>
+                  <td> </td>
+                  <td valign="top">
+                    <%= f.text_field :birth_place,:readonly=>true, :class => 'birth_place mg-text-field'%>
+                  </td>
+                  <td> </td>
+                  <td valign="top">
+                      <%= f.country_select :nationality, ["India"], {}, { :class => "form-control" } %>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td width="33%" valign="bottom">
+                    <label for="language" class="mg-label"><%= t('mothertongue') %></label>
+                  </td>
+                  <td> </td>
+                  <td width="33%" valign="bottom">
+                    <label for="religion" class="mg-label"><%= t('religion') %></label>
+                  </td>
+                  <td> </td>
+                  <td width="33%" valign="bottom">
+                    <label for="guardian" class="mg-label"><%= t('parent/guardian') %>
+                      <span class="required-field">*</span>
+                    </label>
+                  </td>
+                  <td> </td>
+                </tr>
+                <tr>
+                  <td valign="top">
+                     <%= f.text_field :language,:readonly=>true,:class=>"mg-text-field"%>
+                  </td>
+                  <td> </td>
+                  <td valign="top">
+                     <%= f.text_field :religion,:readonly=>true,:class => 'religion mg-text-field'%>
+                  </td>
+                  <td> </td>
+                  <td valign="top">
+                     <%= f.text_field :guardian_name,:class => 'mg-text-field'%>
+                  </td>
+                  <td> </td>                 
+                </tr>
+                <tr>
+                  <td width="33%" valign="bottom">
+                    <label for=" Category" class="mg-label"><%= t('category') %>
+                      <span class="required-field">*</span>
+                    </label>
+                  </td>
+                  <td>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top">                   
+                    <%=f.collection_select(:mg_student_category_id, MgStudentCategory.where( is_deleted: 0,mg_school_id: session[:current_user_school_id] ), :id, :name, {:include_blank => t('select')}) %>
+                  </td>
+                  <td> </td>                  
+                </tr>
+              </tbody>
+            </table>
+          </div>
+      </div>
+      <div id="studentEmployeeChildId" class= "Student-Employee-Child-Class mg-mrgn-left13" style="display: none;">   
+          <%#= render :partial => "students/employee_child_new" %>  
+      </div>
+
+      <h4 class="mg-h4"><%=t('sibiling')%></h4>
+      <div id="studentSiblingId" class= "Student-Sibling-Class">   
+          <table width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-left: 14px;">
+            <tbody>
+              <tr>
+                <td width="33%" valign="top">
+                  <label for="sibling"  class="mg-label"><%= t('sibling') %>
+                    <span class="required-field"></span> 
+                  </label>
+                </td>
+                <td valign="top">
+                 <%= f.check_box :is_sibling,{:id=>"siblingCheckedId",:class=>"checkbox-read-cls",:disabled=>'disabled'}, true %>
+                </td>
+              </tr>
+            </tbody> 
+          </table>
+          <div id="studentSiblingDivId" class="Student-Sibling-Div-Class mg-inner-tbl-align" style="display: none;">
+              <table width="100%" cellspacing="0" cellpadding="0" border="0" class="employee-form-cls mg-btn-bottom-margin ">                
+              </tbody>
+            </table>
+          </div>
+
+       <h4 class="mg-h4" ><%= t('temporaryaddress') %></h4>
+       <table width="100%" cellspacing="0" cellpadding="0" border="0" class="student-form-cls mg-margin-bottom-nil" style="margin-left: 14px;">
+              <tbody>
+                <tr>
+                  <td width="33%" valign="bottom">
+                    <label  class="mg-label" for="address_line1"><%= t('addressline1') %>
+                      <span class="required-field">*</span>
+                    </label>
+                  </td>
+
+                  <td width="33%" valign="bottom">
+                    <label  class="mg-label" for="address_line2"><%= t('addressline2') %></label>
+                  </td>
+                  <td width="33%" valign="bottom">
+                     <label class="mg-label"  for="street"><%= t('street') %></label>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top">
+                     <%=f.text_field :mg_c_address_line1 ,:class=>"mg-text-field"%>
+                  </td>
+                  <td valign="top">
+                    <%= f.text_field :mg_c_address_line2 ,:class=>"mg-text-field"%>
+                  </td>
+                  <td valign="top">
+                     <%=f.text_field :mg_c_street ,:class=>"mg-text-field"%>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td width="33%" valign="bottom">
+                    <label  class="mg-label" for="landmark"><%= t('landmark') %>
+                    </label>
+                  </td>
+
+                  <td width="33%" valign="bottom">
+                    <label  class="mg-label" for="city"><%= t('city') %></label>
+                    <span class="required-field">*</span>
+                  </td>
+                  <td width="33%" valign="bottom">
+                     <label class="mg-label"  for="state"><%= t('state') %>
+                      <span class="required-field">*</span>
+                     </label>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top">
+                     <%= f.text_field :mg_c_landmark ,:class=>"mg-text-field"%>
+                  </td>
+                  <td valign="top">
+                    <%= f.text_field :mg_c_city ,:class=>"mg-text-field"%>
+                  </td>
+                  <td valign="top">
+                    <%= f.text_field :mg_c_state ,:class=>"mg-text-field"%>
+                  </td>
+                </tr>
+                <tr>
+                  <td width="33%" valign="bottom">
+                    <label class="mg-label"  for="pin_code"><%= t('pincode') %>
+                    <span class="required-field">*</span>
+                     
+                    </label>
+                  </td>
+                  <td width="33%" valign="bottom">
+                    <label class="mg-label"  for="country"><%= t('country') %>
+                     <span class="required-field">*</span>
+                    </label>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top">
+                     <%= f.text_field :mg_c_pin_code ,:class=>"mg-text-field"%>
+                  </td>
+                 <td valign="top">
+                     <%= f.text_field :mg_c_country ,:class=>"mg-text-field"%>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+       <h4 class="mg-h4" ><%= t('permanentaddress') %></h4>
+       
+       <table width="100%" cellspacing="0" cellpadding="0" border="0" class="student-form-cls mg-margin-bottom-nil" style="margin-left: 14px;">
+              <tbody>
+                <tr>
+                  <td width="33%" valign="bottom">
+                    <label  class="mg-label" for="address_line1"><%= t('addressline1') %>
+                      <span class="required-field">*</span>
+                    </label>
+                  </td>
+
+                  <td width="33%" valign="bottom">
+                    <label  class="mg-label" for="address_line2"><%= t('addressline2') %></label>
+                  </td>
+                  <td width="33%" valign="bottom">
+                     <label class="mg-label"  for="street"><%= t('street') %></label>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top">
+                     <%= f.text_field :mg_p_address_line1 ,:class=>"mg-text-field"%>
+                  </td>
+                  <td valign="top">
+                    <%= f.text_field :mg_p_address_line2 ,:class=>"mg-text-field"%>
+                  </td>
+                  <td valign="top">
+                     <%= f.text_field :mg_p_street ,:class=>"mg-text-field"%>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td width="33%" valign="bottom">
+                    <label  class="mg-label" for="landmark"><%= t('landmark') %>
+                    </label>
+                  </td>
+
+                  <td width="33%" valign="bottom">
+                    <label  class="mg-label" for="city"><%= t('city') %></label>
+                    <span class="required-field">*</span>
+                  </td>
+                  <td width="33%" valign="bottom">
+                     <label class="mg-label"  for="state"><%= t('state') %>
+                      <span class="required-field">*</span>
+                     </label>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top">
+                     <%= f.text_field :mg_p_landmark ,:class=>"mg-text-field"%>
+                  </td>
+                  <td valign="top">
+                    <%= f.text_field :mg_p_city ,:class=>"mg-text-field"%>
+                  </td>
+                  <td valign="top">
+                    <%= f.text_field :mg_p_state ,:class=>"mg-text-field"%>
+                  </td>
+                </tr>
+                <tr>
+                  <td width="33%" valign="bottom">
+                    <label class="mg-label"  for="pin_code"><%= t('pincode') %>
+                    <span class="required-field">*</span>
+                     
+                    </label>
+                  </td>
+                  <td width="33%" valign="bottom">
+                    <label class="mg-label"  for="country"><%= t('country') %>
+                     <span class="required-field">*</span>
+                    </label>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top">
+                     <%=f.text_field :mg_p_pin_code ,:class=>"mg-text-field"%>
+                  </td>
+                 <td valign="top">
+                     <%= f.text_field :mg_p_country ,:class=>"mg-text-field"%>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+      <h4 class="mg-h4"><%=t('contacts')%></h4>
+      <table width="100%" cellspacing="0" cellpadding="0" border="0" class="student-form-cls mg-inner-table-form">
+        <tbody>
+          <tr>
+            <td valign="top" class="mg-td-width-one-third">
+              <label class="mg-label" for="phonenumber"><%= t('phonenumber') %></span> 
+              </label>
+              <%= tooltip '<i class="fa fa-question"></i>'.html_safe, { :tooltip => 'Can enter digits only. No arbitrary symbols like -,*,#,etc are allowed. Phone Number should not be initialised with 0, eg: If your number is 06542-2651XX, then enter it like 65422651XX. No need to mention \'0\' in the beginning.' }, :class => 'mytooltip mg-icon-btn' ,:style=>"font-size: 0.85em;"%><br/>
+            </td>
+
+            <td> </td>
+            <td valign="top" class="mg-td-width-one-third">
+             <label class="mg-label" for="mobilenumber"><%= t('mobilenumber') %><span class="required-field"> *</span></label>
+            </td>
+            <td> </td>
+            <td valign="top" class="mg-td-width-one-third">
+              <label class="mg-label" for="emailid"><%= t('emailid') %><span class="required-field"> *</span>
+              </label>
+            </td>
+          </tr> 
+          <tr>
+            <td valign="top" class="mg-td-width-one-third">
+               <%= f.text_field :phone_number,:class=>"mg-text-field" %>
+            </td>
+            <td> </td>
+            <td valign="top" class="mg-td-width-one-third">
+              +91-<%=f.text_field :mobile_number ,:class=>"textboxwidth mg-phn-text-field valid"%>
+            </td>
+            <td> </td>
+            <td valign="top" class="mg-td-width-one-third">
+              <%= f.text_field :mg_email_id ,:class=>"textboxwidth mg-phn-text-field valid"%>              
+            </td>
+          </tr>                  
+        </tbody>
+      </table>
+      <h4 class="mg-h4"><%= t('previousedcuation') %></h4>             
+          <table width="100%" cellspacing="0" cellpadding="0" border="0" class="student-form-cls mg-inner-table-form">
+            <tbody>
+              <tr>
+                <td valign="top" class="mg-td-width-one-third">
+                  <label class="mg-label" for="school_name"><%= t('schoolname') %></span> 
+                  </label>
+                </td>
+
+                <td> </td>
+                <td valign="top" class="mg-td-width-one-third">
+                 <label class="mg-label" for="course"><%= t('course') %></label>
+                </td>
+                <td> </td>
+                <td valign="top" class="mg-td-width-one-third">
+                  <label class="mg-label" for="year"><%= t('year') %>
+                  </label>
+                </td>
+              </tr> 
+              <tr>
+                <td valign="top" class="mg-td-width-one-third">
+                   <%= f.text_field :school_name,:class=>"mg-text-field" %>
+                </td>
+                <td> </td>
+                <td valign="top" class="mg-td-width-one-third">
+                  <%= f.text_field :course,:class=>"mg-text-field" %>
+                </td>
+                <td> </td>
+                <td valign="top" class="mg-td-width-one-third">
+                  <%= f.text_field :year,:class=>"mg-text-field"   %>
+                </td>
+              </tr>
+             <tr>
+
+                <td valign="top" class="mg-td-width-one-third">
+                  <label class="mg-label" for="marks_obtained"><%= t('marks_obtained') %>
+                  </label>
+                </td>
+
+
+                <td> </td>
+                <td valign="top" class="mg-td-width-one-third">
+
+                  <label class="mg-label" for="total_marks"><%= t('total_marks') %>
+                  </label>
+                 
+                </td>
+                <td> </td>
+                <td valign="top" class="mg-td-width-one-third">
+                  <label class="mg-label" for="grade"><%= t('gradepercentage') %></label>
+                </td>
+              </tr>
+              <tr> 
+                <td valign="top" class="mg-td-width-one-third">
+                    <%= f.text_field :marks_obtained,:class=>"mg-text-field"%>
+                </td>
+                <td> </td>
+                <td valign="top" class="mg-td-width-one-third">
+                  <%= f.text_field :total_marks,:class=>"mg-text-field" %>
+                </td>
+                <td> </td>
+                <td valign="top">
+                  <%= f.text_field :grade,:class=>"mg-text-field" %>
+                </td>
+              </tr>
+            </tbody>
+            <div></div>
+          </table>          
+     <h4 class="mg-h4"><%= t('selection') %></h4>
+      <table width="100%" cellspacing="0" cellpadding="0" border="0" class="student-form-cls mg-inner-table-form">
+        <tbody>
+          <tr>
+            <td valign="top" class="mg-td-width-one-third">
+              <label class="mg-label" for="selection_index"><%= t('selection_index') %>
+              </label>
+            </td>
+
+            <td> </td>
+            <td valign="top" class="mg-td-width-one-third">
+             <label class="mg-label" for="entrance_test"><%= t('entrance_test') %></label>
+            </td>
+            <td> </td>
+            <td valign="top" class="mg-td-width-one-third">
+              <label class="mg-label" for="shortlisted_for_admission"><%= t('shortlisted_for_admission') %>
+              </label>
+            </td>
+          </tr> 
+          <tr>
+            <td valign="top" class="mg-td-width-one-third">
+               <%= f.text_field :selection_index,:readonly=>true,:class=>"mg-text-field" %>
+            </td>
+            <td> </td>
+            <td valign="top" class="mg-td-width-one-third mg-capitalize-text">
+              <%= f.text_field :is_selected_for_entrance_test,:placeholder=>"Pending",:readonly=>true,:class=>"mg-text-field mg-capitalize-text" %>
+            </td>
+            <td> </td>
+            <td valign="top" class="mg-td-width-one-third mg-capitalize-text">
+              <%= f.text_field :is_shortlisted_for_admission,:placeholder=>"Pending",:readonly=>true,:class=>"mg-text-field mg-capitalize-text" %>
+            </td>
+          </tr>
+          </tr>                  
+        </tbody>
+      </table>    
+      <p class="mg-p-mgtop">
+        <!-- <a onclick="$(this).closest('form').submit()" id="saveStudentRecordID" class="submit mg-small-form-btn"><%#=t("save")%></a> --> 
+        <%=f.submit "save",{:id=>"saveMgStudentAdmissionRecordID", :style=>"display:none"}%>
+        <a onclick="totalMarksValidate()", class="submit mg-small-form-btn"><%= t("save") %></a>
+        <%= link_to t('cancel'), {:controller=>'mg_student_admissions',:action=>'index'}, {:class=>"mg-small-form-btn cancel-form-dialog"} %>       
+      </p>
+    <% end %>
+  </div> 
+</div>
+
+<script >
+  $(document).ready(function () {
+    var date = new Date();
+    var cur_date = date.getFullYear(); 
+
+    $("#languagePlusId").click(function(){
+      $(".language-Student-Div-Class").hide();
+      var cloneDiv=$(".languagedivcloneclass").first();
+      $(cloneDiv).children().find('input,checkbox').each(function(){
+         $(this).val('');
+         $(this).attr("checked",false);
+      });
+      $(cloneDiv).clone().appendTo("#languagedivscloneid");
+    });    
+
+    dateFormatStr =  getJsDateFormat();
+    $( ".admission_date" ).datepicker({ changeMonth: true,changeYear: true,yearRange: "-50:+0",maxDate: "0" ,dateFormat: dateFormatStr});
+
+    $( ".date_of_birth" ).datepicker({ 
+      changeMonth: true,
+      changeYear: true,yearRange: "-100:+0",maxDate: "0",
+      dateFormat: dateFormatStr,
+      onSelect: function(dateText, obj) 
+      {
+        var selectedDate = $(this).datepicker('getDate');
+        var currentDate=new Date();
+        var b_check=getYearDifference(selectedDate,currentDate, dateFormatStr);
+        if(b_check){
+          $( ".date_of_birth" ).val("");
+          alert("Please check the age.");
+        }
+        else
+        {
+          var admission_date=$("#student_admission_date").val();
+          if(admission_date)
+          {
+            if(getDateObj($(this).val(),dateFormatStr) >getStudentAdmissionDateObj(admission_date,dateFormatStr))
+            {
+              alert("Please check the age");
+              document.getElementById('student_date_of_birth').value ="";
+            }
+          }
+        }
+      }
+    });
+
+    $(function () {
+      $.validator.addMethod('dateFormat',
+      function (value, element) {
+        dateFormatStr =  getJsDateFormat();
+        if (this.optional(element)) {
+            return true;
+        }
+        var ok = true;
+        try {
+            $.datepicker.parseDate(dateFormatStr, value);
+        }
+        catch (err) {
+            ok = false;
+        }
+        return ok;
+      },
+        "Please enter a date in the format "+ getDateFormat(dateFormatStr) +".");
+       dateFormatStr =  getJsDateFormat();
+
+      $(".datefield").datepicker({ dateFormat: dateFormatStr, changeYear: true });
+    });
+
+    $("#studentFormID").validate({
+      rules: {     
+          "mg_student_admission[first_name]": {required: true, maxlength: 20, name_validate: true},
+          "mg_student_admission[middle_name]": {name_validate: true},
+          "mg_student_admission[last_name]": {required: true, maxlength: 20, name_validate: true},
+          "mg_student_admission[id]": {required: true}, 
+          "mg_student_admission[date_of_birth]": {required: true, dateFormat: true},
+          "mg_student_admission[mg_batch_id]": {required: true},
+          "mg_student_admission_mg_student_category_id":{required: true},
+
+          "mg_student_admission[language]": {character_validate: true},
+          "mg_student_admission[religion]": {character_validate: true},
+
+          "mg_student_admission[student_birth_place]": {maxlength: 25, character_validate: true},
+          "mg_student_admission[mg_student_category_id]": {required: true},
+
+          "mg_student_admission[sibling_name]": {required: true,name_validate: true},
+          "mg_student_admission[relation]": {character_validate: true},
+          "employeechild[employee_name]": {required: true, maxlength: 25, name_validate: true},
+          "employeechild[employee_type]": {required: true, maxlength: 25, character_validate: true},
+
+          "mg_student_admission[name]": {required: true, maxlength: 25, name_validate: true},
+          "mg_student_admission[amount]": {required: true,  number: true},
+          "mg_student_admission[frequency]": {required: true, maxlength: 25, character_validate: true},
+
+          "managementquota[name]": {required: true, maxlength: 25, name_validate: true},
+          "managementquota[position]": {required: true, maxlength: 25, character_validate: true},
+
+          "mg_student_admission[mg_c_address_line1]": {required: true},
+          "mg_student_admission[mg_c_state]": {required: true}, 
+          "mg_student_admission[mg_c_pin_code]": {required: true, number: true, minlength: 6,maxlength: 6}, 
+          "mg_student_admission[mg_c_country]": {required: true},
+          "mg_student_admission[mg_c_city]": {required: true},    
+          
+          "mg_student_admission[school_name]": {name_validate: true},
+          "mg_student_admission[year]": {number: true, min: 2000,max: cur_date-1},
+          "mg_student_admission[marks_obtained]": {number: true, min: 0},
+          "mg_student_admission[total_marks]": {number: true, min: 0},
+
+          "mg_student_admission[mg_p_address_line1]": {required: true},
+          "mg_student_admission[mg_p_state]": {required: true}, 
+          "mg_student_admission[mg_p_pin_code]": {required: true, number: true, minlength: 6,maxlength: 6}, 
+          "mg_student_admission[mg_p_country]": {required: true},
+          "mg_student_admission[mg_p_city]": {required: true},
+
+          "mg_student_admission[mobile_number]": {required: true, number: true, minlength: 10,maxlength: 10},
+          "mg_student_admission[phone_number]": {number: true, maxlength: 10},
+          
+          "mg_student_admission[mg_email_id]": {required: true,  email: "Your email must be in the format of name@domain.com"},
+          "student[avatar]": {required: true},
+          "mg_student_admission[guardian_name]":{required:true}
+          },
+       messages: {
+        "mg_student_admission[mg_c_pin_code]": {minlength: "Please enter 6 digits.",maxlength: "Please enter only 6 digits"},
+        "mg_student_admission[mg_p_pin_code]": {minlength: "Please enter 6 digits.",maxlength: "Please enter only 6 digits"},
+        "mg_student_admission[mobile_number]": {minlength: "Please enter 10 digits.",maxlength: "Please enter only 10 digits"},
+        "mg_student_admission[phone_number]": {maxlength: "Please enter only 10 digits"},
+        "mg_student_admission[year]": {minlength: "Please enter 4 digits.",maxlength: "Please enter only 4 digits"},
+        "mg_student_admission[year]": {maxlength: "Please enter 4 digits.",maxlength: "Please enter only 4 digits"}
+      }
+    });
+  });
+
+  function totalMarksValidate(){
+
+    var obtain_val = $("#mg_student_admission_marks_obtained").val();
+    var total_val = $("#mg_student_admission_total_marks").val();
+    if(obtain_val=="" && total_val==""){
+      obtain_val = $("#mg_student_admission_marks_obtained").val(0.00);
+      total_val = $("#mg_student_admission_total_marks").val(0.00);
+    }else if(obtain_val==""){
+      obtain_val = $("#mg_student_admission_marks_obtained").val(0.00);
+    }else if(total_val==""){
+      total_val = $("#mg_student_admission_total_marks").val(0.00);
+    }
+    obtain_val = $("#mg_student_admission_marks_obtained").val()
+    total_val = $("#mg_student_admission_total_marks").val();
+
+    if(parseInt(total_val)>=parseInt(obtain_val)){
+      $("#saveMgStudentAdmissionRecordID").click();
+    }else{
+      alert("Obtained Marks should less than total marks");
+    }
+  }
+
+</script>

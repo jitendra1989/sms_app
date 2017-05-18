@@ -1,0 +1,39 @@
+<% navigation_add t('timetable'), timetable_index_path %>
+<% navigation_add 'View Free Teacher', timetable_view_free_teachers_time_table_path %>
+
+<%= render  partial: 'timetable_left' %>
+<h4 class="mg-h4">Free Teachers</h4>
+<%@count=0%>
+<!-- <label class="mg-label mg-custom-labels mg-tt-width mg-tbl-margin">Free Employees</label><br> -->
+<!-- <table class="batch-tbl">
+	<tr>
+		<th>Sl No</th>
+		<th>Employee Name</th>
+	</tr>
+<%#@freeEmployee.each do |name|%>
+	<tr>
+		<td><%#=@count +=1%></td>
+		<td><%#=MgEmployee.find(name.id).employee_name%></td>
+	</tr>
+<%#end%>
+
+</table><br> -->
+
+
+ <label class="mg-label mg-tt-width mg-tbl-margin">Select Class Time</label>
+	<%=select_tag :class_time,options_for_select(@period),:prompt=>"Select Class Time",:onchange=>"selectClassTimeForTimeTable(this.value)"%>
+
+	<div id="freeEmployeeViewDivID"></div>
+<%= render  partial: 'timetable_left_close' %>
+
+
+<script type="text/javascript">
+	$(document).ready(function () {
+        focusCurrentTab("viewFreeEmployeeTimeTableAID","viewFreeEmployeeTimeTableLiID");
+        focusTimeTable();
+
+    });
+
+ 
+
+</script>

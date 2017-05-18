@@ -1,0 +1,594 @@
+<%=render partial: 'alumni/alumni_left' %> 
+<% navigation_add t('registration_form'), alumni_alumni_registration_form_new_path %>
+<!-- <%#=render partial: 'alumni_register_partial' %> -->
+<%= form_for :student, :url=>{:action=>"alumni_registration_form_create"} , :html => { :id => "studentFormID" ,:multipart => true } do |f| %>
+  <%= f.hidden_field :is_deleted ,:value=>1%>
+  <%= f.hidden_field :mg_school_id ,:value=>session[:current_user_school_id]%>
+  <%= f.hidden_field :created_by,:value=>session[:user_id]%>
+  <%= f.hidden_field :updated_by ,:value=>session[:user_id]%>
+  <%= f.hidden_field :user_type ,:value=>"Alumni"%>
+  <div class="form-content">
+    <div class="form-content-inner">
+      <h4 class="mg-h4"><%= t('personaldetails') %></h4>
+      <table width="100%" cellspacing="0" cellpadding="0" border="0" class="student-form-cls mg-inner-table-form">
+        <tbody>
+          <tr>
+            <td width="33%" valign="bottom">
+              <label for="first_name"  class="mg-label"><%= t('firstname') %>
+                <span class="required-field">*</span> 
+              </label>
+            </td>
+            <td> </td>
+            <td width="33%" valign="bottom">
+              <label for="middle_name" class="mg-label"><%= t('middlename') %></label>
+            </td>
+            <td> </td>
+            <td width="33%" valign="bottom">
+              <label for="last_name" class="mg-label"><%= t('lastname') %>
+              <span class="required-field">*</span>
+              </label>
+            </td>
+          </tr> 
+          <tr>
+            <td valign="top">
+              <%= f.text_field :first_name  ,:class=>"mg-text-field"%>
+            </td>
+            <td> </td>
+            <td valign="top">
+              <%= f.text_field :middle_name ,:class=>"mg-text-field"%>
+            </td>
+            <td> </td>
+            <td valign="top">
+              <%= f.text_field :last_name ,:class=>"mg-text-field"%>
+            </td>
+          </tr>
+          <tr>
+            <td width="33%" valign="bottom">
+              <label for="date_of_birth" class="mg-label mg-label-text-transform-none" ><%= t('dateofbirth')%>
+                <span class="required-field">*</span>
+              </label>
+            </td>
+            <td> </td>
+            <td width="33%" valign="bottom">
+              <label for="gender" class="mg-label"><%= t('gender') %><span class="required-field">*</span></label>
+            </td>
+            <td></td>
+            <td width="33%" valign="bottom">
+              <label for="batch_name" class="mg-label"> <%= t('phone_no') %>
+              </label>
+            </td>
+          </tr>
+          <tr> 
+            <td valign="top">
+              <%= f.text_field :date_of_birth  ,:class => 'date_of_birth mg-text-field'%>
+            </td>
+            <td> </td>
+            <td valign="top">
+              <%= f.select :gender, [ 'Male', 'Female' ], {:include_blank => 'Select'} ,:class=>"mg-select-btn"%>
+            </td>
+            <td></td>
+            <td valign="top">
+              <% @batchList =   MgBatch.where(:is_deleted => 0,:mg_school_id=>session[:current_user_school_id]).order(:mg_course_id) %>
+              <%                             
+                @batchList.each do |batchObj|
+                  @courseObj = MgCourse.find_by_id(batchObj.mg_course_id)
+                  batchObj.name = (@courseObj.course_name) +"-"+ batchObj.name
+                end
+              %>
+              <%= f.text_field :phone_number  ,:class => 'mg-text-field'%>
+            </td>
+          </tr>
+          <tr>
+            <td width="33%" valign="bottom">
+              <label for="blood_group" class="mg-label"><%= t('mobile_no') %><span class="required-field">*</span></label>
+              <%= tooltip '<i class="fa fa-question"></i>'.html_safe, { :tooltip => "Can enter digits only. No arbitrary symbols like -,*,#,etc are allowed. Mobile Number contains different blocks for country code and number.Country code is editable and can't be more than 4 digits." }, :class => 'mytooltip mg-icon-btn' ,:style=>"font-size: 0.85em;"%>
+            </td>
+            <td> </td>
+            <td width="33%" valign="bottom">
+              <label for="birth_place" class="mg-label lable_eamil_id"><%= t('email_id') %><span class="required-field">*</span></label>
+            </td>
+            <td> </td>
+            <td width="33%" valign="bottom">
+              <label for="confirm_email_id" class="mg-label"><%= t('confirm_email')%><%=' '%><%=t('id')%>
+                <span class="required-field">*</span>
+              </label>
+            </td>
+          </tr>
+          <tr>
+            <td valign="top">
+                <%#= "+91-" %><%#= f.text_field :mobile_number  ,:class => 'mg-text-field'%>
+              <%="+" %><%= f.text_field :country_code,:value=>91,:class => 'country-code-text-field'%><%="-" %><%= f.text_field :mobile_number, :class => 'mobile-no-text-field'%>
+              <div class="error country-code-cls" style="font-weight: bold;"></div>
+            </td>
+            <td> </td>
+            <td valign="top" class="confirm_email_id_data">
+              <%= f.text_field :email_id  ,:class => 'birth_place mg-text-field'%>
+            </td>
+            <td> </td>
+            <td valign="top" class="confirm_email_id_data">
+              <%=text_field_tag :confirm_email_id,nil, :autocomplete => :off,:class => 'mg-text-field'%>
+            </td>
+          </tr>
+          <tr>
+            <td width="33%" valign="bottom">
+              <label for="language" class="mg-label"><%= t('current_location') %><span class="required-field">*</span></label>
+            </td>
+            <td></td>
+            <td width="33%" valign="bottom">
+              <label for="religion" class="mg-label"><%= t('current_address') %><span class="required-field">*</span></label>
+            </td>
+            <td> </td>
+            <td width="33%" valign="bottom">
+              <label for=" Category" class="mg-label"><%= t('current_profession') %>
+                <span class="required-field">*</span>
+              </label>
+            </td>
+          </tr>
+          <tr>
+            <td valign="top">
+               <%= f.text_field :current_location  ,:class=>"mg-text-field"%>
+            </td>
+            <td> </td>
+            <td valign="top">
+               <%= f.text_field :current_address  ,:class => 'mg-text-field'%>
+            </td>
+            <td> </td>
+            <td valign="top">
+               <%= f.text_field :current_profession  ,:class=>"mg-text-field"%>
+            </td>
+          </tr>
+          <tr>
+            <td></td>
+          </tr>
+          <tr>
+            <td width="33%" valign="bottom">
+              <label for="religion" class="mg-label"><%= t('current_organization') %></label>
+            </td>
+            <td> </td>
+            <td width="33%" valign="bottom">
+              <label for="language" class="mg-label"><%= t('designation') %><span class="required-field"></span></label>
+            </td>
+            <td></td>
+            <td width="33%" valign="bottom">
+              <label for=" Category" class="mg-label"><%= t('hobbies') %>
+              </label>
+            </td>
+          </tr>
+          <tr>
+            <td valign="top">
+              <%= f.text_field :current_organization  ,:class => 'mg-text-field'%>
+            </td>
+            <td></td>
+            <td valign="top">
+              <%= f.text_field :designation  ,:class=>"mg-text-field"%>
+            </td>
+            <td></td>
+            <td valign="top">
+               <%= f.text_field :hobbies  ,:class=>"mg-text-field"%>
+            </td>
+          </tr>
+          <tr>
+            <td></td>
+          </tr>
+          <tr>
+            <td width="33%" valign="bottom">
+              <label for="religion" class="mg-label"><%= t('admission_no') %><span class="required-field"></span></label>
+            </td>
+            <td> </td>
+            <td width="33%" valign="bottom">
+              <label for="religion" class="mg-label"><%= t('user_name') %><span class="required-field">&nbsp;*</span></label>
+            </td>
+            <td> </td>
+            <td width="33%" valign="bottom">
+              <label for="religion" class="mg-label"><%= t('password') %><span class="required-field">*</span></label>
+            </td>
+          </tr>
+          <tr>
+            <td valign="top">
+              <%= f.text_field :admission_number, :autocomplete => :off,:class => 'mg-text-field'%>
+            </td>
+            <td> </td>
+            <td valign="top">
+             <%= f.text_field :user_name, :autocomplete => :off ,:class => 'mg-text-field'%>
+            </td>
+            <td> </td>
+            <td valign="top">
+             <%= f.password_field :password, :autocomplete => :off,:class => 'mg-text-field'%>
+            </td>
+          </tr>
+          <tr>
+            <td width="33%" valign="bottom">
+              <label for="religion" class="mg-label"><%= t('confirm_password') %><span class="required-field">&nbsp;*</span></label>
+            </td>
+            <td> </td>
+            <td width="33%" valign="bottom">
+              <label for="religion" class="mg-label"><span class="required-field"></span></label>
+            </td>
+            <td> </td>
+            <td width="33%" valign="bottom">
+              <label for="religion" class="mg-label"><span class="required-field"></span></label>
+            </td>
+          </tr>
+          <tr>
+            <td valign="top">
+               <%= password_field_tag :confirm_password,nil, :autocomplete => :off,:class => 'mg-text-field'%>
+            </td>
+            <td> </td>
+            <td valign="top"></td>
+            <td></td>
+             <td valign="top"></td>
+          </tr>
+          <tr>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h4 class="mg-h4"><%= t('previous_programme_details')%></h4> 
+      <a id="examination_details_for_data" class="mg-label-inner-form mg-custom-form-btn" style="color: #297ACC; font-size:0.8em; position: relative;" >Add </a> <br/>
+      <div class="mg-scroll-employee-bar mg-tbl-margin">   
+        <table class="mg-show-tbl-width batch-tbl mg-adjust-padding">  
+          <th><%=t("sr_no.")%></th>
+          <th style="width: 120px;"><%=t("select_programme")%><span class="required-field">&nbsp;*</span></th>
+          <th class="mg-label-text-transform-none" style="width: 120px;"><%=t("select_year_of_passing")%><span class="required-field">&nbsp;*</span></th>
+          <!-- <th style="width: 120px;"><%#=t("select_specialization")%><span class="required-field">&nbsp;*</span></th> -->
+          <th><%=t("upload_certificate")%><span class="required-field">&nbsp;</span></th>
+          <th><%=t('action')%></th>
+          <tr class="demo-div">
+            <div id="finalDueFineDivId">
+              <div class="due-fine-div" id="dueFineDivId">
+                <td class="clone-date-picker-cls"><span class="required-incremented-field">1</span></td>
+                <td class="mg-align-center cost-td-class">
+                  <%wing_data=MgWing.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:wing_name,:id)%>
+                  <%= select_tag "mg_wing_id[1]",options_for_select(wing_data),:prompt=>"Select",:class=>"demooo demo1 mg-text-field"%>
+                </td>
+                <td class="demo34567">
+                  <%#= select_tag 'time_table_year[1]', options_for_select((1994..Time.now.year).to_a), :prompt=>"Select",:class=>"demooo demo2 mg-text-field" %>
+                  <%= text_field_tag 'time_table_year[1]',nil,:class => 'demooo demo2 mg-text-field'%>
+                </td>
+                <!-- <td class="mg-align-center demo89012 resource-category-td-class"> -->
+                  <%#employee_specialization_data=MgEmployeeSpecialization.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:name,:id)%>
+                  <%#employee_specialization_data=[["Science",1],["Arts",2],["Commerce",3],["Others",4]]%>
+                  <%#= select_tag "mg_specialization_id[1]",options_for_select(employee_specialization_data) ,:prompt=>"select",:class=>"demooo demo3 mg-text-field"%>
+                <!-- </td> -->
+                <td class="mg-align-center demo111213 resource-category-td-class">
+                  <%= file_field_tag 'files[1]',:class=>"demooo demo4 mg-text-field" %>
+                </td>
+                <td class="mg-align-center">
+                  <a title="Remove" class="examination_remove-library-details mg-icon-btn" style="color: #297ACC; font-size:0.8em;"> <i class="fa fa-trash"></i></a>
+                </td>   
+              </div>
+            </div>
+          </tr>
+        </table>
+      </div>
+      <h4 class="mg-h4"><%= t('sharable_information') %></h4>
+      <div class="mg-batch-divscroll">
+        <%=render :partial=>"searchable_information",:locals => {:f => f}%>                
+      </div>
+      <p class="mg-p-mgtop">
+        <a onclick="$(this).closest('form').submit()" id="saveStudentRecordID" class="submit mg-small-form-btn"><%=t("save")%></a>
+        <%= link_to t('cancel'), {:controller=>'Sessions',:action=>'index'}, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+      </p>
+    </div>
+  </div>
+<% end %>
+
+<%= render  partial: 'application/common_left_close' %>
+
+
+
+<script>
+  $( document ).ready(function() {
+    focusCurrentTab("alumniRegistrationAID","alumniRegistrationLID");
+    
+    dateFormatStr =  getJsDateFormat();
+    $("#time_table_year_1" ).datepicker({changeMonth: false,changeYear: true,yearRange: "-50:+0",maxDate: "0",dateFormat: 'yy',onChangeMonthYear: function(dateText, inst) { 
+            var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
+            $(this).datepicker('setDate', new Date(year, 1));
+            $("#time_table_year_1" ).datepicker("hide");
+          }
+     });
+
+    $("#studentFormID").validate({
+      rules: {
+                
+                "student[first_name]": {required: true, maxlength: 20, name_validate: true},
+                "student[middle_name]": {name_validate: true},
+                "student[last_name]": {required: true, maxlength: 20, name_validate: true},
+                "student[date_of_birth]": {dateFormat: true, required: true},
+                "student[gender]": {required: true},
+                 "student[mobile_number]": {required: true,number: true},
+                "student[phone_number]": {number: true},
+                "student[email_id]": {required: true,  email: "Your email must be in the format of name@domain.com"},
+                 "confirm_email_id": {required: true,  email: "Your email must be in the format of name@domain.com", equalTo: '#student_email_id'},
+                "student[current_location]": {required: true},
+                "student[current_address]": {required: true},
+                "student[current_profession]": {required: true},
+                "student[user_name]": {required: true},
+                "student[password]": {required: true},
+                "confirm_password": {required: true, equalTo: '#student_password'},
+                //"student[admission_number]": {required: true},
+                "mg_wing_id[1]": {required: true},
+                "time_table_year[1]": {required: true},
+                "mg_specialization_id[1]": {required: true}
+                // "files[1]": {required: true}
+        },
+      messages: {
+       "student[country_code]": {minlength: "Please enter minimum 1 digits.",maxlength: "Please enter maximum 4 digits"},
+        "student[phone_number]": {minlength: "Please enter 10 digits.",maxlength: "Please enter only 10 digits"},
+        "confirm_password": {equalTo: "Password does not match"},
+        "confirm_email_id": {equalTo: "Email id does not match"}
+      }
+    });
+  });//END Ready
+
+  <% @timeformat=MgSchool.find(session[:current_user_school_id]) %>
+  var schoolDateFormat = "<%= @timeformat.date_format %>";
+
+
+  function getJsDateFormat(){
+      if(schoolDateFormat=="%d/%m/%y"){
+        return "dd/mm/y";
+      }
+      else if(schoolDateFormat=="%d/%m/%Y"){
+          return "dd/mm/yy";
+      }
+      else if(schoolDateFormat=="%m/%d/%y"){
+          return "mm/dd/y";
+      }
+      else if(schoolDateFormat=="%m/%d/%Y"){
+          return "mm/dd/yy";
+      }
+      else if(schoolDateFormat=="%d/%b/%y"){
+          return "dd/M/y";
+      }
+      else if(schoolDateFormat=="%d/%b/%Y"){
+          return "dd/M/yy";
+      }
+    else {
+        return "dd/mm/y";
+    }
+  }
+
+
+  function getDateFormat(date){
+      if(date=="dd/mm/y"){
+        return "dd/mm/yy";
+      }
+    else {
+        return "dd/mm/yyyy";
+    }
+
+  }
+
+  dateFormatStr =  getJsDateFormat();
+  $( ".date_of_birth" ).datepicker({ 
+    changeMonth: true,
+    changeYear: true,yearRange: "-100:+0",maxDate: "0",
+    dateFormat: dateFormatStr,
+    onSelect: function(dateText, obj) {
+        var selectedDate = $(this).datepicker('getDate');
+        var currentDate=new Date();
+        var b_check=getYearDifference(selectedDate,currentDate, dateFormatStr);
+        if(b_check){
+          $( ".date_of_birth" ).val("");
+          alert("Please check the age.");
+        }else{
+
+        var admission_date=$("#student_admission_date").val();
+        if(admission_date){
+          /*if(compareDate($(this).val(), admission_date, dateFormatStr)==false){
+            alert("Date of Birth should be earlier than Admission Date");
+            document.getElementById('student_date_of_birth').value ="";
+          }*/
+
+          // alert(admission_date);
+          if(getDateObj($(this).val(),dateFormatStr) >getStudentAdmissionDateObj(admission_date,dateFormatStr)){
+                alert("Please check the age");
+                document.getElementById('student_date_of_birth').value ="";
+            }
+        }
+      }
+    }
+  });
+   
+  $.validator.addClassRules("demo1", {required: true});
+  $.validator.addClassRules("demo2", {required: true});
+  $.validator.addClassRules("demo3", {required: true});
+
+  $(document).on("click", "#examination_details_for_data", function(e){
+    var lastRepeatingGroup = $('.demo-div').last();
+    var cloned = lastRepeatingGroup.clone();
+    cloned.find('input').val('');
+    cloned.find('select').val('');
+
+    cloned.insertAfter( lastRepeatingGroup );
+    var ids= lastRepeatingGroup.find('.demo1').attr('id')
+    var data_arr= ids.split("_")
+    if (parseInt(data_arr[3]) % 1 === 0){
+      var data=parseInt(data_arr[3])
+    }else{
+      var data_arr= ids.split("_")
+      var demo= data_arr[2].split("[")
+      var demo1= demo[1].split("]")
+      var data=parseInt(demo1[0])
+     }
+    
+    $(".required-incremented-field:visible").each(function(index,element){
+      $(this).text(index+1);
+      var data1=data
+
+      cloned.find('.demo1').attr('id',   "mg_wing_id[" +  data1+"]");
+      cloned.find('.demo1').attr('name',   "mg_wing_id[" +  data1+"]");
+
+      cloned.find('.demo2').attr('id',   "time_table_year[" +  data1+"]");
+      cloned.find('.demo2').attr('name',   "time_table_year[" +  data1+"]");
+
+      cloned.find('.demo3').attr('id',   "mg_specialization_id[" +  data1+"]");
+      cloned.find('.demo3').attr('name',   "mg_specialization_id[" +  data1+"]");
+      
+      cloned.find('.demo4').attr('id',   "files[" +  data1+"]");
+      cloned.find('.demo4').attr('name',   "files[" +  data1+"]");
+      data=data1+1
+
+      var date_picker_value = $(this).parent(".clone-date-picker-cls").siblings(".demo34567").children(".demo2");
+      date_picker_value.removeClass('hasDatepicker');
+      var dateFormatStr =  getJsDateFormat();
+
+      date_picker_value.datepicker({changeMonth: false,changeYear: true,yearRange: "-50:+0",maxDate: "0",dateFormat: 'yy',onChangeMonthYear: function(dateText, inst) { 
+            var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
+            $(this).datepicker('setDate', new Date(year, 1));
+            // alert("s");
+            date_picker_value.datepicker("hide");
+          }
+      });
+    });
+    return false;
+  }); 
+    
+
+  $(document).on("click", ".examination_remove-library-details", function(e){
+    var total = $('.examination_remove-library-details').length
+    var last_count = $('.examination_remove-library-details').text();
+    if(total!=1){
+      $(this).parent('td').parent().remove();   
+    }
+   
+    $(".required-incremented-field:visible").each(function(index,element){
+      $(this).text(index+1);
+    });
+  });
+
+
+  $(function () {
+    $.validator.addMethod('dateFormat',
+    function (value, element) {
+      dateFormatStr =  getJsDateFormat();
+        if (this.optional(element)) {
+            return true;
+        }
+        var ok = true;
+        try {
+            $.datepicker.parseDate(dateFormatStr, value);
+        }
+        catch (err) {
+            ok = false;
+        }
+        return ok;
+    },
+      "Please enter a date in the format "+ getDateFormat(dateFormatStr) +".");
+      dateFormatStr =  getJsDateFormat();
+
+    $(".datefield").datepicker({ dateFormat: dateFormatStr, changeYear: true });
+  });
+
+
+  $(document).on("change","#student_user_name",function(e){
+    var urlLink = "/alumni/alumni_user_id";
+           
+    var user_name=$(this).val();
+    $.ajax({
+      url: urlLink,
+      cache: false,
+      data: {"user_name":user_name},
+      success: function(html){  
+        if (parseInt(html.name)>0){
+          alert("User name is already present")
+          $("#student_user_name").val("");
+        }else{
+        }
+      }
+    }); 
+  });
+  $(document).on("change","#student_admission_number",function(e){
+    var urlLink = "/alumni/alumni_user_id";
+    var user_name=$(this).val();
+    
+    $.ajax({
+      url: urlLink,
+      cache: false,
+      data: {"user_name":user_name},
+      success: function(html){  
+       if (parseInt(html.name)==1 && parseInt(html.alumni_data)==0){
+       }else{
+          if (parseInt(html.alumni_data)>0){
+            alert("Already user is present")
+            $("#student_admission_number").val("");
+          }else{
+            alert("Invalid user id")
+            $("#student_admission_number").val("");
+          }
+        }
+      }
+    }); 
+  });
+
+  $("#student_date_of_birth").on("focus",function(){
+    $('.ui-datepicker-calendar').show();
+    $('.ui-datepicker-month').show();
+    $('.ui-datepicker-prev').show();
+    $('.ui-datepicker-next').show();
+  })
+   
+  $(document).on("change","#student_country_code",function(){
+    var reg=/^\d+$/;
+    var country_code=$("#student_country_code").val();
+    if(country_code!=''){
+      if(reg.test(country_code)){
+        $(".country-code-cls").text("");
+        if(country_code.length>4){
+          // alert("Please enter maximum 4 digits");
+          $(".country-code-cls").text("Please enter maximum 4 digits");
+          $("#student_country_code").val(0);
+        }else{
+        $(".country-code-cls").text("");
+          // alert("accept digit");
+        }
+      }else{
+        $(".country-code-cls").text("");
+        $(".country-code-cls").text("Please enter a valid number.");
+        $("#student_country_code").val(0);
+      }
+    }else{
+      $(".country-code-cls").text("");
+      $("#student_country_code").val(0);
+    }
+  });
+
+
+</script>
+
+<style type="text/css">
+  /*Given below CSS don't put in application.css*/ 
+
+  .ui-datepicker-calendar {
+   display: none;
+  }
+  .ui-datepicker-month {
+     display: none;
+  }
+  .ui-datepicker-prev{
+     display: none;
+  }
+  .ui-datepicker-next{
+     display: none;
+  }
+  .ui-datepicker-header{
+    width: 170px;
+
+  } 
+  #ui-datepicker-div{
+    width: 174px;
+  }
+
+
+ .country-code-text-field{
+    padding: 1px;
+    width: 2.9em;
+  }
+  .mobile-no-text-field{
+    padding: 1px;
+    width: 9.0em;
+  }
+</style>

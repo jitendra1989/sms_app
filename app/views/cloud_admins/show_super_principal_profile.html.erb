@@ -1,0 +1,15 @@
+<%= render partial: 'dashboards/cloud_admin_dashboard_left' %>
+<%= render partial: 'employees/show' %>
+
+<%= render partial: 'application/common_left_close' %>
+
+
+<script>
+$(document).ready(function(){
+
+    focusCurrentTab("viewCloudAdminDashboardShowSuperPrincipal","viewCloudAdminDashboardShowSuperPrincipalLiID");
+    focusDashboards();
+
+});
+
+</script>

@@ -1,0 +1,81 @@
+<% navigation_add 'Section Syllabus List', :controller => 'curriculum', :action => 'batch_syllabus_show' %>
+
+
+
+
+<%= render partial: 'curriculum/curr_left' %>
+
+
+<!-- Sec --> 
+<%@syllabus=MgBatchSyllabus.where(:is_deleted => 0,:mg_school_id=>session[:current_user_school_id])%>
+
+
+<h4 class="mg-h4"><%= t('section_syllabus_list') %></h4>
+<%= button_to 'Add Association', {:controller => "curriculum", :action => "batchsubject_index" } ,:class=>"mg-custom-form-btn"%>
+
+<%if @syllabus.length>0%>
+<div class="mg-scroll-employee-bar mg-tbl-margin">
+<table  class="batch-tbl ">   <!-- border="2" --> 
+  <tr class="subject-table-header">
+    <!-- <th>Subject Id</th> -->
+    <th><%= t('class-section') %></th>
+    <th><%= t('syllabus') %></th>
+    <th><%= t('actions') %></th>
+  </tr>
+ 
+
+
+  <% @syllabus.each do |curr| %>
+    <tr>
+
+  <%@temp=MgBatch.find_by_id( curr.mg_batch_id)%>
+    <%if @temp!=nil%>
+    <%@tem=MgCourse.find_by_id(@temp.mg_course_id)%>
+    <td><%= @tem.course_name %>-<%=@temp.name%></td>
+    <%else%>
+    <td></td>
+    <%end%>
+
+
+
+    <%@temp=MgSyllabus.find_by_id( curr.mg_syllabus_id)%>
+    <%if @temp!=nil%>
+    <td><%= @temp.name %></td>
+    <%else%>
+    <td><%= curr.mg_syllabus_id %></td>
+    <%end%>
+  <td> 
+      <%= link_to "<i class=\"fa fa-pencil-square-o\"></i>".html_safe, {:controller => "curriculum", :action => "batch_syllabus_edit",:id =>curr.id } , :method=>'post' ,:title=>"Edit" ,:class=>"mg-icon-btn"%>
+      <%= link_to "<i class=\"fa fa-trash\"></i>".html_safe, {:controller => "curriculum", :action => "batch_syllabus_delete",:id =>curr.id } , :method=>'post' ,:title=>"Delete" ,:class=>"mg-icon-btn" ,data: { confirm: 'Are you sure to delete?' }%>
+
+      </td>
+
+    </tr>
+  <% end %>
+</table>
+</div>
+<%else%>
+  <h5>No association created..</h5>
+<%end%>
+
+
+<%= render partial: 'application/emp_section_close' %>
+
+
+  <style type="text/css">
+  .mg-scroll-bar-curriculum{
+      border: 1px solid #b2b2b2;
+      width: 270px;
+      height: 350px;
+      overflow-y: scroll;
+  }
+</style>
+
+
+<script>
+$(document).ready(function () {
+
+focusCurrentTab("batchSyllabusCurriculamManagementsId","BatchSyllabusLiID");
+        //focusCurriculum();
+      });
+</script>

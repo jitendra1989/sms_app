@@ -1,0 +1,140 @@
+<table border="1" class="mg-tbl-layout mg-showdata-bg mg-show-tbl-width" cellspacing="1" cellpadding="1">
+   <tr>
+     <td class="mg-td-width-half" valign="top">
+     <label class="mg-label"> <%= t('customer_name')%></label>
+     </td>
+
+     <td class="mg-td-width-half mg-label-inner-form" valign="top">
+     <%if @sales_information.customer_name.present?%>
+     <%#if @sales_information.mg_inventory_item_category_id.present?%>
+     <%#category_data=MgInventoryItemCategory.find_by(:id=>@sales_information.mg_inventory_item_category_id)%>
+     <%#=category_data.try(:name)%>
+     <%=@sales_information.try(:customer_name)%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+     </td>
+ </tr>
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+     <label class="mg-label mg-label-text-transform-none"> <%= t('date_of_sales')%></label>
+     </td>
+     <td class="mg-td-width-half mg-label-inner-form" valign="top">
+     <% @timeformat=MgSchool.find(session[:current_user_school_id])%>
+     
+      <%= @sales_information.date_of_sales.strftime(@timeformat.date_format) %>
+    
+     </td>
+ </tr>
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+     <label class="mg-label"> <%= t('amount')%></label>
+     </td>
+     <td class="mg-td-width-half mg-label-inner-form" valign="top">
+     <%if @sales_information.amount.present?%>
+     <%=@sales_information.amount%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+     </td>
+ </tr>
+ 
+ 
+ </table><br>
+ <%@information=MgInventorySalesData.where(:mg_inventory_sales_information_id=>@sales_information.id,:is_deleted=>0,:mg_school_id=>session[:current_user_school_id])%>
+ 
+ <div class="mg-scroll-employee-bar">
+<table border="1" class="mg-table-nowrap mg-showdata-bg mg-show-tbl-width" cellspacing="1" cellpadding="1">
+ 
+<tr>
+<th><label class="mg-label"> <%= t('item_category')%></label> </th>
+<th> <label class="mg-label"> <%= t('item_name')%></label>
+</th>
+<th> <label class="mg-label"> <%= t('prefix')%></label>
+</th>
+
+<th> <label class="mg-label"> <%= t('cost')%></label>
+</th>
+<th> <label class="mg-label mg-label-text-transform-none"> <%= t('no_of_copies')%></label>
+</th>
+<th> <label class="mg-label"> <%= t('total')%></label>
+</th>
+
+<%@information.each do |info|%>
+<tr>
+    <td class="mg-td-width-half" valign="top">
+    <%if info.mg_inventory_item_category_id.present?
+        category_data=MgInventoryItemCategory.find_by(:id=>info.mg_inventory_item_category_id)
+    %>
+     <%=category_data.try(:name)%>
+     <%else%>
+        <h5><%="No Data"%></h5>
+     <%end%>
+    </td>
+     <td class="mg-td-width-half" valign="top">
+     <%if info.mg_inventory_item_id.present?
+          @category=MgInventoryItem.find_by(:id=>info.mg_inventory_item_id)
+          %>
+     <%=@category.try(:name)%>
+     <%else%>
+     <h5><%="No Data"%></h5>
+     <%end%>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+     <%if info.mg_inventory_item_id.present?
+         
+          %>
+     <%=@category.try(:prefix)%>
+     <%else%>
+     <h5><%="No Data"%></h5>
+     <%end%>
+     </td>
+ 
+    
+     <td class="mg-td-width-half" valign="top">
+     <%if info.cost_per_unit.present?%>
+     <%=info.try(:cost_per_unit)%>
+     <%else%>
+     <h5><%="No Data"%></h5>
+     <%end%>
+     </td>
+
+     <td class="mg-td-width-half" valign="top">
+     <%if info.no_of_units.present?%>
+     <%=info.no_of_units%>
+     <%else%>
+     <h5><%="No Data"%></h5>
+     <%end%>
+     </td>
+
+     <td class="mg-td-width-half" valign="top">
+     <%if info.total.present?%>
+     <%=info.total%>
+     <%else%>
+     <h5><%="No Data"%></h5>
+     <%end%>
+     </td>
+ </tr>
+
+
+
+ <%end%>
+
+</table>
+</div>
+<p class="mg-p-mgtop">
+      <a class="mg-small-form-btn cancel-form-dialog"><%=t('cancel')%></a>
+</p>
+
+<style>
+/*.mg-show-tbl-width {
+    width: 64% !important; 
+}*/
+.table.batch-tbl th {
+    border-color: #363131;
+    border-style: solid;
+    border-width: 1px;
+    padding: 3px;
+    text-align: center;
+}
+</style>

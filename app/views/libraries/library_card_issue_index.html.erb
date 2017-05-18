@@ -1,0 +1,17 @@
+<%= render  partial: 'library_left' %>
+
+<% navigation_add 'Library Card Issue', library_card_issue_index_path %>
+
+<%= button_to 'Create Library Card', {:controller => "libraries", :action => "library_card_issue_new"} ,:class=>"mg-custom-form-btn"%>
+<%= render  partial: 'schools/school_left_close' %>
+
+<script>
+$(document).ready(function () {
+        focusCurrentTab("librarycardissueAID","librarycardissueLiID");
+        focusMasterSettings();
+
+
+
+    });
+
+</script>

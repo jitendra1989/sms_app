@@ -1,0 +1,96 @@
+<% navigation_add t('about_student'),{:controller=>'mg_student_admissions',:action=>'index'}  %>
+<% navigation_add t('add_student'),{:controller=>'mg_student_admissions',:action=>'new'}  %>
+<%=render :partial=>'entrance_exam_details/entrance_exam_left' %>
+<h4 class="mg-h4"><%= t('student_details') %></h4>
+<%= render 'form' %>
+<%= render 'common_left_close' %>
+
+<script>
+$(document).ready(function () {
+
+	// if($("#previousEdcuationCheckedId").is(':checked'))
+	//   $("#studentPreviousEdcuationDivId").show();  // checked
+	// else
+	//   $("#studentPreviousEdcuationDivId").hide();  // unchecked
+
+	// $("#previousEdcuationCheckedId").change(function(){
+	//   if($("#previousEdcuationCheckedId").is(':checked'))
+	//   {
+	//     $("#studentPreviousEdcuationDivId").show();  // checked
+	//   }
+	//   else{
+	//     $("#studentPreviousEdcuationDivId").hide();
+	//   }
+	// });
+  focusCurrentTab("manageStudentLID","manageStudentID");
+});
+
+$("#mg_student_admission_mg_student_category_id").change(function(){
+      var category=$( "#mg_student_admission_mg_student_category_id option:selected" ).text();
+      if (category=="Employee Child")
+      {
+        if ($('#studentManagementQuotaId').is(':visible')) 
+        {   
+          $(".mg-management-field").val('');
+          $('#studentManagementQuotaId').hide();
+        }
+        if ($('#studentScholarshipId').is(':visible')) 
+        {   
+          $(".mg-scholarship-field").val('');
+          $('#studentScholarshipId').hide();
+        }
+          $('#studentEmployeeChildId').show();
+      }
+      if (category=="Management")
+      {
+        if ($('#studentEmployeeChildId').is(':visible')) 
+        {   
+          $('#studentEmployeeChildId').hide();
+          $(".mg-emp-child-field").val('');
+        }
+
+        if ($('#studentScholarshipId').is(':visible')) 
+        {   
+          $('#studentScholarshipId').hide();
+          $(".mg-scholarship-field").val('');
+        }
+          $('#studentManagementQuotaId').show();
+      }
+      if (category=="On Scholarship")
+      {
+        if ($('#studentEmployeeChildId').is(':visible')) 
+        {   
+          $('#studentEmployeeChildId').hide();
+          $(".mg-emp-child-field").val('');
+        }
+
+        if ($('#studentManagementQuotaId').is(':visible')) 
+        {   
+          $('#studentManagementQuotaId').hide();
+          $(".mg-management-field").val('');
+        }
+        $('#studentScholarshipId').show();
+      }
+    
+      if (category=="General")
+      {
+        if ($('#studentEmployeeChildId').is(':visible')) 
+        {   
+          $('#studentEmployeeChildId').hide();
+          $(".mg-emp-child-field").val('');
+        }
+
+        if ($('#studentManagementQuotaId').is(':visible')) 
+        {   
+          $('#studentManagementQuotaId').hide();
+          $(".mg-management-field").val('');
+        }
+
+        if ($('#studentScholarshipId').is(':visible')) 
+        {   
+          $('#studentScholarshipId').hide();
+          $(".mg-scholarship-field").val('');
+        }
+      }
+    });
+</script>

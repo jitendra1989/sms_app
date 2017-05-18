@@ -1,0 +1,252 @@
+<%if flash[:error].present?%>
+<%=flash[:error]%>
+<%end%>
+
+<!-- Sec --> 
+<div id="schoolDialogID" class="mg-padding-nil"></div>
+<button id="editSchool-<%=raw session[:current_user_school_id]%>" title="Edit " class="editschool mg-icon-btn mg-btn-bottom-margin"><i class="fa fa-pencil-square-o"></i></button>
+<!-- <%#=@school_info.inspect%> -->
+<div>
+    <table class="mg-tbl-size-width">
+        
+        <td valign="top">
+            <side class="userMenuBoxLeft" style="width: 110px; margin-top: 15px;">
+                 <!-- <img src="/assets/logo.jpg" style="width:100px ; height: 100px; margin-top: 1em;" /> 
+ -->
+                 <%#= image_tag @schools.logo.url(:medium, timestamp: false) ,:style => "width: 100px; height: 125px;" %>
+                   <%= image_tag  @schools.logo.url(:medium, timestamp: false),:class => 'mg-img-size'  %>
+            </side> 
+        </td>
+        <td>    
+            <h4 class="mg-h4"><%=t("school_detail")%></h4>
+            <table class="mg-inner-table-align">
+               
+                    <tr>
+                        <td class="mg-table-data-width">
+                            <label class="mg-label mg-school-long-form-width"><%= t ('school_name') %></label>
+                            <label class="mg-label-inner-form"><%= @schools.school_name %></label>
+                        </td>
+                        <td class="mg-table-data-width-right">
+                            <label class="mg-label mg-school-long-form-width"><%= t ('school_code') %></label>
+                            <label class="mg-label-inner-form"><%= @schools.school_code %></label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="mg-table-data-width">
+                            <label class="mg-label mg-school-long-form-width"><%= t ('starttime') %></label>
+                            <label class="mg-label-inner-form"><%= @schools.start_time %></label>
+                        </td>
+                        <td class="mg-table-data-width-right">
+                            <label class="mg-label mg-school-long-form-width"><%= t ('endtime') %></label>
+                            <label class="mg-label-inner-form"><%= @schools.end_time %></label>
+                        </td>
+                    </tr>
+
+
+                    <tr>
+                        <td class="mg-table-data-width">
+                            <label class="mg-label mg-school-long-form-width"><%= t 'affilicatedto' %></label>
+                            <label class="mg-label-inner-form"><%= @schools.affilicated_to %></label>
+                        </td>
+                        <td class="mg-table-data-width-right">
+                            <label class="mg-label mg-school-long-form-width"><%= t 'regnum' %></label>
+                            <label class="mg-label-inner-form"><%= @schools.reg_num %></label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="mg-table-data-width">
+                            <label class="mg-label mg-school-long-form-width"><%= t 'leave_cal_start_date' %></label>
+                             <%#id = @schools.id %>  
+                             <%# dateFormat = MgSchool.find_by(id).date_format %>
+                             <%if @schools.date_format.present?%>
+                              <% if @schools.mg_leave_calendar_start_date.present? %>
+                                <label class="mg-label-inner-form"><%= @schools.mg_leave_calendar_start_date.strftime(@schools.date_format) %></label>
+                                <% end %>
+                             <% end %>
+                        </td>
+                    </tr>
+            </table>
+
+            <h4 class="mg-h4">Address Detail</h4>
+
+            <table class="mg-inner-table-align">
+                         
+
+                        <tr>
+                            <td class="mg-table-data-width">
+                                <label class="mg-label mg-school-long-form-width"><%= t 'addressline1' %></label>
+                                <label class="mg-label-inner-form"><%= @schools.address_line1 %></label>
+                            </td>
+                            <td class="mg-table-data-width-right">
+                                <label class="mg-label mg-school-long-form-width"><%= t 'addressline2' %></label>
+                                <label class="mg-label-inner-form"><%= @schools.address_line2 %></label>
+                            </td>
+                        </tr>
+
+
+
+                       <!--  <tr>
+                            <td>
+                                <label class="mg-label" style="width:140px">Country</label>
+                                <label><%= @schools.country %></label>
+                            </td>
+                            <td>
+                                <label class="mg-label" style="width:140px">Country Code</label>
+                                <label><%= @schools.country_code %></label>
+                            </td>
+                        </tr>
+             -->
+                         <tr>
+                            <td class="mg-table-data-width">
+                                <label class="mg-label mg-school-long-form-width"><%= t 'street' %></label>
+                                <label class="mg-label-inner-form"><%= @schools.street %></label>
+                            </td>
+                            <td class="mg-table-data-width-right"> 
+                                <label class="mg-label mg-school-long-form-width"><%= t 'city' %></label>
+                                <label class="mg-label-inner-form"><%= @schools.city %></label>
+                            </td>
+                        </tr>
+                         <tr>
+                            <td class="mg-table-data-width">
+                                <label class="mg-label mg-school-long-form-width"><%= t 'state' %></label>
+                                <label class="mg-label-inner-form"><%= @schools.state %></label>
+                            </td>
+                            <td class="mg-table-data-width-right">
+                                <label class="mg-label mg-school-long-form-width"><%= t 'pincode' %></label>
+                                <label class="mg-label-inner-form"><%= @schools.pin_code %></label>
+                            </td>
+                        </tr>
+
+
+                        <tr>
+                            <td class="mg-table-data-width">
+                                <label class="mg-label mg-school-long-form-width"><%= t 'landmark' %></label>
+                                <label class="mg-label-inner-form"><%= @schools.landmark %></label>
+                            </td>
+                            <td class="mg-table-data-width-right"> 
+                                <label class="mg-label mg-school-long-form-width"><%= t 'country' %></label>
+                                <label class="mg-label-inner-form"><%= @schools.country %></label>
+                            </td>
+                        </tr>
+              </table>
+
+                         <h4 class="mg-h4">Contact Detail</h4>
+
+              <table class="mg-inner-table-align">
+
+                          <tr>
+                            <td class="mg-table-data-width">
+                                <label class="mg-label mg-school-long-form-width"><%= t 'phonenumber' %></label>
+                                <label class="mg-label-inner-form"><%= @schools.mobile_number %></label>
+                            </td>
+                            <td class="mg-table-data-width-right">
+                                <label class="mg-label mg-school-long-form-width"><%= t 'faxnumber' %></label>
+                                <label class="mg-label-inner-form"><%= @schools.fax_number %></label>
+                            </td>
+                        </tr>
+              </table>
+              <table class="mg-inner-table-align">
+                          <tr>
+                            
+                            <td class="mg-email-form-width">
+                                <label class="mg-label mg-school-long-form-width"><%= t 'emailid' %></label>
+                                <label class="mg-label-inner-form"><%= @schools.email_id %></label>
+                            </td>
+                           
+                        </tr>    
+
+              </table>
+
+        <h4 class="mg-h4">Other Details</h4>
+
+            <table class="mg-inner-table-align">  
+
+                         <tr>
+                            
+                            <td class="mg-table-data-width">
+                                    <label class="mg-label mg-school-long-form-width"><%= t 'timezone' %></label>
+                                    <label class="mg-label-inner-form"><%= @schools.timezone %></label>
+                                </td>
+                                <!-- <label class="mg-label mg-school-long-form-width"><#%= t 'schoolLanguage' %></label>
+                                <label class="mg-label-inner-form"><#%= @schools.language%></label> -->
+                            
+                            <td class="mg-table-data-width-right">
+                                <label class="mg-label mg-school-long-form-width"><%= t 'currencytype' %></label>
+                                <label class="mg-label-inner-form"><%= @schools.currency_type %></label>
+                            </td>
+                        </tr>
+
+                        
+                          <tr>
+                            <td class="mg-table-data-width">
+                                <label class="mg-label mg-school-long-form-width"><%= t 'gradingsystem' %></label>
+                                <%@gradingType=Array.new%>
+                                <%@gradingType=["","CCE","CWE","GPA"]%>
+                                <label class="mg-label-inner-form"><%= @gradingType[@schools.grading_system.to_i] %></label>
+                            </td>
+                            <td class="mg-table-data-width-right">
+                                <label class="mg-label mg-school-long-form-width"><%= t 'dateformat' %></label>
+                                <label style="font-weight: normal; font-size: 0.8em;" id="schoolDateFormatDbID"><%= @schools.date_format%></label>
+                            </td>
+                        </tr>
+
+                        <table class="mg-inner-table-align">
+                            <tr>
+                                <!-- <td width="400px">
+                                    <label class="mg-label mg-school-long-form-width"><#%= t 'timezone' %></label>
+                                    <label class="mg-label-inner-form"><#%= @schools.timezone %></label>
+                                </td> -->
+                            </tr>
+                        </table>
+<%#=@customData.inspect%>
+<%if @customData.size>0%>
+                        <h4 class="mg-h4"><%= t('Custom Fields') %></h4>
+                <table class="mg-tbl-size-width mg-custom-labels"> 
+                <tr>
+                <td class="mg-table-data-width">
+                <% @dbdatas.each do |dbdata| %>
+               
+             <%@customData.each do |custDatas|%>
+
+            <%if dbdata.id.to_s==custDatas.mg_custom_field_id%>
+
+
+              <%custom_data=Array.new%>
+            <% hidden_field_tag 'custom_data[]', dbdata.id%>
+             <%
+
+               @customData.each do |custData| 
+
+               if custData.mg_custom_field_id == dbdata.id.to_s
+                  @custValue = custData.value
+               
+               end
+             end
+              %> 
+
+        <label class="mg-label mg-rm-text-trans  mg-school-long-form-width"><%= dbdata.name %></label>
+
+                <label class="mg-label-inner-form"><%=@custValue%></label><br>
+    <%end%>
+     <%end%>  
+      <%end%>
+   </td>
+   </tr>
+</table>
+<%end%>
+</table>
+</td>
+</table>
+</div>
+
+<script>
+    $(document).ready(function(){
+     dateFormatStr =  getSchoolDateFormat();
+    // alert(dateFormatStr);
+    $("#schoolDateFormatDbID").html(dateFormatStr);
+  });
+    
+</script>
+
+
+                 

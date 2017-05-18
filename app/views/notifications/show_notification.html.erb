@@ -1,0 +1,62 @@
+<!--  sssSec --> 
+<% navigation_add 'Show Notifications', show_notification_path %>
+
+<%=hidden_field_tag 'user_type', @user_type%>
+<% if @user_type.to_s == "employee" %>
+
+	<%= render partial: 'dashboards/employee_left' %>
+    <!-- <p>employee</p> -->
+	<%= render partial: 'show_notify' %>
+		
+	<%= render partial: 'application/common_left_close' %>
+<% end %>
+
+<% if @user_type.to_s == "principal" %>
+
+	<%= render partial: 'dashboards/principle_dashboard_left' %>
+	<!-- <p>principle</p> -->
+	<%= render partial: 'show_notify' %>
+		
+	<%= render partial: 'application/common_left_close' %>
+
+<% end %>
+
+<% if @user_type.to_s == "student" %>
+
+	<%= render partial: 'dashboards/student_dashboard_left' %>
+	<!-- <p>principle</p> -->
+	<%= render partial: 'show_notify' %>
+		
+	<%= render partial: 'application/common_left_close' %>
+
+<% end %>
+
+
+<% if @user_type.to_s == "guardian" %>
+
+	<%= render partial: 'dashboards/guardian_dashboard_left' %>
+	<!-- <p>principle</p> -->
+	<%= render partial: 'show_notify' %>
+		
+	<%= render partial: 'application/common_left_close' %>
+
+<% end %>
+
+<% if @user_type.to_s == "admin" %>
+
+	<%= render partial: 'notification_left' %>
+	<!-- <p>principle</p> -->
+	<%= render partial: 'show_notify' %>
+		
+	<%= render partial: 'application/common_left_close' %>
+
+<% end %>
+
+
+<script type="text/javascript">
+     $(document).ready(function(){
+     	var user_type=$("#user_type").val();
+     	 focusCurrentTab("showPrincipleNotification","showPrincipleNotificationLiID");
+         	focusDashboards();
+   });
+</script>

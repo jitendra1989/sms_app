@@ -1,0 +1,57 @@
+
+<%= form_for @mg_employee_category,:html=> {:id=>"createCategoryFormId",:multipart => true } do |f| %>
+
+<%= f.hidden_field :is_deleted, :value => 0 %>
+<%= f.hidden_field :mg_school_id, :value => session[:current_user_school_id] %>
+  <p>
+  
+    <%= f.label t("categoryname") ,:class=>"mg-label"%><span class="required-field">&nbsp;*</span><br>
+    <%= f.text_field :category_name ,:class=>"mg-text-field"%>
+  </p>
+   <p>
+    <%= f.label t("prefix") ,:class=>"mg-label"%><span class="required-field">&nbsp;*</span><br>
+    <%= f.text_field :prefix ,:class=>"mg-text-field"%>
+  </p>
+   <p>
+    <%= f.label t("suffix") ,:class=>"mg-label"%><span class="required-field">&nbsp;*</span><br>
+    <%= f.text_field :suffix ,:class=>"mg-text-field"%>
+  </p>
+  <div style="display:none;">
+    <p>
+   
+      <%= f.label :Status ,:class=>"mg-label"%>       <br />
+      <%= f.label :status, t("active"), :value => "true"  ,:class=>"mg-label-inner-form"%>
+      <%= f.radio_button :status, false , :checked => true%>
+      <%= f.label :status, t("inactive"), :value => "false",:class=>"mg-label-inner-form" %>
+      <%= f.radio_button :status, true %> <br />
+    </p>
+  </div>
+
+  <p>
+    <%= f.submit t("save") ,:id => "CategoryFormID" ,:class=>"mg-small-form-btn"%>
+     <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+  </p>
+<% end %>
+
+<!-- <span class="mg-cncl-btn-align">
+  <button class="cancel-form-dialog btn btn-cancel"><%#= t('cancel') %></button>
+</span> -->
+
+<!-- <button class="cancel-form-dialog"><%#= t('cancel') %></button> -->
+
+<script>
+ 
+$(document).ready(function(){
+
+   $(".new_mg_employee_category").validate({
+      rules: {
+        
+        "mg_employee_category[category_name]": {required:true},
+              "mg_employee_category[prefix]": {required:true},
+              "mg_employee_category[suffix]": {required:true}
+      }
+      });
+
+
+});
+ </script>

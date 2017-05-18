@@ -1,0 +1,175 @@
+<% navigation_add t('poll_question'), alumni_polling_path %>
+<%=render partial: 'alumni_left'%>
+
+<h4 class="mg-h4"><%= t('create_polling') %></h4>
+
+<button class="new-add-polling mg-btn-bottom-margin mg-custom-form-btn"><%= t('create_polling')%></button>
+
+<!-- <%#= button_to 'Add Laboratory', {:controller => "laboratory", :action => "new" } ,:class=>"mg-custom-form-btn"%> -->
+<div class="mg_pagination">
+<%if @polling.length>0%>
+<table  class="batch-tbl mg-tbl-margin">   <!-- border="2" --> 
+  <tr class="subject-table-header">
+    <!-- <th>Subject Id</th> -->
+    <th><%= t('question') %></th>
+      <th><%= t('description') %></th>
+
+    <th style="width: 92px;"><%= t('actions') %></th>
+  </tr>
+ 
+  <% @polling.each do |pol| %>
+    <tr>
+      <td><%= pol.try(:question) %></td>
+     <td class="mg-desc-text-justify"><%= truncate(pol.description.to_s, :length=> 25, 
+          :seperator=> ' ') %>
+         </td>
+      <td>
+
+      <!-- <button title="Show" id="<%=raw pol.id %>-showlabBTNID" class="show-lab-btn mg-icon-btn"><i class="fa fa-eye"></i></button> -->
+
+        <button title="Edit" id="<%=raw pol.id %>-editlabBTNID" class="edit-polling-btn mg-icon-btn"><i class="fa fa-pencil-square-o"></i></button>
+
+        <button title="Delete" id="<%=raw pol.id %>-deletelabBTNID" class="delete-polling-btn mg-icon-btn"><i class="fa fa-trash"></i></button>
+
+      </td>
+
+    </tr>
+  <% end %>
+</table>
+<br/>
+ <div class="pagination-align" style="position: relative; bottom: 10px;">
+              <%= will_paginate @polling, :container => false %>
+           </div>
+<%else%>
+<h5>No records are created </h5>
+<%end%>
+</div>
+<div id="new_Add_Polling_DIVID"></div>
+<div id="edit_polling_DIVID"></div>
+<div id="showCategoryDIVID"></div>
+
+
+<%= render  partial: 'application/common_left_close' %>
+
+<script>
+$( document ).ready(function() {
+            focusCurrentTab("getTopollingAID","getTopollingliId");
+          //focusStudentHeaderBox();
+});
+
+
+
+$(document).on("click", ".delete-polling-btn", function(e){
+     e.preventDefault();
+      var myID =$(this).attr('id');
+      var Id=myID.split("-");
+                var retVal = confirm("Are you sure to delete?");
+                if(retVal){
+                  //  alert(retVal);
+                     var urlLink = "/alumni/polling_delete";
+                      $.ajax({
+                        url: urlLink ,
+                        cache: false,
+                        data:{id:Id[0]},
+                        success: function(html){
+                            window.location.reload();
+                        }
+                    });
+
+                }else{
+                   // alert(retVal);     
+                   return false;
+                }
+        }); 
+
+
+
+
+
+
+// $(document).on("click", ".show-lab-btn", function(e){
+//         var myID =$(this).attr('id');
+//         var Id=myID.split("-");
+//         var urlLink = "/laboratory/show/"+Id[0];
+//         $.ajax({
+//             url: urlLink ,
+//             cache: false,
+//             success: function(html){
+//                   $('#showCategoryDIVID').dialog({
+//                     modal: true,
+//                      minHeight: '200px',
+//                     width: 'auto',
+//                     title: "Show Laboratory",
+//                     open: function () {
+                        
+//                         $(this).html(html);
+//                     }
+//                 }); 
+               
+//             }
+//         });
+// });
+
+
+$(document).on("click", ".edit-polling-btn", function(e){
+        var myID =$(this).attr('id');
+        var Id=myID.split("-");
+        var urlLink = "/alumni/polling_edit";
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            data:{id:Id[0]},
+            success: function(html){
+                  $('#edit_polling_DIVID').dialog({
+                    modal: true,
+                     minHeight: 'auto',
+                    minWidth: '250px',
+                    title: "Edit Polling",
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+});
+
+$(document).on("click", ".new-add-polling", function(e){
+        var urlLink = "/alumni/polling_new";
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(html){
+                  $('#new_Add_Polling_DIVID').dialog({
+                    modal: true,
+                     minHeight: 'auto',
+                    minWidth: '250px',
+                    title: "Create Polling",
+                    open: function () {
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+});
+</script>
+<style>
+
+
+.table-batchs-tbl {
+   /* font-family: verdana,arial,sans-serif;*/
+    font-size:13px;
+    color:#363131;
+    border-width: 1px;
+    border-color:  #363131;
+    border-collapse: collapse;
+    padding: 12px ;
+    font-size: 0.8em;
+    width: 261px !important;
+    /* margin-left: 2px; */
+}
+</style>
+
+

@@ -1,0 +1,82 @@
+<%= render "address" %>
+        <!-- tbl2 Addresstbl end-->
+
+
+        <%= render "contact" %>
+
+        <%= render "email" %>
+
+
+<div style="display: block; padding: 20px;">  
+
+       <div class="home-adrs-cls" style="display: inline-block; margin: 10px;">
+            <label >Home Address</label><br/><br/>
+
+        <%= fields_for @address do |adrs| %>
+
+        
+        <label for="address_line1">Address Line1</label>
+        <div class="input-container">
+             <%= adrs.text_field :address_line1 %>
+        </div>
+
+        <label for="address_line2">Address Line2</label>
+        <div class="input-container">
+             <%= adrs.text_field :address_line2 %>
+        </div>  
+        <label for="city"><%= t('city') %></label>
+        <div class="input-container">
+             <%= adrs.text_field :city %>
+        </div>
+        <label for="state"><%= t('state') %></label>
+        <div class="input-container">
+             <%= adrs.text_field :state %>
+        </div>
+        <label for="pin_code"><%= t('pin_code') %></label>
+        <div class="input-container">
+             <%= adrs.text_field :pin_code %>
+        </div>
+        <label for="country"><%= t('country') %></label>
+        <div class="input-container">
+             <%= adrs.text_field :country %>
+        </div>
+    <% end %>  
+
+    <%= fields_for @contact do |cnt| %>
+
+    <label for="phone_number"><%= t('phone_number') %></label>
+        <div class="input-container">
+             <%= cnt.text_field :phone_number %>
+        </div>
+
+     <label >Mobile Number</label>
+        <div class="input-container">
+             <%= cnt.text_field :phone_type %>
+        </div>        
+
+     <% end %>   
+
+     <!--   <%= render "email" %>   -->
+
+    <%= fields_for @email do |eml| %>
+
+    <label for="email_id"><%= t('email_id') %></label>
+        <div class="input-container">
+             <%= eml.text_field :email_id %>
+        </div>
+     <% end %> 
+
+
+  </div>
+  </div>   
+
+
+<label for="mobile_number"><%= t('mobile_number') %></label>
+        <div class="input-container">
+             <%= cnt.text_field :mobile_number %>
+        </div> 
+
+<label for="mobile_number"><%= t('mobile_number') %></label>
+        <div class="input-container">
+             <%= cnt.text_field :mobile_number %>
+        </div>                  

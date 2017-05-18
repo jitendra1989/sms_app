@@ -1,0 +1,95 @@
+<%= render  partial: 'master_settings/master_settings_left.html' %>
+
+<h4 class="mg-h4"><%=t('laboratory_incharge_show')%></h4>
+<%subject=MgLaboratorySubject.find_by(:id=>@subId)%>
+<h3><%=subject.try(:name)%></h3>
+
+<%if @incharge.present?%>
+<h4 class="mg-h4"><%=t('incharge_details')%></h4>
+
+<table border="1" class="batch-tbl mg-tbl-layout mg-showdata-bg mg-show-tbl-width" cellspacing="1" cellpadding="1">
+
+<tr>
+<th> <label class="mg-label"> <%= t('employee_name')%></label>
+</th>
+<th> <label class="mg-label"> <%= t('department_name')%></label>
+</th>
+</tr>
+<%@incharge.each do |incharge|%>
+<tr>
+     <td class="mg-td-width-half" valign="top">
+     <%if incharge.mg_employee_id.present?
+          employee=MgEmployee.find_by(:id=>incharge.mg_employee_id)
+          %>
+     <%=employee.try(:first_name)%><%=employee.try(:last_name)%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+     </td>
+
+     <td class="mg-td-width-half" valign="top">
+     <%if employee.mg_employee_department_id.present?
+        department=MgEmployeeDepartment.find_by(:id=>employee.mg_employee_department_id)
+        %>
+
+     <%=department.department_name%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+     </td>
+ <%end%>
+
+</table>
+
+<%end%>
+<br/>
+
+<%if @assistantIncharge.present?%>
+<h4 class="mg-h4"><%=t('assistant_incharge_details')%></h4>
+
+<table border="1" class="batch-tbl mg-tbl-layout mg-showdata-bg mg-show-tbl-width" cellspacing="1" cellpadding="1">
+
+<tr>
+<th> <label class="mg-label"> <%= t('employee_name')%></label>
+</th>
+<th> <label class="mg-label"> <%= t('department_name')%></label>
+</th>
+</tr>
+<%@assistantIncharge.each do |assIncharge|%>
+<tr>
+     <td class="mg-td-width-half" valign="top">
+     <%if assIncharge.mg_employee_id.present?
+          employee=MgEmployee.find_by(:id=>assIncharge.mg_employee_id)
+          %>
+     <%=employee.try(:first_name)%><%=employee.try(:last_name)%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+     </td>
+
+     <td class="mg-td-width-half" valign="top">
+     <%if employee.mg_employee_department_id.present?
+        department=MgEmployeeDepartment.find_by(:id=>employee.mg_employee_department_id)
+        %>
+
+     <%=department.department_name%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+     </td>
+ <%end%>
+
+</table>
+
+<%end%>
+
+<br/>
+<%= link_to 'Cancel', laboratory_laboratory_settings_show_path ,:style=>"font-size: 0.8em; color: #297ACC; text-decoration: none;" ,:class=>"mg-custom-form-btn"%>
+
+<%= render partial: 'emp_section_close' %>
+<script>
+$(document).ready(function () {
+        focusCurrentTab("laboratorycategorytypeAID","laboratorycategorytypeLiID");
+        focusMasterSettings();
+    });
+</script>

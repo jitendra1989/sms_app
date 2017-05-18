@@ -1,0 +1,170 @@
+<%= render partial: '/dashboards/student_dashboard_left' %>
+
+ <h4 class="mg-h4">Documents</h4>
+<%if @document_managements.present?%>
+<!-- <div class="mg_pagination"> -->
+<table class="batch-tbl">
+<tr>
+	
+	<th>File Name</th>
+	<th>File Size</th>
+	<th>Actions</th>
+</tr>
+<%count=1%>
+
+	
+	<% @document_managements.each do |e| %>
+
+  <%@document=MgDocumentManagement.find(e.mg_document_management_id)%>
+<%file_type=@document.file_file_name.split(".")%>
+<%file_type[1]%>
+<%if file_type[1]=='pdf'%>
+<%@type='<i class="fa fa-file-pdf-o"></i>'%>
+<%elsif file_type[1]=='xlsx' || file_type[1]=='xlt' || file_type[1]=='xls' ||file_type[1]=='xlm' ||file_type[1]=='xlsm' ||file_type[1]=='xltx' ||file_type[1]=='xltm' ||file_type[1]=='xlsb' ||file_type[1]=='xla' ||file_type[1]=='xlam' ||file_type[1]=='xll' ||file_type[1]=='xlw'%>
+<%@type='<i class="fa fa-file-excel-o"></i>'%>
+<%elsif file_type[1]=='jpeg' || file_type[1]=='jfif' ||file_type[1]=='exit' ||file_type[1]=='tift' ||file_type[1]=='rit' || file_type[1]=='png' || file_type[1]=='jpg'   %>
+<%@type='<i class="fa fa-file-image-o"></i>'%>
+
+<%elsif file_type[1]=='txt'%>
+<%@type='<i class="fa fa-file-text"></i>'%>
+
+<%elsif file_type[1]=='docx' || file_type[1]=='doc' ||file_type[1]=='docm' ||file_type[1]=='dotx' ||file_type[1]=='dotm' ||file_type[1]=='docb'%>
+<%@type='<i class="fa fa-file-pdf-o"></i>'%>
+
+<%elsif file_type[1]=='ppt' || file_type[1]=='pot' ||file_type[1]=='pps' ||file_type[1]=='pptx' ||file_type[1]=='pptm' ||file_type[1]=='potx' ||file_type[1]=='potm' ||file_type[1]=='ppam' ||file_type[1]=='ppsx' ||file_type[1]=='ppsm' ||file_type[1]=='sldx' ||file_type[1]=='sldm' %>
+<%@type='<i class="fa fa-file-powerpoint-o"></i>'%>
+<%elsif file_type[1]=='zip'%>
+<%@type='<i class="fa fa-file-archive-o"></i>'%>
+<%elsif file_type[1]=='pdf'%>
+<%@type='<i class="fa fa-file-pdf-o"></i>'%>
+
+<%elsif file_type[1]=='pdf'%>
+<%@type='<i class="fa fa-file-pdf-o"></i>'%>
+
+<%elsif file_type[1]=='pdf'%>
+<%@type='<i class="fa fa-file-pdf-o"></i>'%>
+
+<%elsif file_type[1]=='pdf'%>
+<%@type='<i class="fa fa-file-pdf-o"></i>'%>
+
+<%elsif file_type[1]=='pdf'%>
+<%@type='<i class="fa fa-file-pdf-o"></i>'%>
+
+<%elsif file_type[1]=='pdf'%>
+<%@type='<i class="fa fa-file-pdf-o"></i>'%>
+
+<%elsif file_type[1]=='pdf'%>
+<%@type='<i class="fa fa-file-pdf-o"></i>'%>
+
+<%elsif file_type[1]=='pdf'%>
+<%@type='<i class="fa fa-file-pdf-o"></i>'%>
+
+<%elsif file_type[1]=='pdf'%>
+<%elsif file_type[1]=='pdf'%>
+<%elsif file_type[1]=='pdf'%>
+<%elsif file_type[1]=='pdf'%>
+
+
+<%else%>
+<%@type='<i class="fa fa-file"></i>'%>
+
+<%end%>
+	<tr>
+	<td>
+		<li class="mg-folder-list"><label for="subfolder1"><%=@type.html_safe%>&nbsp;
+		<%= link_to_if @document.file.url, @document.file_file_name, @document.file.url %></label>
+	</td>
+	<td>
+		<%=number_to_human_size(@document.file_file_size, :precision => 2)  %>
+	</td>
+<!-- 	<td>
+	
+
+	</td> -->
+<td class="mg-align-center"><%html_icon='<span title="Download" class="mg-icon-btn"><i class="fa fa-download"></i></span>'%>
+		<%= link_to_if @document.file.url, html_icon.html_safe, @document.file.url , :target=>"_blank"%></td>
+          
+
+</label></a> </li>
+</tr>      
+ <% end %>
+
+</tr>
+
+</table>
+<%#= will_paginate @document_managements, :container => false %>
+<!-- </div> -->
+<%else%>
+<div>
+  <h5>Documents not yet shared.</h5>
+</div>
+<% end %>
+
+  <br><h4 class="mg-h4">Contents</h4>
+
+
+<% if @shared.present?%>
+ <!-- <div class="mg_pagination"> -->
+ 
+
+    <table class="batch-tbl"> 
+     <tr >
+        <th><%=t('title')%></th>
+        <th><%=t('section')%></th>
+        <th><%=t('actions')%></th>
+      </tr>
+
+    <% @shared.each do |article| %>
+<tr >
+     <% @content=MgMyQuestion.find(article.mg_my_question_id)%>
+      <td><%= @content.title.html_safe%></td>
+      <%course_name=MgBatch.find(article.mg_batch_id)%>
+      <td><%=course_name.course_batch_name%></td>
+
+      <td class="mg-align-center">
+          <button title="Show" id="<%=raw @content.id %>-showQuestionPaperBTNID" class="show-question-paper-student-BTN mg-icon-btn"><i class="fa fa-eye"></i></button>
+     <tr/>
+    <% end %>
+
+    </table>
+    <%#= will_paginate @shared, :container => false %>
+<!-- </div> -->
+<%else%>
+<div>
+  <h5>Contents not yet shared.</h5>
+</div>
+<% end %>
+
+
+<%= render partial: 'application/common_left_close' %>
+
+
+<script type="text/javascript">
+    
+
+ $(document).ready(function(){
+
+    focusCurrentTab("viewStudentDocumentsAID","viewStudentDocumentsLiID");
+    focusDashboards();
+
+});
+
+
+ $(document).on("click", ".show-question-paper-student-BTN", function(e){
+        var myID =$(this).attr('id');
+       var splString = myID.split("-");
+
+        var urlLink = "/document_managements/content_show_for_student/"+splString[0];
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(html){
+    
+                  $('#manageStudentCategoryID').empty();
+                  $('#manageStudentCategoryID').append(html);
+                
+            }
+        });
+});
+
+</script>

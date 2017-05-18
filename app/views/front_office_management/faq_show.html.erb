@@ -1,0 +1,62 @@
+<% navigation_add t('faq'), front_office_management_faq_path %>
+<% navigation_add t('show_faq'), front_office_management_faq_create_path %>
+<%=render partial: 'front_office_management_left'%>
+
+<h4 class="mg-h4"><%=t('show_faq')%></h4>
+
+  <table border="1" class="mg-showdata-bg " cellspacing="1" cellpadding="1">
+   <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('category')%></label>
+     </td>
+     <%faq=MgFaqCategory.find_by(:id=>@faq.mg_faq_category_id) %>
+     <td class="mg-td-width-half" valign="top">
+        <%= faq.try(:category_name)%>
+     </td>
+ </tr>
+
+ <tr>
+     <%faq=MgFaqSubCategory.find_by(:id=>@faq.mg_faq_sub_category_id) %>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"><%=t('sub_category')%></label>
+     </td>
+     <td class="mg-td-width-half " valign="top" >
+        <%= faq.try(:sub_category_name)%>
+     </td>
+ </tr>
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"><%=t('question')%></label>
+     </td>
+     <td class="text-scroll-for-log-text-cls comments-space" style="padding: 5px 40 0 10px">
+        <%= strip_tags(@faq.try(:question))%>
+     </td>
+ </tr>
+
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"><%=t('answer')%></label>
+     </td>
+     <td class="text-scroll-for-log-text-cls comments-space" style="padding: 5px 40 0 10px">
+        <%= strip_tags(@faq.try(:answer))%>
+     </td>
+ </tr>
+
+</table>
+<br>
+<br>
+ <p class="mg-p-mgtop">
+     <%= link_to t('back'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+
+  </p>
+ <%= render  partial: 'application/common_left_close' %> 
+
+<script type="text/javascript">
+$(document).ready(function () {
+            focusCurrentTab("frontOfficeManagerFaqAdminAID","frontOfficeManagerFaqAdminliId");
+
+//  textSeeMoreLess();
+});
+
+</script>
+  

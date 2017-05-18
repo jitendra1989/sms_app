@@ -1,0 +1,179 @@
+<% navigation_add t('menu'), :controller=>'canteen_managements', :action=>'menu' %>
+<% navigation_add t('menu'), :controller=>'canteen_managements', :action=>'edit_menu' , :id=>@canteen.id %>
+<%= render  partial: 'canteen_managements/canteen_management_left' %>
+
+<%
+if session[:user_type]=="principal"
+    @user_permission=false
+else
+    @user_permission=true
+end
+%>
+
+<h4 class="mg-h4"><%= t('edit_menu') %></h4>
+<%
+    weekDays=Hash.new
+    weekDays[0]='Sunday'
+    weekDays[1]="Monday"
+    weekDays[2]="Tuesday"
+    weekDays[3]="Wednesday"
+    weekDays[4]="Thursday"
+    weekDays[5]="Friday"
+    weekDays[6]="Saturday"
+
+    @food_item=MgFoodItem.where(:is_deleted=>0, :mg_school_id=>session[:current_user_school_id]).pluck(:item_name, :id )
+
+%>
+<%#= form_for :canteen_managements ,  :url=>{:controller=>'canteen_managements',:action=>'create_menu'}, :html=>{:id=>'canteen_managements_new_menu_form_id', :multipart=>true} do |f| %>
+
+<%= form_for :canteen, :url=>{:controller=>'canteen_managements',:action=>'update_menu',:id=>@canteen.id},:html => {:id => 'canteenUpdateID' } do |f| %>
+
+        <%= f.hidden_field :is_deleted ,:value=>0%>
+        <%= f.hidden_field :mg_school_id ,:value=>session[:current_user_school_id]%>
+        <%= f.hidden_field :created_by ,:value=>session[:user_id]%>
+        <%= f.hidden_field :updated_by ,:value=>session[:user_id]%>
+
+<p>
+   <label class="mg-label mg-tt-width" ><%= t('name') %><span class="required-field">&nbsp;*</span></label>
+    <!-- <br/> -->
+   <%= f.text_field :name,:class=>"mg-text-field" %>
+</p>
+
+<p>
+   <label class="mg-label mg-tt-width "><%=t('start_date') %></label>
+   <%=f.text_field :start_date ,:class=>"mg-select-btn canteen_management_start_date"%><br>
+   <label class="mg-label mg-tt-width "><%=t('end_date') %></label>
+   <%=f.text_field :end_date ,:class=>"mg-select-btn canteen_management_end_date"%>
+</p>
+
+<!-- =========================================================================== -->
+
+<table class="batch-tbl mg-tbl-layout mg-tbl-margin mg-std-tbl-width mg-table-normal-whitespace mg-custom-labels" style="width: 98%; max-width: 98%;">
+		 	<tr>
+		 		<!-- <th>FOOD CATEGORY</th> -->
+		 		<th bgcolor="#e6b319">Days/Meal</th>
+		 		<%@foodCategory= MgMealCategory.where(:is_deleted=>0, :mg_school_id=>session[:current_user_school_id]).order("priority")%>
+		 		<%@foodCategory.each do |category| %>
+		 			<th id="#{category.try(:id)}" bgcolor="#b78ee0" ><%=category.try(:name)%></th>
+		 		<%end%>
+		 	</tr>
+
+		 	<%weekDays.each_with_index do |days,index|%>
+
+		 		<tr>
+		 			<td class="mg-align-center" bgcolor="#FFE6BF">
+		 				<%=weekDays[index]%>
+		 			</td>
+
+		 			<%@foodCategory.each do |category| %>
+		 			<%str="#{index}_#{category.try(:id)}"
+          %>
+		 				<td>
+		 						<!-- <b><%#=t('select_item')%></b> -->
+								<%= select_tag "mg_food_item_id[#{str}][]",options_for_select(@food_item,MgCanteenMeal.where(:is_deleted=>0, :mg_school_id=>session[:current_user_school_id], :mg_meal_category_id=> category.try(:id), :mg_day_id=> index, :mg_canteen_id=> @canteen.id).pluck(:mg_food_item_id)),:multiple => true,:size =>10,:class=>"food_item_multiple_class mg-text-field"%>	 					
+		 				</td>
+		 			<%end%>
+
+		 		</tr>
+		 	<%end%>
+</table>
+
+
+<p>
+&nbsp;&nbsp;   <label class="mg-label mg-tt-width" ><%= t('status') %><span class="required-field">&nbsp;*</span></label>
+   <%= select_tag "status", options_for_select([[t("Pending"), "Pending"], [t("Accepted"), "Accepted"], [t("Rejected"), "Rejected"]],:selected=>@canteen.try(:status)), :disabled=>@user_permission,:class=>"canteen-status-cls" %>
+</p>
+
+
+  <p class="mg-p-mgtop">
+    <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn" id="sumiteBtnAID"><%=t("save")%></a>
+    <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+  </p>
+
+
+<%end%>
+
+<%= render  partial: 'application/common_left_close' %>
+
+
+
+<script>
+	$( document ).ready(function() {
+    $(".food_item_multiple_class").css("background", "#ccffcc");
+	  
+	  dateFormatStr =  getJsDateFormat();
+
+      $('.canteen_management_start_date').datepicker({ changeMonth: true,
+                changeYear: true, dateFormat: dateFormatStr });
+      $('.canteen_management_end_date').datepicker({ changeMonth: true,
+                changeYear: true, dateFormat: dateFormatStr });
+
+       var canteen_start_date =  $.datepicker.formatDate(dateFormatStr,new Date($('#canteen_start_date').val()));
+        $('#canteen_start_date').val(canteen_start_date);
+
+        var canteen_end_date =  $.datepicker.formatDate(dateFormatStr,new Date($('#canteen_end_date').val()));
+        $('#canteen_end_date').val(canteen_end_date);
+
+       focusCurrentTab("canteenMenuDetailsAID","canteenMenuDetailsLID");
+	
+	  $("#canteenUpdateID").validate({
+      rules: {    
+        "canteen[name]": {required: true,name_validate: true},
+        "canteen[start_date]": {required: true, dateFormat: true},
+        "canteen[end_date]": {required: true, dateFormat: true}
+        }
+    });
+
+    $(function () {
+      $.validator.addMethod('dateFormat',
+      function (value, element) {
+        dateFormatStr =  getJsDateFormat();
+        if (this.optional(element)) {
+            return true;
+        }
+        var ok = true;
+        try {
+            $.datepicker.parseDate(dateFormatStr, value);
+        }
+        catch (err) {
+            ok = false;
+        }
+        return ok;
+      },
+        "Please enter a date in the format "+ getDateFormat(dateFormatStr) +".");
+      dateFormatStr =  getJsDateFormat();
+
+      $(".datefield").datepicker({ dateFormat: dateFormatStr, changeYear: true });
+    });
+  });
+
+  $(document).on("change","#canteen_end_date",function(){
+    var dateFormatStr =  getJsDateFormat();
+    var start_date=$("#canteen_start_date").val();
+    var end_date=$(this).val();
+
+    if(start_date && end_date){
+      if(!(compareDate(start_date,end_date,dateFormatStr))){
+        alert("End date should be greater than start date");
+        $(this).val('');
+        //document.getElementById('events_end_date').value="";
+      }
+    }
+  });
+
+
+  $(document).on("change","#canteen_start_date",function(){
+    var dateFormatStr =  getJsDateFormat();
+    var start_date=$(this).val();
+    var end_date=$("#canteen_end_date").val();
+
+    if(start_date && end_date){
+      if(!(compareDate(start_date,end_date,dateFormatStr))){
+        alert("End date should be greater than start date");
+        $(this).val('');
+        //document.getElementById('events_end_date').value="";
+      }
+      
+    }
+  });
+</script>

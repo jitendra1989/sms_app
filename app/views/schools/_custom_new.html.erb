@@ -1,0 +1,64 @@
+<!-- Sec --> 
+<%=button_to "#{t('create_school_custom_field')}", controller: "schools", action: "custom_index"%>
+
+
+
+<%= hidden_field_tag :mg_school_id, :value => session[:current_user_school_id]%>
+
+<% @dbdatas.each do |dbdata| %>
+
+<%custom_data=Array.new%>
+<%= hidden_field_tag 'custom_data[]', dbdata.id%>
+
+<label><%= dbdata.name%></label>
+
+<%@data=dbdata.text_data.split(",")%>
+
+
+
+<%for i in 0..@data.length-1%>
+
+<%if dbdata.data_type=="check_box"%>
+
+<%custom_field=Array.new%>
+<%=@data[i] %>
+ <%= check_box_tag 'custom_field[]'%>
+<br/>
+
+<%elsif dbdata.data_type=="radio_button" %><br>
+
+
+<%custom_field=Array.new%>
+<%= radio_button_tag 'custom_field[]', @data[i]%>
+<%=@data[i] %>
+<br/>
+
+
+<%elsif dbdata.data_type=="drop_down" %>
+
+
+<%custom_field=Array.new%>
+<%=select_tag 'custom_field[]', options_for_select(@data)%>
+<%break%>
+
+
+<%elsif dbdata.data_type=="input_type" %>
+
+
+<%custom_field=Array.new%>
+<%custom_field=Array.new%>
+
+ <%= text_field_tag 'custom_field[]',@data[i] %>
+
+
+
+
+
+<%end%><br>
+
+<%end%><br>
+
+<%end%>
+
+
+

@@ -1,0 +1,164 @@
+<%= render  partial: 'inventory/inventory_left.html.erb' %>
+<% navigation_add 'Assign Financial Manager',index_financial_officer_path %>
+
+<h4 class="mg-h4"><%= t('financial_officer') %></h4>
+<% @financial_officer = MgUser.where(:is_deleted=>0,:user_type=>"financial_manager",:mg_school_id=>session[:current_user_school_id]) %>
+
+<% if !@financial_officer.present? %>
+  <button class="assign_financial_manager mg-btn-bottom-margin mg-custom-form-btn"><%= t('add_financial_manager')%></button>
+<%end%>
+
+<div class="mg_pagination">
+<%if @financial_manager.length>0%>
+<table  class="batch-tbl mg-tbl-margin">
+  <tr class="subject-table-header">
+    <th><%= t('user_name') %></th>
+    <th><%= t('action') %></th>
+  </tr>
+ 
+  <% @financial_manager.each do |f| %>
+    <tr>
+      <td><%= f.user_name %></td>
+      
+      <td>
+        
+      <button title="Change Password" id="<%=raw f.id %>-showlabBTNID" class="show-financial-manager-btn mg-icon-btn"><i class="fa fa-exchange"></i></button>
+
+        <button title="Edit" id="<%=raw f.id %>-editlabBTNID" class="edit-financial-manager-btn mg-icon-btn"><i class="fa fa-pencil-square-o"></i></button>
+
+        <button title="Delete" id="<%=raw f.id %>-deletelabBTNID" class="delete-financial-manager-btn mg-icon-btn"><i class="fa fa-trash"></i></button>
+
+      </td>
+
+    </tr>
+  <% end %>
+</table>
+<br/>
+ <div class="pagination-align" style="position: relative; bottom: 10px;">
+              <%= will_paginate @financial_manager, :container => false %>
+           </div>
+<%else%>
+<h5>No Finance Officer is created </h5>
+<%end%>
+</div>
+
+<div id="newAddfinancialManagerID"></div>
+<div id="showfinancialManagerID"></div>
+<div id="editfinancialManagerDIVID"></div>
+
+<%= render  partial: 'application/common_left_close' %>
+
+
+<script>
+  $( document ).ready(function() {
+    focusCurrentTab("assign_financial_officerAid","assign_financial_officerLiID");
+            //focusStudentHeaderBox();
+  });
+
+
+  $(document).on("click", ".delete-financial-manager-btn", function(e){
+    e.preventDefault();
+    var myID =$(this).attr('id');
+    var Id=myID.split("-");
+    var retVal = confirm("Are you sure to delete?");
+    if(retVal){
+      var urlLink = "/inventory/delete_financial_manager/"+Id[0];
+
+      $.ajax({
+        url: urlLink ,
+        cache: false,
+        success: function(html){
+            window.location.reload();
+        }
+      });
+    }else{
+       return false;
+    }
+  }); 
+
+
+  $(document).on("click", ".show-financial-manager-btn", function(e){
+    var myID =$(this).attr('id');
+    var Id=myID.split("-");
+    var urlLink = "/inventory/show_financial_manager/"+Id[0];
+    $.ajax({
+        url: urlLink ,
+        cache: false,
+        data: {"change_financial_password":"change_password_by_admins"},
+        success: function(html){
+              $('#showfinancialManagerID').dialog({
+                modal: true,
+                 minHeight: 'auto',
+                width: 'auto',
+                title: "Change Password",
+                open: function () {
+                    
+                    $(this).html(html);
+                }
+            }); 
+           
+        }
+    });
+  });
+
+  $(document).on("click", ".edit-financial-manager-btn", function(e){
+    var myID =$(this).attr('id');
+    var Id=myID.split("-");
+    var urlLink = "/inventory/edit_financial_manager/"+Id[0];
+    $.ajax({
+        url: urlLink ,
+        cache: false,
+        data: {"change_financial_username":"change_username_by_admins"},
+        success: function(html){
+          $('#editfinancialManagerDIVID').dialog({
+            modal: true,
+            minHeight: 'auto',
+            width: 'auto',
+            title: "Edit Financial Manager",
+            open: function () {
+              $(this).html(html);
+            }
+        }); 
+      }
+    });
+  });
+
+  $(document).on("click", ".assign_financial_manager", function(e){
+    var urlLink = "/inventory/new_financial_manager";
+    $.ajax({
+        url: urlLink ,
+        cache: false,
+        success: function(html){
+          $('#newAddfinancialManagerID').dialog({
+            modal: true,
+            minHeight: 'auto',
+            width: 'auto',
+            title: "Add Store Manager",
+            open: function () {
+              $(this).html(html);
+            }
+          }); 
+        }
+    });
+  });
+</script>
+
+
+<style>
+
+
+/*.table-batchs-tbl {*/
+    /*font-size:13px;
+    color:#363131;
+    border-width: 1px;
+    border-color:  #363131;
+    border-collapse: collapse;
+    padding: 12px ;
+    font-size: 0.8em;
+    width: 261px !important;*/
+/*}*/
+</style>
+
+
+
+

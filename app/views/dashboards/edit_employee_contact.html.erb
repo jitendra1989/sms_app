@@ -1,0 +1,31 @@
+ <h4 class="mg-h4"><%=t('contact details')%></h4>
+ <%= form_for :guardian,:html => { :id => 'employeeProfileContactEditFormID'}, url: edit_contact_by_employee_path(@employee[0].id), method: :patch do |f| %>
+
+      <%= render :partial => "students/contact_inline" ,:locals => {:phone_types => "phone"} %>
+      <%= render :partial => "students/contact_inline" ,:locals => {:phone_types => "mobile"} %>
+      <%= render :partial => "students/email_inline" %>
+
+         
+	<p class="mg-p-mgtop">
+       <%#= submit_tag t('save'), class: "submit" ,:class=>"mg-small-form-btn mg-custom-labels" %>
+       <a onclick="$(this).closest('form').submit()" class="submit mg-small-form-btn mg-custom-labels"><%=t("save")%></a>
+        <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+	</p>
+<% end %>
+
+
+<script>
+	$(document).ready(function(){
+
+			      $("#employeeProfileContactEditFormID").validate({
+	        //debug: true,
+				rules: {
+			                  "phone[phone_number]": { number: true,minlength: 6,maxlength: 11},
+			                  "mobile[phone_number]": {required: true, number: true,minlength: 10,maxlength: 10},
+			                  "email[mg_email_id]": {required: true,  email: "Your email must be in the format of name@domain.com"}
+	              }
+	
+	      });
+	});
+
+</script>

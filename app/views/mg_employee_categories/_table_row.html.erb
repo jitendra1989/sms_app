@@ -1,0 +1,14 @@
+<!-- Sec --> 
+      <tr>
+        <td><%= employee_category.category_name %></td>
+        <td><%= employee_category.prefix %></td>
+        <td><%= employee_category.suffix %></td>
+
+      <!--   <td><%#= employee_category.status %></td> -->
+
+        <td>
+           <button title="Edit" class="edit-employee-category mg-icon-btn" id="editEmployeeCategoryID-<%= employee_category.id%>"><i class="fa fa-pencil-square-o"></i></button>
+           <button title="Delete" class="delete-employee-category mg-icon-btn" id="deleteEmployeeCategoryID-<%= employee_category.id%>"><i class="fa fa-trash"></i></button>
+        </td>
+
+      </tr>

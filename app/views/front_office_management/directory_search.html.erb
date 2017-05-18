@@ -1,0 +1,93 @@
+<% navigation_add 'Search', front_office_management_directory_search_path %>
+
+<%=render partial:"front_office_management_left"%>
+<h4 class="mg-h4"><%= t('Search') %></h4>
+
+<p style="display:false" id="search_by_order_numberID">
+    <label class="mg-label" style="width:76px"><%= t('search_by') %><span class="required-field">&nbsp;*</span></label>
+    
+    <%= select_tag :search_by_fom, options_for_select([[t("select"), ""], ["Name", "Name"], ["Phone Number", "phone number"], ["Designation", "Designation"], [t("Email Id"), "email_id"]]) %>
+    </br>
+</p><p>
+    <label class="mg-label" style="width:76px"><%=  %><span class="required-field">&nbsp;</span></label>
+    <%= text_field_tag :search_by_value,nil,:class=>"mg-text-field fom-directory-search-field  fom-keyup-search-class" %>
+</p>
+
+<p class="mg-p-mgtop">
+    <button type="button" class="Fom-directory-result-submit-btn mg-small-form-btn" style=""><%=t("save")%></button>
+</p>
+
+    <div id="showVendorDIVID"></div>
+    <div id="submitted_items_result_ID"></div>
+
+<%= render  partial: 'application/common_left_close' %>
+
+
+<script>
+    $(document).ready(function(){
+        focusCurrentTab("directory_searchAID","directory_searchLiID");
+    });
+
+$(".Fom-directory-result-submit-btn").click(function(e){
+    e.preventDefault();
+    var search_by=$("#search_by_fom").val();
+    var temp_val=$("#search_by_value").val();
+    if (search_by!="")
+    {
+      if (temp_val!="")
+       {
+          var urlLink = "/front_office_management/fom_all_search_data/";
+          $.ajax({ 
+                     url: urlLink,
+                     cache: false,
+                     data:
+                  {
+                       "temp_val":temp_val , "search_by":search_by
+                  },
+                  success: function(html){
+                   // 
+                        $("#submitted_items_result_ID").empty();
+                        $("#submitted_items_result_ID").append(html);
+                  }  
+          });
+       }
+    }else{
+      alert("Please choose Search By option.");
+    }
+
+ 
+});
+
+$(document).on("change","#search_by_fom",function(){
+
+       $("#submitted_items_result_ID").empty();
+       $("#search_by_value").val("");
+
+
+});
+
+$(".fom-keyup-search-class").keyup(function(){
+    text_count=$(this).val();
+    if (text_count.length>2)
+    $(".Fom-directory-result-submit-btn").click();
+})
+/*
+// function changeItemFunction(a,b){
+//         $("#category_wise_item_ID").empty();
+//     var vendorId=b;
+//     var categoryId=a.value;
+//       $.ajax({
+//             url: "/inventory/category_wise_item",
+//             type: "GET",
+//             data: {"mg_category_id":categoryId , "vendor_id":vendorId},
+//             success: function(data) {
+//              $("#category_wise_item_ID").empty();
+//              $("#category_wise_item_ID").append(data);
+//             }
+//         });
+// }*/
+</script>
+
+<style>
+a { cursor: pointer; cursor: hand; }
+</style>

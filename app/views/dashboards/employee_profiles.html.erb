@@ -1,0 +1,72 @@
+
+ <%= form_for :employee, url: employee_changed_password_path, :html => {
+                            :id => 'employeeChangePasswordFormID' } do |f| %>
+ <!--<#%= form_for :guardian,:html => { :id => 'guardianChangePasswordFormID'}, url: guardian_changed_password_path(@user[0]), method: :patch do |f| %>-->
+
+
+
+
+   <%= f.label :Enter_Current_Password ,:class=> "mg-label"%><div id="feedbackcurrentdivId"></div>
+   <%= f.text_field :name ,:class=>"mg-text-field" %>
+ 
+
+<!--===============================validating current password=============================-->
+<% if flash[:notice] %>
+			    												 <span style="color:red;font-weight: normal;  position: relative; top: -12px;">	<%= flash[:notice] %>
+			  													<% end %>
+			  											
+
+<!--===============================validating current password=============================-->
+
+
+
+ <p>
+    <%= f.label :Enter_New_Password ,:class=> "mg-label"%><br>
+   <%= f.text_field :password,:class=>"mg-text-field",:id=>"newEmployeePassword" %>
+ </p>
+ <div id="employeefeedbackdivId" style="color:#ff0000"></div>
+ <p>
+    <%= f.label :Re_Enter_Password ,:class=> "mg-label"%><br>
+   <%= f.text_field :hashed_password ,:class=>"mg-text-field",:id=>"reEmployeePassword" %>
+ </p>
+ 
+
+       <%= submit_tag t('save'), class: "submit mg-change-password-form-btn mg-small-form-btn", id: "submitbutton"%>
+
+<% end %>
+
+
+
+
+<script>
+$(document).ready(function(){
+	//$("#submitbutton").hide();
+	$("#reEmployeePassword").focusout(function(){
+		
+		var temp=$("#newEmployeePassword").val();
+		var tempo=$(this).val();
+		if(temp==tempo)
+		{
+			$("#employeefeedbackdivId").text("Password matched..");
+			//$("#submitbutton").show();
+		}
+		else
+		{
+			$("#employeefeedbackdivId").text("Password doesn't matches..");
+		}
+	
+		
+	});
+
+	$("#employeeChangePasswordFormID").validate({
+	rules: {
+	"employee[name]": {required: true},
+	"employee[password]": {required: true},
+	"employee[hashed_password]": {equalTo: '#newEmployeePassword'}
+
+	}
+	});
+});
+
+</script>
+

@@ -1,0 +1,19 @@
+<!-- breadcrumbs Work -->
+<%# navigation_add 'Timetable', timetable_index_path %>
+<% navigation_add 'Class Timings', timetable_class_timing_index_path %>
+
+<!-- breadcrumbs Work -->
+
+
+
+<%= render  partial: 'master_settings/master_settings_left' %>
+<%= render  partial: 'class_timing_index' %>
+<%= render  partial: 'schools/school_left_close' %>
+
+<script>
+$(document).ready(function () {
+        focusCurrentTab("createClassTimingsAID","createClassTimingsLiID");
+        focusMasterSettings();
+
+    });
+</script>

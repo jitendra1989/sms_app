@@ -1,0 +1,36 @@
+<table border="1" class="mg-showdata-bg" cellspacing="1" cellpadding="1">
+   <tr>
+     <td valign="top">
+   		<label class="mg-label"> <%= t('name')%></label>
+   	 </td>
+   	 <td valign="top">
+  		<%if @subject.name.present?%>
+     <%=@subject.name%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+  	 </td>
+ </tr>
+ <tr>
+     <td valign="top">
+   		<label class="mg-label"> <%= t('description')%></label>
+   	 </td>
+   	 <td valign="top" style="width: 100%;">
+  		<%if @subject.description.present?%>
+     <%#=@library.description%>
+     
+ <%#= text_area_tag "details",@subject.description, :readonly => true,:style=>"width: 500px; height: 100px;"%>
+  <%=@subject.description%>
+     
+     <%else%>
+     <h5><%="No Data"%></h5>
+     <%end%>
+  	 </td>
+ </tr>
+
+</table>
+<br/>
+
+<a class="mg-small-form-btn cancel-form-dialog"><%=t("cancel")%></a>
+
+<%#= link_to 'Cancel', laboratory_subject_path ,:class=>"mg-custom-form-btn"%>

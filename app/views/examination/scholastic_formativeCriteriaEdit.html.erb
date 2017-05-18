@@ -1,0 +1,42 @@
+
+<%= form_for :criteriasdatas, :url=>{:controller=>'examination',
+  :action=>'scholastic_formativeCriteriaUpdate',:id=>@criteriasdatas.id},:html => {:id => 'criteriaEditSetDataCategoryNewFormId', :class => 'elm_class',:style => 'elm_style' } do |f| %>
+
+      <%= f.hidden_field :mg_fa_groups_id ,:value=>@ids%>
+  <div style="float:left;"> 
+
+      <p>
+         <label class="mg-label" for="name"> <%= t('name') %></label><span class="required-field">&nbsp;*</span><br/>
+        <%= f.text_field :fa_name ,:class=>"mg-text-field"%>
+      </p>
+      <p>
+      <label class="mg-label" for="description"> <%= t('description') %></label><br/>
+        <%= f.text_field :description,:class=>"mg-text-field"%>
+      </p>
+<div style="display:none;">      
+  <p>
+    <label for="is_deleted" class="mg-label "><%=t('status')%></label><br />
+    <label for="is_deleted" class="mg-label-inner-form "><%=t('active')%></label>
+    <%= f.radio_button :is_deleted, false , :checked => true%>
+    <label for="is_deleted" class="mg-label-inner-form "><%=t('inactive')%></label>
+    <%= f.radio_button :is_deleted, true %>
+  </p>
+</div>
+<p class="mg-p-mgtop">
+<%#= f.submit t('save') ,:class=>"mg-small-form-btn"%>
+<a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("save")%></a>
+<%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+</p>
+<%end%>
+
+
+<script>
+ $("#criteriaEditSetDataCategoryNewFormId").validate({
+        //debug: true,
+        rules: {
+                  "criteriasdatas[fa_name]": {required: true},
+                  
+        }
+      });
+ 
+</script>

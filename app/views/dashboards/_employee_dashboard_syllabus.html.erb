@@ -1,0 +1,572 @@
+
+
+<h4 class="mg-h4"><%= t('syllabus_progress') %></h4>
+<%
+subject_count=0
+itemCount=""
+itemName=""
+classBatch=""
+subjectCount=0;
+                            @obj1=Hash.new
+                            @obj2=Hash.new
+                            @obj3=Hash.new
+                            @obj4=Hash.new
+
+
+@empId=MgEmployee.where(:mg_user_id=>session[:user_id]).pluck(:id)
+  @syllabuscheck=MgSyllabusTracker.where(:is_deleted=>0,:mg_employee_id=>@empId).pluck(:mg_syllabus_id).uniq
+%>
+<%if  @syllabuscheck[0].to_s.empty?%>
+<h5 class="mg-custom-labels">No tracks found for this employee...</h5>
+<%else%>
+<%@dataHash=Hash.new%>
+<%@empId=MgEmployee.where(:mg_user_id=>session[:user_id]).pluck(:id)%>
+<%
+syll_tracker=@empId
+
+          @emp_perticular=MgSyllabusTracker.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id],:mg_employee_id=>syll_tracker)
+
+          @syllabus=MgSyllabusTracker.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id],:mg_employee_id=>syll_tracker).pluck(:mg_syllabus_id).uniq
+
+          @batch=MgSyllabusTracker.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id],:mg_employee_id=>syll_tracker).pluck(:mg_batch_id).uniq
+          #@dataHash=Hash.new
+          space=""
+          @batch.each do |batch|
+            @batch_name=MgBatch.where(:id=>batch)
+           @syllabus=MgSyllabusTracker.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id],:mg_employee_id=>syll_tracker,:mg_batch_id=>batch).pluck(:mg_syllabus_id).uniq
+
+
+         # @dataHash=Hash.new
+          @alloated_array=Array.new
+          @array=Array.new
+          @temp=""
+
+          @syllabus.each do |syll|
+
+          @syllabus_Id=@emp_perticular[0].mg_syllabus_id
+          @subject=MgSyllabus.where(:id=>syll)
+          
+          @subject_name=MgSubject.where(:id=>@subject[0].mg_subject_id).pluck(:subject_name)
+        @employee_time_taken=MgSyllabusTracker.where(:mg_employee_id=>syll_tracker, :mg_syllabus_id=>syll,:mg_batch_id=>batch).count
+
+        @unit=MgSyllabusTracker.where(:mg_syllabus_id=>syll).last
+
+        @alloated_time=MgUnit.where(:id=>@unit.mg_unit_id).pluck(:time)
+
+        @emp_expectedtime=MgSyllabusTracker.where(:mg_employee_id=>syll_tracker, :mg_syllabus_id=>syll,:mg_batch_id=>batch).order(:date).last
+
+        @emp_expectedtime_count=MgSyllabusTracker.where(:mg_employee_id=>syll_tracker, :mg_syllabus_id=>syll,:mg_batch_id=>batch).order(:date).count
+
+        if ((@employee_time_taken+@emp_expectedtime.expected_class)<=@alloated_time[0])
+              next
+        end
+
+        if ((@emp_expectedtime_count)<=0)
+              next
+        end
+
+
+                           
+                           @course_id=MgBatch.where(:id=>batch).pluck(:mg_course_id)
+                           @batch_name=MgBatch.where(:id=>batch).pluck(:name)
+                           @course_name=MgCourse.where(:id=>@course_id).pluck(:code)
+
+
+
+                      @subject_batch =  @course_name <<'-' <<@batch_name[0] <<'/'<< @subject_name[0]
+                        @alloted_array=Array.new
+                          @emp_name=MgEmployee.where(:id=>syll_tracker).pluck(:first_name)
+                       
+                   @alloted_array.push(" #{@course_name[0]} #{@batch_name[0]}-[Alloted]" ,@subject_name[0])
+
+                          @dataHash[@alloted_array]=@alloated_time[0]
+                          @alloted_array=Array.new
+                       space +=" "
+
+                       # itemName +=",#{@subject_name[0]}"
+                       # itemCount += ",#{@alloated_time[0]}"
+
+
+                          %>
+                          <%@subject_name[0]%>
+                          <%
+                         @array=Array.new
+                          #@array.push(@subject_batch,@subject_name[0])
+                          @array.push(" #{@course_name[0]} #{@batch_name[0]}-[Expected]",@subject_name[0])
+                          subject_count+=1
+                          if  @emp_expectedtime==nil
+                            #@obj1=Hash.new
+                            @obj2=Hash.new
+                            @obj3=Hash.new
+                            @obj4=Hash.new
+                            
+                            itemName +=",#{@subject_name[0]}"
+                            classBatch +=""
+                            subjectCount=subjectCount+1;
+                            itemCount +=",#{@alloated_time[0]}"
+                            itemCount +=",#{@employee_time_taken[0]}"
+                            #@dataHash[@array]=@employee_time_taken
+                            #{@course_name[0]} #{@batch_name[0]}
+                            @obj2["Alloted"]=@alloated_time[0]
+                            @obj2["Expected"]=@employee_time_taken[0]
+                            @obj3["#{@subject_name[0]}"]=@obj2
+                            @obj1["#{@course_name[0]}-#{@batch_name[0]}==#{@subject_name[0]}"]=@obj3
+
+                            #@obj3.push(@obj2)
+
+                            #@obj1[@subject_name[0]]=@obj3
+
+
+                          else
+                             @obj2=Hash.new
+                            @obj3=Hash.new
+                            @obj4=Hash.new
+                            if  @emp_expectedtime.expected_class==nil
+                            #@obj1=Hash.new
+
+                                @dataHash[@array]=@employee_time_taken
+                                itemName +=",#{@subject_name[0]}"
+                                subjectCount=subjectCount+1;
+                                itemCount +=",#{@alloated_time[0]}"
+                                itemCount +=",#{@employee_time_taken[0]}"
+                                 @obj2["Alloted"]=@alloated_time[0]
+                            @obj2["Expected"]=@employee_time_taken[0]
+                            @obj3["#{@subject_name[0]}"]=@obj2
+                            @obj1["#{@course_name[0]}-#{@batch_name[0]}==#{@subject_name[0]}"]=@obj3
+                              # @obj1[@subject_name[0]]=@obj3
+                            else
+                              @obj2=Hash.new
+                            @obj3=Hash.new
+                            @obj4=Hash.new
+                           # @obj1=Hash.new
+                              
+                            @dataHash[@array]=@employee_time_taken+@emp_expectedtime.expected_class
+                            itemName +=",#{@subject_name[0]}"
+                            subjectCount=subjectCount+1;
+                            itemCount +=",#{@alloated_time[0]}"
+                            itemCount +=",#{@employee_time_taken+@emp_expectedtime.expected_class},"
+                             @obj2["Alloted"]=@alloated_time[0]
+                            @obj2["Expected"]=@employee_time_taken+@emp_expectedtime.expected_class
+                            @obj3["#{@subject_name[0]}"]=@obj2
+                            @obj1["#{@course_name[0]}-#{@batch_name[0]}==#{@subject_name[0]}"]=@obj3
+
+                             #@obj1[@subject_name[0]]=@obj3
+                        end
+
+                   end
+                   @array=Array.new
+                   
+          end
+#end
+
+          %>
+
+<%end%>
+
+<%@obj1.to_json%>
+
+                 <% if @dataHash.size>0%>
+            <!-- <span><%#=course.inspect%></span>
+            =================================
+            <span><%#=@dataHash.inspect%></span>
+            ================================= -->
+            <!--  <%#@arrayMine=@dataHash.to_json%> -->
+            <%@dataHash.inspect%>
+            <%itemName.inspect%>
+
+            <%itemCount.inspect%>
+<%subject_count%>
+
+            <% @dataHash.inspect %>
+            <% column_chart (@dataHash) ,  colors: ["blue", "red"], library: {hAxis: {title: "Subjects"}, vAxis: {title: "No. of Period."}}%>
+            <%end%>
+          <%
+        end
+            %>
+<!-- ============================================================-->
+
+      <canvas id="canvas" height="350" width='<%=subject_count*250%>'></canvas>   
+            
+            <%#= column_chart (@dataHash) ,  colors: ["blue", "red"], library: {hAxis: {title: "Subjects"}, vAxis: {title: "Number of Periods."}}%>
+                                                                                                       
+<style>
+    #canvas{background: #ffffff;
+        box-shadow:5px 5px 5px #ccc;
+    border:5px solid #eee;
+    margin-bottom:10px;
+  }
+  
+  #tipSyllabusID {
+    background-color:white;
+    border:1px solid blue;
+    position:absolute;
+    left:-200000px;
+    top:100px;
+    padding: 0px;
+    /*width:100px;
+    height:50px;*/
+}
+</style>  
+<script type="text/javascript">
+
+ //var chages= {"LKG-A":{"Maths":{"Alloted":11,"Expected":15}},"1-B":{"English":{"Alloted":3,"Expected":6}}}
+var chages= '<%=@obj1.to_json%>';
+var chages=chages.replace(/&quot;=&gt;/g,'"');
+var chages=chages.replace(/&quot;/g,'"');
+//alert(chages);
+chages=JSON.parse(chages);
+//console.log(chages);
+//alert(chages);
+
+
+function fee_collection_graph() {
+  var colour=['#29708b','#deacba','#6ab0b1','#e95c60','#479b9c','#663D99','#b16a8d','#a295f0','#308c5d','e9e2a6'];
+  var greater=[];
+  var colour_array=[];
+ for (var prop in chages) {
+   console.log(chages);
+        for (var d in chages[prop]) {
+          var big=0;
+            for (var k in chages[prop][d]) {
+               big=big+chages[prop][d][k];
+              //alert(k);
+             colour_array.push(k);
+            }
+         greater.push(big)
+      }
+   }
+
+  var dd;
+ function uniqueArray( ar ) {
+  var j = {};
+  ar.forEach( function(v) {
+    j[v+ '::' + typeof v] = v;
+  });
+  return Object.keys(j).map(function(v){
+    return j[v];
+  });
+} 
+  
+  var array=uniqueArray(colour_array);
+  var colour_with_data = {};
+  for(dd=0;dd<array.length;dd++){
+   colour_with_data[array[dd]]=colour[dd];
+  } 
+
+var Val_amount = Math.max.apply(Math, greater);  
+  var canvas ;
+  var context ;
+  var Val_Max=3;
+  var Val_Min;
+  var sections;
+  var xScale;
+  var yScale;
+  var y;
+    // intialize values for each variables
+  sections = chages.length;
+    Val_amount=Val_amount+Val_amount*30/100;
+  if(Val_amount>5){
+    Val_Max =Math.round(Val_amount); //Math.max.apply(Math, itemValue)+2;;
+  }
+
+  var stepSize =Val_Max*30/100 ;
+  var columnSize = 50;
+  var rowSize = 60;
+  var margin = 30;
+  var header = "No of period"   
+  canvas = document.getElementById("canvas");
+  context = canvas.getContext("2d");
+   var tipCanvas = document.getElementById("tipSyllabusID");
+  var tipCtx = tipCanvas.getContext("2d");
+  
+   var tipLeCanvas = document.getElementById("tipSyllabusID");
+  var tipCtx = tipCanvas.getContext("2d");
+  
+  
+  //var canvasOffset = $("#canvas").offset(); 
+  context.fillStyle = "#8B8B8B"
+    var graph_hight=canvas.height*80/100;
+  var graph_width=canvas.width*80/100;
+  yScale = (graph_hight - columnSize - margin) / (Val_Max);
+  //xScale = (graph_width - rowSize) / (sections + 1);
+    xScale=100;
+  context.strokeStyle="#8B8B8B"; // background black lines
+  context.beginPath();
+    // column names 
+  context.font = "19 pt Arial;"
+  context.fillText(header, 0,columnSize - margin);
+    // draw lines in the background
+  context.font = "18 pt Helvetica"
+  var count =  0;
+  for (scale=Val_Max;scale>=0;scale = scale - stepSize) {
+    y = columnSize + (yScale * count * stepSize); 
+        context.fillText(Math.round(scale), margin,y + margin-30);
+    count++;
+  }
+  
+ function getMousePos(canvas, evt) {
+        var rect = canvas.getBoundingClientRect();
+        return {
+          x: evt.clientX - rect.left,
+          y: evt.clientY - rect.top
+        };
+      }
+           
+      var canvas = document.getElementById('canvas');
+      var context = canvas.getContext('2d');
+      canvas.addEventListener('mousemove', function(evt) {
+        var mousePos = getMousePos(canvas, evt);
+        var message = 'Mouse position: ' + mousePos.x + ',' + mousePos.y;
+        //console.log(mousePos);
+        // console.log(mousePos);
+        handleMouseMove(mousePos);
+        //alert(message);
+        // writeMessage(canvas, message);
+      }, false); 
+
+var barwidth=.32;
+function handleMouseMove(e) {
+  //alert("jiosdf")
+  mouseX = parseInt(e.x);
+  mouseY = parseInt(e.y);
+  var hit = false;
+  var position=0;
+
+  if(e.x>(canvas.width*80/100)-20 ){
+    var temp_colour_pos=1;
+      var temp_colour=0;
+      for (var prop in colour_with_data) {
+          var x_pos1=(canvas.width*80/100)-20;
+          var x_pos2=(canvas.width*80/100)-5;
+          var y_pos1=(canvas.height*3/100)-5+temp_colour;
+          
+          var y_pos2= (canvas.height*3/100)-5+temp_colour+15;
+          //e.y>y_pos1
+          if(e.x>x_pos1 && e.x<x_pos2 &&  e.y>y_pos1 && e.y<y_pos2){
+          var tip_tool=canvas.width*80/100;
+           tipCanvas.style.left = (mouseX) -100+ "px";
+          tipCanvas.style.top = (mouseY) +150+ "px";
+          tipCtx.clearRect(0, 0, tipCanvas.width, tipCanvas.height);
+          tipCtx.fillStyle = 'Green';
+          tipCtx.fill();
+          tipCtx.fillText(prop, 25, 30);
+         hit = true;
+          }
+      temp_colour+=30;
+      }
+  }else{
+      for (var prop in chages) {
+    for (var d in chages[prop]) {
+        for (var k in chages[prop][d]) { 
+         // console.log(chages[prop][d][k][m]);
+             y =computeHeight_fee_collection(chages[prop][d][k],graph_hight,yScale);
+         //console.log("jayanth");
+         //console.log(y);
+                  var x_pos1=position+rowSize*1.115+xScale-margin*2;
+                  var x_pos2=x_pos1+30;
+                  var y_pos1=graph_hight-margin;
+                   var y_pos2=y - margin+6;
+                  if(e.x>x_pos1 && e.x<x_pos2 && e.y<y_pos1 && e.y>y_pos2){
+                  tipCanvas.style.left = (mouseX)+50 + "px";
+                  tipCanvas.style.top = (mouseY) +80+ "px";
+                  tipCtx.clearRect(0, 0, tipCanvas.width, tipCanvas.height);
+                      tipCtx.fillStyle = 'Green';
+                      tipCtx.fill();
+                        //tipCtx.fillText(first, 5, 15);
+                    
+                    //  tipCtx.fillText('<p class="test">Subject : </p>'+d, 5, 15);  
+                     
+                    
+                    
+                    
+   
+      var maxWidth = 50;
+      var lineHeight = 15;
+                   
+                     tipCtx.fillText(k+' : '+chages[prop][d][k], 6, 13);
+                    
+                    wrapText(tipCtx,"Subject : "+d, 5, 15, maxWidth, lineHeight);
+         
+                        hit = true;
+                    
+                  }
+          position=position+32;
+                 }
+                //position=position+110;
+         //position=position+55; 
+      //position=position+55;
+      }
+    position=position+47;
+  }
+  }
+
+
+    if (!hit) {      
+        tipCanvas.style.top = "-100000px";
+    }
+  
+  
+  
+}
+  
+   function wrapText(context, text, x, y, maxWidth, lineHeight) {
+    
+     // var words = text.split('');
+      var letter = text.length;
+     
+    
+        var line = '';
+     // alert(text.length);
+      
+
+        for(var n = 0; n < letter; n++) {
+          //alert(n+"          ");
+          //alert(text.charAt(n));
+          // var res = str.charAt(0);
+          var testLine = line + text.charAt(n) + '';
+          // alert(testline);
+          
+          var metrics = context.measureText(testLine);
+          var testWidth = metrics.width;
+          //  alert(n);
+          if ( n%21==0) {
+            // alert(x +"             "+y)
+            context.fillText(line, x, y);
+            line = text.charAt(n) + '';
+            y += lineHeight;
+          }
+          else {
+            line = testLine;
+          }
+        }
+        context.fillText(line, x, y);
+      }
+  // context.stroke();
+  var count_zero =  0;
+  for (scale=Val_Max;scale>=0;scale = scale - 1) {
+    y = columnSize + (yScale * count_zero * 1); 
+      if(scale==0){
+      context.beginPath();
+      context.moveTo(xScale-20,20);
+      context.lineTo(xScale-20,graph_hight);
+        context.stroke();
+      context.beginPath();
+        var x_position,y_positon;
+        x_position=graph_hight*20/100;
+        //   y_positon=graph_hight*90/100;
+        y_positon=canvas.height*100/100;
+         context.moveTo(rowSize,y)
+         context.lineTo(graph_width,y)
+         context.fillText(Math.round(scale), margin,y + margin-30);
+         context.stroke();
+        // }
+      }
+      //context.fillText(Math.round(scale), margin,y + margin-30);  
+    count_zero++;
+  }
+  context.stroke();
+    // print names of each data entry
+  context.font = "20 pt Verdana";
+    context.textBaseline="bottom";
+  //for (i=0;i<chages.length;i++) {
+  var temp=-1;
+  var position=0;
+   var textwidth=170;
+ // var  textheight=height/7.5;
+  //alert(textheight);
+  var textheight=40;
+  var managewidth=2;
+      for (var prop in chages) {
+         for (var d in chages[prop]) {
+           var count1=0
+            for (var k in chages[prop][d]) {
+                context.beginPath();
+                context.fillStyle = 'blue';
+                y =computeHeight_fee_collection(chages[prop][d][k],graph_hight,yScale);
+               // context.fillText(k+':'+chages[prop][d][k], xScale * (position+1),y - margin);
+                context.stroke();
+              temp=temp+barwidth; 
+              position=position+barwidth; 
+            }
+           temp=temp+barwidth;
+           position=position+barwidth; 
+         }
+        var value=temp*70/100;
+        //Here lower tags can be filled
+        var temp_class=prop.split("==");
+        context.rotate(0.2);
+        context.fillText(temp_class[0], xScale*temp+textwidth,graph_hight-textheight);
+        context.rotate(-0.2);
+        //   textwidth=(textwidth-(textwidth/7.8))-1;
+        temp=temp+barwidth;
+        position=position+barwidth; 
+        //textheight=textheight+45;
+        // managewidth=managewidth-3-4;
+        textheight=textheight+22;
+        textwidth=textwidth-22;
+  }
+  
+    var temp_colour=0;
+      for (var prop in colour_with_data) {
+         context.beginPath();
+        context.fillStyle=colour_with_data[prop];
+        context.font = '10pt Calibri';
+        var tip_tool=canvas.width*80/100;
+          context.fillText(prop, tip_tool,(canvas.height*temp_colour*3/100)+25);
+        //alert((canvas.height*temp_colour*3/100)+25));
+         context.rect(tip_tool-20, (canvas.height*temp_colour*3/100)+10, 15, 15);
+          tipCtx.fillText(prop, tip_tool,56);
+        //context.fillText(prop, (canvas.height*temp_colour*3/100)+10,graph_hight-textheight);
+        //==============================================================
+        
+  
+                   
+        //  tipCtx.fillText(k+' : '+chages[prop][d][k], 6, 13);
+                    
+        
+        //here legends tooltip will come
+        context.fillStyle = colour_with_data[prop];
+        context.fill();
+      context.stroke();
+        temp_colour+=2;
+  }
+  
+    // translate to bottom of graph  inorder to match the data 
+  context.translate(0,graph_hight - margin);
+  context.scale(xScale,-1 * yScale);
+    // draw each graph bars 
+   var position=0;
+  //var count=0;
+ for (var prop in chages) {
+        for (var d in chages[prop]) {
+           var count1=0
+            for (var k in chages[prop][d]) {
+             context.fillStyle=colour_with_data[k];
+               context.fillRect(position+1, 0, 0.32, chages[prop][d][k]);
+            position=position+barwidth;
+              //  count1++;
+            }
+          position=position+barwidth-0.09;
+          // alert(position);
+      }
+      position=position+barwidth-0.1;
+   // count++;
+   }
+}
+
+function computeHeight_fee_collection(value,height,yScale) {
+  y = height - value * yScale ; 
+    return y;
+}
+  
+</script>
+
+
+<body onLoad="fee_collection_graph()">
+<div>
+<!-- <canvas id="canvas" height="350" width="6000">
+</canvas> -->
+    <canvas id="tipSyllabusID" width=125 height=55></canvas>
+
+</div>
+</body>

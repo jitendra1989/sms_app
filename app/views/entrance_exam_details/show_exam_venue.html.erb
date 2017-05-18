@@ -1,0 +1,30 @@
+<table border="1" class="mg-showdata-bg " cellspacing="1" cellpadding="1">  
+  
+  <tr>
+     <td class="mg-td-width-half" valign="top">
+     <label class="mg-label"> <%= t('institute_name')%></label>
+     </td>
+     <td class="mg-td-width-half mg-capitalize-text" valign="top">
+      <%= @exam_venues.institute_name %>
+     </td>
+   </tr> 
+   <tr>
+     <td class="mg-td-width-half" valign="top">
+     <label class="mg-label"> <%= t('address')%></label>
+     </td>
+     <td valign="top">
+      <div class="text-scroll-for-log-text-cls comments-space">
+        <%= @exam_venues.exam_venue %>
+      </div>
+     </td>
+   </tr>
+</table>
+<p class="mg-p-mgtop">
+  <a class="mg-small-form-btn cancel-form-dialog" ><%=t('cancel')%></a>
+</p>
+
+<script>
+$(document).ready(function(){
+  textSeeMoreLess();
+});
+</script>

@@ -1,0 +1,23 @@
+<!-- Sec --> 
+<%= render  partial: 'setting_left' %>
+<h4 class="mg-h4"><%=t('roles')%></h4>
+	<a class="mg-font-color" href="/mg_actions"><div class="role-dash">Actions</div></a>
+	<a class="mg-font-color" href="/mg_models"><div class="role-dash">Models</div></a>
+	<a class="mg-font-color" href="/mg_roles"><div class="role-dash">Roles</div></a>
+	<a class="mg-font-color" href="/mg_permissions"><div class="role-dash">Permissions</div></a>
+  <a class="mg-font-color" href="/mg_roles_permissions"><div class="role-dash">Roles And Permissions</div></a>
+  <a class="mg-font-color" href="/mg_user_roles"><div class="role-dash">User Roles</div></a>
+<%= render  partial: 'setting_left_close' %>
+
+<script type="text/javascript">
+     $(document).ready(function(){
+               focusSettings();
+
+              $("#createUserLiID").removeClass( "active" );
+              $("#createUserID").removeClass( "activeMenu" );
+            
+              $("#rolePerLiID").addClass("active");
+              $("#rolePerAID").addClass("activeMenu");
+
+     });
+</script>

@@ -1,0 +1,70 @@
+<!-- Sec --> 
+
+<%= fields_for (phone_types) do |cnt| %>
+      <%if phone_types=="phone"%>
+        <%= cnt.hidden_field :phone_type, :value => "phone" %>
+      <!--<h4>Home Number </h4>-->
+      <!--c  -->
+      <%end%>
+
+      <%if phone_types=="mobile"%>
+      <%= cnt.hidden_field :phone_type, :value => "mobile" %>
+      <!--<h4>Home Number </h4>-->
+      <!--c  -->
+      <%end%>
+
+      <%#if phone_types=="personal"%>
+      <%#= cnt.hidden_field :phone_type, :value => "personal" %>
+     <!-- <label for="personal_number "><#%= t 'personalnumber' %></label>-->
+      <%#end%>
+
+      <%#if phone_types=="emergency"%>
+      <%#= cnt.hidden_field :phone_type, :value => "emergency" %>
+     <!-- <label for="emergency_number "><#%= t 'emergencynumber' %></label>-->
+      <%#end%>
+      <%= cnt.hidden_field :is_deleted, :value => 0 %>
+      <%= cnt.hidden_field :mg_school_id, :value => session[:current_user_school_id] %>
+      <!--updated 5th jan--> 
+
+      <div class="form-content">
+          <div class="form-content-inner">
+            <table width="100%" cellspacing="0" cellpadding="0" border="0" class="employee-form-cls">
+              <tbody>
+                <tr>
+                  <td width="33%" valign="bottom">
+                    <label class="mg-label" for="phone_number" ><%= t('phonenumber') %>
+                     
+                    </label>
+                    <%= tooltip '<i class="fa fa-question"></i>'.html_safe, { :tooltip => 'Can enter digits only. No arbitrary symbols like -,*,#,etc are allowed. Phone Number should not be initialised with 0, eg: If your number is 06542-2651XX, then enter it like 65422651XX. No need to mention \'0\' in the beginning.' }, :class => 'mytooltip mg-icon-btn' ,:style=>"font-size: 0.85em;"%><br/>
+                  </td>
+
+                  <td> </td>
+                  <td width="33%" valign="bottom">
+                    
+                  </td>
+                  <td> </td>
+                  <td width="33%" valign="bottom">
+                    
+                  </td>
+                </tr> 
+                <tr>
+                  <td valign="top">
+                    <%= cnt.text_field :phone_number ,:class=>"mg-text-field"%>
+                    
+  
+                  </td>
+                  <td> </td>
+                  <td valign="top">
+                    
+                  </td>
+                  <td> </td>
+                  <td valign="top">
+                    
+                  </td>
+                </tr>  
+              </tbody>
+            </table>
+      </div>
+    </div>
+  <% end %>
+ 

@@ -1,0 +1,38 @@
+
+
+<%= form_for :laboratory, :url=>{:controller=>'laboratory',:action=>'subject_update',:id=>@laboratory.id},:html => {:id => 'laboratoryUpdateSubjectID' } do |f| %>
+<%= f.hidden_field :is_deleted, :value => 0 %>
+<%= f.hidden_field :mg_school_id, :value => session[:current_user_school_id] %>
+<%= f.hidden_field :updated_by, :value => session[:user_id] %>
+<p>
+    <label class="mg-label" style="width:140px"><%= t('name') %><span class="required-field">&nbsp;*</span></label>
+    <br/>
+   <%= f.text_field :name,:class=>"mg-text-field" %>
+</p>
+<p>
+    <label class="mg-label" style="width:140px"><%= t('description') %><span class="required-field">&nbsp;</span></label>
+    <br/>
+   <%= f.text_area :description,:class=>"mg-text-field" %>
+</p>
+<p class="mg-p-mgtop">
+    <!-- <%#= f.submit t('save') ,:class=>"mg-small-form-btn"%> -->
+    <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("save")%></a>
+    <%#= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+<a class="mg-small-form-btn cancel-form-dialog"><%=t("cancel")%></a>
+
+</p>
+<% end %>
+
+<%#= render  partial: 'application/common_left_close' %>
+
+<script>
+
+
+$("#laboratoryUpdateSubjectID").validate({
+
+        rules: {        
+        "laboratory[name]": {required: true}
+ //       "laboratory[description]": {required: true}
+      }
+    });
+</script>

@@ -1,0 +1,58 @@
+<!-- breadcrumbs Work -->
+<% navigation_add 'Examinations', examinations_path %>
+<% navigation_add 'CCE', examination_cce_new_path %>
+<% navigation_add 'Basic Settings', examination_cceBasic_Settings_path %>
+<% navigation_add 'CCE Assign Weightages', examination_cceAssaignWeightages_index_path %>
+
+<!-- breadcrumbs Work -->
+
+
+
+<%= render  partial: 'examination_table_left' %>
+
+<h4 class="mg-h4" style="text-transform: none; ">Assign Weightages to <%=t('course')%></h4>
+<div>
+<%=hidden_field_tag :mg_course_id,  @Id, :id=>"defaultAssesmentId"%>
+<%=hidden_field_tag :mg_school_id,:value=>session[:current_user_school_id]%>
+	<table>
+		<tr>
+			<td>
+			<label class="mg-label mg-leave-width"> <%= t('select') %> <%= t('course') %></label>
+				<%=select_tag :mg_course_id, options_for_select(@course,:selected=>@Id),:prompt=>t('select'),:onchange=>"myAssaignFunction(this.value)" %><br>
+			</td>
+		</tr>
+	</table>
+
+
+
+
+
+
+<div id="examinationAssaignClassID">
+</div>
+
+<div id="editAssaignClassID">
+</div>
+
+<div id="examinationAssaignCommonID">
+
+</div>
+
+</div>
+<%= render  partial: 'examination_table_close' %>
+
+
+<script>
+
+$(document).ready(function(){
+		
+        focusCurrentTab("viewStudentListAId","viewStudentListLiId");
+        focusExaminationHeaderBox();
+	var Id=$("#defaultAssesmentId").val();
+	
+		myAssaignFunction(Id);
+
+});
+
+</script>
+

@@ -1,0 +1,56 @@
+<%=render :partial=>'entrance_exam_details/entrance_exam_left' %>
+<% navigation_add t('manage_admission'), :controller=>'admission_managements',:action=>'index' %>
+<h4 class="mg-h4"><%=t('fee_detail')%></h4>
+
+<%@course_names = MgCourse.find_by(:id=>@student_admission_object.mg_course_id)%>
+<%@category_name = MgStudentCategory.find_by(:id=>@student_admission_object.mg_student_category_id)%>
+
+<label class="mg-label mg-custom-labels"><%=t('name')%><%=" :"%></label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<label class="mg-label-inner-form mg-custom-labels mg-capitalize-text"><%=@student_admission_object.first_name%>&nbsp;<%=@student_admission_object.middle_name%>&nbsp;<%=@student_admission_object.last_name%></label><br/>
+
+<%if !(@course_names.nil?)%>
+  <label class="mg-label mg-custom-labels"><%=t('class_name')%><%=" :"%></label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <label class="mg-label-inner-form mg-custom-labels"><%=@course_names.course_name%></label><br/>
+<%end%>
+<%if !(@category_name.nil?)%>
+  <label class="mg-label mg-custom-labels"><%=t('student_category')%><%=" :"%></label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <label class="mg-label-inner-form"><%=@category_name.name%></label><br/>
+<%end%>
+ <%batch_data=MgBatch.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id],:mg_course_id=>@student_admission_id[1]).pluck(:name,:id)%>
+
+  <label class="mg-label mg-custom-labels"><%=t('select_section')%><%=" :"%></label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <label class="mg-label-inner-form"><%=select_tag 'mg_batch_id',options_for_select(batch_data),:prompt=>"Select",:onchange=>"studentBatchSelection(this.value)"%></label><br/>
+
+<%=hidden_field_tag 'student_id',@student_admission_object.id %>   
+
+
+<div id="fees_data_records">
+
+</div>
+<%= render  partial: 'application/common_left_close' %>
+
+<script>
+  $(document).ready(function(){    
+    focusCurrentTab("admissionManagementLID","admissionManagementID");     
+  });
+
+  function studentBatchSelection(data){
+    var student_data=$("#student_id").val();
+
+    if(data!=''){
+      $.ajax({
+        url: "/admission_managements/student_fee_particulars",
+        data: {"batch_id" :data,"student_id":student_data},
+        cache: false,
+        success: function(data){
+          $("#fees_data_records").empty().html(data);
+        },
+        error: function(){
+          alert("No Data Found");
+        }
+      });
+    }else{
+      $("#fees_data_records").empty();
+    }
+  }
+</script>

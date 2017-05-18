@@ -1,0 +1,56 @@
+<!-- Sec --> 
+<% @dateFormat = MgSchool.find_by(5).date_format %>  
+
+<table border="1" class="mg-showdata-bg mg-tbl-layout mg-btn-bottom-margin" cellspacing="1" cellpadding="1">
+    <tr>
+     <td class="mg-td-width-half" valign="top">
+        <label class="mg-label"> Name</label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+        <%= @fee_schedule_show_list.name %>
+     </td>
+    </tr>
+
+    <tr>
+       <td class="mg-td-width-half" valign="top">
+        <label class="mg-label"><%= t('course') %>-<%= t('batch') %></label>
+       </td>
+       <td class="mg-td-width-half" valign="top">
+        <%@mgBatch=MgBatch.find_by_id( @fee_schedule_show_list.mg_batch_id)%>
+        <%if@mgBatch!=nil%>
+
+          <%@course=MgCourse.select(:course_name).find_by_id(@mgBatch.mg_course_id)%>
+          <%if@course!=nil%>
+            <%= @course.course_name %> - <%= @mgBatch.name %>
+          <%end%>         
+        <%end%>
+       </td>
+    </tr>
+    <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label">Start Date </label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+      <%= @fee_schedule_show_list.start_date.strftime(@dateFormat) %>
+     </td>
+    </tr>
+    <tr>
+      <td class="mg-td-width-half" valign="top">
+        <label class="mg-label">End Date</label>
+      </td>
+      <td class="mg-td-width-half" valign="top">
+        <%= @fee_schedule_show_list.end_date.strftime(@dateFormat) %>
+      </td>
+    </tr>
+    <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label">Due Date </label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+      <%= @fee_schedule_show_list.due_date.strftime(@dateFormat) %>
+     </td>
+    </tr>
+ </table><br/>
+
+       <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+ 

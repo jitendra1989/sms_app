@@ -1,0 +1,99 @@
+<!-- Sec --> 
+
+<!-- breadcrumbs Work -->
+<% navigation_add 'Fees', fees_path %>
+<% navigation_add 'Fees Discount', fee_discount_index_path %>
+<!-- breadcrumbs Work -->
+
+<%= render partial: 'fee_left' %>
+<h4 class="mg-h4"><%= t('fee_discount') %></h4>
+<div>
+<!-- <a href='#' id='createNewFeeDiscountID'  >Create New Fee Discount </a> -->
+<button id='createNewFeeDiscountID' class="mg-btn-bottom-margin mg-custom-form-btn">Create New Fee Discount </button>
+	<% if @fee_discount_list.length > 0 %>
+    <div class="mg_pagination">
+
+    <table class="batch-tbl mg-tbl-margin" >   <!-- border="2" --> 
+      <tr >
+        <th>Discount Type</th>
+        <th>Name</th>
+        <!-- <th>Receiver Id</th> -->
+        <th><%=t('course')%>-<%=t('batch')%></th>
+        <th>Fee Category </th>
+        <th>Discount</th>
+        <th style="width: 9em;"><%=t('actions')%></th>
+       </tr>
+
+    <%@fee_discount_list.each_with_index do |discount| %>
+	      <tr>
+	        <td><%= discount.discount_type %></td>
+	        <td><%= discount.name %></td>
+	        <!-- <td><%#= discount.mg_receiver_id %></td> -->
+
+            <%@mgBatch=MgBatch.find_by_id( discount.mg_batch_id)%>
+
+            <%if@mgBatch!=nil%>
+
+                <%@course=MgCourse.select(:course_name).find_by_id(@mgBatch.mg_course_id)%>
+                <%if@course!=nil%>
+                  <td><%= @course.course_name %> - <%= @mgBatch.name %></td>
+                <%end%>
+                
+            <%else%>
+               
+            <%end%>
+
+            <%@feeCategory=MgFeeCategory.find_by_id( discount.mg_fee_category_id)%>
+            <%if@feeCategory!=nil%>
+                <td><%= @feeCategory.name %></td>
+            <%else%>
+                <td></td>
+            <%end%>
+
+	        <td><%= discount.discount %></td>
+            <td class="mg-align-center">
+                <!-- <a href='#', id='<%=discount.id %>' class="show-fee-discount-class">show </a>  -->
+                <button title="Show" id='<%=discount.id %>' class="show-fee-discount-class mg-icon-btn"><i class="fa fa-eye"></i> </button>
+	            <!-- <a href='#', id='<%=discount.id %>' class="edit-fee-discount-class">edit </a>  
+                -->
+                <button  title="Edit" id='<%=discount.id %>' class="edit-fee-discount-class mg-icon-btn"><i class="fa fa-pencil-square-o"></i></button>
+	            <%#= link_to 'delete', {:controller=>'fees',:id=>discount.id,:action=>'delete_fee_discount'},
+	                         method: :delete, data: { confirm: 'Are you sure?' } %> 
+                <span style="left: -2px; position: relative; float: right; top: -2px; ">
+                <%= link_to "<i class=\"fa fa-trash\"></i>".html_safe,{ action: "delete_fee_discount", id: discount.id },
+                                method: :delete, data: { confirm: "Are you sure?" } ,:title=>"Delete" ,:class=>"mg-icon-btn"%>
+                </span>
+            </td>
+	      </tr>
+
+    <% end %>
+	    </table>
+
+    <%= will_paginate @fee_discount_list, :container => false %> 
+    </div>
+
+	<% else %>
+	  <h5>Please Create Some Fee Discount... </h5>
+
+	<% end %>
+
+    <div id="createFeeDiscountDivId"></div>
+    <div id="showFeeDiscountDivId"></div>
+    <div id="editFeeDiscountDivId"></div>
+</div>
+<%= render partial: 'fee_left_close' %>
+
+ <script type="text/javascript">
+     $(document).ready(function(){
+
+/*     	$("li").removeClass( "active" );
+        $("a").removeClass( "activeMenu" );
+
+     	 $("#feeDiscountLiId").addClass("active");
+         $("#feeDiscountId").addClass("activeMenu");*/
+
+               focusCurrentTab("feeDiscountId","feeDiscountLiId");
+
+      focusFees();
+   });
+</script>

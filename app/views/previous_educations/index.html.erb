@@ -1,0 +1,70 @@
+<!-- Sec --> 
+
+
+<table  class="batch-tbl mg-tbl-margin">   <!-- border="2" --> 
+  <tr class="subject-table-header">
+  	<th><%=t("school_name")%></th>
+    <th>Course</th>
+    <th>Year</th>
+    <th>Total Marks </th>
+    <th><%= t('actions') %></th>
+  </tr>
+ 
+  <% @previous_educations.each do |sub| %>
+    <tr>
+      <td><%= sub.school_name %></td>
+      <td><%= sub.course %></td>
+      <td><%= sub.year %></td>
+      <td><%= sub.total_marks %></td>
+      <td class="mg-align-center">
+        <%= link_to "<i class=\"fa fa-eye\"></i>".html_safe, previous_education_path(sub) ,:title=>"Show" ,:class=>"mg-icon-btn"%>
+        <%= link_to "<i class=\"fa fa-pencil-square-o\"></i>".html_safe, edit_previous_education_path(sub) ,:title=>"Edit" ,:class=>"mg-icon-btn" %>
+        <%= link_to "<i class=\"fa fa-trash\"></i>".html_safe, previous_education_path(sub),
+                    method: :delete, data: { confirm: 'Are you sure?' } ,:title=>"Delete" ,:class=>"mg-icon-btn" %>
+      </td>
+
+    </tr>
+  <% end %>
+</table>
+<%= button_to 'Add Previous Educations Details', {:controller => "previous_educations", :action => "new" },html: { id: "add_subject_path"} %>
+
+
+<style type="text/css">
+/*.toggle-data {
+
+    display: block;
+    padding: 0 0 10px; 
+}
+
+
+table.batch-tbl {
+    font-family: verdana,arial,sans-serif;
+    font-size:11px;
+    color:#104564;
+    border-width: 1px;
+    border-color:  #6592b2;
+    border-collapse: collapse;
+    margin-left: 20px;
+}
+table.batch-tbl th {
+    background: linear-gradient(to bottom, #d9dfeb, white) repeat scroll 0 0 rgba(0, 0, 0, 0);
+    border-width: 1px;
+    padding: 8px;
+    border-style: solid;
+    border-color:  #6592b2;
+}
+table.batch-tbl tr {
+    background-color:white;
+}
+table.batch-tbl td {
+    border-width: 1px;
+    padding: 8px;
+    border-style: solid;
+    border-color:  #6592b2;
+}
+.anchor-btn{
+
+    text-decoration: none !important;
+}*/
+
+</style>

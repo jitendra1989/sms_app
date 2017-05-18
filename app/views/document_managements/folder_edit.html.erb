@@ -1,0 +1,26 @@
+ <%#= form_for :folder, url: folder_create_path, :html => {
+                            :id => 'folderEditFormID' } do |f| %>
+<%= form_for :document_managements, url: folder_update_path(@document_managements), method: :patch, :html => {
+                            :id => 'eventEditTypesFormID' } do |f| %>
+  <p>
+    <%= f.label :folder_name ,:class=>"mg-label"%><span class="required-field"> *</span><br>
+    <%= f.text_field :folder_name  ,:class=>"mg-text-field" %>
+  </p>
+  <p>
+    <%= f.hidden_field :mg_employee_id  %>
+  </p>
+
+<p>
+   <%=f.hidden_field :is_deleted, :value=>0%>
+</p>
+
+<%#= f.hidden_field :mg_school_id, :value => session[:current_user_school_id]%>
+  <%#=session[:current_user_school_id]%>
+
+  <%#= f.hidden_field :mg_school_id, :value => 5%> 
+  <%= f.hidden_field :updated_by, :value => session[:user_id]%>
+  <p>
+    <%= f.submit t('submit') %>
+  </p>
+<% end %>
+<button class="cancel-form-dialog mg-small-form-btn"><%= t('cancel') %></button>

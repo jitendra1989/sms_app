@@ -1,0 +1,49 @@
+<%= render partial: 'curriculum/curr_left' %>
+
+
+
+
+<%= form_for :curriculum, url: batch_syllabus_update_path(@curriculum.id), :html => {
+                            :id => 'batchSyllabusEditCurriculumManagementsID' }, id: @curriculum.id, method: :patch do |f| %>
+                        
+<%= f.hidden_field :is_deleted, :value => 0 %>
+<%= f.hidden_field :mg_school_id, :value => session[:current_user_school_id] %>
+<p>
+<label class="mg-label"><%= t('selectsyllabus')%></label><br/>
+
+<%= f.collection_select(:mg_syllabus_id,MgSyllabus.where(:is_deleted => '0'), :id, :name,{:include_blank => t("select")},:class => "subject_id-class")%>
+
+</p>
+
+<p>
+<label class="mg-label"><%= t('selectcoursebatch')%></label><br/>
+
+<%= f.collection_select(:mg_batch_id,MgBatch.where(:is_deleted => '0', :mg_school_id=>session[:current_user_school_id]), :id, :course_batch_name,{:include_blank => t("select")},:class => "subject_id-class")%>
+
+  </p>
+  <p>
+    <%= f.submit t('save'),:class=>"curriculum-managements-form-btn" %>
+    
+  </p>
+<% end %>
+
+
+<script>
+$(document).ready(function () {
+
+$("#batchSyllabusEditCurriculumManagementsID").validate({
+
+rules: {
+"curriculum[mg_syllabus_id]": {required: true},
+"curriculum[mg_batch_id]": {required: true}
+}
+});
+});
+</script>
+
+
+
+
+
+
+<%= render partial: 'application/emp_section_close' %>

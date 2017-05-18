@@ -1,0 +1,141 @@
+<!-- Sec --> 
+<!DOCTYPE html>
+<html>
+<head>
+  <title>SMS</title>
+  <%= favicon_link_tag 'favicon.ico' %>
+   <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
+  <%= javascript_include_tag 'application', 'data-turbolinks-track' => true , :cache => true %>
+   <%= javascript_include_tag "//www.google.com/jsapi", "chartkick" %>
+  <%= csrf_meta_tags %>
+
+  <script>
+
+      <% 
+       @timeformat=MgSchool.find(session[:current_user_school_id]) 
+      %>
+      var schoolDateFormat = "<%= @timeformat.date_format %>";
+ 
+     function getJsDateFormat(){
+     // alert("layout index -1")
+     // alert(schoolDateFormat);
+
+      if(schoolDateFormat=="%d/%m/%y"){
+        return "dd/mm/y";
+      }
+      else if(schoolDateFormat=="%d/%m/%Y"){
+          return "dd/mm/yy";
+      }
+      else if(schoolDateFormat=="%m/%d/%y"){
+          return "mm/dd/y";
+      }
+      else if(schoolDateFormat=="%m/%d/%Y"){
+          return "mm/dd/yy";
+      }
+      else if(schoolDateFormat=="%d/%b/%y"){
+          return "dd/M/y";
+      }
+      else if(schoolDateFormat=="%d/%b/%Y"){
+          return "dd/M/yy";
+      }
+        
+    else {
+        return "dd/mm/y";
+    }
+
+     }
+
+
+
+
+     function getDateFormat(date){
+     // alert("layout index -1")
+     // alert(schoolDateFormat);
+
+      if(date=="dd/mm/y"){
+        return "dd/mm/yy";
+      }
+      // else if(date=="dd/mm/yy"){
+      //     return "dd/mm/yyyy";
+      // }
+    //   else if(schoolDateFormat=="%m/%d/%y"){
+    //       return "mm/dd/y";
+    //   }
+    //   else if(schoolDateFormat=="%m/%d/%Y"){
+    //       return "mm/dd/yy";
+    //   }
+    //   else if(schoolDateFormat=="%d/%b/%y"){
+    //       return "dd/M/y";
+    //   }
+    //   else if(schoolDateFormat=="%d/%b/%Y"){
+    //       return "dd/M/yy";
+    //   }
+        
+    else {
+        return "dd/mm/yyyy";
+    }
+
+     }
+
+
+      
+
+            <% 
+         @timeformat=MgSchool.find(session[:current_user_school_id]) 
+
+        %>
+    var schoolDateFormat = "<%= @timeformat.date_format %>";
+
+
+
+  
+    function getSchoolDateFormat(){
+
+      if(schoolDateFormat=="%d/%m/%y"){
+        return "dd/mm/yy";
+      }
+      else if(schoolDateFormat=="%d/%m/%Y"){
+        return "dd/mm/yyyy";
+      }
+      else if(schoolDateFormat=="%m/%d/%y"){
+        return "mm/dd/yy";
+      }
+      else if(schoolDateFormat=="%m/%d/%Y"){
+        return "mm/dd/yyyy";
+      }
+       else if(schoolDateFormat=="%d/%b/%y"){
+        return "dd/mmm/yy";
+      }
+       else if(schoolDateFormat=="%d/%b/%Y"){
+        return "dd/mmm/yyyy";
+      }
+      else{
+        return "dd/mm/yy"
+      }
+
+     }
+  </script>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <!-- render header -->
+      <%= render :partial => 'header' %>
+    </div>
+    
+    <div class="yield-content">
+      <!-- rails content will be come here -->
+      <%= yield %>
+    </div>
+
+    <div class="footer">
+      <!-- render footer -->
+      <%= render :partial => 'footer' %>
+    </div>
+    
+  </div>
+
+  
+
+</body>
+</html>

@@ -1,0 +1,161 @@
+ 
+
+
+
+
+  <%= form_for :health_admin_show, :url=>{:action=>"health_management_admin_update",:id=>@health_data.id},:html => {
+                            :id => 'health_adminWardenFormId' } do |f| %>
+  <table border="1" class="mg-showdata-bg " cellspacing="1" cellpadding="1">
+
+  <% student_data=MgStudent.find_by(:id=>@health_data.mg_student_id,:mg_school_id=>session[:current_user_school_id])%>
+ 
+      <tr>
+         <td class="mg-td-width-half" valign="top">
+          <label class="mg-label"> <%= t('student_name')%></label>
+         </td>
+         <td class="mg-td-width-half" valign="top">
+          <%="#{student_data.try(:first_name)} #{student_data.try(:last_name)}"%>
+         </td>
+      </tr>
+
+      <tr>
+         <td class="mg-td-width-half" valign="top">
+          <label class="mg-label"> <%= t('placement_student_admission_id')%></label>
+         </td>
+         <td class="mg-td-width-half" valign="top">
+            <%=student_data.try(:admission_number)%>
+         </td>
+      </tr>
+
+
+      <tr>
+         <td class="mg-td-width-half" valign="top">
+          <label class="mg-label"> <%= t('hostel_name')%></label>
+         </td>
+
+         <% hostel_name = MgHostelDetails.find_by(:id=>@health_data.mg_hostel_details_id,:mg_school_id=>session[:current_user_school_id]).name %>
+         
+         <td class="mg-td-width-half" valign="top">
+              <%=hostel_name%>
+         </td>
+      </tr>
+
+
+      <tr>
+         <td class="mg-td-width-half" valign="top">
+          <label class="mg-label"> <%= t('floor_no')%></label>
+         </td>
+         <td class="mg-td-width-half" valign="top">
+
+          <% floor_name= MgHostelFloor.find_by(:id=> @health_data.mg_hostel_floor_id,:mg_school_id=>session[:current_user_school_id]).name %>
+
+          <%=floor_name%>
+
+         </td>
+      </tr>
+
+
+      <tr>
+         <td class="mg-td-width-half" valign="top">
+          <label class="mg-label"> <%= t('room_no')%></label>
+         </td>
+         <td class="mg-td-width-half" valign="top">
+
+          <% room_name= MgHostelRoom.find_by(:id=> @health_data.mg_hostel_room_id,:mg_school_id=>session[:current_user_school_id]).name %>
+
+          <%=room_name%>
+
+         </td>
+      </tr>
+
+
+     <tr>
+         <td class="mg-td-width-half" valign="top">
+          <label class="mg-label"> <%= t('date')%></label>
+         </td>
+         <td class="mg-td-width-half" valign="top">
+          <%= @health_data.date.strftime(@timeformat.date_format) %>
+         </td>
+       </tr>
+
+
+       <% if @health_data.status.present? %>
+         <tr>
+         <td class="mg-td-width-half" valign="top">
+          <label class="mg-label"> <%= t('status')%></label>
+         </td>
+         <td class="mg-td-width-half" valign="top">
+
+          <%= @health_data.status %>
+          
+
+         </td>
+      </tr>
+
+        <% end %>
+
+   
+
+       <tr>
+           <td class="mg-td-width-half" valign="top">
+            <label class="mg-label"><%=t('reason')%></label>
+           </td>
+           <td class="mg-td-width-half " valign="top">
+              <div class="text-scroll-for-log-text-cls comments-space" style="padding: 5px 40 0 10px">
+                <%= @health_data.reason %>
+              </div>
+           </td>
+       </tr>
+
+   <tr>
+      
+        
+                        
+      <!--  <tr>
+         <td class="mg-td-width-half" valign="top">
+            <label class="mg-label"> <%#= t('status')%></label>
+         </td>
+
+          <td class="mg-td-width-half " valign="top">
+            
+            <%#= select_tag "status",options_for_select([['Approve','approved'],['Reject','rejected']],:selected=>@health_data.status),{prompt: "Select"} %><br/>
+
+         </td>
+       </tr> -->
+         
+
+
+
+
+</tr>
+
+</table><br/>
+    <p>
+        
+     <!-- <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%#=t("save")%></a> -->
+
+  
+
+     <a class="mg-small-form-btn cancel-form-dialog"><%=t('cancel')%></a>
+     </p>
+
+    <% end %>
+<%=render partial: 'common_left_close'%>
+ 
+ 
+<script type="text/javascript">
+$(document).ready(function () {
+//  textSeeMoreLess();
+$("#health_adminWardenFormId").validate({
+
+    rules: {
+      "status": {required: true}
+      }
+  });
+});
+
+
+
+
+</script>
+  

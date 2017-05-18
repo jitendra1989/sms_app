@@ -1,0 +1,121 @@
+<!-- Sec -->
+<%= render  partial: 'transport_left' %>
+
+
+<% navigation_add 'Show Category', transports_transport_fee_category_path %>
+<% navigation_add 'Manage Particulars', manage_transport_particulars_path %>
+<% navigation_add 'Manage Particulars', manage_transport_particulars_new_path %>
+
+<h4 class="mg-h4"><%=t('new_transport_fee_particular') %></h4>
+
+ <%= form_for :transport_particulars, url: {:action=>'manage_transport_particulars_create',:controller=>'transports',:id=>params[:id]}, :html => {
+                            :id => 'feeParticularCreateFormId', :class => 'elm_class',
+                            :style => 'elm_style' } do |f| %>
+
+ 
+<%= f.hidden_field :mg_school_id, :value=> session[:current_user_school_id]%>
+<%= f.hidden_field :is_deleted, :value=>0%>
+
+  <div style="float:left; width:40%;">
+      <p>
+
+      <%= f.label :fee_category ,:class=>"mg-label"%><br>
+      <%@category=MgFeeCategory.where(:id=>session[:feedetails_id]).pluck(:name,:id)%>
+      <%=f.select :fee_category,options_for_select(@category)%>
+      <%#= f.text_field :fee_category ,:value=>@category[0].id,  :style => "diaplay:none"%>
+
+      </p>
+
+      <p>
+       <%= f.label :select_particular ,:class=>"mg-label"%><span class="required-field"> *</span><br>
+       <%@particularName=MgParticularType.where(:mg_fee_category_id=>session[:feedetails_id]).pluck(:particular_name,:id)%>
+       <%=f.select :mg_particular_type_id,options_for_select(@particularName),{:include_blank =>"Select"} ,:class=>"mg-select-btn"%>
+      </p>
+      <div style="display:none;">
+      <p>
+        <%= f.label :description ,:class=>"mg-label"%><br>
+        <%= f.text_area :description ,:class=>"mg-text-field"%>
+      </p>
+      </div>
+      <p>
+      <%= f.label :amount,:class=>"mg-label"%><span class="required-field"> *</span><br>
+      <%= f.text_field :amount,:class=>"mg-text-field"%>
+      </p>
+      <%
+    account=Array.new
+    account.push("Central","central")
+    accounts=MgAccount.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:mg_account_name,:id)
+    accounts.insert(0,account)
+  %>
+
+ <p>
+      <%= f.label :account,:class=>"mg-label"%><span class="required-field"> *</span><br>
+      <%= select_tag :mg_account_id,options_for_select(accounts),:prompt=>"Select"%>
+      </p>
+      <p>
+      <%= f.label :select_route,:class=>"mg-label"%><span class="required-field"> *</span><br>
+      <%route_data=MgTransport.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:route_name,:id)%>
+      <%= select_tag :mg_transport_id_for_fees,options_for_select(route_data),:prompt=>"select"%>
+     
+      </p>
+      
+      <div id="transport_student">
+      </div>
+      <p>
+        <%=f.submit 'Submit' ,:class=>"mg-small-form-btn",:id=>"inputs_fields"%>
+         <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"}%>
+      </p>
+      <%end%>
+<%=render partial: 'transport_left_close'%>
+
+
+
+<script>
+ $(document).ready(function(){
+
+  focusCurrentTab("transportfeesAID","transportfeesLiID");
+  $("#feeParticularCreateFormId").validate({
+      rules:{
+        "transport_particulars[mg_particular_type_id]":{required:true},
+        "transport_particulars[amount]":{required:true,number:true},
+        "transport_particulars[mg_account_id]":{required:true},
+        "mg_transport_id_for_fees":{required:true},
+        "transportSelectedStudents[]":{required:true}
+
+        
+      },
+     });
+});
+$(document).on("click","#inputs_fields",function(e){
+  
+$("#transportSelectedStudents option").prop('selected',true)
+ 
+});
+$(document).on("change","#mg_transport_id_for_fees",function(e){
+    
+    var dept_values=$("#mg_transport_id_for_fees").val();
+   
+ $.ajax({
+            url: "/transports/select_students",
+            type: "GET",
+            data: {"transport_id":dept_values},
+            dataType: "html",
+            success: function(data) {
+              //console.log(data);
+               // $(".fee-particular-admission-number-cls").empty();
+               // $(".fee-particular-admission-number-cls").append(data);
+             $("#transport_student").empty();
+
+             $("#transport_student").append(data);
+             
+              
+            },
+            error:function(){
+              alert("Something went wrong!");
+            }
+        });
+    
+});
+
+
+</script>

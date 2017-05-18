@@ -1,0 +1,67 @@
+<% navigation_add t('disciplinary_action'),:controller=>'sports_management', :action=>'disciplinary_action' %>
+<%if session[:user_type]=="employee"%>
+<%= render partial: 'dashboards/employee_left' %>
+<%else%>
+<%=render partial: "sports_left"%>
+<%end%>
+
+<%if session[:user_type]=="employee"%>
+<%else%>
+  <%=link_to t("Add disciplinary action"),{:controller=>"sports_management",:action=>"disciplinary_action_new"},:class=>"mg-custom-form-btn"%><br/>
+<%end%>
+<br>
+<h4 class="mg-h4"><%= t('discipline_actions_list')%></h4>
+<%if @discipline_data.length>0%>
+ <div class="mg_pagination">
+ <table class="batch-tbl mg-tbl-margin"> 
+ <tr >
+  	
+    <th> <%=t('Programme')%></th>
+    <th> <%=t('Semester')%></th>
+    <th><%=t('Remark')%></th>
+    <th><%=t('Action_taken')%></th>
+    <th><%=t('status')%></th>
+    <th><%=t('actions')%></th>
+
+ </tr>
+
+ </tr>
+
+  <% @discipline_data.each do |e| %>
+  <% prog_data=MgWing.find_by(:id=>e.mg_wing_id)  
+     sem_data=MgBatch.find_by(:id=>e.mg_batches_id)
+     course_data=MgCourse.find_by(:id=>sem_data.mg_course_id)
+
+    %>
+    <tr>
+      <td><%= prog_data.wing_name %></td>
+      <td><%= "#{course_data.course_name}-#{sem_data.name}"  %></td>
+      <td><%=truncate(e.remark.to_s,:length=> 25,:seperator=> ' ')%> </td>
+      <td><%=truncate(e.action_taken.to_s,:length=> 25,:seperator=> ' ')%> </td>
+      <td><%=e.status%> </td>
+      <td>
+       <button title="Show" id="" class=" mg-icon-btn" onclick="window.location.href='/sports_management/disciplinary_action_show/<%=e.id%>'"><i class="fa fa-eye"></i></button>
+
+       <button title="Edit" id="" class=" mg-icon-btn" onclick="window.location.href='/sports_management/<%=e.id%>/disciplinary_action_edit'"><i class="fa fa-pencil-square-o" ></i></button>
+       <span style="left: -2px; position: relative; float: right; top:-2px;"> 
+
+       <%= link_to "<i class=\"fa fa-trash\"></i>".html_safe,{:controller => "sports_management", :action => "disciplinary_action_delete",:id=>e.id },data: { confirm: "Are you sure to delete?" } ,:title=> "Delete" ,:class=>"mg-icon-btn"%></td>
+                            
+    </tr>
+   <% end %>
+  </table>
+  <%= will_paginate @discipline_data, :container => false %> 
+  </div>
+  <%else%>
+    
+  <%="No Records"%>
+  <%end%>
+  
+<div id="showTrainingRequiredDIVID"></div>
+  <%= render  partial: 'common_left_close' %>
+<script>
+$(document).ready(function(){
+  focusCurrentTab("disciplinary_actionAID","disciplinary_actionLiID");
+});
+</script>
+ 

@@ -1,0 +1,270 @@
+<% navigation_add 'Manage Projection', :controller => 'inventory', :action => 'projection' %>
+<% navigation_add 'Add Projection', :controller => 'inventory', :action => 'projection_new' %>
+<%= render  partial: 'inventory/inventory_left' %>
+
+<h4 class="mg-h4"><%= t('Projection Information')%></h4>
+<div class="box">
+<%= form_for :inventory ,  :url=>{:controller=>'inventory',:action=>'projection_create'}, :html=>{:id=>'inventory_purchase'} do |f| %>
+
+        <%= f.hidden_field :is_deleted ,:value=>0%>
+        <%= f.hidden_field :mg_school_id ,:value=>session[:current_user_school_id]%>
+        <%= f.hidden_field :mg_user_id ,:value=>session[:user_id]%>
+        <%= f.hidden_field :mg_store_id ,:value=>@store_management[0].try(:id)%>
+        <%= f.hidden_field :created_by ,:value=>session[:user_id]%>
+        <%= f.hidden_field :updated_by ,:value=>session[:user_id]%>
+        <%#= f.text_field :vehicle_number ,:class=>"mg-text-field"%>
+        
+<table class="mg-tbl-margin mg-show-tbl-width">
+   <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="vendorName"><%= t ('store_name') %><span class="required-field">&nbsp;</span></label><br/>
+        <%= text_field_tag :mg_store_id ,@store_management[0].try(:store_name),:class=>"mg-text-field", readonly: true%>
+      </td>
+    </tr>
+    <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="vendorName"><%= t ('manager_name') %><span class="required-field">&nbsp;</span></label><br/>
+        <%user=MgUser.find_by(:id=>session[:user_id])%>
+        <%= text_field_tag :manager_name ,user.try(:user_name),:class=>"mg-text-field", readonly: true%>
+      </td>
+    </tr>
+    <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="vendorName"><%= t ('requisition_name') %><span class="required-field">&nbsp;*</span></label><br/>
+        <%= f.text_field :requisition_name ,:class=>"mg-text-field"%>
+      </td>
+    </tr>
+
+    <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label mg-label-text-transform-none" for="dateofPurchase"><%= t ('date_of_requirement') %><span class="required-field">&nbsp;*</span></label><br/>
+        <%= f.text_field :date ,:class=>"mg-text-field"%>
+      </td>
+    </tr>
+
+    <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="vendorName"><%= t ('description') %><span class="required-field">&nbsp;</span></label><br/>
+        <%= f.text_area :description ,:class=>"mg-text-field"%>
+      </td>
+    </tr>
+
+    <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="vendorName"><%= t ('status') %><span class="required-field">&nbsp;</span></label><br/>
+        <%= select_tag :status, options_for_select([[t("Select"), ""], [t("pending"), "pending"], [t("accepted"), "accepted"], [t("rejected"), "rejected"]],:selected => "pending"),{:disabled => true} %>
+      </td>
+    </tr>
+
+    <tr>
+      <td class="mg-td-width-one-third">
+        <label class="mg-label" for="vendorName"><%= t ('remark') %><span class="required-field">&nbsp;</span></label><br/>
+        <%= f.text_area :remark ,:class=>"mg-text-field", :readonly=>true%>
+      </td>
+    </tr>
+
+    <tr>
+    
+</table>
+<h4 class="mg-h4"><%= t('Item Information')%></h4> 
+ <div class="mg-tbl-margin"> 
+ <p>
+ <a id="inventory_details" class="mg-label-inner-form mg-custom-form-btn" style="color: #297ACC; font-size:0.8em; position: relative;" >Add </a></p><br\>
+ <div class="mg-scroll-employee-bar">
+<table class="mg-show-tbl-width mg-table-nowrap batch-tbl mg-adjust-padding width-set-for-purchase-table">  
+
+        <th><%=t("sl_no")%></th>
+        <th><%=t("select_category")%><span class="required-field">&nbsp;*</span></th>
+        <th><%=t("select_item")%><span class="required-field">&nbsp;*</span></th>
+        <th><%=t("select_unit_type")%><span class="required-field">&nbsp;*</span></th>
+        <th class="mg-label-text-transform-none"><%=t("no_of_units")%><span class="required-field mg-label-text-transform-none">&nbsp;*</span></th>
+        <th><%=t("action")%></th>
+        <tr class="demo-div">
+            <div id="finalDueFineDivId">
+            <div class="due-fine-div" id="dueFineDivId">
+            <td><span class="required-incremented-field">1</span></td>
+
+
+            <td class="mg-align-center mg-inventory-td-class">
+              <%= f.collection_select("mginventoryitemcategory[]",MgInventoryItemCategory.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]), :id, :name,{:include_blank => t("select")},:class => "mg-inventory-projection-category-cls call-purpose-class",:name=>"mginventoryitemcategory[]")%>
+            </td>
+
+            <td class="mg-align-center mg-projection-item-cls">
+              <%=f.select :mg_item_id,options_for_select([[]]),{:include_blank=>t('select')},:class=>"call-purpose-class" %>
+
+            </td>
+
+
+
+          <!-- <td class="mg-align-center"> -->
+          <%#= f.collection_select("mg_item_id[]",MgInventoryItem.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]), :id, :name,{:include_blank => t("select")},:class => "call-purpose-class consumption-category-class category-laboratory-class",:name=>"mg_item_id[]")%>
+          <!-- </td> -->
+          <td class="mg-align-center">
+          <%= f.collection_select("mg_unit_type_id[]",MgLabUnit.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]), :id, :unit_name,{:include_blank => t("select")},:class => "call-purpose-class consumption-category-class category-laboratory-class",:name=>"mg_unit_type_id[]")%>
+          </td>
+          <td class="mg-align-center">
+          <%= text_field_tag 'no_of_unit[]' ,nil,:class=>"mg-inside-tbl-width required-field item-name-class-purchase"%>
+          </td>
+          </td>
+          <td class="mg-align-center">
+                      <a title="Remove" class="remove-inventory-details mg-icon-btn" style="color: #297ACC;"> <i class="fa fa-trash"></i></a>
+                
+            </td>   
+             </div>
+             </div>
+          </tr>
+</table >
+</div>
+  </div>    
+  <div class="checking_validation"></div>            
+  <div class="checking_validation1"></div>            
+                
+ <p class="mg-p-mgtop">                     
+  <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn laboratory-purchase-new-submit-class"><%=t("save")%></a>   
+  <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+  </p>
+<%end%>
+</div>
+<%= render  partial: 'application/common_left_close' %>
+
+
+<script>
+$(document).ready(function () {
+focusCurrentTab("viewInventoryItemProjectionIndex","viewItemProjectionLiID");
+
+ // window.dateFormatStr = getJsDateFormat();
+        dateFormatStr =  getJsDateFormat();
+    $('#inventory_date').datepicker({ changeMonth: true,
+                changeYear: true,yearRange: "-50:+0",minDate: "0",dateFormat: dateFormatStr});
+    });
+
+$(document).on("click", "#inventory_details", function(e){
+    var lastRepeatingGroup = $('.demo-div').last();
+    //alert(lastRepeatingGroup);
+    var cloned = lastRepeatingGroup.clone();
+    //console.log(cloned);
+    cloned.find('input').val('');
+    cloned.find('label').remove();
+
+    cloned.find(".call-purpose-class ").attr("class","call-purpose-class consumption-category-class category-laboratory-class");
+    //console.log(cloned.find('input').val(''));
+    cloned.insertAfter( lastRepeatingGroup );
+
+
+
+
+
+  $(".required-incremented-field:visible").each(function(index,element){
+          $(this).text(index+1);
+    });
+    $(".checking_validation").click();
+    //add_validation_for_forms();
+    return false;
+
+}); 
+
+
+
+
+$(function() {
+   dateFormatStr =  getJsDateFormat();
+})
+    
+
+
+$(document).on("click", ".remove-inventory-details", function(e){
+   var total = $('.remove-inventory-details').length
+   var last_count = $('.remove-inventory-details').text();
+   //console.log(last_count);
+ //alert(last_count); 
+   if(total!=1)
+   {
+    $(this).parent('td').parent().remove();   
+    }
+  $(".required-incremented-field:visible").each(function(index,element){
+          $(this).text(index+1);
+    });
+});
+//=============================================================
+
+
+$(function () {
+    $.validator.addMethod('dateFormat',
+    function (value, element) {
+      dateFormatStr =  getJsDateFormat();
+        if (this.optional(element)) {
+            return true;
+        }
+        var ok = true;
+        try {
+            $.datepicker.parseDate(dateFormatStr, value);
+        }
+        catch (err) {
+            ok = false;
+        }
+        return ok;
+    },
+      "Please enter a date in the format "+ getDateFormat(dateFormatStr) +".");
+      dateFormatStr =  getJsDateFormat();
+
+    $(".datefield").datepicker({ dateFormat: dateFormatStr, changeYear: true });
+});
+
+$("#inventory_purchase").validate({
+        rules: {   
+        "inventory[requisition_name]": {required: true}, 
+        //"inventory[description]": {required: true}, 
+        "inventory[date]": {required: true,dateFormat: true},
+        //"mg_item_id[]": {required: true, number: true},
+        "mg_unit_type_id[]": {required: true, number: true},
+        "no_of_unit[]": {required: true, number: true},
+        "mginventoryitemcategory[]": {required: true},
+        "inventory[mg_item_id]": {required: true}
+      }
+    });
+
+
+
+  $(document).on('change','.mg-inventory-projection-category-cls',function(){
+    var category_id = $(this).val();
+    
+    var select_option = '<option value="">Select</option>';
+    var temp =$(this).parents('.mg-inventory-td-class').siblings(".mg-projection-item-cls").find("select");
+    temp.empty().append(select_option);
+   
+    if(category_id > 0) {
+         
+      var urlLink = "/inventory/select_inventory_category/"+category_id;
+      $.ajax({ 
+        url: urlLink,
+        cache: false,
+        success: function(data){
+          console.log(data);
+          if(data.length > 0){
+            var select_option = '<option value="">Select</option>';
+            //console.log(data);
+            for(key in data){
+              select_option += '<option value="'+data[key].id+'">'+data[key].name+'</option>'
+            }
+            temp.empty().append(select_option);
+          }
+        }
+      });
+    }else{
+      var select_option = '<option value="">Select</option>';
+      temp.empty().append(select_option);
+    }
+  });
+
+
+</script>
+
+<style>
+
+.error {
+  float: left;
+  font-size: 10px;
+}
+
+
+</style>

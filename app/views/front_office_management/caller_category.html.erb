@@ -1,0 +1,114 @@
+<% navigation_add t('caller_category'), :controller=>'front_office_management',:action=>'caller_category'%>
+<%#=render partial: 'front_office_management_left'%>
+<%= render  partial: 'master_settings/master_settings_left' %>
+
+<h4 class="mg-h4"><%=t('caller_category')%></h4>
+
+<button class="add-caller-category-cls mg-btn-bottom-margin mg-custom-form-btn"><%= t("add_caller_category")%></button>
+
+<%if @caller_category.present?%>
+  <table  class="batch-tbl mg-tbl-margin">   <!-- border="2" --> 
+    <tr class="subject-table-header">
+      <th><%= t('name') %></th>
+      <th><%= t('description') %></th>
+      <th><%= t('actions') %></th>
+    </tr>
+ 
+    <% @caller_category.each do |s| %>
+      <tr>
+        <td><%= s.name %></td>
+        <td class="mg-desc-text-justify"><%= truncate(s.description.to_s, :length => 25, :separator => ' ') %></td>
+        <td>  
+          <button title="Show" id="<%=raw s.id %>-showtype_of_queryFomBTNID" class="show-caller-category-btn mg-icon-btn"><i class="fa fa-eye"></i></button>
+          <button title="Edit" id="<%=raw s.id %>-edittype_of_queryFomBTNID" class="edit-caller-category-btn mg-icon-btn"><i class="fa fa-pencil-square-o"></i></button>
+          
+          <button title="<%= t('delete')%>" id="<%= raw s.id %>-deleteexmVenueBTNID" class="delete-caller-category-btn mg-icon-btn"><i class="fa fa-trash"></i></button>             
+        </td>
+      </tr>
+    <% end %>
+  </table>
+  <br/>
+ <div class="pagination-align" style="position: relative; bottom: 10px;">
+  <%= will_paginate @caller_category, :container => false %>
+ </div>
+<%else%>
+  <h5>No records are created </h5>
+<%end%>
+
+<div id="editCallerCategoryID"></div>
+<div id="showCallerCategoryID"></div>
+<div id="newCallerCategoryID"></div>
+
+<%= render  partial: 'application/common_left_close' %>
+
+
+<script>
+  $(document).ready(function () {
+    focusCurrentTab("callerCategoryAID","callerCategoryLiID");
+  });
+
+  $(document).on("click", ".add-caller-category-cls", function(e){
+        
+    var urlLink = "/front_office_management/new_caller_category";
+    $.ajax({
+      url: urlLink ,
+      cache: false,
+      success: function(html){
+        $('#newCallerCategoryID').dialog({
+          modal: true,
+          minHeight: 'auto',
+          title: "Add Caller Category",
+          open: function () {
+            $(this).html(html);
+          }
+        }); 
+      }
+    });
+  });
+
+  $(document).on("click", ".edit-caller-category-btn", function(){
+    var editID = $(this).attr('id');
+    var id = editID.split("-");
+    var urlLink = "/front_office_management/edit_caller_category/"+id[0];
+    $.ajax({
+      url: urlLink ,
+      cache: false,
+      success: function(html){
+        $('#editCallerCategoryID').dialog({
+          modal: true,
+          minHeight: 'auto',
+          title: "Edit Caller Category",
+          open: function () {
+            $(this).html(html);
+          }
+        }); 
+      }
+    });
+  });
+
+  $(document).on("click", ".show-caller-category-btn", function(e){
+    var editID = $(this).attr('id');
+    var id = editID.split("-");
+    var urlLink = "/front_office_management/show_caller_category/"+id[0];
+    $.ajax({
+      url: urlLink ,
+      cache: false,
+      success: function(html){
+        $('#showCallerCategoryID').dialog({
+          modal: true,
+          minHeight: 'auto',
+          width: 'auto',
+          title: "Show Caller Category",
+          open: function () {
+            $(this).html(html);
+          }
+        }); 
+      }
+    });
+  });
+
+
+
+
+
+</script>

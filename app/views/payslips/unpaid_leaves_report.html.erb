@@ -1,0 +1,148 @@
+<% navigation_add t('unpaid_leave_report'), :controller=>"payslips", :action=>"unpaid_leaves_report"%>
+
+<%=render partial: 'payslip_left'%>
+<h4 class="mg-h4"><%=t('unpaid_leave_report')%></h4>
+
+<%@date_for_report=Date.new(@year.to_i,@month.to_i,01)%>
+<%= form_for :report_sort_payslip, url: unpaid_leaves_report_path, :html => {
+                            :id => 'formreport_sort_payslip_unpaid_leaves_reportID' } do |f| %>
+
+
+
+<label class="mg-label"><%=t('select_month_and_year')%></label>   <%=text_field_tag :date_month_all_employee_unpaid_leavest, "#{@date_for_report.strftime('%B')} #{@year}" %>
+<%=hidden_field_tag :unpaid_report_date, "#{@month}-#{@year}"%>
+ <%= f.submit t('search') ,:class=>"mg-small-form-btn hidden-button-onchange-submit-class", :id=>"payslipUnPaidLeavesReportReportSubmitFormID" ,:style=>"display:none"%>
+ <%end%>
+<br>
+<%if  @employee_list.present?%>
+<div class="mg_pagination">
+ 
+<table class="batch-tbl">
+	<tr>
+		<th><%=t('name')%></th>
+        <th><%=t('department')%></th>
+		<th><%=t('month')%></th>
+		<th><%=t('year')%></th>
+        <th><%=t('unpaid_leave(days)')%></th>
+
+		<th><%=t('actions')%></th>
+	</tr>
+	<%@employee_list.each do |employee|%>
+	<tr>
+		<td><%=employee.employee_name%></td>
+        <td><%=employee.dept_name%></td>
+		<td><%=@date_for_report.strftime("%B")%></td>
+		<td><%=@date_for_report.year%></td>
+        <td><%=@unpaid_leaves_report[employee.id.to_s]%></td>
+		<td><button id='<%=employee.id%>-<%=@date_for_report.month%>-<%=@date_for_report.year%>-overTimeReportShowForEmployeeBTNID' class="unpaid-leaves-report-report-show-for-employee-cls mg-custom-form-btn"><%=t('details')%></button></td>
+	</tr>
+	<%end%>
+</table>
+<%= will_paginate @employee_list, :container => false, :params=>{:unpaid_report_date=>"#{@month}-#{@year}"} %>
+  </div>
+
+<%else%>
+      <h5>No Records are Present</h5>
+<%end%>
+<div id="payslipsEmployeeOverTimeReportDIVID"></div>
+
+<div id="payslipsEmployeeUnpaidLeavesReportDIVID"></div>
+
+
+<%= render partial: 'application/common_left_close' %>
+
+
+<%= render partial: 'application/common_left_close' %>
+<script>
+	$(document).ready(function(){
+		$("li").removeClass( "active" );
+        $("a").removeClass( "activeMenu" );
+
+        $("#viewPayslipsUnpaidLeavesReportsLiID").addClass( "active" );
+        $("#viewPayslipsUnpaidLeavesReports").addClass( "activeMenu" );
+        focusPaySlip();
+
+
+          $("#date_month_all_employee_unpaid_leavest").datepicker( {
+        changeMonth: true,
+        changeYear: true,
+        showButtonPanel: true,
+        dateFormat: 'MM yy',
+        beforeShow: function (){
+                          setTimeout(function() {
+                        $(".ui-datepicker-buttonpane")
+                            .html('')
+                            .append("<button id='dateMonthUnPaidTimeReportPayslipBTNID'>Done</button>");
+                        // var class_val=$("#ui-datepicker-div").attr("class");
+                        // $("#ui-datepicker-div").attr("class", class_val+" date-month-teaching-stuff-cls");
+                        }, -6)
+                    },
+         onChangeMonthYear: function (){
+                        setTimeout(function() {
+                        
+                         $(".ui-datepicker-buttonpane")
+                            .html('')
+                            .append("<button id='dateMonthUnPaidTimeReportPayslipBTNID'>Done</button>");
+                        //  var class_val=$("#ui-datepicker-div").attrdateMonthUnPaidTimeReportPayslipBTNIDclass");
+                        // $("#ui-datepicker-div").attr("class", class_val+" date-month-teaching-stuff-cls");
+                        }, -5)
+
+                    }, 
+        onClose: function(dateText, inst) { 
+            var month = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
+            var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
+            $(this).datepicker('setDate', new Date(year, month, 1));
+        }
+    });
+
+   });
+
+$(document).on("click", "#dateMonthUnPaidTimeReportPayslipBTNID", function(e){
+  $( "#date_month_all_employee_unpaid_leavest" ).datepicker("hide");
+  var month = parseInt($("#ui-datepicker-div .ui-datepicker-month :selected").val()) + 1;
+  var year = parseInt($("#ui-datepicker-div .ui-datepicker-year :selected").val());
+  $("#unpaid_report_date").val(month+"-"+year);
+  $("#payslipUnPaidLeavesReportReportSubmitFormID").click();
+});
+
+
+
+$(document).on("click", ".unpaid-leaves-report-report-show-for-employee-cls", function(e){
+	 e.preventDefault();
+	 var myID =$(this).attr('id');
+     var Id=myID.split("-");
+	 var mg_employee_id=Id[0];
+	 var date_grad_year=Id[2];
+	 var date_month=Id[1];
+	var urlLink = "/payslips/unpaid_leaves_report_count/";
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            data:{
+            	mg_employee_id: mg_employee_id,
+            	date_grad_year: date_grad_year,
+            	date_month: date_month
+            },
+            success: function(html){
+            	// $("#payslipPresHowDIVID").empty();
+            	// $("#payslipPresHowDIVID").append(html);
+            	  $('#payslipsEmployeeUnpaidLeavesReportDIVID').dialog({
+                    modal: true,
+                    height: '450',
+                    width: '600 ',
+                    title: "Unpaid Leaves",
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+            }
+        });
+});
+</script>
+
+<style>
+.ui-datepicker-calendar {
+    display: none;
+    }
+</style>

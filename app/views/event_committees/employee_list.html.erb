@@ -1,0 +1,52 @@
+<h4 class="mg-h4"><%= t('employee_list')%></h4>
+<%=hidden_field_tag :mg_event_committee_id, @mg_event_committee_id%>
+<%=hidden_field_tag :mg_employee_department_id, @mg_employee_department_id%>
+
+<div class="mg-scroll-employee-bar">
+	<table class="batch-tbl mg-tbl-margin">
+	<tr>
+		<th><%=t('name')%></th>
+		<th><%=t('employee_number')%></th>
+
+		<th><%=t('actions')%>
+		 <div class="mg-text-margin">
+        <a class="select-all-employee-for-commitee mg-pop-link"><%=t('all')%></a>&nbsp;<a class="select-none-employee-for-commitee mg-pop-link"><%=t('none')%></a>
+      </div></th>
+	</tr>
+		<%@employee_list.each do |employee|%>
+			<tr>
+				<td><%=employee.first_name%> <%=employee.last_name%> </td>
+				<td><%=employee.employee_number%></td>
+				<%if  @event_committee_member_list.include? employee.id%>
+				 	<td class="mg-align-center"><%= check_box_tag 'mg_employee_id[]', employee.id, true ,{:class=>"class-event-committee-add-employee-cls"}%></td>
+				 <%else%>
+				 	<td class="mg-align-center"><%= check_box_tag 'mg_employee_id[]', employee.id, false ,{:class=>"class-event-committee-add-employee-cls"}%></td>
+				 <%end%>
+			  </tr>
+		<%end%>
+	</table>
+</div>
+
+<p class="mg-p-mgtop">
+    <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"  id="addEmployeeCommitteeSubmitFormID"><%=t("save")%></a>
+       <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+      <!-- <a  class="mg-small-form-btn cancel-form-dialog"><%#=t("cancel")%></a> -->
+  </p>
+
+
+<script>
+$(document).ready(function () {
+  $('#addEmployeeCommitteeSubmitFormID').attr("disabled", true);
+ 
+});
+
+	 $(document).on("click", ".select-all-employee-for-commitee", function(e){
+
+    $(".class-event-committee-add-employee-cls").prop('checked', true);
+        e.preventDefault();
+  });
+   $(document).on("click", ".select-none-employee-for-commitee", function(e){
+    $(".class-event-committee-add-employee-cls").prop('checked', false);
+        e.preventDefault();
+  });
+</script>

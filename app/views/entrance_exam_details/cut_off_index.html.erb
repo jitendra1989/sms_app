@@ -1,0 +1,185 @@
+<%=render partial:"entrance_exam_details/entrance_exam_left" %>
+<% navigation_add t('exam_selection'), :controller=>'entrance_exam_details', :action=>'cut_off_index' %>
+<h4 class="mg-h4"><%=t('classlist')%></h4>
+<%@school = MgSchool.where(:id=>session[:current_user_school_id],:is_deleted=>0)%>
+
+<label class="mg-label mg-custom-labels" for="select_class"><%= t('select_class') %><span class="required-field"> *</span></label>&nbsp;
+&nbsp;<%=select_tag :student_cut_off_index,options_for_select(@course_name),:prompt=>t('select'),:onchange=>"cutOffMarksList(this.value)",:class=>"custome-text-width",:style=>"margin-bottom: 4px;"%><br/>
+
+<%if @school[0].disable_entrance_exam_test==true%>
+  <label class="mg-label mg-custom-labels" for="select_class"><%= t('cut_off_marks') %></label>
+  &nbsp;<%= text_field_tag :cut_off_index, "", class: 'mg-text-field custome-text-width' %>
+  <label class="mg-label mg-custom-labels" for="select_class"><%= t('student') %></label>
+  <%= text_field_tag :total_student,"", class: 'mg-text-field mg-custom-labels custome-text-width' %>
+
+<%elsif @school[0].disable_entrance_exam_test==false%>
+  <label class="mg-label mg-custom-labels" for="select_class"><%= t('lower_index') %></label>&nbsp;&nbsp;&nbsp;
+  <%= text_field_tag :cutOffMarksCriteria, "", class: 'mg-text-field custome-text-width'%>
+
+  &nbsp;<label class="mg-label" for="select_class"><%= t('upper_index') %></label>
+  <%= text_field_tag :upperIndexCriteria, "", class: 'mg-text-field custome-text-width' %>
+
+  <label class="mg-label mg-custom-labels" for="select_class"><%= t('students') %></label>
+  <%= text_field_tag :total_student,"", class: 'mg-text-field custome-text-width' %>
+<%end%>
+
+
+<%= form_for :select_entrance_exams, url: update_mg_student_path do |dd| %>
+  <%= hidden_field_tag :options_for_select_exam , "SelectEntrancEexam" %>
+  
+  <div id="selectstudentDivID"></div>
+
+ <%= dd.submit "save",:id=>"selectEtnranceExamFormSubmit" ,:class=>"mg-small-form-btn" ,:style=>"display:none"%>
+
+<%end%>
+
+  
+
+<%=render partial:"common_left_close" %>
+
+<script>
+
+  $(document).ready(function(){
+    focusCurrentTab("mgEXMSelectionLID","mgEXMSelectionID");        
+  });
+
+  function cutOffMarksList(course_id)
+  {
+    var cut_off_value = 0.00
+    $("#cut_off_index").val(cut_off_value);
+    if(course_id!=''){
+      urlLink = "/entrance_exam_details/select_student_list";
+      $.ajax({
+        url: urlLink,
+        data: {"mg_course_id":course_id},
+        cache: false,
+        success: function(html){
+          console.log(html);
+          $("#selectstudentDivID").html(html);
+        }
+      });
+    }else{
+      $("#selectstudentDivID").empty();
+      $("#total_student").val('');
+    }
+  }
+ 
+  $("#cut_off_index").keyup(function(){
+    var search_id = $(this).val();
+    var course_id = $("#student_cut_off_index").val();
+
+    if(!isNaN(search_id)){
+      if(course_id!=''){
+        urlLink = "/entrance_exam_details/select_student_list";
+        $.ajax({
+          url: urlLink,
+          data: {"mg_course_id":course_id,"search_id":search_id,"search_index":"search_by_marks"},
+          cache: false,
+          success: function(html){
+            $("#selectstudentDivID").html(html);
+          }
+        });
+      }
+    }else{
+      alert("Please enter number");
+      this.value=0.00;
+    }
+  })
+
+  function selectFormForExam(option){
+    $("#options_for_select_exam").val(option);
+    $("#selectEtnranceExamFormSubmit").click();
+  }
+
+
+
+
+  $("#cutOffMarksCriteria").keyup(function(){
+    sortingFunction($(this));
+  });
+
+  $("#upperIndexCriteria").keyup(function(){
+    sortingFunction($(this));
+  });
+
+
+  function sortingFunction(that){
+    var search_id = $("#cutOffMarksCriteria").val();
+    var upper_index = $("#upperIndexCriteria").val();
+    var course_id = $("#student_cut_off_index").val();
+
+    if(course_id!=''){
+      if(search_id!='' && upper_index!=''){
+        if(!isNaN(search_id) && !isNaN(upper_index)){
+          urlLink = "/entrance_exam_details/select_student_list";
+          $.ajax({
+            url: urlLink,
+            data: {"mg_course_id":course_id,"search_id":search_id,"upper_index":upper_index,"search_index":"search_by_index"},
+            cache: false,
+            success: function(html){
+              $("#selectstudentDivID").html(html);
+            }
+          });
+        }else{
+          alert("Please enter number??");
+          that.val(0.00);
+        }
+      }else if(search_id!='' || upper_index!=''){
+        if(!isNaN(upper_index) && !isNaN(search_id)){
+          urlLink = "/entrance_exam_details/select_student_list";
+          $.ajax({
+            url: urlLink,
+            data: {"mg_course_id":course_id,"search_id":search_id,"upper_index":upper_index,"search_index":"search_by_index"},
+            cache: false,
+            success: function(html){
+              $("#selectstudentDivID").html(html);
+            }
+          });
+        }else{
+          alert("Please enter number");
+          that.val(0.00);
+        }
+      }else{
+        if(!isNaN(search_id)){
+          urlLink = "/entrance_exam_details/select_student_list";
+          $.ajax({
+            url: urlLink,
+            data: {"mg_course_id":course_id,"search_id":search_id,"search_index":"search_by_index"},
+            cache: false,
+            success: function(html){
+              $("#selectstudentDivID").html(html);
+            }
+          });
+        }else{
+          alert("Please enter number");
+          that.val(0.00);
+        }
+      }
+    }
+  }
+
+
+  function prinListForSelectedStudent(){
+    var array=[];
+    var course_id = $("#student_cut_off_index").val();
+    $(".students-admission-class").each(function(){
+      if($(this).find(".students-checkbox-checkstatus").is(':checked')){
+        array.push($(this).find(".students-checkbox-checkstatus").val());
+      }
+    });
+    
+    if (array.length > 0){
+      var url="/entrance_exam_details/print_list?mg_course_id="+course_id+"&students_id="+array+"&format=pdf&target=_blank";
+      window.open(url, '_blank');
+    }else{
+      alert("Please checked atleast one");
+    }
+  }
+
+</script>
+
+<style>
+  .custome-text-width{
+    width: 144px;
+  }
+</style>

@@ -1,0 +1,187 @@
+<%#= render partial:'sports_left' %>
+<%if session[:user_type]=="employee"%>
+<%= render partial: 'dashboards/employee_left' %>
+<%else%>
+<%=render partial: "sports_left"%>
+<%end%>
+<%= form_for :discipline_form , url: @action=="new" ? 'disciplinary_action_create' : '/sports_management/'+@discipline_data.try(:id).to_s+'/disciplinary_action_update',:html => {:id => 'discipline_actID' } do |f| %>
+
+ <h4 class="mg-h4"><%= @action=='new' ? t('new_disciplinary_action') : t('edit_disciplinary_action')%></h4>
+ <%#= hidden_field_tag :action_data, :value => @action %>
+<!--   <%# if @action=='edit'%>
+
+ <%#= f.hidden_field :param_data, :value => @discipline_data.try(:id) %>
+ <%#end%> -->
+ <%= f.hidden_field :is_deleted, :value => 0 %>
+ <%= f.hidden_field :mg_school_id, :value => session[:current_user_school_id] %>
+ <%= f.hidden_field :created_by, :value => session[:user_id] %>
+ <%= f.hidden_field :updated_by, :value => session[:user_id] %>
+
+ <p>
+  <label class="mg-label mg-tt-width" style="width:185px;vertical-align: top;"><%=t('subject')%><span class="required-field"> *</span></label><br>
+  <% if @action=='new'%>
+  <%= f.text_area :subject,:class=>"mg-text-field" %>
+  <% else %>
+  <%= f.text_area :subject,:class=>"mg-text-field",:value => @discipline_data.subject %>
+  <% end %>
+ </p>
+
+<p>
+    <%= f.label :select_programme, t('select_programme'),:class=>"mg-label mg-rm-text-trans"%><span class="required-field"> *</span><br>
+    <% wings_data=MgWing.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).pluck(:wing_name,:id)%>
+    <% if @action=='new'%>
+      <%=f.select :mg_wing_id,options_for_select(wings_data),{include_blank: false,:prompt=>"Select"},:onchange => 
+      'progChangeFunction()' ,:class=> 'mg-text-field wing-no'%>
+    <% else %>
+      <%=f.select :mg_wing_id,options_for_select(wings_data,:selected=>@discipline_data.mg_wing_id),{include_blank: false,:prompt=>"Select"},:onchange => 'progChangeFunction()' ,:class=> 'mg-text-field wing-no'%>
+    <%end%>
+ 
+</p>
+
+
+ <p id='wing-div'>
+  <label class="mg-label mg-tt-width" style="width:185px"><%=t('select_semester')%><span class="required-field"> *</span>
+  </label><br>
+  
+  <% if @action=='new'%>
+  <%=select_tag :mg_batches_id,options_for_select([]),:prompt=>"Select"%>
+  <% else %>
+  <%#=select_tag :mg_batches_id,options_for_select(@course_data,:selected=>@batch_data.mg_batches_id),:prompt=>"Select"%>
+  <%end%>
+</p>
+
+<p id="">
+  <!-- <label class="mg-label mg-tt-width" style="width:185px"><#%=t('select_student')%><span class="required-field"> *</span></label><br>
+<div class="mg-scroll-subjectlist-bar">
+  <table class="batch-tbl">
+    <tr>
+      <th class="mg-align-center">
+        <label class="mg-label"><#%=t('select')%></label><br/>
+        <a  id="selecAllAID" class="mg-pop-link">All</a>
+        <a  id="selectNoneAID" class="mg-pop-link">None</a>
+      </th>
+      <th>
+        <#%=t('name')%>
+      </th>
+    </tr>
+    </table>
+    </div> -->
+</p>
+<p>
+<% if @action=='new'%>
+<div id="student_list"></div>
+<% else %>
+<%student_list=MgStudent.where("id IN (?)",@student_data).pluck(:first_name,:id)%>
+<%=select_tag :studentIds, options_for_select(student_list),
+:multiple => true,:size =>10 ,:class=>"mg-add-library-particular"%>
+<% end %>
+</p>
+
+ <p>
+ 	<label class="mg-label mg-tt-width" style="width:185px;vertical-align: top;"><%=t('remark')%><span class="required-field"> *</span></label><br>
+  <% if @action=='new'%>
+  <%= f.text_area :remark,:class=>"mg-text-field" %>
+  <% else %>
+  <%= f.text_area :remark,:class=>"mg-text-field",:value => @discipline_data.remark %>
+  <% end %>
+ </p>
+
+<p>
+  <% if @action=='new'%>
+    <%#= f.text_area :action_taken,:class=>"mg-text-field",:readonly=>true%>
+  <% else %>
+    <label class="mg-label mg-tt-width" style="width:185px;vertical-align: top;"><%=t('action_taken_by_teacher')%><span class="required-field"> *</span></label><br>
+      <%= f.text_area :action_taken,:class=>"mg-text-field",:value => @discipline_data.action_taken,:readonly=>true %>
+  <%end%>
+</p>  
+
+<p>
+   <label class="mg-label mg-tt-width" style="width:185px"><%=t('status')%><span class="required-field"> *</span><br>
+   </label><br>
+   <% if @action=='new'%>
+   <%=f.select :status,options_for_select([["Open","Open"]]),:prompt=>"Select",:class=>"mg-select-btn"%>
+   <% else %>
+   <%=f.select :status,options_for_select([["Open","Open"],["Closed","Closed"]],:selected=>@discipline_data.status),:prompt=>"Select",:class=>"mg-select-btn"%>
+   
+   <% end %>
+
+</p>
+
+<p class="mg-p-mgtop">
+  	<a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("save")%></a>
+  	<%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+</p>
+
+<%end%>
+<%= render partial: 'application/common_left_close' %>
+
+<script>
+	
+
+$(document).ready(function(){
+
+// if($("#discipline_form_action_data").val()=="edit"){
+//   var param_Data=$("#discipline_form_param_data").val();
+
+//    var roomDataId = $( ".wing-no" ).val();
+//   alert(roomDataId)
+//   alert(param_Data)
+
+//         var urlLink = "/sports_management/wing_wise_course_list/";
+//              $.ajax({
+//              url: urlLink,
+//              cache: false,
+//              data: {"method":"edit","mg_wing_id":roomDataId,param_Data:param_Data},
+//              success: function(data){
+//              $("#wing-div").empty().append(data);
+//                 }
+//          });
+
+// }
+
+  $("#discipline_actID").validate({
+    rules: {
+      "discipline_form[mg_wing_id]": {required: true},
+      "discipline_form[mg_batches_id]": {required: true},
+      "discipline_form[remark]": {required: true},
+      "discipline_form[action_taken]": {required: true},
+      "discipline_form[status]": {required: true},
+      "batches_id": {required: true},
+      "mg_batches_id": {required: true},
+      "transportSelectedStudents[]": {required: true},
+
+
+      
+    }
+  });
+});
+
+
+   function progChangeFunction(){
+        var roomDataId = $( ".wing-no" ).val();
+  
+        var urlLink = "/sports_management/wing_wise_course_list/";
+             $.ajax({
+             url: urlLink,
+             cache: false,
+             data: {"method":"new","mg_wing_id":roomDataId},
+             success: function(data){
+             $("#wing-div").empty().append(data);
+                }
+         });
+     
+   }
+   function semesterChangesfunction(semester_id){
+    $.ajax({
+      url:"/sports_management/batch_wise_student_list",
+      data:{"mg_batches_id":semester_id},
+      success:function(html){
+      $("#student_list").html(html);
+      }
+    });
+  }
+
+ 
+
+  
+</script>

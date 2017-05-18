@@ -1,0 +1,141 @@
+<% navigation_add '  Student Attendances',employee_student_attendance_path %>
+<%= render partial: 'dashboards/employee_left' %>
+<%mg_school_id_for_start_date=MgSchool.find_by(:is_deleted=>0, :id=>session[:current_user_school_id])%>
+<% if !flash[:notice].blank? %>
+  <div class="alert alert-info mg-success-msg">
+  <%= flash[:notice] %>
+  </div>
+<% end %>
+
+<% if !params[:notice].blank? %>
+  <div class="alert alert-info mg-success-msg">
+  <%= params[:notice] %>
+  </div>
+<% end %>
+<h4 class="mg-h4">Student Attendance</h4>
+	<label class="mg-label mg-label-width ">Quick Attendance</label>
+	    
+	<%=check_box_tag :is_resion%><br>
+  <table>
+  <tr>
+    <td valign="top">
+      <label class="mg-label mg-label-width mg-button-align">Select Section</label>
+    </td>
+    <td valign="top">
+      <%=select_tag :batch,options_from_collection_for_select(@batches,"id","course_batch_name"),:prompt=>"Select",:onchange=>"addClassBatches()" ,:class=>"mg-button-align"%>
+    </td>
+    <td valign="top">
+      <label class="mg-label mg-label-width mg-text-field mg-button-align" style="margin-left: 2em;">Select Date</label>
+    </td>
+    <td valign="top">
+       <%= form_tag attendance_import_path, :id => 'employeeReportAttendancesFormID', :class=>"mg-button-align", multipart: true do %>
+  <%=text_field_tag :date ,Date.today.strftime(mg_school_id_for_start_date.try(:date_format)),:class=>"mg-text-field date_validation_for_student_attendance"%>
+  <%end%>
+    </td>
+  </tr>
+  </table>
+  <div style="clear: both"></div>
+<div id="classTimingListForStudentAttendaceDIVID" class="mg-tbl-size-width"></div>
+	<div id="newEventDIVID"></div>
+
+	 
+	  <div id="studentPeriodWiseTimeTableDIVID"></div>
+
+
+<h4 class="mg-h4">Attendance Import</h4>
+
+
+
+<%if @batches.present?%>
+<h4 class="mg-h4">Attendance Import</h4>
+  <div>
+  <%= form_tag attendance_import_path, :id => 'studentAttendancesFormID', multipart: true do %>
+  <label class="mg-label mg-tt-width ">Day wise Attendance</label>
+  <%=check_box_tag :is_day_attendance%><br>
+    <%= file_field_tag :file ,:onchange =>"validateFiles(this);"%><br>
+    <%= submit_tag "Import" ,:class=>"mg-small-form-btn mg-tbl-margin"%>
+  <% end %>
+  </div>
+<%end%>
+<%= render partial: 'application/common_left_close' %>
+
+<script type="text/javascript">
+ var dateFormatStr =  getJsDateFormat();
+$(document).on("change", "#date", function(e){
+  if($("#employeeReportAttendancesFormID").valid()){
+    addClassBatches();
+  }
+
+});
+
+$(document).ready(function(){
+
+	$("#studentAttendancesFormID").validate({
+          rules: {
+            "file": {required: true}
+          }
+    });
+  $(".content-tab").tabs();
+        
+        focusCurrentTab("viewEmployeeStudentAttendancesAID","viewEmployeeStudentAttendancesLiID");
+
+        focusAttendance();
+
+  $('#date').val($.datepicker.formatDate(dateFormatStr,new Date()));
+    var date= $('#date').val();
+   console.log("date :"+date);
+ $( "#date" ).datepicker({dateFormat: dateFormatStr,maxDate:0});  
+
+
+});
+
+function validateFiles(inputFile) {
+  var maxExceededMessage = "This file exceeds the maximum allowed file size (5 MB)";
+  var extErrorMessage = "Only file with extension: .xls, .xlsx is allowed";
+  var allowedExtension = ["xls", "xlsx"];
+  var extName;
+  var extError = false;
+  $.each(inputFile.files, function() {
+    extName = this.name.split('.').pop();
+    if ($.inArray(extName, allowedExtension) == -1) {extError=true;};
+  });
+  if (extError) {
+   window.alert(extErrorMessage);
+   $(inputFile).val('');
+  };
+}
+
+
+
+$(function () {
+    $.validator.addMethod('dateFormat',
+    function (value, element) {
+      dateFormatStr =  getJsDateFormat();
+        if (this.optional(element)) {
+            return true;
+        }
+        var ok = true;
+        try {
+            $.datepicker.parseDate(dateFormatStr, value);
+        }
+        catch (err) {
+            ok = false;
+        }
+        return ok;
+    },
+      "Please enter a date in the format "+ getDateFormat(dateFormatStr) +".");
+      dateFormatStr =  getJsDateFormat();
+
+    $(".datefield").datepicker({ dateFormat: dateFormatStr, changeYear: true });
+});
+
+
+
+   $("#employeeReportAttendancesFormID").validate({
+
+        rules: {  
+        "date": {dateFormat: true, required: true}
+      }
+});
+// $("#employeeReportAttendancesFormID").valid();
+ </script>

@@ -1,0 +1,23 @@
+<% navigation_add 'My Content', my_questions_path %>
+<% navigation_add 'New', new_my_question_path %>
+<!-- new_notification -->
+<%user=MgUser.find(session[:user_id])%>
+<%if user.user_type=='principal' || user.user_type=='superprincipal'%>
+<%= render partial: 'dashboards/principle_dashboard_left' %>
+<%else%>
+<%= render partial: 'dashboards/employee_left' %>
+<%end%>
+ <h4 class="mg-h4">New Content</h4>
+<%= render "form" %>
+  <%#= link_to "Back",my_questions_path %>
+
+<%= render partial: 'application/common_left_close' %>
+<script>
+ $(document).ready(function(){
+
+    focusCurrentTab("viewQuestions","viewEmployeeQuestionsLiID");
+    focusDashboards();
+
+});
+
+</script>

@@ -1,0 +1,73 @@
+<%=render partial: 'healthcare_left'%>
+<% navigation_add t('checkup_type'),:controller=>'healthcare',:action=>'index' %>
+
+<h4 class="mg-h4"><%= t('checkup_type_list') %></h4>
+
+
+<%= button_to 'Add Checkup Type', {:controller=>'healthcare',:action=>'new'}, :class=> 'mg-custom-form-btn' %>
+
+
+<%if @checkup_type_data.length>0%>
+<div class="mg_pagination">
+<table  class="batch-tbl mg-tbl-margin">
+  <tr class="subject-table-header">
+    <th><%= t('name') %></th>
+    <th><%= t('description') %></th>
+    <th><%= t('actions') %></th>
+  </tr>
+ 
+  <% @checkup_type_data.each do |f| %>
+    <tr>
+      <td><%= f.name %></td>
+      <td><%= truncate(f.description,:length=>25,:separate=>'') %></td>
+      <td>	
+      		<button title="Show" id="<%=raw f.id %>-showcheckup_typeFomBTNID" class="show-check-up-type-fom-btn mg-icon-btn"><i class="fa fa-eye"></i></button>
+
+        	<button title="Edit" id="<%=raw f.id %>-editcheckup_typeFomBTNID" class="edit-check-up-type-fom-btn mg-icon-btn"><i class="fa fa-pencil-square-o"></i></button>
+
+          
+            <button title="Delete" onclick="confirm('Are you sure to delete?') ? window.location='/healthcare/delete/<%=f.id%>' : ''" class="mg-icon-btn"><i class="fa fa-trash"></i></button>
+          
+      	</td>
+
+    </tr>
+  <% end %>
+</table>
+<br/>
+<%= will_paginate @checkup_type_data, :container => false %>
+</div>
+ 
+<%else%>
+<h5>No healthcare data is created </h5>
+<%end%>
+</div>
+
+<div id="checkupdata"></div>
+
+<%=render partial: 'common_left_close'%>
+<script>
+   $( document ).ready(function() {
+    focusCurrentTab("checkupAID","checkupliId");
+   });
+
+   $(document).on("click", ".edit-check-up-type-fom-btn", function(e){
+        var myID =$(this).attr('id');
+        var Id=myID.split("-");
+
+        var urlLink = "/healthcare/"+Id[0]+"/edit/";
+        window.location=urlLink;
+	});
+
+	$(document).on("click", ".show-check-up-type-fom-btn", function(e){
+        var myID =$(this).attr('id');
+        var Id=myID.split("-");
+        
+        var urlLink = "/healthcare/show/"+Id[0];
+        window.location=urlLink;
+        
+  });
+
+
+
+
+  </script>

@@ -1,0 +1,236 @@
+<!-- Sec --> dummydata.html.erb
+<!-- admin partial -->
+  <section id="deparmentSections">
+  		<ul class="distributeSections">
+        	<li class="Admin">
+        		<ul class="adminNumber">
+                   <li class="adminNumberText">
+                   		<span class="adminNumberText1">2</span>
+                   </li>
+                   <li class="adminText">Admin</li>
+                </ul>
+                <div class="foldedPaper"></div>
+                <div class="adminWhitePart"></div>
+            </li>
+            <li class="Students">
+                <ul class="studentsNumber">
+                    <li class="studentNumberText">
+                        <span class="studentNumberText1">56</span>
+                    </li>	
+                    <li class="studentsText">Students</li>
+                </ul>
+                 <div class="foldedPaper"></div>
+                 <div class="adminWhitePart"></div>
+            </li>
+            <li class="Employees">
+                <ul class="employeesNumber">
+                 	<li class="employeeNumberText">
+                    	 <span class="employeeNumberText1">12</span>
+                    </li>
+                    <li class="employeeText">Employees</li>
+                </ul>
+               	 <div class="foldedPaper"></div>
+                 <div class="adminWhitePart"></div>
+            </li>
+            <li class="Departments">
+                <ul class="deparmentsNumber">
+                    <li class="departmentNumberText">
+                    	<span class="departmentNumberText1">4</span>
+                    </li>
+                    <li class="departmentsText">Departments</li>
+                </ul>
+              	 <div class="foldedPaper"></div>
+                 <div class="adminWhitePart"></div>
+            </li>
+      </ul>
+  
+      
+  </section>
+  <section id="userProfile">
+        <div class="userProfileBox">
+            <div class="profileImage">
+           
+                <%= image_tag("adminImage.png", :alt => "Profile-pic", :class => "imageResize") %>
+                <div class="topRightBorder"></div>
+                <div class="bottomLeftBorder"></div>
+            </div>
+            <div class="profileInfo">
+                <div class="userName">ADMIN</div><br/>
+                <div class="userDetails">
+                    <div class="userEmail">
+                        <i class="fa fa-envelope"></i>
+                        info@systemmanagementschool.in
+                    </div><br/>
+                    <div class="userPhone">
+                        <i class="fa fa-phone-square"></i>
+                        +91-9746523654
+                    </div><br/>
+                    <div class="userFax">
+                        <i class="fa fa-fax"></i>
+                        022-836-5746
+                    </div><br/>
+                </div>
+            </div>
+        </div>
+  </section>
+  <section id="userBodyContentBox">
+  <table width=100% border="0" cellspacing="0" cellpadding="0">
+  	<tr>
+     <td valign="top" class="userBodyContentBox1">
+       <aside class="userMenuBoxLeft">
+                <ul class="menuListHome">
+                    <li class="myAccountMenu">My Account</li>
+                    <li class="active"><a class="menuItemsMailbox activeMenu" href="#"><div class="setMenu"><i class="fa fa-envelope-o">&nbsp;&nbsp;</i>Mailbox<i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px;"></i></div></a></li>
+                    <li><a class="menuItemsActivities" href="#"><div class="setMenu"><i class="fa fa-tachometer">&nbsp;&nbsp;</i>Track Activities<i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px;"></i></div></a></li>
+                    <li><a class="menuItemsNews" href="#"><div class="setMenu"><i class="fa fa-newspaper-o">&nbsp;&nbsp;</i>News<i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px;"></i></div></a></li>
+                    <li class="myAccountMenu">Library</li>
+                    <li><a class="menuItemsBooklist" href="#"><div class="setMenu"><i class="fa fa-file-o">&nbsp;&nbsp;</i>Manage Booklist<i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px;"></i></div></a></li>
+                    <li><a class="menuItemsBooks" href="#"><div class="setMenu"><i class="fa fa-book">&nbsp;&nbsp;</i>Books Borrowed<i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px;"></i></div></a></li>
+                    <li><a class="menuItemsSettings" href="#"><div class="setMenu"><i class="fa fa-wrench">&nbsp;&nbsp;</i>Settings<i class="fa fa-caret-left" style="color:#d5d8d9; position: absolute; right: 0px;"></i></div></a></li>
+                </ul>
+        </aside>
+     </td>
+     <td>
+    	  <div class="rightBodyContent">
+           <article class="mailContentRight">
+                <div class="bodyContent">
+                    <div class="mainTab">
+                        <span class="tabContent">MAILBOX</span>
+                    </div>
+                    <button class="composeEmail" type="button">Compose Email</button>
+                    <button class="groupEmail" type="button">Group Email</button>
+                    <input type="text" placeholder="Search Message ... " class="searchMessages"/>
+                    <div class="inboxLine ">
+                      <table>
+                   	   <tr class="inboxLineContent">
+                         <!--  <ul class="inboxLineContent"> -->
+                                <td class="inboxBg"><span><a href="#">Inbox</a></span></td>
+                                <td><span><a href="#">Sent</a></span></td>
+                                <td><span><a href="#">Drafts</a></span></td>
+                            	<td>
+                                	<div class="mailNumberBox">
+                             			<span class="mailNumber"> Displaying  1-10 0f 200 
+                                    		<span class="prevNext">
+                                            	<span class="Prev"><i class="fa fa-chevron-left"></i></span>
+                                            	<span class="Next"><i class="fa fa-chevron-right"></i></span>
+                                    		</span>
+                                    	</span>  	
+                                	</div>
+                                </td>
+                        	<!--</ul>-->
+                         </tr>
+                        </table>
+                    </div>
+                    <div class="emailBox">
+                          <input type="checkbox" name="checkbox" class="checkboxMail"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                          <button class="buttonStyle" type="button">Read</button>
+                          <button class="buttonStyle" type="button">Unread</button>
+                          <button class="buttonStyle" type="button">Delete</button>
+                          <button class="buttonStyle" type="button">Trash</button>
+                          <ul>
+                         	 <div class="sortOption">
+                                <span class="sortText">Sort by</span> | <i class="fa fa-chevron-circle-right" style="position: relative; top: 2px;"></i>
+                             </div>
+                             <div class="sortOptionsList">
+                          	    <li class="sortSubOption"><a href="#"><i class="fa fa-calendar"></i>&nbsp;&nbsp;Date</a></li>
+                                <li class="sortSubOption"><a href="#"><i class="fa fa-lightbulb-o"></i>&nbsp;&nbsp;Important</a></li>
+                                <li class="sortSubOption"><a href="#"><i class="fa fa-print"></i>&nbsp;&nbsp;Read</a></li>
+                                <li class="sortSubOption"><a href="#"><i class="fa fa-envelope"></i>&nbsp;&nbsp;Unread</a></li>
+                             </div>
+                         </ul>
+                   </div>
+                   <div class="emailUserMessages">
+                          <table>
+                          	<tbody>
+                                <tr class="emailUserMessages1">
+                                    <td><input type="checkbox" name="checkbox" class="checkboxMail"/></td>
+                                    <td><i class="fa fa-lightbulb-o"></i></td>
+                                    <td><i class="fa fa-envelope"></i></td>
+                                    <td class="mailContent1"> User 1</td><td class="mailSubject"> <%=t("school_system_management")%></td>
+                                    <td class="mailSubContent1"> - Hey! How are you</td>
+                                    <td class="mailTime1">8:00 pm </td>
+                                </tr>
+                                <tr>
+                                    <td><input type="checkbox" name="checkbox" class="checkboxMail"/></td>
+                                    <td><i class="fa fa-lightbulb-o"></i></td>
+                                    <td><i class="fa fa-envelope"></i></td>
+                                    <td class="mailContent1"> User 1</td><td class="mailSubject"> <%=t("school_system_management")%></td>
+                                    <td class="mailSubContent1"> - Hey! How are you</td>
+                                    <td class="mailTime1">8:00 am </td>
+                                </tr>
+                                <tr>
+                                    <td><input type="checkbox" name="checkbox" class="checkboxMail"/></td>
+                                    <td><i class="fa fa-lightbulb-o"></i></td>
+                                    <td><i class="fa fa-envelope"></i></td>
+                                    <td class="mailContent1"> User 1</td><td class="mailSubject"> <%=t("school_system_management")%></td>
+                                    <td class="mailSubContent1"> - Hey! How are you</td>
+                                    <td class="mailTime1">8:00 pm </td>
+                                </tr>
+                                <tr>
+                                    <td><input type="checkbox" name="checkbox" class="checkboxMail"/></td>
+                                    <td><i class="fa fa-lightbulb-o"></i></td>
+                                    <td><i class="fa fa-envelope"></i></td>
+                                    <td class="mailContent1"> User 1</td><td class="mailSubject"> <%=t("school_system_management")%></td>
+                                    <td class="mailSubContent1"> - Hey! How are you</td>
+                                    <td class="mailTime1">8:00 pm </td>
+                                </tr>
+                                <tr>
+                                    <td><input type="checkbox" name="checkbox" class="checkboxMail"/></td>
+                                    <td><i class="fa fa-lightbulb-o"></i></td>
+                                    <td><i class="fa fa-envelope"></i></td>
+                                    <td class="mailContent1"> User 1</td><td class="mailSubject"> <%=t("school_system_management")%></td>
+                                    <td class="mailSubContent1"> - Hey! How are you</td>
+                                    <td class="mailTime1">8:00 pm </td>
+                                </tr>
+                               	<tr>
+                                    <td><input type="checkbox" name="checkbox" class="checkboxMail"/></td>
+                                    <td><i class="fa fa-lightbulb-o"></i></td>
+                                    <td><i class="fa fa-envelope"></i></td>
+                                    <td class="mailContent1"> User 1</td><td class="mailSubject"> <%=t("school_system_management")%></td>
+                                    <td class="mailSubContent1"> - Hey! How are you</td>
+                                    <td class="mailTime1">8:00 pm </td>
+                                </tr>
+                                <tr>
+                                    <td><input type="checkbox" name="checkbox" class="checkboxMail"/></td>
+                                    <td><i class="fa fa-lightbulb-o"></i></td>
+                                    <td><i class="fa fa-envelope"></i></td>
+                                    <td class="mailContent1"> User 1</td><td class="mailSubject"> <%=t("school_system_management")%></td>
+                                    <td class="mailSubContent1"> - Hey! How are you</td>
+                                    <td class="mailTime1">8:00 pm </td>
+                                </tr>
+                                <tr>
+                                    <td><input type="checkbox" name="checkbox" class="checkboxMail"/></td>
+                                    <td><i class="fa fa-lightbulb-o"></i></td>
+                                    <td><i class="fa fa-envelope"></i></td>
+                                    <td class="mailContent1"> User 1</td><td class="mailSubject"> <%=t("school_system_management")%></td>
+                                    <td class="mailSubContent1"> - Hey! How are you</td>
+                                    <td class="mailTime1">8:00 pm </td>
+                                </tr>
+                                <tr>
+                                    <td><input type="checkbox" name="checkbox" class="checkboxMail"/></td>
+                                    <td><i class="fa fa-lightbulb-o"></i></td>
+                                    <td><i class="fa fa-envelope"></i></td>
+                                    <td class="mailContent1"> User 1</td><td class="mailSubject"> <%=t("school_system_management")%></td>
+                                    <td class="mailSubContent1"> - Hey! How are you</td>
+                                    <td class="mailTime1">8:00 pm </td>
+                                </tr>
+                                <tr>
+                                    <td><input type="checkbox" name="checkbox" class="checkboxMail"/></td>
+                                    <td><i class="fa fa-lightbulb-o"></i></td>
+                                    <td><i class="fa fa-envelope"></i></td>
+                                    <td class="mailContent1"> User 1</td><td class="mailSubject"> <%=t("school_system_management")%></td>
+                                    <td class="mailSubContent1"> - Hey! How are you</td>
+                                    <td class="mailTime1">8:00 pm </td>
+                                </tr>
+                          	</tbody>
+                         </table>
+                   </div>
+                </div>
+          </article>
+       </div>
+      </td>
+     </tr>
+    </table>
+  </section>
+  <br/><br/>
+  

@@ -1,0 +1,63 @@
+<table border="1" class="mg-showdata-bg mg-tbl-layouts" cellspacing="1" cellpadding="1">
+   <tr>
+     <td class="mg-td-width-half" valign="top">
+   		<label class="mg-label"> <%= t('name')%></label>
+   	 </td>
+   	 <td class="mg-td-width-half" valign="top" class="mg-capitalize-text">
+  		<%= @game.name %>
+  	 </td>
+ </tr>
+
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('activity')%></label>
+     </td>
+
+      <% if @game.game_type=="indoor" %>
+        <td class="mg-td-width-half" valign="top"><%= "Indoor" %></td>
+
+      <% elsif @game.game_type=="outdoor" %>
+        <td class="mg-td-width-half" valign="top"><%= "Outdoor" %></td>
+      <% end %>
+ </tr>
+
+
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('game_type')%></label>
+     </td>
+        <td class="mg-td-width-half" valign="top"><%= @game.try(:activity_game_type)%></td>
+ </tr>
+
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+  		<label class="mg-label"><%=t('description')%></label>
+  	 </td>
+
+     <td class="mg-td-width-half" valign="top" style="padding: 0px 0 0 0px;">
+        <div class="text-scroll-for-log-text-cls comments-space" style="padding: 5px 40 0 10px">
+          <%if @game.try(:description).present?%>
+            <%= @game.description %>
+          <%else%>
+            <%="No Data"%>
+          <%end%>
+        </div>
+      </td>
+ </tr>
+
+
+</table>
+ 
+
+
+  <p class="mg-p-mgtop">
+      <a class="mg-small-form-btn cancel-form-dialog"><%=t('cancel')%></a>
+  </p>
+  
+<script type="text/javascript">
+$(document).ready(function () {
+  textSeeMoreLess();
+  focusCurrentTab("gameAID","gameLiID");
+});
+
+</script>

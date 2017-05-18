@@ -1,0 +1,74 @@
+<%employee=MgEmployee.find_by(:mg_user_id=>session[:user_id])
+    incharge=MgLaboratoryIncharge.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id],:mg_employee_id=>employee.id).count
+      if incharge>0
+%>
+<%= render  partial: 'laboratory/laboratry_left' %>
+<%elsif session[:user_type]=="employee"%>
+ <%= render partial: 'dashboards/employee_left' %>
+
+<%end%>
+<h4 class="mg-h4"><%= t('laboratory_item_search') %></h4>
+<!-- ============================================================================= -->
+<h4>Provide an input to search the item</h4>
+
+<%= form_for :laboratory, :html => {
+                            :id => 'laboratoryCreateID' } do |f| %>
+<p>
+<label class="mg-label" style="width:140px"><%= t('item_name') %><span class="required-field">&nbsp;</span></label>
+<br/>
+<%#= f.collection_select(:mg_lab_id,MgLab.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]), :id, :lab_name,{:include_blank => t("select")},:class => "call-purpose-class mg-select-btn")%>
+<%= f.text_field :item_name,:class=>"mg-text-field laboratory-item-search-class" %>
+</p>
+
+<p>
+    <label class="mg-label" style="width:140px"><%= t('item_code') %><span class="required-field">&nbsp;</span></label>
+    <br/>
+   <%= f.text_field :item_identification_number,:class=>"mg-text-field laboratory-code-search-class" %>
+</p>
+
+
+<p class="mg-p-mgtop">
+    <button type="button" class="laboratory-search-item-submit-class mg-small-form-btn" style="display:none"><%=t("save")%></button>
+    <a onclick="$(this).closest('form').submit()" class="laboratory-resource-new-submit-class" style="display:none"><%#=t("save")%></a>
+    <%#= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+</p>
+<% end %>
+<div id="laboratorySerchedResultDivID"></div>
+<!-- ================================================================================== -->
+<%= render  partial: 'application/common_left_close' %>
+
+<script>
+$(document).ready(function () {
+        focusCurrentTab("viewSearchLaboratory","viewSearchLaboratoryLiID");
+        focusMasterSettings();
+
+    });
+$(".laboratory-item-search-class").keyup(function(){
+    $(".laboratory-search-item-submit-class").click();
+});
+
+$(".laboratory-code-search-class").keyup(function(){
+    $(".laboratory-search-item-submit-class").click();
+});
+
+
+$(".laboratory-search-item-submit-class").click(function(){
+	var itemName=$("#laboratory_item_name").val();
+	var itemCode=$("#laboratory_item_identification_number").val();
+	//alert(itemName+" ---    "+itemCode);
+	var urlLink = "/laboratory/laboratory_search_data/";
+           $.ajax({ 
+               url: urlLink,
+               cache: false,
+               data:
+            {
+                 "itemName":itemName , "itemCode":itemCode
+             },
+               success: function(html){
+                  $("#laboratorySerchedResultDivID").empty();
+                  $("#laboratorySerchedResultDivID").append(html);
+               }  
+           });
+});
+</script>
+

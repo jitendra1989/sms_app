@@ -1,0 +1,32 @@
+ 
+ <%= form_for :guardian,:html => { :id => 'employeePermanenAddressEditFormID'}, url: edit_address_by_employee_path(@employee[0].id), method: :patch do |f| %>
+
+       <%=render :partial => 'employees/address' , :locals => {:addresstype => "Permanent"}%>
+
+    <p class="mg-p-mgtop">
+
+       <%#= submit_tag t('save'), class: "submit" ,:class=>"mg-small-form-btn mg-custom-labels" %>
+       <a onclick="$(this).closest('form').submit()" class="submit mg-small-form-btn mg-custom-labels"><%=t("save")%></a>
+        <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+	</p>
+<% end %>
+
+<script>
+	$(document).ready(function(){
+
+			      $("#employeePermanenAddressEditFormID").validate({
+	        //debug: true,
+				rules: {
+	                  "Permanent[address_line1]": {required: true},
+	                   // "Permanent[address_line1]": {required: true},
+	                  // "Permanent[address_line2]": {required: true},
+	                  "Permanent[city]": {required: true},
+	                  "Permanent[state]": {required: true},
+	                  "Permanent[country]": {required: true},
+	                  "Permanent[pin_code]": {required: true, number: true, minlength: 6,maxlength: 6}
+	              }
+	
+	      });
+	});
+
+</script>

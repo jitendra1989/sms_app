@@ -1,0 +1,136 @@
+
+
+<% navigation_add t('payslips'), :controller=>'payslips',:action=>'payslip_for_employee' %>
+
+<%= render partial: '/dashboards/employee_left' %>
+
+<h4 class="mg-h4"><%=t('payslip')%></h4>
+<%=hidden_field_tag :mg_employee_id_for_payslip, @employee.id%>
+
+<label class="mg-label mg-custom-labels mg-label-width "><%=t('select_year')%><span class="required-field">*</span></label>
+<%#=date_joining=Date.parse(@employee.joining_date.to_s)%>
+	<%=select_year(Date.today, start_year: Time.now.year-20, end_year: Time.now.year, :field_name => 'grad_year')%><br>
+
+	<label class="mg-label mg-custom-labels mg-label-width "><%=t('select_month')%><span class="required-field">*</span></label>
+	<%=select_month(Date.today) %><br>
+
+	<button id="generatePayslipsDIVID" class="mg-small-form-btn"><%=t('view_payslip')%></button>
+
+	<div id="payslipPresHowDIVID"></div>
+<%= render partial: 'application/common_left_close' %>
+<script>
+
+  $(document).ready(function () {
+      focusCurrentTab("viewEmployeePayslipsEmployeeAID","viewEmployeePayslipsEmployeeLiID");
+      focusDashboards();
+
+
+
+       var d = new Date().getMonth()+1;
+        var select_year=$("#date_grad_year").val();
+  
+        var month_json={1: "January", 2: "February", 3: "March", 4:"April", 5: "May",6:"June",7:"July",8:"August",9:"September",10:"October",11:"November",12:"December" };
+        var month_str='<option value="">Select</option>';
+        for(var i=1; i<=d;i++){
+            if(i !=d){
+                month_str +='<option value="'+i+'">'+month_json[i]+'</option>';
+            }else{
+                month_str +='<option value="'+i+'" selected="selected">'+month_json[i]+'</option>';
+        }
+
+     }
+        $("#date_month").empty().html(month_str);
+  });
+
+	$(document).on("click", "#generatePayslipsDIVID", function(e){
+	 var mg_employee_id=$("#mg_employee_id_for_payslip").val();
+	 var date_grad_year=$("#date_grad_year").val();
+	 var date_month=$("#date_month").val();
+
+
+
+	console.log("mg_employee_id : "+mg_employee_id);
+	console.log("date_grad_year : "+date_grad_year);
+	console.log("date_month : "+date_month);
+
+
+var urlLink = "/payslips/show_payslip_for_employee/";
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            data:{
+            	mg_employee_id: mg_employee_id,
+            	date_grad_year: date_grad_year,
+            	date_month: date_month
+            },
+            success: function(html){
+            	$("#payslipPresHowDIVID").empty();
+            	$("#payslipPresHowDIVID").append(html);
+            }
+        });
+});
+
+
+function findMonthCount(month_count){
+    var month_json={1: "January", 2: "February", 3: "March", 4:"April", 5: "May",6:"June",7:"July",8:"August",9:"September",10:"October",11:"November",12:"December" };
+
+    var month_str='<option value="">Select</option>';
+    for(var i=1; i<=month_count;i++){
+        if(i !=month_count){
+            month_str +='<option value="'+i+'">'+month_json[i]+'</option>';
+        }else{
+            month_str +='<option value="'+i+'" selected="selected">'+month_json[i]+'</option>';
+        }
+    }
+return month_str;
+}
+
+
+
+$(document).on("change", "#date_grad_year", function(e){
+    e.preventDefault();
+    $("#payslipPresHowDIVID").empty();
+    
+    var select_year=$("#date_grad_year").val();
+    var date=new Date();
+    var current_year = date.getFullYear();
+    var month_str='';
+    var month_count;
+    if(select_year==current_year){
+        month_count=date.getMonth()+1;
+        month_str=findMonthCount(month_count);
+    }else{
+        month_count=12;
+        month_str=findMonthCount(month_count);
+   }
+
+    $("#date_month").empty().html(month_str);
+});
+
+$(document).on("change", "#date_month", function(e){
+   e.preventDefault();
+   $("#payslipPresHowDIVID").empty();
+});
+
+
+
+$(document).on("click", ".generatePayslipsDIVID", function(e){
+        var myID =$(this).attr('id');
+        var Id=myID.split("-");
+
+
+
+        var urlLink = "/payslips/"+Id[0];
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(html){
+                 $("#payslipPresHowDIVID").empty();
+                $("#payslipPresHowDIVID").append(html);
+               
+            }
+        });
+});
+
+
+</script>

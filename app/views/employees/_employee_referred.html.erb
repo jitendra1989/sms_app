@@ -1,0 +1,62 @@
+<%= fields_for :referred do |f| %>
+
+<table width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-left: 14px;">
+    <tbody>
+      <tr>
+            <td width="33%" valign="top">
+              <label for="referred"  class="mg-label"><%= t('referred') %>
+                <span class="required-field"></span> 
+              </label>
+            </td>
+            <td valign="top">
+             <%= f.check_box :is_referred ,{:id=>"employeeReferredCheckBoxId",:class=>"emp-referred-checkbox-cls"}, true %>
+            </td>
+      </tr>
+    </tbody> 
+</table>
+
+
+<div id="empReferredByDivId" class=" mg-inner-tbl-align" style="display: none;">
+  <table width="100%" cellspacing="0" cellpadding="0" border="0" class="employee-form-cls mg-btn-bottom-margin ">
+    <tbody>
+    <tr>
+      <td width="9%" valign="top">
+      <label class="mg-label" for="referred_by" ><%= t('referred_by') %>
+      <span class="required-field">*</span> 
+      </label>
+      </td>
+
+      <td width="34%" valign="top">
+      <label class="mg-label" for="designation" ><%= t("designation") %>
+      <span class="required-field"></span> 
+      </label>
+      </td>
+    </tr>
+
+    <tr>
+      <td valign="top">
+      <%= f.text_field :referred_emp_name  ,:class => ' mg-text-field'%>
+      </td>
+
+      <td valign="top">
+      <%= f.text_field :emp_designation  ,:class => ' mg-text-field'%>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+<%end%>
+
+
+<script>
+
+$("#employeeReferredCheckBoxId").change(function(){
+  if($("#employeeReferredCheckBoxId").is(':checked'))
+    $("#empReferredByDivId").show();  // checked
+  else
+    $("#empReferredByDivId").hide();  // unchecked
+
+});
+
+
+</script>

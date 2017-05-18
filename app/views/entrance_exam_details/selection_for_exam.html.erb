@@ -1,0 +1,166 @@
+<%=render partial:"entrance_exam_details/entrance_exam_left" %>
+<% navigation_add t('selection_for_exam'), :controller=>'entrance_exam_details', :action=>'selection_for_exam' %>
+<h4 class="mg-h4"><%=t('classlist')%></h4>
+<label class="mg-label mg-custom-labels" for="select_class"><%= t('select_class') %><span class="required-field"> *</span></label>&nbsp;
+<%=select_tag :select_for_exams,options_for_select(@course_name),:prompt=>t('select'),:onchange=>"seleciontForExamIndex(this.value)",:style=>"margin-bottom: 4px;"%><br/>
+
+<label class="mg-label mg-custom-labels" for="select_class"><%= t('lower_index') %></label>
+<%= text_field_tag :cut_off_criteria, "", class: 'mg-text-field mg-custom-labels' %>&nbsp;&nbsp;&nbsp;
+
+<label class="mg-label mg-custom-labels" for="select_class"><%= t('upper_index') %></label>
+<%= text_field_tag :upper_index, "", class: 'mg-text-field mg-custom-labels' %>
+
+
+
+<%= form_for :select_exam_admission, url: update_for_admission_path do |dd| %>
+  <%= hidden_field_tag :option , 1 %>
+  <div id="selectStudentForAdmissionEXM"></div>
+  
+ <%= dd.submit "save",:id=>"examAdmisssionFormSubmitTAG" ,:class=>"mg-small-form-btn" ,:style=>"display:none"%>
+<%end%>
+
+<%=render partial:"common_left_close" %>
+
+<script>
+
+  $(document).ready(function(){
+    $("#entrance_exam_weightage").attr("readonly", true);
+    focusCurrentTab("admissionEXMSelectionLID","admissionEXMSelectionId");
+  });
+
+  function optionFunction(option){
+      $("#option").val(option);
+      $("#examAdmisssionFormSubmitTAG").click();
+  }
+
+  function mathFunction(that){
+    $("#selectStudentForAdmissionEXM").empty();    
+    if(isNaN(that.value)){
+      alert("Please enter Numbers.");
+      that.value="";
+    }else{
+       if(parseInt(that.value)<=100){
+        console.log("if");
+        $("#entrance_exam_weightage").val(100-parseInt(that.value));
+      }else{
+        alert("Please select Numbers less than 100 ");
+        that.value="";
+      }
+    }   
+  }
+
+  // function seleciontForExam(course_id)
+  // {   
+  //   var previous_weightage = $("#previous_exam_weightage").val('');
+  //   var entrance_weightage = $("#entrance_exam_weightage").val('');
+  //   $("#selectStudentForAdmissionEXM").empty();      
+  // }
+
+  function seleciontForExamIndex(course_id)
+  {   
+    if(course_id!=''){
+      urlLink = "/entrance_exam_details/selection_for_admission_exam";
+      $.ajax({
+        url: urlLink,
+        data: {"mg_course_id":course_id},
+        cache: false,
+        success: function(html){
+          $("#selectStudentForAdmissionEXM").html(html);
+        }
+      });
+    }else{
+      $("#selectStudentForAdmissionEXM").empty();    
+    }
+  }
+  
+
+  function printSelectedStudentList(){
+    var array=[];
+    var course_id = $("#select_for_exams").val();
+    $(".student-admissions-class").each(function(){
+      if($(this).find(".student-checkbox-status").is(':checked')){
+        array.push($(this).find(".student-checkbox-status").val());
+      }
+    });
+    
+    if (array.length > 0){
+      var url="/entrance_exam_details/print_list?mg_course_id="+course_id+"&students_id="+array+"&format=pdf&target=_blank";
+      window.open(url, '_blank');
+    }else{
+      alert("Please checked atleast one");
+    }
+  }
+
+
+
+
+
+  
+  $("#cut_off_criteria").keyup(function(){
+    sorting($(this));
+  });
+
+  $("#upper_index").keyup(function(){
+    sorting($(this));
+  });
+
+
+  function sorting(that){
+    var search_id = $("#cut_off_criteria").val();
+    var upper_index = $("#upper_index").val();
+    var course_id = $("#select_for_exams").val();
+
+    if(course_id!=''){
+      if(search_id!='' && upper_index!=''){
+        if(!isNaN(search_id) && !isNaN(upper_index)){
+          urlLink = "/entrance_exam_details/selection_for_admission_exam";
+          $.ajax({
+            url: urlLink,
+            data: {"mg_course_id":course_id,"search_id":search_id,"upper_index":upper_index},
+            cache: false,
+            success: function(html){
+              $("#selectStudentForAdmissionEXM").html(html);
+            }
+          });
+        }else{
+          alert("Please enter number??");
+          that.val(0.00);
+        }
+      }else if(search_id!='' || upper_index!=''){
+        if(!isNaN(upper_index) && !isNaN(search_id)){
+          console.log("insideeeeeee");
+          urlLink = "/entrance_exam_details/selection_for_admission_exam";
+          $.ajax({
+            url: urlLink,
+            data: {"mg_course_id":course_id,"search_id":search_id,"upper_index":upper_index},
+            cache: false,
+            success: function(html){
+              $("#selectStudentForAdmissionEXM").html(html);
+            }
+          });
+        }else{
+          alert("Please enter number");
+          that.val(0.00);
+        }
+      }else{
+        if(!isNaN(search_id)){
+          urlLink = "/entrance_exam_details/selection_for_admission_exam";
+          $.ajax({
+            url: urlLink,
+            data: {"mg_course_id":course_id,"search_id":search_id},
+            cache: false,
+            success: function(html){
+              $("#selectStudentForAdmissionEXM").html(html);
+            }
+          });
+        }else{
+          alert("Please enter number");
+          that.val(0.00);
+        }
+      }
+    }
+  }
+
+
+</script>
+

@@ -1,0 +1,152 @@
+<%= render  partial: 'library/library_left' %>
+<% navigation_add 'Manage Subject', library_subject_path %>
+
+
+<h4 class="mg-h4"><%= t('subjects_list') %></h4>
+
+<button class="new-add-library_subject mg-btn-bottom-margin mg-custom-form-btn"><%= t('add_subject')%></button>
+
+<!-- <%#= button_to 'Add Laboratory', {:controller => "laboratory", :action => "new" } ,:class=>"mg-custom-form-btn"%> -->
+<div class="mg_pagination">
+<%if @subject.length>0%>
+<table  class="batch-tbl mg-tbl-margin">   <!-- border="2" --> 
+  <tr class="subject-table-header">
+    <!-- <th>Subject Id</th> -->
+    <th><%= t('name') %></th>
+    <th><%= t('description') %></th>
+    <th><%= t('action') %></th>
+
+  </tr>
+ 
+  <% @subject.each do |subject| %>
+    <tr>
+      <td><%= subject.name %></td>
+      
+      <td><%=truncate(subject.description .to_s, :length => 25, :separator => ' ')  %></td>
+      <td>
+      <!-- 	
+      <button title="Show" id="<%#=raw subject.id %>-showlabBTNID" class="show-library-subject-btn mg-icon-btn"><i class="fa fa-eye"></i></button> -->
+
+        <button title="Edit" id="<%=raw subject.id %>-editlabBTNID" class="edit-library-subject-btn mg-icon-btn"><i class="fa fa-pencil-square-o"></i></button>
+
+        <button title="Delete" id="<%=raw subject.id %>-deletelabBTNID" class="delete-library-subject-btn mg-icon-btn"><i class="fa fa-trash"></i></button>
+
+        <%#= link_to "<i class=\"fa fa-trash\"></i>".html_safe, {:controller => "laboratory", :action => "delete",:id =>lab.id }, :method=>'post' ,:title=>"Delete" ,:class=>"mg-icon-btn",data: { confirm: 'Are you sure to delete?' } %>
+
+      </td>
+
+    </tr>
+  <% end %>
+</table>
+<br/>
+ <div class="pagination-align" style="position: relative; bottom: 10px;">
+              <%= will_paginate @subject, :container => false %>
+           </div>
+<%else%>
+<h5>No subject is created </h5>
+<%end%>
+</div>
+<div id="newAddLibrarySubjectDIVID"></div>
+<div id="editlibrarySubjectDIVID"></div>
+
+
+<div id="showlibrarySubjectDIVID"></div>
+
+
+<%= render  partial: 'application/common_left_close' %>
+
+<script>
+$( document ).ready(function() {
+            focusCurrentTab("viewlibrarymanagesubject","viewlibrarymanagesubjectLiID");
+          //focusStudentHeaderBox();
+});
+
+
+
+
+$(document).on("click", ".show-library-subject-btn", function(e){
+        var myID =$(this).attr('id');
+        var Id=myID.split("-");
+        var urlLink = "/library/subject_show/"+Id[0];
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(html){
+                  $('#showlibrarySubjectDIVID').dialog({
+                    modal: true,
+                     minHeight: '200',
+                    width: '250',
+                    title: "Show Subject",
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+});
+
+
+$(document).on("click", ".edit-library-subject-btn", function(e){
+        var myID =$(this).attr('id');
+        var Id=myID.split("-");
+        var urlLink = "/library/subject_edit/"+Id[0];
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(html){
+                  $('#editlibrarySubjectDIVID').dialog({
+                    modal: true,
+                    minHeight: '200',
+                    width: '250',
+                    title: "Edit Subject",
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+});
+
+$(document).on("click", ".new-add-library_subject", function(e){
+        var urlLink = "/library/subject_new";
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(html){
+                  $('#newAddLibrarySubjectDIVID').dialog({
+                    modal: true,
+                     minHeight: '200',
+                    width: '250',
+                    title: "Add Subject",
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+});
+</script>
+<style>
+
+
+.table-batchs-tbl {
+   /* font-family: verdana,arial,sans-serif;*/
+    font-size:13px;
+    color:#363131;
+    border-width: 1px;
+    border-color:  #363131;
+    border-collapse: collapse;
+    padding: 12px ;
+    font-size: 0.8em;
+    width: 261px !important;
+    /* margin-left: 2px; */
+}
+</style>
+
+

@@ -1,0 +1,131 @@
+<%= render  partial: '/events/events_left' %>
+<% navigation_add t('invitation'), invitations_path %>
+<!-- <div>
+	<label class="mg-label"><%#=t('select_event') %></lable> <%#=select_tag :mg_committee_id ,options_for_select(@events),:onchange=>"optionForEventInvitation(this.value)",:prompt=>t('select') , :id=>"selectCommitteeSelectTagID" ,:class=>"mg-select-btn"%>
+</div> -->
+
+<div id="spinner">
+    <img src="/images/ajax-loader.gif" alt="Loading..."/>
+    <h5>Please wait email are sending...</h5>
+</div>
+<div id="overlay"></div>
+ <div>
+  <label class="mg-label mg-tt-width "><%=t('select_committee') %><span class="required-field"> *</span></label>
+   <%=select_tag :mg_committee_id ,options_for_select(@event_committees,params[:mg_event_committee_id]),:onchange=>"optionForEventInvetaion(this.value)",:prompt=>t('select') , :id=>"selectCommitteeSelectTagID" ,:class=>"mg-select-btn"%>
+   </div>
+<div>
+    <label class="mg-label mg-tt-width "><%=t('select_event') %><span class="required-field"> *</span></label>
+   <%=select_tag :mg_event_id ,options_for_select(@events,params[:mg_event_id]),:onchange=>"optionForEventInvitation(this.value)",:prompt=>t('select') , :id=>"selectEventForCommitteeSelectTagID" ,:class=>"mg-select-btn"%>
+</div>
+
+
+	<div id="invitationNewFormDivID"></div>
+
+<%= render  partial: 'application/common_left_close' %>
+
+<script type="text/javascript">
+
+
+$(document).ready(function(){
+       // $("li").removeClass( "active" );
+        //$("a").removeClass( "activeMenu" );
+
+        //$("#viewAdminInvitationLiID").addClass( "active" );
+        //$("#viewAdminInvitationAID").addClass( "activeMenu" );
+focusCurrentTab("viewAdminInvitationAID","viewAdminInvitationLiID");
+        var mg_event_id=$("#selectEventForCommitteeSelectTagID").val();
+        if(mg_event_id !=''){
+            optionForEventInvitation(mg_event_id);
+        }
+});
+
+
+$(document).on("click", "#invitation_employee", function(e){
+var is_lock=$("input#invitation_employee").is(':checked');
+if(is_lock){
+	$("#accessableTo­EmployeesHideandShowDIVID").show();
+}else{
+	$("#accessableTo­EmployeesHideandShowDIVID").hide();
+
+}
+});
+// albums_accessable_to­_employees
+$(document).on("click", "#invitation_student", function(e){
+var is_lock=$("input#invitation_student").is(':checked');
+if(is_lock){
+	$("#accessableTo­StudentsHideandShowDIVID").show();
+}else{
+	$("#accessableTo­StudentsHideandShowDIVID").hide();
+
+}
+});
+
+
+$(document).on("click", "#invitation_guardian", function(e){
+var is_lock=$("input#invitation_guardian").is(':checked');
+if(is_lock){
+	$("#accessableTo­GuardiansHideandShowDIVID").show();
+}else{
+	$("#accessableTo­GuardiansHideandShowDIVID").hide();
+
+}
+});
+
+$(document).on("click", "#invitation_teacher", function(e){
+var is_lock=$("input#invitation_teacher").is(':checked');
+if(is_lock){
+	$("#accessableTechTo­EmployeesHideandShowDIVID").show();
+}else{
+	$("#accessableTechTo­EmployeesHideandShowDIVID").hide();
+
+}
+});
+
+
+function spin(){
+     if($("#invitationFormID").valid() == true ) {
+        $("#overlay").show();
+        $("#spinner").show();
+    }
+};
+
+function stopSpin(){
+    $("#overlay").hide();
+    $("#spinner").hide();
+};
+$(document).on("click", ".call-spin-a-cls", function(e){
+  spin();
+
+});
+
+
+</script>
+
+
+<style>
+#spinner
+{
+    /*width:150px;
+    height: 150px;*/
+    position: relative;
+   /* top: 100%;
+    left: 100%;*/
+    text-align:center;
+    margin-left: -12em;
+    margin-top: 70px;
+    z-index:2;
+    overflow: auto;
+    display: none;
+}   
+
+#overlay {
+    background-color: rgba(0, 0, 0, 0.8);
+    z-index: 999;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    display: none;
+}
+</style>

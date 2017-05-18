@@ -1,0 +1,4 @@
+<label class="mg-label" for="select_employee"><%= t('selectteacher') %></label>
+<%@empl=MgEmployee.where(:mg_employee_department_id=>@demo,:mg_employee_category_id=>1).pluck(:first_name, :id)%><br/>
+
+        <%=select_tag :mg_employee_id, options_for_select(@empl),:prompt=>"Select",:onchange=>"myPrincFunction(this.value)" %><br>

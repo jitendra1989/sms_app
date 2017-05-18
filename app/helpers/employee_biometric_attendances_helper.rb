@@ -1,0 +1,2 @@
+module EmployeeBiometricAttendancesHelper
+end

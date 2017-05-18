@@ -1,0 +1,33 @@
+<!-- breadcrumbs Work -->
+<% navigation_add 'Examinations', examinations_path %>
+<% navigation_add 'CCE', examination_cce_new_path %>
+<% navigation_add 'Co-Scholastic Settings', examination_Co_Scholastic_index_path %>
+
+
+<!-- breadcrumbs Work -->
+
+
+<%= render  partial: 'examination_table_left' %>
+<h4 class="mg-h4">Co-Scholastic Settings</h4>
+<div>
+	<table>
+		<tr>
+			<td class="mg-exam-td-width" valign="top">
+				<%=button_to "Co-Scholastic Items",{ controller: 'examination',action:"Co_Scholastic_new"}, {:class=>"mg-exam-scholastic-btn-width mg-btn-exam"}%><br/>
+			</td>
+			<td class="mg-exam-td-width" valign="top"> 
+				<%=button_to "Assign Co-Scholastic Items",{ controller: 'examination',action:"Co_ScholasticCourseObservation_index"}, {:class=>"mg-exam-scholastic-btn-width mg-btn-exam"}%><br/>
+			</td>
+		</tr>
+	</table>
+</div>
+
+<%= render  partial: 'examination_table_close' %><br/>
+
+<script type="text/javascript">
+  $(document).ready(function() {
+        focusCurrentTab("viewStudentListAId","viewStudentListLiId");
+        focusExaminationHeaderBox();
+  });
+
+</script>

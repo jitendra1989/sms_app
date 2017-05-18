@@ -1,0 +1,45 @@
+<%= form_for :addGrade, :url=>{:controller=>'examination',:action=>'addGradeSet_newDataUpdate',:id=>@addGrade.id},:html => {
+                            :id => 'gradeSetEditDataCategoryNewFormId', :class => 'elm_class',
+                            :style => 'elm_style' } do |f| %>
+
+    
+  <div> 
+
+      <p>
+       <label class="mg-label" for="name"> <%= t('name') %></label><span class="required-field">&nbsp;*</span><br/>
+        <%= f.text_field :name ,:class=>"mg-text-field"%>
+      </p>
+     
+<p>
+  <label class="mg-label" for="grade_point"> <%= t('grade_point') %></label><span class="required-field">&nbsp;*</span><br/>
+        <%= f.text_field :grade_point ,:class=>"mg-text-field"%>
+      </p>
+     
+<div style="display:none;">
+<p>
+  <label for="is_deleted" class="mg-label "><%=t('status')%></label><br />
+  <label for="is_deleted" class="mg-label-inner-form "><%=t('active')%></label>
+  <%= f.radio_button :is_deleted, false , :checked => true%>
+  <label for="is_deleted" class="mg-label-inner-form "><%=t('inactive')%></label>
+  <%= f.radio_button :is_deleted, true %>
+</p>
+</div>
+<p>
+       <%#= f.submit t('save') ,:class=>"mg-small-form-btn"%>
+       <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("save")%></a>
+        <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+</p>
+<%end%>
+
+
+<script>
+ $("#gradeSetEditDataCategoryNewFormId").validate({
+        //debug: true,
+        rules: {
+                  "addGrade[name]": {required: true},
+                  "addGrade[grade_point]": {required: true},
+                                
+        }
+      });
+ 
+</script>

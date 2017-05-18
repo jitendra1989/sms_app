@@ -1,0 +1,99 @@
+<%= render partial: 'front_office_management_left' %>
+<% navigation_add t('meeting_details'), :controller=>'front_office_management', :action=>'meeting_detail' %>
+<% navigation_add t('show_meeting_details'), :controller=>'front_office_management', :action=>'show_meeting_detail' %>
+<h4 class="mg-h4"><%= t('show_meeting_details') %></h4>
+<table border="1" class="mg-showdata-bg " cellspacing="1" cellpadding="1">
+   <%@dateFormat = MgSchool.find_by(:id=>session[:current_user_school_id]).date_format %>
+   <%room =MgMeetingRoom.find_by(:id=>@meeting_detail.mg_meeting_room_id) %>
+   <%employee =MgEmployee.find_by(:id=>@meeting_detail.mg_employee_id) %>
+   <tr>
+     <td class="mg-td-width-half" valign="top">
+     <label class="mg-label"> <%= t('number_of_attendees')%></label>
+     </td>
+     <td class="mg-td-width-half mg-capitalize-text mg-rm-text-trans" valign="top">
+        <%= @meeting_detail.try(:number_of_attendees) %>
+     </td>
+   </tr>
+
+    <tr>
+     <td class="mg-td-width-half" valign="top">
+     <label class="mg-label"> <%= t('room_no_name')%></label>
+     </td>
+     <td class="mg-td-width-half mg-capitalize-text" valign="top">
+        <%= room.try(:room_no) %>
+     </td>
+   </tr>
+   <tr>
+     <td class="mg-td-width-half" valign="top">
+     <label class="mg-label"> <%= t('start_date')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+        <%= @meeting_detail.try(:start_date).try(:strftime, @dateFormat) %>
+     </td>
+   </tr>
+   <tr>
+     <td class="mg-td-width-half" valign="top">
+     <label class="mg-label"> <%= t('start_time')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+      <%= @meeting_detail.try(:start_time).try(:strftime,"%l:%M%P") %>
+     </td>
+   </tr>
+   <tr>
+     <td class="mg-td-width-half" valign="top">
+     <label class="mg-label"> <%= t('end_date')%></label>
+     </td>
+     <td class="mg-td-width-half mg-capitalize-text" valign="top">
+      <%= @meeting_detail.try(:end_date).try(:strftime, @dateFormat) %>
+     </td>
+   </tr>
+   <tr>
+     <td class="mg-td-width-half" valign="top">
+     <label class="mg-label"> <%= t('end_time')%></label>
+     </td>
+     <td class="mg-td-width-half mg-capitalize-text" valign="top">
+      <%= @meeting_detail.try(:end_time).try(:strftime,"%l:%M%P") %>
+     </td>
+   </tr>
+
+   <tr>
+     <td class="mg-td-width-half" valign="top">
+     <label class="mg-label"> <%= t('booked_by')%></label>
+     </td>
+     <td class="mg-td-width-half mg-capitalize-text" valign="top">
+      <%= employee.try(:first_name) %><%=" " %><%= employee.try(:last_name) %>
+     </td>
+   </tr>
+
+   <tr>
+     <td class="mg-td-width-half" valign="top">
+     <label class="mg-label"> <%= t('purpose')%></label>
+     </td>
+     <td class="mg-td-width-half mg-capitalize-text  text-scroll-for-log-text-cls comments-space" valign="top">
+      <%= @meeting_detail.try(:meeting_purpose) %>
+     </td>
+   </tr>
+
+   <%if @meeting_detail.try(:is_cancelled).present?%>
+   <tr>
+     <td class="mg-td-width-half" valign="top">
+     <label class="mg-label"> <%= t('is_cancelled')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+      <%= @meeting_detail.try(:is_cancelled)==true ? "Yes" : "No" %>
+     </td>
+   </tr>
+   <%end%>
+</table>
+<p class="mg-p-mgtop">
+  <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+</p>
+<%= render  partial: 'application/common_left_close' %>
+
+<script>
+  $(document).ready(function () {
+    focusCurrentTab("roomBookingAID","roomBookingLID");
+//  textSeeMoreLess();
+    
+  });
+</script>

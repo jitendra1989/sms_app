@@ -1,0 +1,116 @@
+<%= render partial: 'front_office_management_left' %>
+<% navigation_add t('meeting_planner'), :controller=>'front_office_management', :action=>'meeting_planner' %>
+<% navigation_add t('show_meeting_plan'), :controller=>'front_office_management', :action=>'meeting_planner_show',:id=>params[:id] %>
+<h4 class="mg-h4"><%= t('show_meeting') %></h4>
+<table border="1" class="mg-showdata-bg " cellspacing="1" cellpadding="1">
+   <tr>
+     <td class="mg-td-width-half" valign="top">
+     <label class="mg-label"> <%= t('name')%></label>
+     </td>
+     <td class="mg-td-width-half mg-capitalize-text" valign="top">
+        <%= @meeting_planner.try(:meeting_with) %>
+     </td>
+   </tr>
+   <tr>
+     <td class="mg-td-width-half" valign="top">
+     <label class="mg-label"> <%= t('purpose')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+      <!-- <div class="text-scroll-for-log-text-cls comments-space"> -->
+        <%= @meeting_planner.try(:purpose) %>
+      <!-- </div> -->
+     </td>
+   </tr>
+   <tr>
+     <td class="mg-td-width-half" valign="top">
+     <label class="mg-label"> <%= t('description')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+      <%= @meeting_planner.try(:description) %>
+     </td>
+   </tr>
+  <%@dateFormat = MgSchool.find_by(:id=>session[:current_user_school_id]).date_format %>
+   <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label mg-label-text-transform-none"> <%= t('date_of_meeting')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+      <%= @meeting_planner.try(:date_of_meeting).try(:strftime, @dateFormat) %>
+     </td>
+   </tr>
+
+    <tr>
+     <td class="mg-td-width-half" valign="top">
+     <label class="mg-label"> <%= t('start_time')%></label>
+     </td>
+     <td class="mg-td-width-half mg-capitalize-text" valign="top">
+      <%= @meeting_planner.try(:start_time).strftime("%I:%M %p") %>
+     </td>
+   </tr>
+
+   <!-- <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label mg-label-text-transform-none"> <%#= t('end_date_of_meeting')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+      <%#= @meeting_planner.try(:end_date_of_meeting).try(:strftime, @dateFormat) %>
+     </td>
+   </tr> -->
+   
+  
+   <tr>
+     <td class="mg-td-width-half" valign="top">
+     <label class="mg-label"> <%= t('end_time')%></label>
+     </td>
+     <td class="mg-td-width-half mg-capitalize-text" valign="top">
+      <%= @meeting_planner.try(:end_time).strftime("%I:%M %p") %>
+     </td>
+   </tr>
+   <tr>
+     <td class="mg-td-width-half" valign="top">
+     <label class="mg-label"> <%= t('status')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+      <%= @meeting_planner.try(:status) %>
+     </td>
+   </tr>
+   <tr>
+     <td class="mg-td-width-half" valign="top">
+     <label class="mg-label"> <%= t('remark')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+     <%if @meeting_planner.remark.present?%>
+     <div class="text-scroll-for-log-text-cls comments-space">
+      <%= @meeting_planner.try(:remark) %>
+      </div>
+      <%else%>
+      <%=t("no_data")%>
+      <%end%>
+     </td>
+   </tr>
+   <tr>
+     <td class="mg-td-width-half" valign="top">
+     <label class="mg-label"> <%= t('principal_remark')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+     <%if @meeting_planner.principal_remark.present?%>
+     <div class="text-scroll-for-log-text-cls comments-space">
+      <%= @meeting_planner.try(:principal_remark) %>
+      </div>
+      <%else%>
+      <%=t("no_data")%>
+      <%end%>
+     </td>
+   </tr>
+</table>
+<p class="mg-p-mgtop">
+  <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+</p>
+<%= render  partial: 'application/common_left_close' %>
+
+<script>
+  $(document).ready(function () {
+    focusCurrentTab("meetings_plannerAID","meetings_plannerLiID");
+    //textSeeMoreLess();
+  });
+</script>

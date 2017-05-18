@@ -1,0 +1,4 @@
+<% navigation_add t('bed_allocation'), :controller=>'sports_management' ,:action=> 'assign_bed' %>
+<% navigation_add t('edit_bed_allocation'), :controller=>'sports_management' ,:action=> 'edit_assign_bed',:id=>params[:id] %>
+
+<%=render :partial=>'assign_bed'%>

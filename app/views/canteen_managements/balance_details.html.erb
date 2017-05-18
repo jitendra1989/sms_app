@@ -1,0 +1,84 @@
+ <%if @canteen_bill_details.present?%>
+ <%= hidden_field_tag :wallet_amount_value, @wallet_amount.try(:wallet_amount) %>
+   <div class="mg-scroll-employee-bar">
+    <table class="batch-tbl mg-tbl-margin table-batchs-tbl">  
+      <th style="width:80px;"><%= t('sl_no') %></th>
+      <th style="width:110px;"><%= t('bill_date') %></th>
+      <th style="width:110px;"><%= t('total_amount') %></th>
+      <th style="width:150px;"><%= t('paid_amount') %></th>
+      <th style="width:130px;"><%= t('balance_amount') %></th>
+      <th style="width:80px;"><%= t('action') %></th>
+      
+      <%count=0%>
+      <%@canteen_bill_details.each do |bill_details|%>
+        <%bill_date=bill_details.created_at.strftime("%d/%m/%y")%>
+        <%count=count+1%>
+        <tr class="">
+          <td class="mg-align-center"><span class="incremented-field-text-cls"><%=count%></span></td>
+          <td class="mg-align-center">
+            <%= bill_date%><br/>
+          </td>
+          <td class="mg-align-center">
+            <%= bill_details.try(:total_amount)%><br/>
+          </td>
+          <td class="mg-align-center">
+            <%= bill_details.try(:paid_amount)%><br/>
+          </td>
+          <td class="mg-align-center">
+            <%= bill_details.try(:balance_amount)%><br/>
+          </td>
+          <td class="mg-align-center">
+            <button title="Bill Details" id="<%= raw bill_details.id %>-showexmBTNID" class="show-bill-history-details-btn mg-icon-btn"><i class="fa fa-eye"></i></button>
+            <button title="Balance Paid History" id="<%= raw bill_details.id %>-showexmBTNID" class="show-balance-paid-history-btn mg-icon-btn"><i class="fa fa-history"></i></button>
+          </td>
+        </tr>
+      <%end%>
+
+      <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td class="mg-align-center"><b><%="Total Balance Amount"%><b></td>
+        <td class="mg-align-center">
+          <b><%= text_field_tag "balance_amount[]",@total_balance_amount,:class =>"mg-select-btn total-balance-amount-cls",:readonly=>true%></b>
+        </td>
+        <td></td>
+      </tr>
+    </table>
+  </div>
+
+
+  <table class="batch-tbl mg-tbl-margin table-batchs-tbl">  
+    <tr>
+      <th style="width:300px;"><%= t('paid_amount') %><span class="required-field">&nbsp;</span></th>
+      <th style="width:377px;"><%= t('balance_amount') %><span class="required-field">&nbsp;</span></th>
+      <th style="width:377px;"><%= t('wallet_amount') %><span class="required-field">&nbsp;</span></th>
+      <th style="width:377px;"><%= t('use_wallet_account') %><span class="required-field">&nbsp;</span></th>
+    </tr>
+    <tr>
+      <td class="mg-align-center">
+        <%if @total_balance_amount>0%>
+          <%= text_field_tag "paid_amount[]",nil,:class =>"mg-select-btn total-paid-amount-cls"%>
+        <%else%>
+          <%= text_field_tag "paid_amount[]",nil,:class =>"mg-select-btn total-paid-amount-cls",:readonly=>true%>
+        <%end%>
+      </td>
+      <td class="mg-align-center">
+        <%= text_field_tag "remaining_balance_amount[]",nil,:class =>"mg-select-btn remaining-balance-amount-cls",:readonly=>true%>
+      </td>
+      <!-- ===================================================================================================== -->
+      <td class="mg-align-center">
+        <%= text_field_tag "wallet_balance_amount[]",@wallet_amount.try(:wallet_amount),:class =>"mg-select-btn wallet-balance-amount-cls",:readonly=>true%>
+        <%#= check_box_tag "wallet_balance_check[]",{},false,:class =>"wallet-balance-check-amount-cls"%>
+      </td>
+
+      <td class="mg-align-center">
+        <%#= text_field_tag "wallet_balance_amount[]",nil,:class =>"mg-select-btn wallet-balance-amount-cls",:readonly=>true%>
+        <%= check_box_tag "wallet_balance_check[]","true",false,:class =>"wallet-balance-check-amount-cls"%>
+      </td>
+      <!-- ===================================================================================================== -->
+    </tr>
+  </table>
+<%else%>
+  <%="No bill details available"%>
+<%end%>

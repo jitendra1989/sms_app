@@ -1,0 +1,88 @@
+<!-- Sec -->
+<div class="box">
+ 
+    <%= form_for @batch, :html=>{:id=>'batch_form'}, url: batch_path(@batch), method: :patch do |f| %>
+
+       <label class="mg-label" for="name"><%= t('name') %><span class="required-field"> *</span></label>
+       <div class="input-container">
+            <%= f.text_field :name %>
+            </div>
+
+                  <label class="mg-label" for="Start date"><%= t('Start date') %><span class="required-field"> *</span></label>
+                <div class="input-container">
+
+                    <%= f.text_field :start_date, :id => 'batchStartDateID' ,:class => 'Start_date' %>
+                </div> 
+
+             <label class="mg-label" for="End date"><%= t('End date') %><span class="required-field"> *</span></label>
+                <p class="input-container">
+                    <%= f.text_field :end_date ,:id => 'batchEndDateID' %>
+                </p> 
+			<p>
+           <%#= f.submit t('save') ,:class=>"mg-small-form-btn"%>
+           <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("save")%></a>
+            <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"}%>
+      </p>
+  <% end %>
+</div>
+
+<!-- <span style="float: left; margin-left: 3px;">
+  <button class="cancel-form-dialog btn btn-cancel"><%#= t('cancel') %></button>
+</span> -->
+
+<!-- <button class="cancel-form-dialog"><%#= t('cancel') %></button> -->
+
+<script>
+  $(document).ready(function(){
+      dateFormatStr =  getJsDateFormat();
+      $('#batchStartDateID').datepicker({ changeMonth: true,
+                changeYear: true, yearRange: "-50:+50",dateFormat: dateFormatStr });
+      $('#batchEndDateID').datepicker({ changeMonth: true,
+                changeYear: true,yearRange: "-50:+50", dateFormat: dateFormatStr });
+
+
+      $('#batchStartDateID').val($.datepicker.formatDate(dateFormatStr,new Date($('#batchStartDateID').val().substring(0,10))));
+
+      $('#batchEndDateID').val($.datepicker.formatDate(dateFormatStr,new Date($('#batchEndDateID').val().substring(0,10))));
+
+
+
+    $("#batch_form").validate({
+      rules:{
+        "mg_batch[name]":{required:true},
+        "mg_batch[start_date]":{required:true},
+        "mg_batch[end_date]":{required:true}
+
+      }
+    });
+  });
+
+  $(document).on("change","#batchEndDateID",function(){
+     var dateFormatStr =  getJsDateFormat();
+    var start_date=$("#batchStartDateID").val();
+    var end_date=$(this).val();
+    console.log("Strat_date="+start_date);
+    console.log("end_date="+end_date);
+    if(start_date && end_date){
+      if(!(compareDate(start_date,end_date,dateFormatStr))){
+        alert("End date should be greater than start date");
+        document.getElementById('batchEndDateID').value="";
+      }
+    }
+  });
+
+   $(document).on("change","#batchStartDateID",function(){
+     var dateFormatStr =  getJsDateFormat();
+    var start_date=$(this).val();
+    var end_date=$("#batchEndDateID").val();
+    console.log("Strat_date="+start_date);
+    console.log("end_date="+end_date);
+    if(start_date && end_date){
+      if(!(compareDate(start_date,end_date,dateFormatStr))){
+        alert("Start date should be less than end date");
+        document.getElementById('batchStartDateID').value="";
+      }
+    }
+  });
+
+</script>

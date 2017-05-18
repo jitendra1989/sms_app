@@ -1,0 +1,116 @@
+<%= render  partial: 'inventory_left' %>
+<% navigation_add t('payment_status'), payment_status_path %>
+
+<h4 class="mg-h4"><%= t('payment_status')%></h4>
+<table class="mg-tbl-margin mg-show-tbl-width">
+  <tr>
+    <td>
+     <label class="mg-label" for="from_date"><%= t ('from_date') %><span class="required-field">&nbsp;*</span></label><br/>
+     <%=text_field_tag :inventory_from_date,nil,:class=>"mg-text-field"%>
+
+    </td>
+  </tr>
+  <tr>
+    <td>
+     <label class="mg-label" for="to_date"><%= t ('to_date') %><span class="required-field">&nbsp;*</span></label><br/>
+     <%=text_field_tag :inventory_to_date,nil,:class=>"mg-text-field"%>
+    </td>
+  </tr>
+</table>
+ <%=submit_tag 'Generate Report', :class=> "submit  inventory_goods_report_data mg-small-form-btn mg-custom-labels" %>
+<div id="inventory_report_generation_data">
+</div>
+<div id="saleTransctionDetailsDivID"></div>
+
+<%= render  partial: 'schools/school_left_close' %>
+
+<script>
+$(document).ready(function(){
+  focusCurrentTab("paymentStatusReportsAid","paymentStatusReportsLiID");
+  dateFormatStr =  getJsDateFormat();
+  $('#inventory_from_date').datepicker({ changeMonth: true,
+                changeYear: true,yearRange: "-100:+0",maxDate: "0",dateFormat: dateFormatStr});
+  $('#inventory_to_date').datepicker({ changeMonth: true,
+                changeYear: true,yearRange: "-100:+0",maxDate: "0",dateFormat: dateFormatStr});
+  });
+
+  $(document).on("click",".inventory_goods_report_data",function(){
+    var from_date=$("#inventory_from_date").val();
+    var to_date=$("#inventory_to_date").val();
+    if(from_date==""||to_date=="") {
+      alert("Please Enter The data")
+    }
+    else{
+      var urlLink="/inventory/payment_status_report"
+      $.ajax({
+        url:urlLink,
+        cache:false,
+        data:{"from_date":from_date,"to_date":to_date},
+        success: function(html){
+        $("#inventory_report_generation_data").empty();
+        $("#inventory_report_generation_data").append(html);
+    }
+
+  });
+  }
+});
+
+$(document).on("click", ".show-sale-item-btn-cls", function(){
+  var idData=$(this).attr('id');
+  var idData=idData.split('-');
+  console.log(idData)
+  var urlLink="/inventory/cash_transaction_details/"+idData[0];
+  $.ajax({
+    url: urlLink,
+    cache: false,
+    success: function(html){
+        $('#saleTransctionDetailsDivID').dialog({
+            modal: true,
+            minHeight: '300',
+            maxHeight: '600',
+            maxWidth: '600',
+            minWidth: '600',
+            title: "Details",
+            open: function () {
+                
+                $(this).html(html);
+            }
+        }); 
+    }
+  });
+});
+
+$(document).on("change","#inventory_from_date",function(e){
+      var end_date=$("#inventory_to_date").val();
+      if(!(end_date==""))
+      {
+            var start_date=$(this).val();
+
+     if(getDateObj(start_date,dateFormatStr)>getDateObj(end_date,dateFormatStr)){
+        alert("From Date should be less than To Date");
+        document.getElementById('inventory_from_date').value ="";
+      }
+      }
+      
+   });
+
+
+    $(document).on("change","#inventory_to_date",function(e){
+      var start_date=$("#inventory_from_date").val();
+      if(!(start_date==""))
+      {
+        var end_date=$(this).val();
+     if(getDateObj(start_date,dateFormatStr)>getDateObj(end_date,dateFormatStr)){
+        alert(" To Date should be more than From Date");
+        document.getElementById('inventory_to_date').value ="";
+      }
+      }
+      
+   });
+
+    $(document).on("change","#library_report_course",function(){
+       $("#inventory_report_generation_data").empty();
+
+    });
+
+</script>

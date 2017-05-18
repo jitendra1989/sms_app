@@ -1,0 +1,35 @@
+<table border="1" class="mg-showdata-bg mg-tbl-layout" cellspacing="1" cellpadding="1">
+   <tr>
+     <td class="mg-td-width-half" valign="top">
+        <label class="mg-label"> <%= t('room_no')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+        
+    
+    <%=@show_stack_data.room_no%>
+   
+     </td>
+ </tr>
+ 
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label"> <%= t('rack_no')%></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+    <%=@show_stack_data.rack_no%>
+     
+     </td>
+ </tr>
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+      <label class="mg-label mg-label-text-transform-none" style="width:140px"><%= t('first_letter_of_title') %></label>
+     </td>
+     <td class="mg-td-width-half" valign="top">
+    <%=@show_stack_data.first_letter_of_title%>
+     
+     </td>
+ </tr>
+
+</table>
+<br/>
+ <%= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>

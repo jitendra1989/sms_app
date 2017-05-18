@@ -1,0 +1,202 @@
+    <div class="cloneLanguageDivId">
+       <hr>
+        <table width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-left: 0px;">
+          <tbody>
+                <tr>
+                  <td width="33%" valign="bottom">
+                    <label for="language_known[]"  class="mg-label"><%= t('languages') %>
+                      <span class="required-field"></span> 
+                    </label>
+                  </td>
+                  </tr>
+                  <tr>
+                    <td valign="top">
+                      <input  class="mg-lang-text-field" type="text" name="language[language_name][]" value="<%=language.language_name  %>" >
+
+                      <%#= f.text_field :language_name, :class=>"textboxwidth" %>
+                    </td>
+                  </tr>
+
+                  <tr>
+                  <td width="33%" valign="bottom">
+                    <label for="last_name" class="mg-label"><%= t('speak') %>
+                    <span class="required-field"></span>
+                    </label>
+                  </td>
+                  <td width="33%" valign="bottom">
+                    <label for="middle_name" class="mg-label"><%= t('read') %></label>
+                  </td>
+                
+                  <td width="33%" valign="bottom">
+                    <label for="last_name" class="mg-label"><%= t('write') %>
+                    <span class="required-field"></span>
+                    </label>
+                  </td>
+                  
+                </tr> 
+                <tr>
+
+                <td valign="top">
+                    <%# language.speak %>
+
+                    <% speakLang = language.write %>
+                      <% if(speakLang.to_s.length > 0) %>
+                      <input  class="checkbox-speak-cls mg-language-speak-checkbox" type="checkbox" name="language[speak][]" value="<%= language.language_name.to_s+"$"+ speakLang%>" checked>
+
+                      <% else %>
+                       <input  class="checkbox-speak-cls mg-language-speak-checkbox" type="checkbox" name="language[speak][]" value="speak">
+                      <% end %>
+                     
+                    </td>
+
+                    <td valign="top">
+                      <%  readLang = language.read %>
+                      <% if (readLang.to_s.length > 0) %>
+                      <input  class="checkbox-read-cls mg-language-read-checkbox" type="checkbox" name="language[read][]" value="<%= language.language_name.to_s+"$"+ readLang%>" checked>
+                     <% else %>
+                        <input  class="checkbox-read-cls mg-language-read-checkbox" type="checkbox" name="language[read][]" value="read">
+                     <% end %>
+                    </td>
+                  
+                    <td valign="top">
+                    <%# language.write %>
+                      <% writeLang = language.write %>
+                      <% if(writeLang.to_s.length > 0) %>
+                      <input  class="checkbox-write-cls mg-language-write-checkbox" type="checkbox" name="language[write][]" value="<%= language.language_name.to_s+"$"+ writeLang%>" checked>
+                      <% else %>
+                        <input  class="checkbox-write-cls mg-language-write-checkbox" type="checkbox" name="language[write][]" value="write">
+                      <% end %>
+
+                    </td>
+                    
+                  </tr>
+                  <tr>
+                  <td valign="top">
+
+                    <div  class="language-Student-Div-Class  mg-language-speak-radio">
+
+                            <label for="language_status3_true" class="mg-label-inner-form"><%=t('beginner')%>
+                            </label>
+
+
+                             <% if(speakLang.to_s.eql?"Beginner") %>
+                            <input type="checkbox" name="status3[]" value="Beginner" checked /> 
+                            <% else %>
+                            <input type="checkbox" name="status3[]" value="Beginner" /> 
+                            <% end %>
+
+
+
+                            <label for="language_status3_false" class="mg-label-inner-form"><%=t('intermediate')%>
+                            </label>
+
+                             <% if(speakLang.to_s.eql?"Intermediate") %>
+                            <input type="checkbox"  name="status3[]" value="Intermediate" checked />
+                            <% else %>
+                            <input type="checkbox"  name="status3[]" value="Intermediate"/>
+                            <% end %>
+
+
+
+                            <label for="language_status3_false" class="mg-label-inner-form"><%=t('advanced')%>
+                            </label>
+
+                             <% if(speakLang.to_s.eql?"Advanced") %>
+                            <input type="checkbox"  name="status3[]" value="Advanced" checked />
+                            <% else %>
+                            <input type="checkbox"  name="status3[]" value="Advanced"/>
+                            <% end %>
+
+
+
+                        </div>
+
+                  </td>
+                                  
+                  <td valign="top">
+                    <div class="language-Student-Div-Class  mg-language-read-radio">
+
+                      <label for="language_status1_true" class="mg-label-inner-form"><%=t('beginner')%>
+                      </label>
+
+                      <% if(readLang.to_s.eql?"Beginner") %>
+                      <input type="checkbox" name="status1[]" value="Beginner" checked /> 
+                      <% else %>
+                      <input type="checkbox" name="status1[]" value="Beginner" /> 
+
+                      <% end %>
+
+                      <label for="language_status1_false" class="mg-label-inner-form"><%=t('intermediate')%>
+                      </label>
+
+                      <% if(readLang.to_s.eql?"Intermediate") %>
+                      <input type="checkbox"  name="status1[]" value="Intermediate" checked />
+                      <% else %>
+                      <input type="checkbox"  name="status1[]" value="Intermediate"/>
+
+                      <% end %>
+
+
+                      
+
+                      <label for="language_status1_false" class="mg-label-inner-form"><%=t('advanced')%>
+                      </label>
+
+
+                      <% if(readLang.to_s.eql?"Advanced") %>
+                      <input type="checkbox"  name="status1[]" value="Advanced" checked />
+                      <% else %>
+                      <input type="checkbox"  name="status1[]" value="Advanced"/>
+                      <% end %>
+
+                      
+
+                  </div>
+                  </td>
+                
+                  <td valign="top">
+                            <div class="language-Student-Div-Class  mg-language-write-radio">
+
+                            <label for="language_status2_true" class="mg-label-inner-form"><%=t('beginner')%>
+                            </label>
+
+                            <% if(writeLang.to_s.eql?"Beginner") %>
+                               <input type="checkbox" name="status2[]" value="Beginner" checked/> 
+                            <% else %>
+                               <input type="checkbox" name="status2[]" value="Beginner" /> 
+                            <% end %>
+
+
+                            
+
+                            <label for="language_status2_false" class="mg-label-inner-form"><%=t('intermediate')%>
+                            </label>
+
+                            <% if(writeLang.to_s.eql?"Intermediate") %>
+                               <input type="checkbox"  name="status2[]" value="Intermediate" checked />
+                            <% else %>
+                               <input type="checkbox"  name="status2[]" value="Intermediate"/>
+                            <% end %>
+
+
+
+                            <label for="language_status2_false" class="mg-label-inner-form"><%=t('advanced')%>
+                            </label>
+
+                            <% if(writeLang.to_s.eql?"Advanced") %>
+                               <input type="checkbox"  name="status2[]" value="Advanced" checked />
+                            <% else %>
+                               <input type="checkbox"  name="status2[]" value="Advanced"/>
+                            <% end %>
+
+                            
+
+                        </div>
+                  </td>
+
+                  
+                </tr>
+          </tbody> 
+        </table>
+    </div>
+

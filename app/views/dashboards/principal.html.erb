@@ -1,0 +1,472 @@
+<!-- Sec --> 
+<!-- Partial left content -->
+<%= render partial: 'principle_dashboard_left' %>
+
+<!-- Partial Index -->
+<%#= render partial: 'principle_dashboard' %>
+
+
+<div class="mg-scroll-page">
+<!-- Partial Index -->
+<%#= render partial: 'principle_dashboard' %>
+
+<%#.pluck(:id, :school_name)%>
+<%#=select_tag "school_id", options_for_select(MgSchool.where(:is_deleted=>0).collect{ |u| [u.school_name, u.id] })%>
+<%#@school_list=MgSchool.where(:is_deleted=>0).pluck(:school_name,:id)%>
+<%#school_id=session[:current_user_school_id]%>
+<%#= form_for :principal, url: change_school_path, :html => {
+                            :id => 'mgEmployeeLeaveTypesID', :class => 'mgEmployeeLeaveTypesClass' } do |f| %>
+<%#=f.select :mg_school_id,options_for_select(@school_list, school_id   ),{},:onchange => 'this.form.submit();' %>
+<%#=f.submit 'select school'%>
+<%#end%>
+<!-- </br> -->
+
+
+
+
+<!-- <div class="mg-btn-bottom-margin">
+<label class="mg-label mg-leave-width">Select </label><%#= select_tag :some, options_for_select([["Fee Defaulter","fee_defaulter"],["Fee Collection ","fee_collection"],["Teaching Staff Attendance " ,"attendance_teaching"],["Non Teaching Staff Attendance " ,"attendance"],["Leave status","leave_status"], ["Syllabus Progress ","syllabus_progress"],  ["Events","events"], ["Notification","notification"]]), :onchange=>"onChangeFunctionForPrincipalChart(this.value)"%>
+</div> -->
+<!-- ,["Time Table ","time_table"] -->
+
+<!-- <div id="leaveDetailsForPrincipalDIVID" style="display:none"> -->
+  <%#=@leave_for_today.inspect%>
+<!-- fee collection -->
+<!-- <div id="feeCollectionPrincipleDashBoardDIVID" style="display:none" > -->
+
+
+
+<%= render partial: 'fee_collection' %>
+<%#= render partial: 'bkp_fee_collection' %>
+
+
+<!-- fee de -->
+<!-- <div id="feeDefaulterPrincipalDashboardDIVID" > -->
+
+<%= render partial: 'fee_defaulter' %><br>
+<%#= render partial: 'bkb_fee_defaulter' %>
+<!-- </div> -->
+
+<!-- notification start -->
+   <%#= render partial: 'notifications/show_notify' %>
+   <h4 class="mg-h4" style="width: 736px;"><%=t('notifications')%></h4>
+  <% if @notifications.length > 0 %>
+  <div class="mg_pagination">
+  <div class="container mg-btn-bottom-margin" style="width: 736px; margin-left: -15px;">
+  <!--  s<button type="button" class="btn btn-info" data-toggle="collapse" data-target="#showNotificationPage">Notifications <span class="badge"><%#= @size %></span></button> -->
+        <div id="showNotificationPage2" class="collapse-sh">
+
+       
+        <div class="notification-list">
+            <%  @notifications.each do |notification| %>
+        
+               <a href="/notifications/view_notification/<%= notification.id %>" class="anchor-btn mg-rm-pagination-style" >
+            <% if notification.status %>
+              <div class="notification notification-seen">
+            <% else %>
+              <div class="notification notification-unseen">
+            <% end %>
+            
+              <div class="notification-label">
+                <%= notification.subject %>
+              </div>
+              <div class="notification-data mg-file-clr">
+                <%= notification.description %>
+              </div>
+            </div>
+                </a>
+                 
+            <% end %>
+          </div>
+        
+        </div>
+  </div>
+  
+  </div>
+  <% else %>
+  <h5>No notification...</h5>
+  <% end %>
+   
+    <br>
+
+  <!-- notification end -->
+
+<h4 class="mg-h4">Leave Details</h4> 
+
+<%if @leave_for_today.present?%>
+   <table class="batch-tbl" border="">
+     <tr class="subject-table-header">
+       <th>Employee ID </th>
+       <th>First Name</th>
+       <th>Last Name</th>
+       <th>Employee Type</th>
+       <th>Employee Department</th>
+       <th>From Date</th>
+       <th>To Date</th>
+
+     </tr>
+    <%@leave_for_today.each do |t|%>  
+    <%employee_datails=MgEmployee.find(t.mg_employee_id)%>          
+      <tr>
+        <td><%=employee_datails.employee_number%></td>
+        <td><%=employee_datails.first_name%></td>
+        <td><%=employee_datails.last_name%></td>
+        <td><%=employee_datails.category_names%></td>
+        <td><%=employee_datails.dept_name%></td>
+        <td><%=t.from_date.strftime(@school.date_format)%></td>
+        <td><%=t.to_date.strftime(@school.date_format)%></td>
+
+      </tr>
+    <%end%>
+  </table>
+<%else%>
+  <h5>Leaves not applied</h5>
+<%end%><br>
+
+<!-- </div> -->
+
+<!-- <div id="notificationPrincipalDashboardDIVID" style="display:none"> -->
+
+<!-- <h4 class="mg-h4" style="width: 736px;"><%=t('notifications')%></h4>
+
+ <h5>No notification...</h5> -->
+
+<!-- </div> -->
+<!-- , ["Syllabus Tracker ","syllabus_tracker"] -->
+<!-- <div id="employeeDashboardPrincipalAbsentTeacherDIVID" style="display:none" > -->
+
+
+<!-- </div> -->
+
+
+
+
+
+
+<!-- <div id="trackSyllabusDashboardPrincipalDIVID" style="display:none"> -->
+  <!-- 
+
+====================================================================================
+
+
+ -->
+
+<h4 class="mg-h4"><%= t('syllabus_progress') %></h4>
+<div class="mg-scroll-page-inner">
+  <%= render partial: 'syllabus_progress' %>
+   <%#= render partial: 'bkb_syllabus_progress' %>
+</div>
+
+
+
+<!-- fee de -->
+
+
+<!-- event -->
+<div id="employeeDashboardPrincipalCalenderDIVID" ><div id='employeeDashboardPrincipalCalender' class="mg-tbl-margin"></div></div>
+<!-- event end-->
+
+<!-- attendance -->
+
+
+<!-- <div id="employeeDashboardPrincipalAbsentNonTeacherDIVID" style="display:none"> -->
+<h4 class="mg-h4">Absent Teaching Staff</h4> 
+
+<%if @attendance_teach.present?%>
+   <table class="batch-tbl" border="">
+     <tr class="subject-table-header">
+       <th>Employee ID </th>
+       <th>First Name</th>
+       <th>Last Name</th>
+       <th>Employee Type</th>
+       <th>Employee Department</th>
+       <th><%=t('details')%></th>
+     </tr>
+    <%@attendance_teach.each do |t|%>       
+      <tr>
+        <td><%=t.employee_number%></td>
+        <td><%=t.first_name%></td>
+        <td><%=t.last_name%></td>
+        <td><%=t.category_names%></td>
+        <td><%=t.dept_name%></td>
+        <td><button id="<%=t.id%>-subjectClassListDashboardBTNID" class="subject-class-list-dashboard-cls mg-custom-form-btn">Subject & Class</button></td>
+      </tr>
+    <%end%>
+  </table>
+<%else%>
+  <h5>All Teachers are present</h5>
+<%end%><br>
+
+
+<h4 class="mg-h4">Absent Non-Teaching Staff</h4> 
+
+<%if @attendance.present?%>
+   <table class="batch-tbl" border="">
+     <tr class="subject-table-header">
+       <th>Employee ID </th>
+       <th>First Name</th>
+       <th>Last Name</th>
+       <th>Employee Type</th>
+       <th>Employee Department</th>
+     </tr>
+    <%@attendance.each do |t|%>            
+      <tr>
+        <td><%=t.employee_number%></td>
+        <td><%=t.first_name%></td>
+        <td><%=t.last_name%></td>
+        <td><%=t.category_names%></td>
+        <td><%=t.dept_name%></td>
+      </tr>
+    <%end%>
+  </table>
+<%else%>
+  <h5>All Employees are present</h5>
+<%end%><br>
+
+<!-- </div> -->
+
+<!-- attendance end -->
+
+<!-- event start -->
+<!-- <div id="evntForDashboardDIVID" style="display:none"> -->
+<h4 class="mg-h4"> <%= t('events') %></h4>
+<%if @events.present?%>
+<table class="batch-tbl mg-tbl-margin">   <!-- border="2" --> 
+ <tr >
+    <th><%=t('title')%></th>
+    <th><%=t('eventtype')%></th>
+    <th><%=t('eventdescription')%></th>
+    <th><%=t('startdate')%></th>
+    <th><%=t('starttime')%></th>
+    <th><%=t('enddate')%></th>
+    <th><%=t('endtime')%></th>
+  </tr>
+  <% @events.each do |e| %>
+    <tr> 
+      <td><%= e.title %></td>
+      <% @name=MgEventType.where(:id=>e.mg_event_type_id, :is_deleted=>0).pluck(:name)%>
+      <td><%= @name[0] %></td>
+      <td><%= e.event_description %></td>
+      <td><%= e.event_date.strftime(@school.date_format) %></td>
+      <td><%= e.start_time.strftime('%I:%M%p') %></td>
+      <td><%= e.end_date.strftime(@school.date_format) %></td>
+      <td><%= e.end_time.strftime('%I:%M%p') %></td>
+    </tr>
+  <% end %>
+</table>
+
+<%else%>
+<h5>No Events...</h5>
+<% end %>
+<br>
+<!-- </div> -->
+<!-- event end -->
+<!-- LEAVE START -->
+
+
+ <div class="leaveReportDIVID" style="display:none">
+<h4 class="mg-h4">Leave Details</h4> 
+<div>
+  <label class="mg-label mg-label-width ">Select Department</label>
+  <%=select_tag :dept_id,options_for_select(@category),:prompt=>"Select" , :id=>"attendencePrincipalDepartmentID" ,:class=>"mg-select-btn"%>
+<br><div id="employeeDashboardSubjectPrincipalLeaveShowDIVID"></div>
+</div>
+</div>
+
+
+
+
+<!-- LEAVE END -->
+
+<!-- time table start from here -->
+
+<!-- <div id="todayTimeTableForPrincipleDIVID" style="display:none"> -->
+
+<!-- </div> -->
+<!-- time table end-->
+<h4 class="mg-h4"><%#=Date.today().strftime('%A')%>Today's absent teachers in time table</h4> 
+
+<%time_array=Array.new%>
+<div class="mg-scroll-page-inner">
+<table class="batch-tbl">
+<%@wings.each do |wing_name|%>
+
+<%@timetables=MgTimeTableEntry.where(:mg_weekday_id=>( @mg_weekday_id),:is_deleted=>0, :mg_school_id => @mg_school_id)%>
+<%@timetables.each do|timetable|%>
+<%@classTime=MgClassTiming.where(:mg_wing_id=>wing_name.id,:id=>timetable.mg_class_timings_id,:is_deleted=>0, :mg_school_id => session[:current_user_school_id])
+%>
+  <%if @classTime.present?%>
+    <%time_array.push(@classTime[0].start_time.strftime("%k:%M%p")+'-'+ @classTime[0].end_time.strftime("%k:%M%p"))%>
+  <%end%>
+<%end%>
+
+    <tr><th style="text-align: start;"><%=wing_name.wing_name%></th></tr>
+    <tr>
+      <td>
+        <table class="mg-tbl-layout">
+          <tr>
+          <td>Class &amp; Section</td>
+          <%time_array=time_array.uniq%>
+          <%for time in 0...time_array.size%>
+
+            <td>
+              <%=time_array[time]%>
+            </td>
+          <%end%>
+          </tr>
+          <%time_table_hash=Hash.new%>
+          <%course_time=MgCourse.where(:mg_wing_id=>wing_name.id, :is_deleted=>0).pluck(:id)%>
+          <%batch_time=MgBatch.where(:is_deleted=>0,:mg_course_id=>course_time)%>
+          <%batch_time.each do |batch_id|%>
+            <%time_table_entry=MgTimeTableEntry.where(:mg_weekday_id=>( @mg_weekday_id),:mg_batch_id=>batch_id.id,:is_deleted=>0, :mg_school_id => @mg_school_id)%>
+              <%count=0%>
+              <%time_table_entry.each do |entry|%>
+                <%for time in 0...time_array.uniq.size%>
+                  <%split_time=time_array[time].split('-')%>
+                    <%find_week_day_id=MgClassTiming.where(:mg_wing_id=>wing_name.id, :mg_weekday_id=>@mg_weekday_id, :start_time=>Time.parse(split_time[0]).strftime("%H:%M:%S"), :end_time=>Time.parse(split_time[1]).strftime("%H:%M:%S")).pluck(:id)%>
+                    <%entry=MgTimeTableEntry.where(:mg_class_timings_id=>find_week_day_id[0], :mg_batch_id=>batch_id.id)%>
+                  
+                    <%if entry.present? %>
+                        
+                       
+                       <%# @attendance_teach.each do |absent|%>
+                      <%if  @employee_list.count(entry[0].mg_employee_id.to_i)>0%>
+                          <%#if entry[0].mg_employee_id.to_i==absent.id.to_i%>
+                          <%#count=1%>
+                         
+                          <%#end%>
+                        <%#end%>
+                        <%#if count==1%>
+                          <%time_table_hash[time_array[time]]=MgEmployee.find(entry[0].mg_employee_id).first_name+'/'+MgSubject.find(entry[0].mg_subject_id).subject_name%>
+                          <%#time_table_hash[time_array[time]]=entry[0].mg_employee_id+'/'+entry[0].mg_subject_id%>
+
+                        <%else%>
+                          <%time_table_hash[time_array[time]]=''%>
+                        <%end%>
+                    <%else%>
+                      <%time_table_hash[time_array[time]]=""%>
+                    <%end%>
+                <%end%>
+              <%end%>
+                <tr>
+                  <td><%=batch_id.course_batch_code%></td>
+                  <%time_table_hash.each do |key, value|%>
+                  <td><%=value%></td>
+                  <%end%>
+                </tr>
+              
+          <%end%>
+        </table>
+      </td>
+    </tr>
+  <%end%>
+</table>
+</div><br>
+
+
+<h4 class="mg-h4"><%=t('query_record_list')%></h4>
+<div id="queryRecordDashBoardDivID"></div>
+</div><br>
+
+
+<div id="employeeDashboardCalenderPrincipalShowDIVID"></div>
+<div id="employeeDashboardSubjectPrincipalShowDIVID" class="mg-pop-up-padding"></div>
+ <div id="employeeLeaveTypeReportPrincipalDIVID"></div>
+</div>
+
+
+<%= render partial: 'application/common_left_close' %>
+
+
+<script type="text/javascript">
+    
+
+ $(document).ready(function(){
+
+    focusCurrentTab("viewMyDashboardID","viewMyDashboardLiID");
+    focusDashboards();
+
+urlLink = "/dashboards/query_record_index_data";
+    $.ajax({
+      url: urlLink,
+      cache: false,
+      success: function(html){
+        $("#queryRecordDashBoardDivID").html(html);
+      }
+    });
+  });
+ 
+ function eventDashboardPrincipalCalender(){
+	 $('#employeeDashboardPrincipalCalender').fullCalendar({
+    	header: {
+    				left:   'today prev,next',
+    				center: 'title',
+    				right:  'year,month,agendaWeek,agendaDay',
+    			},
+        // weekends:false,
+    	defaultView: 'month',
+    	// defaultView: 'basicWeek'
+        //hiddenDays: [ 2, 4 ],        
+        businessHours:true,
+        minTime: "8:00:00",
+        maxTime: '18:00:00',
+        startParam: "10:00:00",
+        slotDuration:'00:20:00',
+        //slotMinutes: 20,
+        allDaySlot: false,
+         lazyFetching: true,
+
+ eventSources: [
+        {
+        url: '/dashboards/allevents',
+         data:{
+
+            calenderType: "Principal_dashboard"
+        },
+
+        error:function(){
+        },
+        textColor: 'black'
+        }
+
+    ],
+     dayClick: function(date, allDay, jsEvent, view) {
+
+    },
+    eventClick: function(event, element, current_event_id) {
+        event.title = "CLICKED!";
+        var eventID=event.id;
+        var urlLink = "/events/"+eventID;
+        $.ajax({
+        url: urlLink,
+        cache: false,
+        success: function(html) {
+             $('#employeeDashboardCalenderPrincipalShowDIVID').dialog({
+                    modal: true,
+                    width: 'auto',
+                    title: "Event Detail",
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+        }
+    });
+        // $('#calendar').fullCalendar('updateEvent', event);
+    }
+          
+    });
+}
+
+
+
+</script>
+
+
+ <style>
+            .charts-tooltip div{
+        background: #009933 !important;
+        font-family:'Calibri' !important;
+    }
+            </style>

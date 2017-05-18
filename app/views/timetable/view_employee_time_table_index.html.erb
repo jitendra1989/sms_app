@@ -1,0 +1,57 @@
+<% navigation_add t('timetable'), timetable_index_path %>
+<% navigation_add 'View Employee '+t('timetable'),timetable_view_employee_time_table_index_path %>
+
+<%= render  partial: 'timetable_left' %>
+
+<h4 class="mg-h4">View Employee <%=t('timetable')%></h4>
+
+<div id="batchForSelectedCourseDivID">
+	<label class="mg-label mg-tt-width mg-tbl-margin">Select Department</label>
+	<%=select_tag :batch,options_for_select(@department),:prompt=>"Select Department",:onchange=>"selectDepartment(this.value)"%>
+</div>
+
+
+<div id="selectEmployeeForTimeTableID"></div>
+<div id="viewEmployeeForTimeTableID" class="mg-tbl-margin"></div>
+
+
+<%= render  partial: 'timetable_left_close' %>
+
+
+<script>
+$(document).ready(function () {
+        focusCurrentTab("viewEmployeeTimeTableAID","viewEmployeeTimeTableLiID");
+        focusTimeTable();
+
+    });
+	
+function selectDepartment(mg_employee_department_id){
+	
+		$.ajax({
+			url:"/timetable/all_employee_for_time_table",
+			data:{"mg_employee_department_id":mg_employee_department_id},
+			success:function(html){
+				
+				$("#selectEmployeeForTimeTableID").html(html);
+			},
+			error:function(){
+				alert("inside error");
+			}
+		});
+	}
+function selectEmployee(mg_employee_id){
+		$.ajax({
+			url:"/timetable/employee_time_table",
+			data:{"mg_employee_id":mg_employee_id},
+
+			success:function(html){
+				
+				$("#viewEmployeeForTimeTableID").html(html);
+			},
+			error:function(){
+				alert("inside error");
+			}
+		});
+	}
+	
+</script>

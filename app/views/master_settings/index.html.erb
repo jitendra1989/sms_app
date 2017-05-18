@@ -1,0 +1,18 @@
+<% navigation_add "#{t('school_detail')}", :controller => 'master_settings', :action => 'index' %>
+
+<%= render  partial: 'master_settings_left' %>
+
+<%= render  partial: 'schools/show' %>
+
+<%= render  partial: 'application/common_left_close' %>
+
+<script>
+    $(document).ready(function(){
+     dateFormatStr =  getSchoolDateFormat();
+    // alert(dateFormatStr);
+    $("#schoolDateFormatDbID").html(dateFormatStr);
+    
+         focusCurrentTab("createNewSchool","schoolInformationLiID");
+  });
+    
+</script>

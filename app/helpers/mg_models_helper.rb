@@ -1,0 +1,2 @@
+module MgModelsHelper
+end

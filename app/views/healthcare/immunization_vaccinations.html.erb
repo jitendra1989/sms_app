@@ -1,0 +1,78 @@
+<%if session[:user_type]=="guardian"%>
+  <%= render partial: 'dashboards/guardian_dashboard_left' %>
+<%else%>
+  <%=render partial: 'healthcare_left'%>
+<%end%>
+<%# navigation_add t('checkup_type'),:controller=>'healthcare',:action=>'index' %>
+<% navigation_add t('immunizations'),:controller=>'healthcare',:action=>'immunization_vaccinations' %>
+
+
+
+
+<h4 class="mg-h4"><%= t('immunizations_list') %></h4>
+
+<!-- onclick="window.location='/healthcare/new_vaccinations'"  -->
+<button onclick="window.location='/healthcare/new_immunization_vaccinations'" class= 'mg-custom-form-btn'><%=t('add_immunizations')%></button>
+<%if @student.present?%>
+<div class="mg_pagination">
+<table class="batch-tbl mg-tbl-margin">   <!-- border="2" --> 
+ <tr >
+    <th><%=t('name')%></th>
+    <th> <%=t('admission_number')%></th>
+    <th> <%=t('semester')%></th>
+     <th><%=t('actions')%></th>
+  </tr>
+  <% @student.each do |e| %>
+    <tr>
+      <td><%= e.try(:first_name).try(:capitalize) %> <%= e.try(:last_name).try(:capitalize) %></td>
+      <td class="mg-align-center"><%= e.admission_number %></td>
+      <td><%=e.course_batch_name_student%></td>
+      <td>
+        <button title="Show" id="<%=raw e.id %>-showVaccinationsBTNID" class="show-vaccinations-details-btn mg-icon-btn"><i class="fa fa-eye"></i></button>
+        <button title="Edit" id="<%=raw e.id %>-editVaccinationsBTNID" onclick="window.location='/healthcare/<%=e.id%>/edit_immunization_vaccinations'" class="edit-vaccinations-btn mg-icon-btn"><i class="fa fa-pencil-square-o"></i></button>
+        <button onclick="confirm('Are you sure to delete?') ? window.location='/healthcare/<%=e.id%>/delete_immunization_vaccinations/' : '' " title="Delete" id="<%=raw e.id %>-deleteVaccinationsBTNID" class="delete-vaccinations-btn mg-icon-btn"><i class="fa fa-trash"></i></button>
+      </td>
+    </tr>
+  <% end %>
+</table>
+ <%= will_paginate @student, :container => false %>
+  </div>
+<%else%>
+<br>
+<p></p>
+<br>
+    <p>Please add some vaccinations details</p>
+<%end%>
+
+
+
+
+<div id="newVaccinationsDIVID"></div>
+<%= render  partial: 'application/common_left_close' %>
+
+<script>
+  $( document ).ready(function() {
+    focusCurrentTab("immunizationDetailsAID","immunizationDetailsLID");          
+  });
+
+  $(document).on("click", ".show-vaccinations-details-btn", function(e){
+    var myID =$(this).attr('id');
+    var Id=myID.split("-");
+    var urlLink = "/healthcare/"+Id[0]+"/show_immunization_vaccinations/";
+    $.ajax({
+      url: urlLink ,
+      cache: false,
+      success: function(html){
+        $('#newVaccinationsDIVID').dialog({
+          modal: true,
+          minHeight: 'auto',
+          width: 'auto',
+          title: "immunizations Details",
+          open: function () {
+            $(this).html(html);
+          }
+        }); 
+      }
+    });
+  });
+</script>

@@ -1,0 +1,145 @@
+<%#= render partial: 'dashboards/employee_left' %>
+
+<h4 class="mg-h4"><%= t('syllabus_progress') %></h4>
+<div class="mg-custom-labels">
+<%
+
+
+@empId=MgEmployee.where(:mg_user_id=>session[:user_id]).pluck(:id)
+puts "888888888888888888888888"
+puts @empId
+puts "8888888888888888888888"
+
+	@syllabuscheck=MgSyllabusTracker.where(:is_deleted=>0,:mg_employee_id=>@empId).pluck(:mg_syllabus_id).uniq
+%>
+
+
+<%if  @syllabuscheck[0].to_s.empty?%>
+
+
+<div style="color:#C52F24"><h5>No tracks found for this employee...</h5></div>
+<%else%>
+
+
+
+
+<%@empId=MgEmployee.where(:mg_user_id=>session[:user_id]).pluck(:id)%>
+<%
+#<%@feesquery2=MgBatch.where(:is_deleted =>0).order("mg_course_id").pluck(:id)
+@syllabus=MgSyllabusTracker.where(:is_deleted=>0,:mg_employee_id=>@empId).pluck(:mg_syllabus_id).uniq
+
+
+%>
+
+<%@dataHash=Hash.new%>
+<%@dataHashs=Hash.new%>
+<%@array=Array.new%>
+<%@arrayy=Array.new%>
+
+<%@syllabus.each do |sys|%>
+<%@ss=MgSyllabus.find(sys)%>
+<%=@ss.name%> 
+
+<br/>
+
+<%@unit=MgSyllabusTracker.where(:mg_syllabus_id=>sys,:mg_employee_id=>@empId).pluck(:mg_unit_id).uniq%>
+
+
+
+<%
+
+
+@unit.each do |unit|%>
+<%@ss=MgUnit.find(unit)%>
+<%@ss.unit_name%>
+
+
+ 
+<!--=================================div===================================================-->
+<%
+@emptimetaken=MgSyllabusTracker.where(:mg_unit_id=>@ss ,:mg_employee_id=>@empId[0], :mg_syllabus_id=>sys).count
+
+
+@emp_expectedtime=MgSyllabusTracker.where(:mg_unit_id=>@ss ,:mg_employee_id=>@empId[0], :mg_syllabus_id=>sys).order(:date).last
+%>
+<%@emp_expectedtime.inspect%>
+<%@emp_expectedtime.expected_class%>
+<%
+
+
+@emptimealloted=MgUnit.where(:id=>unit).pluck(:time)
+
+# @dataHash[@ss.unit_name]=@countno
+# array.push(@dataHash)
+# @dataHash[@ss.unit_name]=@countnos[0]
+# array.push(@dataHash)
+
+
+@array=Array.new
+
+@array.push("Taken",@ss.unit_name)
+#@arrayy.push(@countno)
+
+@dataHash[@array]=@emptimetaken
+
+@array=Array.new
+@array.push("Allotted",@ss.unit_name)
+#@arrayy.push(@countnos[0])
+
+@dataHash[@array]=@emptimealloted[0]
+@array=Array.new
+
+@array.push("Expected",@ss.unit_name)
+
+@dataHash[@array]=@emp_expectedtime.expected_class+@emptimetaken
+@array=Array.new
+
+# @arrayy.push(@countno)
+# @arrayy.push(@countnos)[0]
+
+#@dataHash[@ss.unit_name]=@countnos[0]
+
+%>
+
+ <!--=================================div===================================================-->
+
+
+
+<!--
+rrayy.push(batch.name,date.admission_date.strftime("%b"))
+				 admission_hash[array]=@student_count
+
+
+ &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp -->
+
+<%end%>
+<!-- <#%=@dataHash%>
+<#%=array%> -->
+ <!--<#%@dataHash[@array]=@arrayy%>-->
+
+<%#=column_chart(@dataHash)%>
+
+<%=column_chart @dataHash, library:  {width:600,hAxis: {title: ""}, vAxis: {title: "No. of Period"}}%>
+
+<%@dataHash=Hash.new%>
+<%@dataHashs=Hash.new%>
+<%@array=Array.new%>
+<%@arrayy=Array.new%>
+
+
+
+
+<br/>
+<%end%>
+<%end%>
+</div>
+<%= render partial: 'application/emp_section_close' %>
+
+<script>
+$(document).ready(function () {
+
+focusCurrentTab("viewEmployeeSyllabus","viewEmployeesyllabusLiID");
+        //focusCurriculum();
+      });
+
+</script>

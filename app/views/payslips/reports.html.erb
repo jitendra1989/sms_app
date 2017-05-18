@@ -1,0 +1,219 @@
+
+<% navigation_add t('reports'), :controller=>"payslips", :action=>"reports"%>
+
+<%=render partial: 'payslip_left'%>
+<%=render partial: 'payslip_graph'%><br>
+<%=render partial: 'non_teaching_payout'%><br>
+
+<%= form_for :report_sort_payslip, url: payslips_reports_path, :html => {
+                            :id => 'formreport_sort_payslipID' } do |f| %>
+
+<%f.hidden_field :abcd%>
+<%#=@extra_leave_taken_all_employee_array.inspect%>
+<h4 class="mg-h4"><%=t('monthly_payout_for_teaching_stuff')%></h4>
+
+<label class="mg-label mg-tt-width mg-rm-text-trans"><%=t('select_month_and_year')%></label>   <%=text_field_tag :date_month_teaching_stuff, "#{Date.new(@tech_year.to_i,@tech_month.to_i,01).strftime('%B')} #{@tech_year}" %>
+<%=hidden_field_tag :hidden_date_month_teaching_stuff, "#{@tech_month}-#{@tech_year}"%>
+<br/>
+<%if @employee_list_teach.present?%>
+
+<div class="mg_pagination">
+ 
+<table class="batch-tbl">
+	<tr>
+		<th><%=t('name')%></th>
+		<th><%=t('month')%></th>
+		<th><%=t('year')%></th>
+		<th><%=t('actions')%></th>
+	</tr>
+	<%@employee_list_teach.each do |employee|%>
+	<tr>
+		<td><%=employee.mg_employee.employee_name%></td>
+		<td><%= Date.new(employee.year,employee.month,1).strftime("%B")%></td>
+		<td><%= employee.year %></td>
+		<td><a title="Show" id="<%=raw employee.id %>-showPayslipShowReportBTNID" class="report-show-for-employee-cls mg-report-btn mg-small-form-btn"><%=t('report')%></a>
+     </td>
+	</tr>
+	<%end%>
+</table>
+<%= will_paginate @employee_list_teach, :container => false , :param_name => 'teach', :params=>{:hidden_date_month_teaching_stuff=>"#{@tech_month}-#{@tech_year}", :hidden_date_month_non_teaching_stuff=>"#{@non_tech_month}-#{@non_tech_year}"}%>
+  </div>
+   <p class="mg-p-mgtop">
+  <%= link_to t("export_excel"), payslips_reports_path(format: "xls", :hidden_date_month_teaching_stuff=>"#{@tech_month}-#{@tech_year}", :hidden_date_month_non_teaching_stuff=>"#{@non_tech_month}-#{@non_tech_year}", :xls_report=>"tech") , :class=>'mg-small-form-btn'%> 
+        
+    </p>
+  <br>
+<%else%>
+  <h5>No Records are Present</h5>
+<%end%>
+
+
+  <h4 class="mg-h4"><%=t('monthly_payout_for_non_teaching_stuff')%></h4>
+
+<label class="mg-label mg-tt-width mg-rm-text-trans"><%=t('select_month_and_year')%></label><%=text_field_tag :date_month_non_teaching_stuff, "#{Date.new(@non_tech_year.to_i,@non_tech_month.to_i,01).strftime('%B')} #{@non_tech_year}"%>
+<%=hidden_field_tag :hidden_date_month_non_teaching_stuff, "#{@non_tech_month}-#{@non_tech_year}"%>
+<br/>
+<%if @employee_list_non_teach.present?%>
+  <div class="mg_pagination">
+ 
+<table class="batch-tbl">
+	<tr>
+		<th><%=t('name')%></th>
+		<th><%=t('month')%></th>
+		<th><%=t('year')%></th>
+		<th><%=t('actions')%></th>
+	</tr>
+	<%@employee_list_non_teach.each do |employee|%>
+	<tr>
+		<td><%=employee.mg_employee.employee_name%></td>
+		<td><%=Date.new(employee.year,employee.month,1).strftime("%B")%></td>
+		<td><%=employee.year%></td>
+		<td>
+     <a title="Show" id="<%=raw employee.id %>-showPayslipShowReportBTNID" class="report-show-for-employee-cls mg-report-btn mg-small-form-btn"><%=t('report')%></a>
+     </td>
+	</tr>
+	<%end%>
+</table>
+<%= will_paginate @employee_list_non_teach, :container => true,  :param_name => 'non_teach' , :params=>{:hidden_date_month_teaching_stuff=>"#{@tech_month}-#{@tech_year}", :hidden_date_month_non_teaching_stuff=>"#{@non_tech_month}-#{@non_tech_year}"}%>
+
+
+  </div>
+
+
+   <p class="mg-p-mgtop">
+  <%= link_to t("export_excel"), payslips_reports_path(format: "xls", :hidden_date_month_teaching_stuff=>"#{@tech_month}-#{@tech_year}", :hidden_date_month_non_teaching_stuff=>"#{@non_tech_month}-#{@non_tech_year}", :xls_report=>"non_tech") , :class=>'mg-small-form-btn'%> 
+        
+    </p>
+<%else%>
+  <h5>No Records are Present</h5>
+<%end%>
+<%= f.submit t('search') ,:class=>"mg-small-form-btn hidden-button-onchange-submit-class", :id=>"payslipReportSubmitFormID" ,:style=>"display:none"%>
+
+<%end%>
+
+
+  <div id="payslipsEmployeeReportDIVID"></div>
+  <div id="showPayslipReportDIVID"></div>
+<%= render partial: 'application/common_left_close' %>
+<script>
+	$(document).ready(function(){
+		var dateFormatStr =  getJsDateFormat();
+		$("li").removeClass( "active" );
+        $("a").removeClass( "activeMenu" );
+
+        $("#viewPayslipsReportsLiID").addClass( "active" );
+        $("#viewPayslipsReports").addClass( "activeMenu" );
+        focusPaySlip();
+   // $('#date_month_teaching_stuff').val($.datepicker.formatDate('MM yy',new Date()));
+   // $('#date_month_non_teaching_stuff').val($.datepicker.formatDate('MM yy',new Date()));
+
+    $("#date_month_teaching_stuff").datepicker( {
+        changeMonth: true,
+        changeYear: true,
+        showButtonPanel: true,
+        dateFormat: 'MM yy',
+        beforeShow: function (){
+                          setTimeout(function() {
+                        $(".ui-datepicker-buttonpane")
+                            .html('')
+                            .append("<button id='dateMonthTeachingStuffPayslipBTNID'>Done</button>");
+                        var class_val=$("#ui-datepicker-div").attr("class");
+                        $("#ui-datepicker-div").attr("class", class_val+" date-month-teaching-stuff-cls");
+                        }, -6)
+                    },
+         onChangeMonthYear: function (){
+                        setTimeout(function() {
+                        
+                         $(".ui-datepicker-buttonpane")
+                            .html('')
+                            .append("<button id='dateMonthTeachingStuffPayslipBTNID'>Done</button>");
+                         var class_val=$("#ui-datepicker-div").attr("class");
+                        $("#ui-datepicker-div").attr("class", class_val+" date-month-teaching-stuff-cls");
+                        }, -5)
+
+                    }, 
+        onClose: function(dateText, inst) { 
+            var month = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
+            var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
+            $(this).datepicker('setDate', new Date(year, month, 1));
+        }
+    });
+
+    $("#date_month_non_teaching_stuff").datepicker( {
+        changeMonth: true,
+        changeYear: true,
+        showButtonPanel: true,
+        dateFormat: 'MM yy',
+        beforeShow: function (){
+                         setTimeout(function() {
+                       $(".ui-datepicker-buttonpane")
+                            .html('')
+                            .append("<button id='dateMonthNonTeachingStuffPayslipBTNID'>Done</button>");
+                        var class_val=$("#ui-datepicker-div").attr("class");
+                        $("#ui-datepicker-div").attr("class", class_val+" date-month-non-teaching-stuff-cls");
+                        }, -5)
+                    },
+        onChangeMonthYear: function (){
+                        setTimeout(function() {
+                        
+                         $(".ui-datepicker-buttonpane")
+                            .html('')
+                            .append("<button id='dateMonthNonTeachingStuffPayslipBTNID'>Done</button>");
+                         var class_val=$("#ui-datepicker-div").attr("class");
+                         $("#ui-datepicker-div").attr("class", class_val+" date-month-non-teaching-stuff-cls");
+                        }, -5)
+
+                    }, 
+        onClose: function(dateText, inst) { 
+            var month = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
+            var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
+            $(this).datepicker('setDate', new Date(year, month, 1));
+        }
+    });
+
+   
+   });
+
+$(document).on("click", "#dateMonthTeachingStuffPayslipBTNID", function(e){
+  $( "#date_month_teaching_stuff" ).datepicker("hide");
+  var month = parseInt($(".date-month-teaching-stuff-cls .ui-datepicker-month :selected").val()) + 1;
+  var year = parseInt($(".date-month-teaching-stuff-cls .ui-datepicker-year :selected").val());
+  $("#hidden_date_month_teaching_stuff").val(month+"-"+year);
+  $("#payslipReportSubmitFormID").click();
+});
+
+$(document).on("click", "#dateMonthNonTeachingStuffPayslipBTNID", function(e){
+  $( "#date_month_non_teaching_stuff" ).datepicker("hide");
+  var month = parseInt($(".date-month-non-teaching-stuff-cls .ui-datepicker-month :selected").val()) + 1;
+  var year = parseInt($(".date-month-non-teaching-stuff-cls .ui-datepicker-year :selected").val());
+  $("#hidden_date_month_non_teaching_stuff").val(month+"-"+year);
+  $("#payslipReportSubmitFormID").click();
+});
+
+
+
+
+
+
+
+
+
+
+
+</script>
+
+<style>
+.ui-datepicker-calendar {
+    display: none;
+    }
+
+.mg-report-btn {
+    background: linear-gradient(to bottom, #dbe8f7, #92aecd) repeat scroll 0 0 rgba(0, 0, 0, 0);
+    border: 1px solid #5f7a92;
+    border-radius: 4px;
+    color: #1d212a !important;
+    font-size: 0.85em !important;
+    padding: 1px 9px !important;
+    text-decoration: none;
+}
+</style>

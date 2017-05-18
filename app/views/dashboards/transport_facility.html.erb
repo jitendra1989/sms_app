@@ -1,0 +1,108 @@
+<%= render partial: 'guardian_dashboard_left' %>
+<% navigation_add 'Transport', dashboards_transport_facility_path %>
+
+<div id="transport_data">
+ <h4 class="mg-h4">Students List</h4>
+<table class="batch-tbl" id='guardianStudentsTableID'>
+        <tr>
+          <th>First Name</th>
+          <th>Last Name</th>
+          <th>Admission Number</th>
+          <th><%="status"%></th>
+          <th><%=t("actions")%></th>
+        </tr>
+        
+        <%@second_data=@second_data_id.pluck(:mg_student_id)%>
+        <% @StudentListQuery.each do |student| %>
+       
+          	<td><%= student.first_name %></td>
+      		<td><%= student.last_name %></td>
+      		<td><%= student.admission_number %></td>
+      		
+
+      		 <%if @second_data.include?(student.id)%>
+      		 	<%@object=@second_data_id.find_by(:mg_student_id=>student.id)%>
+      		 	<td><%=@object.confirmation_status%></td>
+            <%status_data=@object.confirmation_status%>
+            <%if status_data=="Pending"%>
+      		 	<td>
+      		<!--  <button title="Edit" id='<%=@object.id %>' class='edit-transport-guardian-class mg-icon-btn'><i class="fa fa-pencil-square-o"></i></button>  -->          
+	          <!--  <span style="left: 3px; position: relative; float: right; top: 4px;"> -->
+	           <%= link_to "Cancel Request" ,{ action: "transport_facility_destroy", id: @object.id },
+                                 data: { confirm: "Are you sure to delete the selected entry?" },:class=>"mg-custom-form-btn"%>
+               <!-- </span> -->
+               </td>
+               <%elsif status_data=="confirmed"%>
+               <td></td>
+               <%end%>
+      		 <%else%>
+      		 <td></td>
+      		 <td>
+      		<button id="<%=raw student.id%>" class="guardian-student-transportation mg-custom-form-btn">Create Request</button>
+      		<%end%>
+      		</td>
+     	</tr>
+        <% end %>
+</table>
+</div>
+<div id="applyssLeaves"></div>
+
+<%= render partial: 'guardian_dashboard_close' %>
+
+<script>
+
+      $(document).ready(function(){
+            focusCurrentTab("viewtransportResultAID","viewtransportResultLiID");
+            focusDashboards();
+          
+
+     $(document).on("click",".guardian-student-transportation",function(e){
+      e.preventDefault();
+        var Id=$(this).attr("id");
+       
+        $.ajax({
+             url: "/dashboards/transport_facility_new",
+             data:{"id":Id},
+            
+            success: function(html){
+                      $("#transport_data").empty();
+                      $("#transport_data").html(html);                     
+                       
+                
+
+                }
+
+            });  
+
+        });
+     });
+
+
+
+$(document).on("click", ".edit-transport-guardian-class", function(e){
+        
+        var Id=$(this).attr('id');
+       
+        
+        var urlLink = "/dashboards/transport_facility_edit";
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            data:{"id":Id},
+            success: function(html){  
+                    $('#applyssLeaves').dialog({
+                    modal: true,
+                    title: "Edit",
+                    minWidth: 300,
+                    minHeight: 350,
+                    // maxHeight: 500,
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+});
+     </script>

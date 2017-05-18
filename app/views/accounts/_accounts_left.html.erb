@@ -1,0 +1,105 @@
+<!-- Sec --><section id="userBodyContentBox" >
+    <table width=100% border="0" cellspacing="0" cellpadding="0">
+        <tr>
+            <td valign="top" class="userBodyContentBox1">
+                <div class="userMenuBoxLeft" style="width: 210px;">
+                    <ul class="menuListHome">
+                        <li class="myAccountMenu"><%=t('Accounts')%></li>
+                        <%if session[:user_type]=="admin"%>
+                        <li id="viewaccountsInchargeLiID">
+                            <a class="menuItemsActivities" href="/accounts" id="viewaccountsInchargeId">
+                                <div class="setMenu"><i class="fa fa-location-arrow">&nbsp;&nbsp;</i><%=t('about_incharge')%>
+                                </div>
+                            </a>
+                        </li>
+
+                        <li id="viewaccountsAssistantInchargeLiID">
+                            <a class="menuItemsActivities" href="/accounts/incharge" id="viewaccountsAssistantInchargeId">
+                                <div class="setMenu"><i class="fa fa-location-arrow">&nbsp;&nbsp;</i><%=t('about_assistant_incharge')%>
+                                </div>
+                            </a>
+                        </li>
+                        
+                        <%end%>
+                        
+                        <!-- ================Central Assistant Incharge================== -->
+
+                        <%if session[:user_type]=="central_account_assistant_incharge"%>
+                        
+                            <li id="viewaccountsAssistantInchargeTransferLiID">
+                                <a class="menuItemsActivities" href="/accounts/transfer" id="viewaccountsAssistantInchargeTransferId">
+                                    <div class="setMenu"><i class="fa fa-money">&nbsp;&nbsp;</i><%=t('accounts_transfer')%>
+                                    </div>
+                                </a>
+                            </li>
+
+                            <li id="viewAccountsReceivableCentralInchargeLiID">
+                                <a class="menuItemsActivities" href="/accounts/central_receivable/" id="viewAccountsReceivableCentralInchargeIndex">
+                                    <div class="setMenu"><i class="fa fa-money">&nbsp;&nbsp;</i><%=t('accounts_receivable')%>
+                                    </div>
+                                </a>
+                            </li>
+                        <%end%>
+                        <%#end%>
+                        <!-- ========================================================== -->
+                        <!-- ============================Central Incharge=================================== -->
+                        <%#
+                        @employee=MgEmployee.find_by(:mg_user_id=>session[:user_id])
+                        @central_incharge_count=MgAccountCentralIncharge.where(:status=>"Incharge",:is_deleted=>0,:mg_school_id=>session[:current_user_school_id],:mg_employee_id=>@employee.id).count%>
+                        <%#if @central_incharge_count>0%>
+                        <%if session[:user_type]=="central_account_incharge"%>
+                        
+                            <!-- Bindhu work starts -->
+                            <li id="aboutAccountsLiID">
+                                <a class="menuItemsActivities" href="/accounts/account_index" id="aboutAccountsAID">
+                                    <div class="setMenu"><i class="fa fa-money">&nbsp;&nbsp;</i><%=t('about_account')%>
+                                    </div>
+                                </a>
+                            </li>
+                            <!-- Bindhu work ends -->
+
+                            <li id="viewAccountsReceivableCentralInchargeLiID">
+                                <a class="menuItemsActivities" href="/accounts/central_receivable/" id="viewAccountsReceivableCentralInchargeIndex">
+                                    <div class="setMenu"><i class="fa fa-money">&nbsp;&nbsp;</i><%=t('accounts_receivable')%>
+                                    </div>
+                                </a>
+                            </li>
+
+
+                            <li id="viewAccountsCentralInchargeLiID">
+                                <a class="menuItemsActivities" href="/accounts/review/" id="viewAccountsCentralInchargeIndex">
+                                    <div class="setMenu"><i class="fa fa-money">&nbsp;&nbsp;</i><%=t('accounts_review')%>
+                                    </div>
+                                </a>
+                            </li>
+                        <%end%>
+
+                        <%#end%>
+    <!-- ============================================================================== -->
+    <!-- ============================Accounts Incharge=================================== -->
+     <%if session[:user_type]=="account_incharge"%>
+    <%#
+        @employee=MgEmployee.find_by(:mg_user_id=>session[:user_id])
+        @c_incharge_count=MgAccount.where(:is_deleted=>0,:mg_school_id=>session[:current_user_school_id],:mg_employee_id=>@employee.id).count%>
+                        <%#if @c_incharge_count>0%>
+                            <li id="viewAccountsInchargeReportLiID">
+                                <a class="menuItemsActivities" href="/accounts/accounts_review/" id="viewAccountsInchargeReportIndex">
+                                    <div class="setMenu"><i class="fa fa-money">&nbsp;&nbsp;</i><%=t('accounts_transaction')%>
+                                    </div>
+                                </a>
+                            </li>
+                        <%#end%>
+                        <%end%>
+    <!-- ========================================================================================= -->
+                    </ul>    
+                </div>
+            </td>
+            <td  valign="top" id="manageAdminCategoryID" class="mg-table-td-main-2">
+              
+<%=render partial: 'layouts/messages'%>
+
+<script>
+$( document ).ready(function() {
+    focusheaderBox("ACCOUNTS");
+});
+</script>

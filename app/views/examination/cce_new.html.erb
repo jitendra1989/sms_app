@@ -1,0 +1,37 @@
+<!-- breadcrumbs Work -->
+<% navigation_add 'Examinations', examinations_path %>
+<% navigation_add 'CCE', examination_cce_new_path %>
+
+<!-- breadcrumbs Work -->
+
+
+
+<%= render  partial: 'examination_table_left' %>
+<h4 class="mg-h4">CCE Settings</h4>
+<div>
+	<table>
+		<tr>
+			<td class="mg-exam-td-width" valign="top">
+				<%=button_to "Basic Settings",{ controller: 'examination',action:"cceBasic_Settings"}, {:class=>"mg-exam-btn-width mg-btn-exam"} %><br/> 
+			</td>
+			<td class="mg-exam-td-width" valign="top">		     
+				<%=button_to "Co-Scholastic Settings",{ controller: 'examination',action:"Co_Scholastic_index"}, {:class=>"mg-exam-btn-width mg-btn-exam"} %><br/>
+			</td>      
+		</tr>
+		<tr>
+			<td class="mg-exam-td-width" valign="top">
+				<%=button_to "Scholastic Settings",{ controller: 'examination',action:"scholastic_index"}, {:class=>"mg-exam-btn-width mg-btn-exam"} %>          
+			</td>
+		</tr>
+	</table>
+</div>
+<%= render  partial: 'examination_table_close' %><br/>
+
+<script type="text/javascript">
+	$(document).ready(function() {
+        focusCurrentTab("viewStudentListAId","viewStudentListLiId");
+        focusExaminationHeaderBox();
+	});
+
+</script>
+

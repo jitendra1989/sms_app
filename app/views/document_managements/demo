@@ -1,0 +1,393 @@
+<%= render partial: 'dashboards/employee_left' %>
+ <h4 class="mg-h4">File Management</h4>
+
+<div id="createNewFileForEmployeeDIVID"></div>
+<div id="createNewFolderForEmployeeDIVID"></div>
+
+<!-- 
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+   "http://www.w3.org/TR/html4/strict.dtd">
+<HTML>
+   <HEAD>
+     
+   </HEAD>
+   <BODY>
+      <P>Hello world!
+   </BODY>
+</HTML> -->
+
+<%def abcd(folderID, count)
+puts "i'm in abcd method"
+  @html='<div id="'+count.to_s+'hideAndShowSubFolderDIVID"  style="display:none">'
+                          @document_managements = MgEmployeeFolder.where(:is_deleted=>0, :mg_employee_chaild_folder_id=>folderID )
+                          @document_managements.each do |sub_folder|
+                          
+                           @html +='<ol><button><i class="fa fa-caret-right"></i></button><button>'
+                           @html +=sub_folder.folder_name
+
+                        # abcd(sub_folder.id, count)
+                      
+
+
+
+                           @html +='</button><button>+</button><button>x</button></ol>'
+                          
+                          end
+   @html +='</div>'
+   
+%>
+<div id="<%=count%>hideAndShowSubFolderFileDIVID"  style="display:none">
+<%
+    id=session[:user_id]
+    @employee = MgEmployee.where(:mg_user_id =>id).pluck(:id)
+    @document_management = MgDocumentManagement.where(:is_deleted=>0, :mg_employee_id=>@employee[0], :mg_employee_folder_id=>folderID)
+
+    @document_management.each do |e| 
+
+
+%>
+
+
+<ol><label for="subfolder1"><i class="fa fa-file"></i>&nbsp;
+<%=e.file_file_name%><%= link_to_if e.file.url, 'download', e.file.url %></label> <button id="<%=e.id%>deleteFileForEmployeeBTNID" class="delete-file-for-employee-BTNID"><label for="subfolder1">X</label></button> </ol>
+
+<% 
+
+
+    end 
+%>
+</div>
+<%
+
+end%>
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+
+
+  <%count=2000000%>
+  <ul class="tree">
+    <li>
+      <label for="folder1">
+        <button id="hideAndShowLinkForEmployeeFolderBTNID" class="hide-and-show-link-for-employee-file-BTNID">+</button>
+        <button id="<%=count%>-hideAndShowLinkForEmployeeFileBTNID" class="hide-and-show-link-for-employee-file-BTNID"><i class="fa fa-folder-open">&nbsp;My Folder</i>
+</button>
+      </label>
+      <div id="hideAndShowLinkForEmployeeFileDivID" style="display:none"><ol>
+          <% @document_managements.each do |e| %>
+
+            <li class="mg-folder-list">
+              <button id="<%=e.id%>-<%=count%>-folderPlusID" class="show-file-in-folder-div"><i class="fa fa-caret-right"></i>
+</button> 
+              <button id="<%=e.id%>-<%=count%>-folderID" class="show-file-in-folder-div"><label for="subfolder1"><i class="fa fa-folder-o">&nbsp;<%=e.folder_name%></i></label></button>   
+              <button id="<%=e.id%>-addFileToFolderBTNID" class="add-file-to-folder-BTN"><i class="fa fa-link"></i></button>
+              <button id="<%=e.id%>-deleteFileFromFolderBTNID" class="delete-file-from-folder-BTN">X</button>
+                <%if e.mg_employee_chaild_folder_id.present?%>
+                <%abcd(e.id, count)%>
+                      <%if @html.present?%>
+                          <%= @html.html_safe%>
+                      <%end%>
+                      
+                  <%end%>
+            </li>
+            <ol class="mg-folder-list">
+              <!-- <div id="<%#=count%>filDivID" style="display:none"></div> -->
+                <div id="<%=count%>hideAndShowCreateChaildFolderDivID" style="display:none">
+                    <button id="<%=e.id%>-createNewChaildBTNId" class="create-new-chaild-folder-BTN">+folder</button>
+                </div>
+            </ol>
+            <%count+=1%>
+          <% end %>
+          <button id="createFolderForEmployeeBTNID"><label for="subfolder1">+folder</label></button> 
+      </ol></div>
+  </ul>
+
+<%= render partial: 'application/common_left_close' %>
+  
+
+
+  <script type="text/javascript">
+    $(document).on("click", ".create-new-chaild-folder-BTN", function(e){
+       e.preventDefault();
+        var myID =$(this).attr('id');
+       var splString = myID.split("-");
+
+
+        var urlLink = "/document_managements/folder_new/";
+        $.ajax({
+            url: urlLink ,
+            data:{
+              mg_employee_folder_id: splString[0]
+            },
+            cache: false,
+            success: function(html){
+                // $("#createNewFileForEmployeeDIVID").empty();
+                // $("#createNewFileForEmployeeDIVID").append(html);
+                $("#createNewFolderForEmployeeDIVID").dialog({
+                    modal: true,
+                    minHeight: 'auto',
+                    title: "New Sub Folder",
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+});
+
+     $(document).on("click", "#createFolderForEmployeeBTNID", function(e){
+       e.preventDefault();
+       //  var myID =$(this).attr('id');
+       // var splString = myID.split("-");
+
+
+        var urlLink = "/document_managements/folder_new/";
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            success: function(html){
+                // $("#createNewFileForEmployeeDIVID").empty();
+                // $("#createNewFileForEmployeeDIVID").append(html);
+                $("#createNewFolderForEmployeeDIVID").dialog({
+                    modal: true,
+                    minHeight: 360,
+                    title: "New Folder",
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+});
+
+  $(document).on("click", ".show-file-in-folder-div", function(e){
+     e.preventDefault();
+        var myID =$(this).attr('id');
+       var splString = myID.split("-");
+       // folderPlusID
+       $("#"+splString[1]+"filDivID").toggle();
+       $("#"+splString[1]+"hideAndShowCreateChaildFolderDivID").toggle();
+       $("#"+splString[1]+"hideAndShowSubFolderDIVID").toggle();
+       $("#"+splString[1]+"hideAndShowSubFolderFileDIVID").toggle();
+
+
+        // var urlLink = "/document_managements/view_file_in_list/"+splString[0];
+        // $.ajax({
+        //     url: urlLink ,
+        //     cache: false,
+        //     success: function(html){
+        //         $("#"+splString[1]+"filDivID").empty();
+        //         $("#"+splString[1]+"filDivID").append(html);
+
+              // $("#hideAndShowLinkForEmployeeFileDivID").toggle();
+               var value=  $("#"+splString[0]+'-'+splString[1]+'-'+"folderPlusID").html();
+               // alert("value :"+value)
+               // alert("#"+splString[0]+'-'+splString[1]+'-'+"folderPlusID");
+               
+                if(value=='<i class="fa fa-caret-down"></i>'){
+                  $("#"+splString[0]+'-'+splString[1]+'-'+"folderPlusID").empty();
+                  $("#"+splString[0]+'-'+splString[1]+'-'+"folderPlusID").append('<i class="fa fa-caret-right"></i>');
+                }else{
+                  $("#"+splString[0]+'-'+splString[1]+'-'+"folderPlusID").empty();
+                $("#"+splString[0]+'-'+splString[1]+'-'+"folderPlusID").append('<i class="fa fa-caret-down"></i>');
+                }
+   
+               
+            // }
+        // });
+});
+
+  $(document).on("click", ".add-file-to-folder-BTN", function(e){
+     e.preventDefault();
+        var myID =$(this).attr('id');
+       var splString = myID.split("-");
+
+
+        var urlLink = "/document_managements/new/";
+        $.ajax({
+            url: urlLink ,
+            data:{
+              mg_employee_folder_id: splString[0]
+            },
+            cache: false,
+            success: function(html){
+                // $("#createNewFileForEmployeeDIVID").empty();
+                // $("#createNewFileForEmployeeDIVID").append(html);
+                $("#createNewFileForEmployeeDIVID").dialog({
+                    modal: true,
+                    minHeight: 360,
+                    title: "New File",
+                    open: function () {
+                        
+                        $(this).html(html);
+                    }
+                }); 
+               
+            }
+        });
+});
+
+function toggleAll()
+{
+ $("#whatever").toggle();
+ $(".no-of-days-attendence").toggle();
+}
+
+$(document).on("click", ".hide-and-show-link-for-employee-file-BTNID", function(e){
+   e.preventDefault();
+  //  var myID =$(this).attr('id');
+  // var splString = myID.split("-");
+       
+  $("#hideAndShowLinkForEmployeeFileDivID").toggle();
+   var value=  $("#hideAndShowLinkForEmployeeFolderBTNID").html();
+    if(value=='+'){
+      $("#hideAndShowLinkForEmployeeFolderBTNID").empty();
+      $("#hideAndShowLinkForEmployeeFolderBTNID").append('-');
+    }else{
+      $("#hideAndShowLinkForEmployeeFolderBTNID").empty();
+    $("#hideAndShowLinkForEmployeeFolderBTNID").append('+');
+    }
+   
+
+ 
+
+
+        
+});
+
+
+          $(document).on("click", ".delete-file-for-employee-BTNID", function(e){
+             e.preventDefault();
+                var myID =$(this).attr('id');
+                var splString = myID.split("-");
+                var retVal = confirm("Are you sure to delete?");
+                if(retVal){
+                     var urlLink = "/document_managements/delete_file/"+splString[0];
+                      $.ajax({
+                        url: urlLink ,
+                        cache: false,
+                        success: function(html){
+                           window.location.reload();
+                        }
+                    });
+
+                }else{    
+                   return false;
+                }
+
+        }); 
+                $(document).on("click", ".delete-file-from-folder-BTN", function(e){
+                   e.preventDefault();
+                var myID =$(this).attr('id');
+                var splString = myID.split("-");
+                var retVal = confirm("Are you sure to delete?");
+                if(retVal){
+                     var urlLink = "/document_managements/delete_folder/"+splString[0];
+
+                      $.ajax({
+                        url: urlLink ,
+                        cache: false,
+                        success: function(html){
+                        }
+                    });
+
+                }else{   
+                   return false;
+                }
+
+        }); 
+
+
+      // $(document.getElementById(#hide-and-show-link-for-employee-file-BTNID)).html('<i class="fa fa-circle"> </i>');
+      //         }else{
+      //             var absent_date=$("#attendances_absent_date").val();
+                
+      //           var spldate = absent_date.split("-");
+      //           var dayNum = spldate[0] ;
+      //           for(var i = 0;i<no_of_days;i++){
+      //            var checkDate=spldate[1]+'/'+dayNum+'/'+spldate[2];
+      //                 x = new Date(checkDate).getDay();
+      //                 if(x==0){
+      //                   dayNum++;
+      //                   var tableData =dayNum+","+student_id;
+      //                   $(document.getElementById(tableData)).html('<i class="fa fa-circle"> </i>');
+      //                 }else{
+      //                 var tableData =dayNum+","+student_id;
+      //                 $(document.getElementById(tableData)).html('<i class="fa fa-circle"> </i>');
+      //                 }
+      //              dayNum++;   
+
+  </script>
+
+
+
+
+
+  #folder with files
+
+  <%$insidecount=0%>
+<% @document_managements.each do |e| %>
+<%file_type=e.file_file_name.split(".")%>
+<%file_type[1]%>
+<%if file_type[1]=='pdf'%>
+<%@type='<i class="fa fa-file-pdf-o"></i>'%>
+<%elsif file_type[1]=='xlsx' || file_type[1]=='xlt' || file_type[1]=='xls' ||file_type[1]=='xlm' ||file_type[1]=='xlsm' ||file_type[1]=='xltx' ||file_type[1]=='xltm' ||file_type[1]=='xlsb' ||file_type[1]=='xla' ||file_type[1]=='xlam' ||file_type[1]=='xll' ||file_type[1]=='xlw'%>
+<%@type='<i class="fa fa-file-excel-o"></i>'%>
+<%elsif file_type[1]=='jpeg' || file_type[1]=='jfif' ||file_type[1]=='exit' ||file_type[1]=='tift' ||file_type[1]=='rit' || file_type[1]=='png' || file_type[1]=='jpg'   %>
+<%@type='<i class="fa fa-file-image-o"></i>'%>
+
+<%elsif file_type[1]=='txt'%>
+<%@type='<i class="fa fa-file-text"></i>'%>
+
+<%elsif file_type[1]=='docx' || file_type[1]=='doc' ||file_type[1]=='docm' ||file_type[1]=='dotx' ||file_type[1]=='dotm' ||file_type[1]=='docb'%>
+<%@type='<i class="fa fa-file-pdf-o"></i>'%>
+
+<%elsif file_type[1]=='ppt' || file_type[1]=='pot' ||file_type[1]=='pps' ||file_type[1]=='pptx' ||file_type[1]=='pptm' ||file_type[1]=='potx' ||file_type[1]=='potm' ||file_type[1]=='ppam' ||file_type[1]=='ppsx' ||file_type[1]=='ppsm' ||file_type[1]=='sldx' ||file_type[1]=='sldm' %>
+<%@type='<i class="fa fa-file-powerpoint-o"></i>'%>
+
+<%elsif file_type[1]=='zip'%>
+<%@type='<i class="fa fa-file-archive-o"></i>'%>
+
+<%elsif file_type[1]=='pdf'%>
+<%@type='<i class="fa fa-file-pdf-o"></i>'%>
+
+<%elsif file_type[1]=='pdf'%>
+<%@type='<i class="fa fa-file-pdf-o"></i>'%>
+
+<%elsif file_type[1]=='pdf'%>
+<%@type='<i class="fa fa-file-pdf-o"></i>'%>
+
+<%elsif file_type[1]=='pdf'%>
+<%@type='<i class="fa fa-file-pdf-o"></i>'%>
+
+<%elsif file_type[1]=='pdf'%>
+<%@type='<i class="fa fa-file-pdf-o"></i>'%>
+
+<%elsif file_type[1]=='pdf'%>
+<%@type='<i class="fa fa-file-pdf-o"></i>'%>
+
+<%elsif file_type[1]=='pdf'%>
+<%@type='<i class="fa fa-file-pdf-o"></i>'%>
+
+<%elsif file_type[1]=='pdf'%>
+<%elsif file_type[1]=='pdf'%>
+<%elsif file_type[1]=='pdf'%>
+<%elsif file_type[1]=='pdf'%>
+
+
+<%else%>
+<%@type='<i class="fa fa-file"></i>'%>
+
+<%end%>
+
+
+
+         <ol><label for="subfolder1"><%=@type.html_safe%>&nbsp;
+          <%= link_to_if e.file.url, e.file_file_name, e.file.url %></label> <a id="<%=e.id%>deleteFileForEmployeeBTNID" class="delete-file-for-employee-BTNID"><label for="subfolder1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-times">delete</i>
+</label></a> </ol>
+          <%$insidecount +=1  %>      
+ <% end %>

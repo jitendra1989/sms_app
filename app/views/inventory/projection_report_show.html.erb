@@ -1,0 +1,192 @@
+<table border="1" class="batch-tbl  mg-showdata-bg mg-show-tbl-width" cellspacing="1" cellpadding="1">
+   <tr>
+     <td class="mg-td-width-half" valign="top">
+     <label class="mg-label"> <%= t('store_name')%></label>
+     </td>
+     <td class="mg-td-width-half mg-label-inner-form" valign="top">
+     <%if @store_management[0].store_name.present?%>
+     <%=@store_management[0].try(:store_name)%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+     </td>
+ </tr>
+
+
+<tr>
+     <td class="mg-td-width-half" valign="top">
+     <label class="mg-label"> <%= t('manager_name')%></label>
+     </td>
+     <td class="mg-td-width-half mg-label-inner-form" valign="top">
+     <%if @employee.first_name.present?%>
+     <%=@employee.try(:first_name)+" "+@employee.try(:last_name)%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+     </td>
+ </tr>
+
+
+
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+     <label class="mg-label"> <%= t('requisition_name')%></label>
+     </td>
+     <td class="mg-td-width-half mg-label-inner-form" valign="top">
+     <%if @inventory.requisition_name.present?%>
+     <%=@inventory.try(:requisition_name)%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+     </td>
+ </tr>
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+     <label class="mg-label mg-label-text-transform-none"> <%= t('date_of_requirement')%></label>
+     </td>
+     <td class="mg-td-width-half mg-label-inner-form" valign="top">
+     <% @timeformat=MgSchool.find_by_id(@inventory.mg_school_id)%>
+      <% if @timeformat.present?%>
+      <%= @inventory.date.strftime(@timeformat.date_format) %>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+     </td>
+ </tr>
+ <tr>
+     <td class="mg-td-width-half" valign="top">
+     <label class="mg-label"> <%= t('description')%></label>
+     </td>
+     <td class="mg-td-width-half mg-label-inner-form" valign="top">
+     <%if @inventory.description.present?%>
+     <%=@inventory.try(:description)%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+     </td>
+ </tr>
+
+ </table><br>
+<table border="1" class="batch-tbl mg-tbl-layout mg-showdata-bg mg-show-tbl-width" cellspacing="1" cellpadding="1">
+
+<tr>
+<th> <label class="mg-label"> <%= t('item_name')%></label>
+</th>
+<th> <label class="mg-label"> <%= t('unit_type')%></label>
+</th>
+<th> <label class="mg-label mg-label-text-transform-none"> <%= t('no_of_unit')%></label>
+</th>
+
+</tr>
+<%@item_information_details.each do |info|%>
+<tr>
+     <td class="mg-td-width-half" valign="top">
+     <%if info.mg_item_id.present?
+          item=MgInventoryItem.find_by(:id=>info.mg_item_id)
+          %>
+     <%=item.try(:name)%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+     </td>
+
+     <td class="mg-td-width-half" valign="top">
+     <%if info.mg_unit_type_id.present?
+          unit_item=MgLabUnit.find_by(:id=>info.mg_unit_type_id)
+          %>
+     <%=unit_item.try(:unit_name)%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+     </td>
+
+     <td class="mg-td-width-half" valign="top">
+     <%if info.no_of_unit.present?%>
+     <%=info.try(:no_of_unit)%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+     </td>
+     
+ </tr>
+
+ <%end%>
+
+</table>
+
+<br/>
+
+
+ <p class="mg-p-mgtop">
+      <!-- <a onclick="salary_deduction_camponent_array()" class="mg-small-form-btn mg-custom-form-btn"><%#=t("export_excel")%></a> -->
+       <%#= link_to t('back'), :back, {:class=>"mg-small-form-btn cancel-form-dialog mg-custom-form-btn"} %>
+
+       <a class="mg-small-form-btn cancel-form-dialog"><%=t("cancel")%></a>
+ </p>
+
+
+<%#= link_to 'Cancel', laboratory_purchase_path ,:style=>"font-size: 0.8em; color: #297ACC; text-decoration: none;" ,:class=>"mg-custom-form-btn"%>
+
+<script>
+$(document).on("click", ".select-all-payslip-approval", function(e){
+  e.preventDefault();
+    $(".payslip-approval-cls").prop('checked', true);
+        
+  });
+   $(document).on("click", ".select-non-payslip-approval", function(e){
+     e.preventDefault();
+    $(".payslip-approval-cls").prop('checked', false);
+       
+  });
+
+
+
+function salary_deduction_camponent_array(){
+      var salary_deduction=[];
+      $('.payslip-approval-cls').each(function () {
+        if($(this).is(':checked')){
+            salary_deduction.push($(this).val());
+        } 
+      });
+      if (salary_deduction.length>0){
+        window.location="/inventory/proposal_excel.xls?"+"salary_deduction="+salary_deduction;
+      }else{
+        alert("Please select component");
+      }
+  }
+
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<style>
+/*.mg-show-tbl-width {
+    width: 64% !important;
+}*/
+.table.batch-tbl th {
+    border-color: #363131;
+    border-style: solid;
+    border-width: 1px;
+    padding: 3px;
+    text-align: center;
+}
+</style>

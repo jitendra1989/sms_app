@@ -1,0 +1,50 @@
+<!-- Sec --> 
+<%@curriculum=MgUnit.where(:is_deleted => '0', :mg_school_id=>session[:current_user_school_id])%>
+ <h4 class="mg-h4"><%= t('curriculum_management') %></h4>
+<div class="mg-custom-labels">
+<%= button_to 'Add Unit', {:controller => "curriculum", :action => "unit_index" } %>
+
+
+
+<table  class="batch-tbl mg-tbl-margin">   <!-- border="2" --> 
+  <tr class="subject-table-header">
+    
+  	<th><%=t('unitname')%></th>
+    <th><%=t('description')%></th>
+    <th><%=t('durationinhr')%></th>
+    <th><%=t('durationinmin')%></th>
+     <th><%=t('time duration')%></th>
+     <th><%=t('actions')%></th>
+  </tr>
+ 
+  <% @curriculum.each do |curr| %>
+    <tr>
+      <!-- <td> <#%@temp=Syllabus.find_by_id( curr.mg_syllabus_id)%>
+      <#%= @temp.class_name%></td> -->
+      <!-- <td><%= curr.mg_syllabus_id %></td> -->
+      <td><%= curr.unit_name %></td>
+      <td><%= curr.description %></td>
+      <td><%= curr.hour %></td>
+       <td><%= curr.min %></td>
+       
+
+     <%if curr.time!=nil%>
+      <th><%=curr.time%></th>
+      <%else%>
+      <td></td>
+      <%end%>
+
+
+      <td>
+        <span style="float: left; margin-right: 3px;">
+          <%= link_to "<i class=\"fa fa-pencil-square-o\"></i>".html_safe, {:controller => "curriculum", :action => "unit_edit",:id =>curr.id } ,:title=>"Edit" ,:class=>"mg-icon-btn"%>
+        </span>
+        <span style="float: left;">
+         <%= link_to "<i class=\"fa fa-trash\"></i>".html_safe, {:controller => "curriculum", :action => "unit_delete",:id =>curr.id } ,:title=>"Delete" ,:class=>"mg-icon-btn"%>
+        </span>
+      </td>
+
+    </tr>
+  <% end %>
+</table>
+</div>

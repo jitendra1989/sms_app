@@ -1,0 +1,148 @@
+
+
+<%= form_for @employee_grade,  html: {role: :form, :id=>"employeeGradeNewFormID"} do |f| %>
+  <table class="mg-tbl-layout batch-tbl">
+    <tr>
+      <td><%= f.label :Grade_Name ,:class=>"mg-label"%><span class="required-field">&nbsp;*</span></td>
+      <td colspan="2"><%= f.text_field :grade_name , :class=>"new_grade_name_validate_cls"%></td>
+    </tr>
+  
+ <%# @salary_components_deduction_true=@salary_components.where(:is_deduction=>false)%>
+ <!-- <tr><h4 class="mg-h4"><%#=t('components')%></h4></tr> -->
+ <tr>
+    <th><%=t('components')%></th>
+    <th><%=t('amount')%></th>
+    <th><%=t('applicable')%>
+    <div class="mg-text-margin">
+        <a class="select-all-employee-for-grade mg-pop-link"><%=t('all')%></a>&nbsp;<a class="select-none-employee-for-grade mg-pop-link"><%=t('none')%></a>
+      </div></th>
+  </tr>
+ <%@salary_components.where(:is_deduction=>false).each do |salary_components|%>
+ <tr></tr>
+  <tr>
+      <td><label class="mg-label mg-pop-up-label-width"><%=salary_components.name%></label></td>
+      <td><%=text_field_tag "salary_component_name[#{salary_components.id}]",0.0, :class=>"new_salary_components_validate_cls validation-compont-grade-new-sun-cls"%></td>
+      <td class="mg-align-center"><%=check_box_tag 'is_applicable[]', salary_components.id,false,{:class=>"is-applicable-check-box-tag-cls"}%></td>
+    </tr>
+  <tr></tr>
+  <%end%>
+<tr>
+  <th><%=t('deduction')%></th>
+  <th><%=t('amount')%></th>
+  <th><%=t('applicable')%>
+   <div class="mg-text-margin">
+        <a class="is_deduction-select-all-employee-for-grade mg-pop-link"><%=t('all')%></a>&nbsp;<a class="deduction-is_deduction-select-none-employee-for-grade mg-pop-link"><%=t('none')%></a>
+      </div></th>
+</tr>
+<%@salary_components.where(:is_deduction=>true ).each do |salary_components|%>
+ <tr></tr>
+  <tr>
+      <td><label class="mg-label mg-pop-up-label-width"><%=salary_components.name%></label></td>
+      <td><%=text_field_tag "salary_component_name[#{salary_components.id}]",0.0, :class=>"new_salary_components_validate_cls validation-is-deduction-grade-new--sun-cls"%></td>
+       <td class="mg-align-center"><%=check_box_tag 'is_applicable[]', salary_components.id,false,{:class=>"deduction-is-applicable-check-box-tag-cls "}%></td>
+    </tr>
+  <tr></tr>
+  <%end%>
+    
+  </table>
+
+
+    <%= f.hidden_field :is_deleted, :value => 0 %>
+    <%= f.hidden_field :mg_school_id, :value => session[:current_user_school_id]%>
+    <%= f.hidden_field :created_by, :value => session[:user_id]%>
+    <%= f.hidden_field :updated_by, :value => session[:user_id]%>
+
+
+<%= f.submit t('save') ,:class=>"mg-small-form-btn hidden-button-onchange-submit-class", :id=>"employeeNewGradeHiddenFormSubmitBTNID" ,:style=>"display:none"%>
+  <p class="mg-p-mgtop">
+    <a id="employeeNewGradeFormSubmitBTNID" class="mg-small-form-btn"><%=t("save")%></a>
+      <%#= link_to t('cancel'), :back, {:class=>"mg-small-form-btn cancel-form-dialog"} %>
+      <a  class="mg-small-form-btn cancel-form-dialog"><%=t("cancel")%></a>
+  </p>
+  
+<% end %>
+
+<script>
+  $(document).ready(function(){
+
+
+
+   $.validator.addClassRules({
+        new_salary_components_validate_cls:{
+        number: true,
+        min: 0
+    },
+    new_grade_name_validate_cls:{
+        required: true
+
+      }
+    });
+   $("#employeeGradeNewFormID").validate();
+  });
+
+
+ $(document).on("click", ".select-all-employee-for-grade", function(e){
+
+    $(".is-applicable-check-box-tag-cls").prop('checked', true);
+        e.preventDefault();
+  });
+   $(document).on("click", ".select-none-employee-for-grade", function(e){
+    $(".is-applicable-check-box-tag-cls").prop('checked', false);
+        e.preventDefault();
+  });
+
+   $(document).on("click", ".is_deduction-select-all-employee-for-grade", function(e){
+
+    $(".deduction-is-applicable-check-box-tag-cls").prop('checked', true);
+        e.preventDefault();
+  });
+   $(document).on("click", ".deduction-is_deduction-select-none-employee-for-grade", function(e){
+    $(".deduction-is-applicable-check-box-tag-cls").prop('checked', false);
+        e.preventDefault();
+  });
+
+
+
+//   $(document).on("change", ".validation-compont-grade-new-sun-cls", function(e){
+//      e.preventDefault();
+//         var components=0.0;
+//         $(".validation-compont-grade-new-sun-cls").each(function() {
+//            // var value=parseFloat($(this).val());
+
+//             components=components+((parseFloat($(this).val()) > 0.0) ? parseFloat($(this).val()) : 0.0);
+//         });
+//          var deduction=0.0;
+//         $(".validation-is-deduction-grade-new--sun-cls").each(function() {
+//             deduction=deduction+((parseFloat($(this).val()) > 0.0) ? parseFloat($(this).val()) : 0.0);
+//         });
+//         if(components>=deduction){
+//         }else{
+//           alert("Components total shoud be greter then deduction.");
+//           $(".validation-is-deduction-grade-new--sun-cls").each(function() {
+//              $(this).val("0.0");
+//           });
+         
+//           $(this).focus();
+//         }
+// });
+
+
+
+//   $(document).on("change", ".validation-is-deduction-grade-new--sun-cls", function(e){
+//      e.preventDefault();
+//         var amount=$(this).val();
+//         var components=0.0;
+//         $(".validation-compont-grade-new-sun-cls").each(function() {
+//             components=components+((parseFloat($(this).val()) > 0.0) ? parseFloat($(this).val()) : 0.0);
+//         });
+//          var deduction=0.0;
+//         $(".validation-is-deduction-grade-new--sun-cls").each(function() {
+//             deduction=deduction+((parseFloat($(this).val()) > 0.0) ? parseFloat($(this).val()) : 0.0);
+//         });
+//         if(components>=deduction){
+//         }else{
+//           alert("Components total shoud be greter then deduction.")
+//          $(this).val("0.0");
+//         }
+// });
+</script>

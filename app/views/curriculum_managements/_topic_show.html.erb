@@ -1,0 +1,39 @@
+<!-- Sec --> 
+<%@curriculum=MgTopic.where(:is_deleted => '0', :mg_school_id=>session[:current_user_school_id])%>
+ <h4 class="mg-h4"><%= t('curriculum_management') %></h4>
+<div class="mg-custom-labels">
+<%= button_to 'Add Topic', {:controller => "curriculum", :action => "topic_index" } %>
+
+
+<table  class="batch-tbl mg-tbl-margin">   <!-- border="2" --> 
+  <tr class="subject-table-header">
+    <!-- <th>Subject Name</th> -->
+
+  	<th><%=t('topicname')%></th>
+    <th><%=t('description')%></th>
+     <th><%=t('actions')%></th>
+  </tr>
+ 
+  <% @curriculum.each do |curr| %>
+    <tr>
+
+      <!-- <td> <#%@temp=Unit.find_by_id( curr.mg_unit_id)%>
+        <#%= @temp.name%></td> -->
+
+     <!--  <td><%= curr.mg_unit_id %></td> -->
+      <td><%= curr.topic_name %></td>
+      <td><%= curr.description %></td>
+      <td>
+      <span style="float: left; margin-right: 3px;">
+        <%= link_to "<i class=\"fa fa-pencil-square-o\"></i>".html_safe, {:controller => "curriculum", :action => "topic_edit",:id =>curr.id } ,:title=>"Edit" ,:class=>"mg-icon-btn"%>
+      </span>
+      <span style="float: left;">
+        <%= link_to "<i class=\"fa fa-trash\"></i>".html_safe, {:controller => "curriculum", :action => "topic_delete",:id =>curr.id } ,:title=>"Delete" ,:class=>"mg-icon-btn"%>
+      </span>
+
+      </td>
+
+    </tr>
+  <% end %>
+</table>
+</div>

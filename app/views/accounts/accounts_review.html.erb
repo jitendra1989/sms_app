@@ -1,0 +1,198 @@
+<%= render  partial: 'accounts_left' %>
+<% navigation_add 'Transaction', :controller => 'accounts', :action => 'accounts_review' %>
+<h4 class="mg-h4"><%= t("transaction")%></h4>
+<!-- <table class="mg-tbl-margin mg-show-tbl-width">
+<tr> -->
+<!-- <td> -->
+<p>
+
+<!-- </td>
+<td> -->
+     <label class="mg-label" for="from_date"><%= t ('from_date') %><span class="required-field">&nbsp;*</span></label><br/>
+     <%=text_field_tag :library_from_date,nil,:class=>"mg-text-field", :onchange=>"$('#inventory_report_generation_datass').html('');"%>
+</p>
+<!-- </td>
+</tr>
+<tr>
+<td> -->
+<p>
+     <label class="mg-label" for="to_date"><%= t ('to_date') %><span class="required-field">&nbsp;*</span></label><br/>
+     <%=text_field_tag :library_to_date,nil,:class=>"mg-text-field", :onchange=>"$('#inventory_report_generation_datass').html('');"%>
+</p>
+<!-- </td>
+</tr>
+    
+
+</table>
+<p> -->
+<p>
+     <label class="mg-label" for="transaction"><%= t ('transaction_type') %><span class="required-field">&nbsp;*</span></label><br/>
+        <%= select_tag :amount_transfer_type, options_for_select([[t("all"), "all"], [t("credited"), "credited"], [t("debited"), "debited"]]) , :onchange=>"$('#inventory_report_generation_datass').html('');"%>
+</p>
+ <%=submit_tag 'Generate Report', :class=> "submit  inventory_goods_report_datass mg-small-form-btn" %>
+
+ 
+<div id="inventory_report_generation_datass">
+
+</div>
+
+<div id="showInventoryProposalDIVID"></div>
+<div id="showInventoryProjectionDIVID"></div>
+
+<%= render  partial: 'schools/school_left_close' %>
+<script>
+$(document).ready(function(){
+focusCurrentTab("viewAccountsInchargeReportIndex","viewAccountsInchargeReportLiID");
+
+       
+
+        //focusMasterSettings();
+
+dateFormatStr =  getJsDateFormat();
+
+$('#library_from_date').datepicker({ changeMonth: true,
+                changeYear: true,yearRange: "-100:+0",maxDate: "0",dateFormat: dateFormatStr});
+
+$('#library_to_date').datepicker({ changeMonth: true,
+                changeYear: true,yearRange: "-100:+0",maxDate: "0",dateFormat: dateFormatStr});
+
+});
+
+
+
+
+$(document).on("change","#amount_transfer_type",function(){
+  var from_date=$("#library_from_date").val();
+  var to_date=$("#library_to_date").val();
+  if ((!(from_date=="")) && (!(to_date=="")))
+  {
+    $(".inventory_goods_report_datass").click();
+  } 
+});
+
+$(document).on("click",".inventory_goods_report_datass",function(){
+                    
+
+            var from_date=$("#library_from_date").val();
+            var to_date=$("#library_to_date").val();
+            var amount_transfer_type=$("#amount_transfer_type").val();
+
+            if(from_date==""||to_date=="") {
+
+              alert("Please Enter The data")
+            }
+
+              else{
+var urlLink="/accounts/accounts_review_generation"
+$.ajax({
+    url:urlLink,
+    cache:false,
+    data:{"from_date":from_date,"to_date":to_date,"amount_transfer_type":amount_transfer_type},
+    success: function(html){
+        $("#inventory_report_generation_datass").empty();
+        $("#inventory_report_generation_datass").append(html);
+
+
+
+    }
+
+});
+}
+});
+
+function resourceCategoryId(data){
+       $("#inventory_report_generation_datass").empty();
+
+var urlLink="/library/resource_type_data"
+
+$.ajax({
+    url:urlLink,
+    cache:false,
+    data:{"category_id":data},
+    success: function(html){
+        $("#resources_types_data").empty();
+        $("#resources_types_data").html(html);
+
+
+
+    }
+
+});
+}
+
+
+$(document).on("change","#library_from_date",function(e){
+      var end_date=$("#library_to_date").val();
+      if(!(end_date==""))
+      {
+            var start_date=$(this).val();
+
+     // console.log("Changed dob"); 
+     // console.log(new Date(Date.parse(dob,dateFormatStr)).toString());
+     // console.log(new Date(Date.parse(admission_date,dateFormatStr)).toString());
+
+     if(getDateObj(start_date,dateFormatStr)>getDateObj(end_date,dateFormatStr)){
+        alert("From Date should be less than To Date");
+        document.getElementById('library_from_date').value ="";
+      }
+
+      //var temp=$("#fee_schedule_due_date").val();
+//       if(!temp=="")
+//       {
+//       var end_date=$("#fee_schedule_end_date").val();
+//       var start_date=$("#fee_schedule_start_date").val();
+//       var due_date=$("#fee_schedule_due_date").val();
+
+//      if(!(getDateObj(due_date,dateFormatStr)>=getDateObj(start_date,dateFormatStr)&&getDateObj(due_date,dateFormatStr)<=getDateObj(end_date,dateFormatStr))){
+//         alert("Due Date should be between Start Date and End Date");
+//         document.getElementById('fee_schedule_start_date').value ="";
+//       }
+// }
+      }
+      
+   });
+
+
+    $(document).on("change","#library_to_date",function(e){
+      var start_date=$("#library_from_date").val();
+      if(!(start_date==""))
+      {
+        var end_date=$(this).val();
+
+     // console.log("Changed dob"); 
+     // console.log(new Date(Date.parse(dob,dateFormatStr)).toString());
+     // console.log(new Date(Date.parse(admission_date,dateFormatStr)).toString());
+
+     if(getDateObj(start_date,dateFormatStr)>getDateObj(end_date,dateFormatStr)){
+        alert(" To Date should be more than From Date");
+        document.getElementById('library_to_date').value ="";
+      }
+// var temp=$("#fee_schedule_due_date").val();
+//       if(!temp=="")
+//       {
+//       var end_date=$("#fee_schedule_end_date").val();
+//       var start_date=$("#fee_schedule_start_date").val();
+//       var due_date=$("#fee_schedule_due_date").val();
+
+//      if(!(getDateObj(due_date,dateFormatStr)>=getDateObj(start_date,dateFormatStr)&&getDateObj(due_date,dateFormatStr)<=getDateObj(end_date,dateFormatStr))){
+//         alert("Due Date should be between Start Date and End Date");
+//         document.getElementById('fee_schedule_end_date').value ="";
+//       }
+// }
+      }
+      
+   });
+
+    $(document).on("change","#library_report_course",function(){
+       $("#inventory_report_generation_datass").empty();
+
+    });
+
+</script>
+
+
+
+
+
+
+

@@ -1,0 +1,13 @@
+<!-- Sec --> 
+<tr>
+  <td><%  @model=MgModel.find_by_id(mg_permission.mg_model_id)%>
+  			<%= @model.try(:model_name)%></td>
+  <td>
+		<%  @action=MgAction.find_by_id( mg_permission.mg_action_id)%>
+  			<%= @action.try(:action_name) %>
+  </td>
+  <td>
+  	<button title="Edit" class="edit-mg-permission mg-icon-btn" id="editMgPermissionID-<%= mg_permission.id%>"><i class="fa fa-pencil-square-o"></i></button>
+    <button title="Delete" class="delete-mg-permission mg-icon-btn" id="deleteMgPermissionID-<%= mg_permission.id%>"><i class="fa fa-trash"></i></button></td>
+
+</tr>

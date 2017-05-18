@@ -1,0 +1,75 @@
+
+<% navigation_add 'Examinations', examinations_path %>
+<% navigation_add 'Exam Report', examination_report_center_path %>
+<% navigation_add 'View Report', examination_exam_wise_reports_path %>
+<% navigation_add 'Exam Report', examination_generated_report_path %>
+ <%if @examgroupIds==""%>
+
+<%= render  partial: 'examination_table_left' %>
+<h4 class="mg-h4">Show Exam</h4>
+<label style="text-decoration: underline;"><%= @student.mg_batch.name %> - <%= @exam_group.name %></label>
+<%#= link_to "consolidated_report", :action=>"consolidated_exam_report",:id=>@exam_group.id %>
+<%end%>
+<%if @studentIds.present? && @examgroupIds.present? %>
+<p>
+ <%= link_to "Generate PDF", {:action=>"generate_pdf",:id=>"#{@studentIds}-#{@examgroupIds}"}  ,:class=>"mg-custom-form-btn" %>
+</p>
+ <%end%>
+ <div id="class">
+<table class="mg-width-85">
+<tr>
+<td valign="top">
+<div id="student_list">
+    <%= render  :partial=>"exam_wise_student_list" %>
+  </div>
+</td>
+<td valign="top" width="55">
+ <div id="exam_wise_report">
+    <%= render :partial=>'exam_wise_report' %>
+  </div>
+  </td>
+    </tr>
+</table>
+<div id="demo_report">
+   
+  </div>
+
+  
+ </div>
+
+ <%= render  partial: 'examination_table_close' %>
+
+
+ <script type="text/javascript">
+
+ $(document).ready(function() {
+        focusCurrentTab("viewResultAID","viewResultLiID");
+        focusExaminationHeaderBox();
+  });
+  
+ $(document).on("click", ".student-link", function(e){
+        var urlLink = "/examination/generated_report/";
+        var myID =$(this).attr('id');
+        var CurrentId=myID;
+        CurrentId=CurrentId.split("-");
+
+        var studentID=CurrentId[0];
+        var groupid=CurrentId[1];
+
+
+        $.ajax({
+            url: urlLink ,
+            cache: false,
+            data:
+            {
+                "student_id":studentID,"groupID":groupid,"id":123
+            },
+            success: function(html){  
+                   console.log(html)
+              $("#score-table").empty();
+             $("#score-table").append(html);
+
+            }
+        });
+}); 
+</script>

@@ -1,0 +1,20 @@
+<% navigation_add 'Time Table', employee_time_table_path %>
+
+<%= render partial: 'dashboards/employee_left' %>
+
+<h4 class="mg-h4">Time Table</h4>
+<%@day="all"%>
+<%= render partial: 'employee_time_table'%>
+<%= render partial: 'application/common_left_close' %>
+
+<Script>
+$(document).ready(function(){
+
+    // $("#viewEmployeeProfile").addClass( "activeMenu" );
+    // $("#viewEmployeeProfileLiID").addClass( "active" );
+
+    focusCurrentTab("viewEmployeeTimeTable","viewEmployeeTimeTableLiID");
+    focusDashboards();
+
+});
+</script>

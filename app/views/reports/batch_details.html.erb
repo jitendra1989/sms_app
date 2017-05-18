@@ -1,0 +1,25 @@
+<h4 class="mg-h4">Batch Details</h4>
+<table class="batch-tbl">
+	<tr>
+		<th>Course Name</th>
+		<th>Batch Name</th>
+		<th>Total Male Student</th>
+		<th>Total Female Student</th>
+		<th>Total Student</th>
+	</tr>
+	<%@batches.each do |batch|%>
+	<tr>
+		<% @courses=MgCourse.where(:id=>batch.mg_course_id,:is_deleted=>0)%>
+		<td><%=@courses[0].course_name %></td>
+		<td><%=batch.name%></td>
+		<%
+			@student=MgStudent.where(:mg_batch_id=>batch.id,:is_deleted=>0)
+			@male_student=@student.where(:gender=>"male")
+			@female_student=@student.where(:gender=>"female")
+		%>
+		<td><%=@male_student.length%></td>
+		<td><%=@female_student.length%></td>
+		<td><%=@student.length%></td>
+	</tr>
+	<%end%>
+</table>

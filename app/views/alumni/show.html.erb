@@ -1,0 +1,120 @@
+
+ 
+  <table border="1" class="mg-showdata-bg " cellspacing="1" cellpadding="1">
+   <tr>
+        <td class="mg-td-width-half" valign="top">
+   		       <label class="mg-label"> <%= t('name')%></label>
+   	    </td>
+   	    <td class="mg-td-width-half" valign="top">
+  		      <%= @get_together_data.event_name %>
+  	     </td>
+   </tr>
+      <% @timeformat=MgSchool.find_by(:id=>session[:current_user_school_id])%>    
+
+   <tr>
+         <td class="mg-td-width-half" valign="top">
+  		      <label class="mg-label"><%=t('event_date')%></label>
+  	     </td>
+  	     <td class="mg-td-width-half " valign="top">
+  		          <%= @get_together_data.event_date.strftime(@timeformat.date_format) %>
+  	     </td>
+    </tr>
+
+    <tr>
+         <td class="mg-td-width-half" valign="top">
+            <label class="mg-label"><%=t('start_time')%></label>
+         </td>
+         <td class="mg-td-width-half " valign="top">
+                <%= @get_together_data.start_time.try(:strftime,"%l:%M%P") %>
+         </td>
+    </tr>
+
+    <tr>
+         <td class="mg-td-width-half" valign="top">
+            <label class="mg-label"><%=t('end_time')%></label>
+         </td>
+         <td class="mg-td-width-half " valign="top">
+                <%= @get_together_data.end_time.try(:strftime,"%l:%M%P") %>
+         </td>
+    </tr>
+
+    <tr>
+         <td class="mg-td-width-half" valign="top">
+            <label class="mg-label"><%=t('venue')%></label>
+         </td>
+         <td class="mg-td-width-half " valign="top">
+            <div class="text-scroll-for-log-text-cls comments-space">
+                <%= @get_together_data.venue %>
+            </div>
+         </td>
+    </tr>
+
+   <!--  <tr>
+         <td class="mg-td-width-half" valign="top">
+            <label class="mg-label"><%#=t('status')%></label>
+         </td>
+         <td class="mg-td-width-half " valign="top">
+                <%#= @get_together_data.status %>
+         </td>
+    </tr> -->
+
+   
+</table>
+
+
+<table border="1" class="batch-tbl mg-tbl-layouts mg-showdata-bg mg-show-tbl-width" cellspacing="1" cellpadding="1">
+
+<tr>
+<th> <label class="mg-label"> <%= t('name')%></label>
+</th>
+<th> <label class="mg-label"> <%= t('mobile_number')%></label>
+</th>
+
+</tr>
+<%@alumni_data.each do |info|%>
+<tr>
+    
+
+
+     <td class="mg-td-width-half mg-align-center" valign="top">
+     <%if info.first_name.present?%>
+     <%=info.try(:first_name)%> <%=info.try(:last_name)%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+     </td>
+
+
+     <td class="mg-td-width-half mg-align-center" valign="top">
+     <%if info.mobile_number.present?%>
+     <%=info.try(:mobile_number)%>
+     <%else%>
+     <%="No Data"%>
+     <%end%>
+     </td>
+
+ </tr>
+
+
+
+ <%end%>
+
+</table>
+
+
+
+
+
+
+ <p class="mg-p-mgtop">
+     <a class="mg-small-form-btn cancel-form-dialog"  href="/alumni"><%=t('cancel')%></a>
+  </p>
+
+<script type="text/javascript">
+$(document).ready(function () {
+  textSeeMoreLess();
+
+});
+
+</script>
+	

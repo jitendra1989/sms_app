@@ -1,0 +1,26 @@
+<!-- Sec --> 
+
+<%= render  partial: 'settings/setting_left' %>
+<input type="button" value="Add New Action" id= "addActionBtn" class="mg-custom-form-btn mg-btn-bottom-margin"/>
+<br/>
+<div class="mg_pagination">
+    <h4 class="mg-h4" >Listing Actions</h4>
+
+    <table class="batch-tbl" id='people_table'>
+        <tr>
+          <th>Action Name</th>
+          <th>Description</th>
+          <th><%=t("actions")%></th>
+        </tr>
+
+        <% @mg_actions.each do |mg_action| %>
+          <%= render partial: 'table_row', locals: {mg_action: mg_action} %>
+        <% end %>
+    </table>
+        <br/>
+    <div class="pagination-align">
+      <%= will_paginate @mg_actions, :container => false %>
+    </div>
+    <br/>
+</div>
+<%= render  partial: 'application/common_left_close' %>

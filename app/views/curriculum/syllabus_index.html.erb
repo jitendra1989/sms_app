@@ -1,0 +1,59 @@
+<% navigation_add 'Syllabus', curriculum_class_show_path %>
+<% navigation_add 'Add Syllabus', :controller => 'curriculum', :action => 'syllabus_index' %>
+
+
+<%= render partial: 'curriculum/curr_left' %>
+                         
+
+<!-- Sec --> 
+<%#= render  partial: 'students/student_left' %>
+ <h4 class="mg-h4"><%= t('add_syllabus') %></h4>
+ <div>
+<%= form_for :curriculum, url: curriculum_indexes_path, :html => {
+                            :id => 'syllabusIndexCurriculumManagementsID' } do |f| %>
+
+<%= f.hidden_field :is_deleted, :value => 0 %>
+<%= f.hidden_field :mg_school_id, :value => session[:current_user_school_id] %>
+<p>
+<%= f.label :select_subject ,:class=> "mg-label"%>
+<span class="required-field">*</span> <br>
+<%= f.collection_select(:mg_subject_id,MgSubject.where(:is_deleted => '0',:mg_school_id=>session[:current_user_school_id]), :id, :subject_code,{:include_blank => t("select")},:class => "subject_id-class")%>
+</p>
+<p>
+    <%= f.label :name ,:class=> "mg-label"%>
+    <span class="required-field">*</span> <br>
+   <%= f.text_field :name,:class=>"mg-text-field" %>
+ </p>
+ <p>
+    <%= f.label :description ,:class=> "mg-label"%><br>
+   <%= f.text_area :description ,:class=>"mg-text-field" %>
+ </p>
+
+ <p class="mg-p-mgtop">
+    <%#= f.submit t('save') ,:class=>"mg-small-form-btn"%>
+     <a onclick="$(this).closest('form').submit()" class="mg-small-form-btn"><%=t("save")%></a>
+     <%= link_to t('cancel'), :back, {:class=>"btn btn-delete cancel-form-dialog"} %>
+  </p>
+<% end %>
+</div>
+ <script>
+$(document).ready(function () {
+
+focusCurrentTab("view_curriculum_syllabusAID","syllabusLiID");
+        //focusCurriculum();
+
+
+$("#syllabusIndexCurriculumManagementsID").validate({
+
+rules: {
+"curriculum[mg_subject_id]": {required: true},
+"curriculum[name]": {required: true}
+}
+});
+});
+// </script>
+<%= render partial: 'application/emp_section_close' %>
+
+
+
+

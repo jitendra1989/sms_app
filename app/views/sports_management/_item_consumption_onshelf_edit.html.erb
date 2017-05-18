@@ -1,0 +1,66 @@
+<%if (@item_damaged_return.present?) || (@item_return.present?)%>
+<label class="mg-label mg-tt-width mg-label-text-transform-none" style="width:185px"><%=t('return_date')%><span class="required-field"> *</span></label>
+<%=text_field_tag :return_date,@return_date,:class=>"mg-text-field return_date"%><br>
+
+<%=hidden_field_tag "consumer_type",@consumer_type%>
+
+
+<table class="mg-tbl-margin mg-tbl-layout">
+	<tr>
+		<td class="mg-td-width-one-third" valign="top">
+			<%="Return:"%>
+		</td>
+		<td class="mg-td-width-one-third" valign="top">
+			<%="Damaged:"%>
+		</td>
+	</tr>
+	<tr>
+		<td class="mg-td-width-one-third" valign="top">
+	 		<%if @consumer_type=="student"%>
+		 		<span id="selected_list">
+		    		<%=select_tag :returnIds, options_for_select(@return_student_list),:multiple => true,:size =>10 ,:class=>"mg-add-library-particular"%>
+				</span>
+			<%elsif @consumer_type=="employee"%>
+				<span id="selected_list">
+		    		<%=select_tag :returnIds, options_for_select(@return_employee_list),:multiple => true,:size =>10 ,:class=>"mg-add-library-particular"%>
+				</span>
+			<%end%>
+	    	<a  id="Add" class="mg-custom-form-btn mg-add-rem-btn">Add</a> 
+		</td>
+		<td class="mg-td-width-one-third" valign="top">
+			<%if @consumer_type=="student"%>
+			    <span id="remove_list">
+			    	<%#if @damaged_student_list.present?%>
+			    	<%=select_tag :damagedIds, options_for_select(@damaged_student_list),:multiple => true,:size =>10 ,:class=>"mg-add-library-particular"%>
+			    	<%#end%>
+
+				</span>
+			<%elsif @consumer_type=="employee"%>
+		    	<span id="remove_list">
+		    	<%=select_tag :damagedIds, options_for_select(@damaged_employee_list),:multiple => true,:size =>10 ,:class=>"mg-add-library-particular"%>
+			</span>
+			<%end%>
+			<a  id="Remove" class="mg-custom-form-btn mg-add-rem-btn">Remove</a>
+		</td>
+	</tr>
+</table>
+<%end%>
+<script>
+
+$(document).ready(function(){
+	dateFormatStr =  getJsDateFormat();
+    $( ".return_date" ).datepicker({ changeMonth: true,
+                changeYear: true,yearRange: "-50:+50" ,dateFormat: dateFormatStr});
+    var return_date =  $.datepicker.formatDate(dateFormatStr,new Date($('#return_date').val()));
+	$('#return_date').val(return_date);
+});
+
+</script>
+
+<style>
+	.mg-add-rem-btn {
+		position: relative;
+		top: -7em;
+		margin-right: 5px;
+	}
+</style>

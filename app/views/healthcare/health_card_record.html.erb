@@ -1,0 +1,321 @@
+<% @date_format = MgSchool.find_by(:id=>session[:current_user_school_id]).date_format%>
+
+<%if params[:student_record].present?%>
+  <table class="batch-tbl mg-tbl-margin table-width"> 
+    <% batchobj = MgBatch.find_by(:id=>params[:mg_batch_id],:is_deleted=>0)%>
+    <% student_obj = MgStudent.find_by(:id=>params[:mg_student_id],:is_deleted=>0)%>
+    <%@courseObj = MgCourse.find_by_id(batchobj.mg_course_id)%>
+    <tr>
+      <th><%= t('name') %></th>
+      <th><%= t('semester') %></th>
+      <th><%= t('admission_number') %></th>
+      <th class="mg-rm-text-trans"><%= t('date_of_birth') %></th>
+    </tr>
+    <tr>
+      <td class="mg-capitalize-text mg-align-center">
+        <%= student_obj.try(:first_name) %><%=' '%><%= student_obj.try(:last_name) %>
+      </td>
+      
+      <td class="mg-capitalize-text mg-align-center">
+        <%= (@courseObj.course_name) +"-"+ batchobj.name %>
+      </td>
+
+      <td class="mg-capitalize-text mg-align-center">
+        <%= student_obj.try(:admission_number) %>
+      </td>
+
+      <td class="mg-capitalize-text mg-align-center">
+        <%= student_obj.try(:date_of_birth).try(:strftime,@date_format) %>
+      </td>
+    </tr>
+  </table>
+
+  <h4 class="mg-h4"><%= t('vaccinations_report') %></h4>
+  <table class="batch-tbl mg-tbl-margin table-width"> 
+    <%if @vaccination_detail.size>0%>
+      <tr>
+        <th><%= t('immunization')%></th>
+        <th><%= t('age_recommended')%></th>
+        <th><%= t('due_date')%></th>
+        <th><%= t('date')%></th>
+      </tr>
+      <%@vaccination_detail.each do |vacination_obj|%>
+        <%#due_date = MgVaccinationDetail.where(:mg_vaccination_id=>vacination_obj.id,:mg_student_id=>params[:mg_student_id],:mg_batch_id=>params[:mg_batch_id],:is_deleted=>0)%>
+        <%if vacination_obj.is_particular_student==true%>
+          <tr>
+            <td class="mg-capitalize-text mg-align-center">
+              <%= vacination_obj.try(:name) %>
+            </td>
+            
+            <td class="mg-capitalize-text mg-align-center">
+              <%= vacination_obj.try(:age_recommended) %>
+            </td>
+
+            <td class="mg-capitalize-text mg-align-center">
+              <%= vacination_obj.try(:due_date).try(:strftime,@date_format) %>
+            </td>
+
+            <td class="mg-capitalize-text mg-align-center">
+              <%= vacination_obj.try(:date).try(:strftime,@date_format) %>
+            </td>
+          </tr>
+        <%else%>
+          <tr>
+            <td class="mg-capitalize-text mg-align-center">
+              <%= vacination_obj.try(:mg_vaccination).try(:name) %>
+            </td>
+            
+            <td class="mg-capitalize-text mg-align-center">
+              <%= vacination_obj.try(:mg_vaccination).try(:age_recommended) %>
+            </td>
+
+            <td class="mg-capitalize-text mg-align-center">
+              <%= vacination_obj.try(:due_date).try(:strftime,@date_format) %>
+            </td>
+
+            <td class="mg-capitalize-text mg-align-center">
+              <%= vacination_obj.try(:date).try(:strftime,@date_format) %>
+            </td>
+        <%end%>
+      <%end%>
+    <%else%>
+      <%="No Record" %>
+    <%end%>
+  </table>
+
+  <h4 class="mg-h4"><%= t('booster_doses_report') %></h4>
+  <table class="batch-tbl mg-tbl-margin table-width"> 
+    <%if @booster_dose.size>0%>
+      <tr>
+        <th><%= t('immunization')%></th>
+        <th><%= t('frequency')%></th>
+        <th><%= t('due_date')%></th>
+        <th><%= t('date')%></th>
+      </tr>
+      <%@booster_dose.each do |booster_dose|%>
+        <%#date = MgBoosterDoseDetail.where(:mg_booster_dose_id=>booster_dose.id,:mg_student_id=>params[:mg_student_id],:mg_batch_id=>params[:mg_batch_id],:is_deleted=>0,:mg_school_id=>session[:current_user_school_id])%>
+        <%if booster_dose.is_particular_student==true%>
+          <tr>
+            <td class="mg-capitalize-text mg-align-center">
+              <%= booster_dose.try(:name) %>
+            </td>
+            <td class="mg-capitalize-text mg-align-center">
+              <%= booster_dose.try(:frequency) %>
+            </td>
+            <td class="mg-capitalize-text mg-align-center">
+              <%= booster_dose.try(:due_date).try(:strftime,@date_format) %>
+            </td>
+            <td class="mg-capitalize-text mg-align-center">
+              <%= booster_dose.try(:date).try(:strftime,@date_format) %>
+            </td>
+          </tr>
+        <%else%>
+          <tr>
+            <td class="mg-capitalize-text mg-align-center">
+              <%= booster_dose.try(:mg_booster_dose).try(:name) %>
+            </td>
+            <td class="mg-capitalize-text mg-align-center">
+              <%= booster_dose.try(:mg_booster_dose).try(:frequency) %>
+            </td>
+            <td class="mg-capitalize-text mg-align-center">
+              <%= booster_dose.try(:due_date).try(:strftime,@date_format) %>
+            </td>
+            <td class="mg-capitalize-text mg-align-center">
+              <%= booster_dose.try(:date).try(:strftime,@date_format) %>
+            </td>
+          </tr>
+        <%end%>
+      <%end%>
+    <%else%>
+      <%="No Record" %>
+    <%end%>
+  </table>
+  
+  <h4 class="mg-h4"><%= t('allergy_report') %></h4>
+  <table class="batch-tbl mg-tbl-margin table-width"> 
+    <%if @allergy.size>0%>
+      <tr>
+        <th><%= t('allergy')%></th>
+        <th><%= t('what_happened')%></th>
+        <th><%= t('how_severe')%></th>
+        <th><%= t('medication_details')%></th>
+      </tr>
+      <%@allergy.each do |allergy|%>
+        <tr>
+          <td class="mg-capitalize-text mg-align-center">
+            <%= allergy.try(:name) %>
+          </td>
+          <td class="mg-capitalize-text mg-align-center">
+            <%= allergy.try(:description) %>
+          </td>
+          
+          <td class="mg-capitalize-text mg-align-center">
+            <%= allergy.try(:status) %>
+          </td>
+          
+          <td class="mg-capitalize-text mg-align-center">
+            <%= allergy.try(:medication_detail) %>
+          </td>
+        </tr>
+      <%end%>
+    <%else%>
+      <%="No Record" %>
+    <%end%>
+  </table>
+
+
+  <h4 class="mg-h4"><%= t('health_report') %></h4>
+  <% if @checkup_type.size>0 %>
+    <%@checkup_type.each do |checkup_type_id| %>
+      <table class="batch-tbl mg-tbl-margin table-width"> 
+        <tr>
+           <th><%= t('checkup_type') %></th>
+           <th><%= t('particular') %></th>
+           <th><%= t('normal') %></th>
+           <th><%= t('result') %></th>
+          <th><%= t('recommendation') %></th>
+        </tr>
+      
+        <%@health_test = MgHealthTest.where(:mg_check_up_type_id=>checkup_type_id,:is_deleted=>0,:mg_student_id=>params[:mg_student_id],:mg_batch_id=>params[:mg_batch_id]).pluck("DISTINCT mg_checkup_particular_id")%>
+        <%if @health_test.present?%>
+          <%@health_test.each do |health_obj| %>
+            <%checkup_particular = MgCheckupParticular.where("id=? and is_deleted=? and show_in_healthcard=? and (applicable=? or applicable=?) ",health_obj,0,true,'student','both')%>
+            <%if checkup_particular.present?%>
+              <%last_helat_obj = MgHealthTest.where(:mg_checkup_particular_id=>health_obj,:mg_student_id=>params[:mg_student_id],:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).last%>
+              <tr>
+                <td class="mg-capitalize-text mg-align-center">
+                  <%= checkup_particular[0].try(:mg_checkup_type).try(:name) %>
+                </td>
+                <td class="mg-align-center mg-capitalize-text">
+                  <%= checkup_particular[0].try(:particulars) %>
+                </td>
+                <td class="mg-align-center mg-capitalize-text">
+                  <%= checkup_particular[0].try(:normal) %>
+                </td>
+                <td class="mg-align-center mg-capitalize-text">
+                  <%=last_helat_obj.try(:result) %>
+                </td>
+                <td class="mg-align-center mg-capitalize-text">
+                  <%=last_helat_obj.try(:recommendation) %>
+                </td>
+              </tr>
+            <%end%>
+          <%end%>
+        <%end%>
+      </table>
+    <%end%>
+  <%else%>
+    <%="No Record" %>
+  <%end%>
+<%else%>
+  <table class="batch-tbl mg-tbl-margin table-width"> 
+    <% emp_department = MgEmployeeDepartment.find_by(:id=>params[:mg_employee_department_id],:is_deleted=>0)%>
+    <% employee_obj = MgEmployee.find_by(:id=>params[:mg_employee_id],:is_deleted=>0)%>
+    <tr>
+      <th><%= t('name')%></th>
+      <th><%= t('department')%></th>
+      <th><%= t('employee_number')%></th>
+      <th class="mg-rm-text-trans"><%= t('dateofbirth')%></th>
+    </tr>
+    <tr>
+      <td class="mg-capitalize-text mg-align-center">
+        <%= employee_obj.try(:first_name) %><%=" "%><%= employee_obj.try(:last_name) %>
+      </td>
+
+      <td class="mg-capitalize-text mg-align-center">
+        <%= emp_department.try(:department_name) %>
+      </td>
+
+      <td class="mg-capitalize-text mg-align-center">
+        <%= employee_obj.try(:employee_number) %>
+      </td>
+      <td class="mg-capitalize-text mg-align-center">
+        <%= employee_obj.try(:date_of_birth).try(:strftime,@date_format) %>
+      </td>
+    </tr>
+  </table>
+  
+  <h4 class="mg-h4"><%= t('allergy_report') %></h4>
+  <table class="batch-tbl mg-tbl-margin table-width"> 
+    <%if @allergy.size>0%>
+      <tr>
+        <th><%= t('allergy')%></th>
+        <th><%= t('what_happened')%></th>
+        <th><%= t('how_severe')%></th>
+        <th><%= t('medication_details')%></th>
+      </tr>
+      <%@allergy.each do |allergy|%>
+        <tr>
+          <td class="mg-capitalize-text mg-align-center">
+            <%= allergy.try(:name) %>
+          </td>
+
+          <td class="mg-capitalize-text mg-align-center">
+            <%= allergy.try(:description) %>
+          </td>
+          
+          <td class="mg-capitalize-text mg-align-center">
+            <%= allergy.try(:status) %>
+          </td>
+          
+          <td class="mg-capitalize-text mg-align-center">
+            <%= allergy.try(:medication_detail) %>
+          </td>
+        </tr>
+      <%end%>
+    <%else%>
+      <%="No Record" %>
+    <%end%>
+  </table>
+
+  <h4 class="mg-h4"><%= t('health_report') %></h4>
+  <% if @checkup_type.size>0 %>
+    <%@checkup_type.each do |checkup_type_id| %>
+      <table class="batch-tbl mg-tbl-margin table-width"> 
+        <tr>
+          <th><%= t('checkup_type') %></th>
+          <th><%= t('particular') %></th>
+          <th><%= t('normal') %></th>
+          <th><%= t('result') %></th>
+          <th><%= t('recommendation') %></th>
+        </tr>
+
+        <%@health_test = MgHealthTest.where(:mg_check_up_type_id=>checkup_type_id,:is_deleted=>0,:mg_employee_id=>params[:mg_employee_id],:mg_employee_department_id=>params[:mg_employee_department_id]).pluck("DISTINCT mg_checkup_particular_id") %>
+        <%if @health_test.present?%>
+
+          <%@health_test.each do |health_obj| %>
+            <%checkup_particular = MgCheckupParticular.where("id=? and is_deleted=? and show_in_healthcard=? and (applicable=? or applicable=?) ",health_obj,0,true,'employee','both')%>
+            <%if checkup_particular.present?%>
+              <%last_helat_obj = MgHealthTest.where(:mg_checkup_particular_id=>health_obj,:mg_employee_id=>params[:mg_employee_id],:is_deleted=>0,:mg_school_id=>session[:current_user_school_id]).last%>
+              <tr>
+                <td class="mg-capitalize-text mg-align-center">
+                  <%= checkup_particular[0].try(:mg_checkup_type).try(:name) %>
+                </td>
+                <td class="mg-align-center mg-capitalize-text">
+                  <%= checkup_particular[0].try(:particulars) %>
+                </td>
+                <td class="mg-align-center mg-capitalize-text">
+                  <%= checkup_particular[0].try(:normal) %>
+                </td>
+                <td class="mg-align-center mg-capitalize-text">
+                  <%=last_helat_obj.try(:result) %>
+                </td>
+                <td class="mg-align-center mg-capitalize-text">
+                  <%=last_helat_obj.try(:recommendation) %>
+                </td>
+              </tr>
+            <%end%>
+          <%end%>
+        <%end%>
+      </table>
+    <%end%>
+  <%else%>
+    <%=t('No Record')%>
+  <%end%>
+<%end%>
+
+<style type="text/css">
+  .table-width{
+    width: 100%;
+  }
+</style>

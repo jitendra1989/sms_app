@@ -1,0 +1,227 @@
+<!-- Sec --> 
+
+<%if session[:user_type]=="student"%>
+  <%= render partial: '/dashboards/student_dashboard_left' %>
+<%else%>
+  <%=render partial:"alumni_left"%>
+<%end%>
+<%#=render partial: 'alumni_left' #has_attached_file :file
+%>
+<% navigation_add t('alumni_search'), alumni_alumni_search_path %>
+
+
+
+<h4 class="mg-detail-heading"><%= t("alumni_profile") %></h4>
+<section id="viewStudentID" style="margin: 0 auto;">
+<div>
+
+           
+            <div class="mg-back-btn-align">
+             <%= link_to t('back'),:back, {:class=>"mg-custom-form-btn cancel-form-dialog"} %>
+             </div>
+         
+
+                    <h4 class="mg-h4"><%= t('personaldetails') %></h4>
+                    <table class="mg-tbl-size-width">
+                    <tr>
+                        <td class="mg-td-width-half">
+                            <label class="mg-label mg-std-form-width"><%= t('firstname') %></label>
+                            <label>
+                            <%#if @alumni_data.is_name_sharable==true%>
+                                <%= @alumni_data.first_name %>
+                            <%#end%>
+                            </label>
+                        </td>
+
+
+
+                        <td class="mg-td-width-half">
+
+                            <label class="mg-label mg-std-form-width"><%= t('middlename') %></label>
+                            <%if @alumni_data.middle_name.nil? %>
+                            <label>--</label>
+                            <%else%>
+                            <label>
+                            <%#if @alumni_data.is_name_sharable==true%>
+                                <%= @alumni_data.try(:middle_name) %>
+                            <%#end%>
+                            </label>
+                            <%end%>
+                        </td>
+                        
+                    </tr>
+                    <tr>
+
+
+                        <td class="mg-td-width-half">
+                            <label class="mg-label mg-std-form-width"><%= t('lastname') %></label>
+                            <label>
+                            <%#if @alumni_data.is_name_sharable==true%>
+                                <%= @alumni_data.try(:last_name) %>
+                            <%#end%>
+                            </label>
+                        </td>
+
+                         <td class="mg-td-width-half">
+                            <label class="mg-label mg-std-form-width mg-rm-text-trans"><%= t('date_of_birth') %></label>
+                            <%if @alumni_data.is_date_of_birth_searchable==true%>
+                                <%= @alumni_data.try(:date_of_birth).strftime((date_format(session[:current_user_school_id]))) %>
+                            <%end%>
+                        </td>
+
+                        
+                    </tr>
+                    <tr>
+
+                        
+
+                        <td class="mg-td-width-half">
+                            <label class="mg-label mg-std-form-width"><%= t('gender') %></label>
+                            <label class="mg-capitalize-text"><%= @alumni_data.gender %></label>
+                        </td>
+                         <td class="mg-td-width-half">
+                            <label class="mg-label mg-std-form-width"><%= t('phone_no') %></label>
+                            <label><%= @alumni_data.try(:phone_number) %></label>
+                        </td>
+                    </tr>
+                    <tr>
+
+                      <td class="mg-td-width-half">
+                            <label class="mg-label mg-std-form-width" ><%= t('mobile_no') %></label>
+                            <label>
+                            <%if @alumni_data.is_mobile_no_sharable==true%>
+                                <%= @alumni_data.try(:mobile_number) %>
+                            <%end%>
+                            </label>
+                        </td>
+
+
+                      <td class="mg-td-width-half">
+                            <label class="mg-label mg-std-form-width"><%= t('email_id') %></label>
+                            <label>
+                            <%if @alumni_data.is_email_id_sharable==true%>
+                                <%= @alumni_data.try(:email_id) %>
+                            <%end%>
+                            </label>
+                        </td>
+                        
+                    </tr>
+                    <tr>
+
+                        <td class="mg-td-width-half">
+                            <label class="mg-label mg-std-form-width" ><%= t('current_location') %></label>
+                            <label>
+                            <%if @alumni_data.is_current_location_searchable==true%>
+                                <%= @alumni_data.try(:current_location) %>
+                            <%end%><%#= @alumni_data.current_location %></label>
+
+                        </td>
+
+                        <td class="mg-td-width-half">
+                            <label class="mg-label mg-std-form-width"><%= t('current_address') %></label>
+                            <label><%if @alumni_data.is_current_location_searchable==true%>
+                                <%= @alumni_data.try(:current_address) %>
+                            <%end%>
+                            <%#= @alumni_data.try(:current_address) %></label>
+                        </td>
+                        
+                    </tr>
+                    <tr>
+
+                        <td class="mg-td-width-half">
+                            <label class="mg-label mg-std-form-width" ><%= t('current_profession') %></label>
+                            <label><%if @alumni_data.is_current_profession_searchable==true%>
+                                <%= @alumni_data.try(:current_profession) %>
+                            <%end%>
+                            <%#= @alumni_data.current_profession %></label>
+                        </td>
+                          <td class="mg-td-width-half">
+                            <label class="mg-label mg-std-form-width" ><%= t('designation') %></label>
+                            <label>
+                            <%if @alumni_data.is_current_designation_searchable==true%>
+                                <%= @alumni_data.try(:designation) %>
+                            <%end%>
+                            <%#= @alumni_data.try(:designation) %></label>
+                        </td>
+                    </tr>
+                    <tr>
+                         <td class="mg-td-width-half">
+                            <label class="mg-label mg-std-form-width" ><%= t('current_organization') %></label>
+                            <label><%if @alumni_data.is_current_organization_searchabler==true%>
+                                <%= @alumni_data.try(:current_organization) %>
+                            <%end%>
+                            <%#= @alumni_data.try(:current_organization) %></label>
+                        </td>
+                        <td class="mg-td-width-half">
+                            <label class="mg-label mg-std-form-width" ><%= t('hobbies') %></label>
+                            <label><%= @alumni_data.try(:hobbies) %></label>
+                        </td>
+                         
+                    </tr>
+                     <tr>
+
+                        <td class="mg-td-width-half">
+                            <label class="mg-label mg-std-form-width" ><%= t('user_name') %></label>
+                            <label><%= @alumni_data.user_name %></label>
+                        </td>
+                        
+                    </tr>
+                    </table>
+
+<h4 class="mg-h4"><%= t('previous_programme_details') %></h4>
+                   <div class="mg-scroll-employee-bar mg-tbl-margin">   
+
+<table class="mg-show-tbl-width mg-table-nowrap batch-tbl mg-adjust-padding">  
+  <tr>
+  <th><%=t("programme")%></th>
+  <th><%=t("attended_year")%></th>
+  <!-- <th><%#=t("specialization")%></th> -->
+  <!-- <th><%#=t("certificate")%></th> -->
+  </tr>
+  
+<%alumni_data=MgAlumniProgrammeAttended.where(:mg_alumni_id=>@alumni_data.id)%>
+<%alumni_data.each do |data|%>
+  <%wing_data=MgWing.find_by(:id=>data.mg_wing_id)%>
+  <%#employee_data=MgEmployeeSpecialization.find_by(:id=>data.mg_employee_specialization_id)%>
+  <tr>
+    <td>
+      <!-- <%#if @alumni_data.is_programme_searchable==true%> -->
+        <%=wing_data.try(:wing_name)%>
+      <!-- <%#end%> -->
+    </td>
+    <td>
+       <!-- <%#if @alumni_data.is_passing_out_searchable==true%> -->
+          <%=data.try(:time_table_year)%></td>
+      <!-- <%#end%> -->
+    <!-- <td><%#=employee_data.try(:name)%> -->
+      <%#employee_specialization_data=[["Science",1],["Arts",2],["Commerce",3],["Others",4]]%>
+      <%#= select_tag "mg_specialization_id[1]",options_for_select(employee_specialization_data,:selected=>data.mg_employee_specialization_id) ,:prompt=>"select",:class=>"demooo demo3 mg-text-field specialization-cls-alumni"%>
+
+    <!-- </td> -->
+  </tr>
+<%end%>
+</table>
+</div>
+</section>
+
+
+
+
+<%= render  partial: 'application/common_left_close' %>
+
+     
+<script>
+  $(document).ready(function () {
+    focusCurrentTab("alumniSearchAID","alumniSearchAIDLId");
+    $('.specialization-cls-alumni option').prop('disabled', true);
+  });
+</script>  
+                
+             
+
+ <!-- ==============================Employee Child================================ -->
+
+       
+
+
+
